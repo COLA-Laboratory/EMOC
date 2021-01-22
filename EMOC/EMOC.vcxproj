@@ -91,6 +91,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)vendor</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -99,6 +100,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)vendor</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -109,6 +111,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)vendor</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -123,6 +126,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)vendor</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -130,7 +134,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\algorithm\algorithm.cpp" />
+    <ClCompile Include="src\algorithm\nsga2.cpp" />
+    <ClCompile Include="src\core\global.cpp" />
+    <ClCompile Include="src\individual.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\operator\mutation.cpp" />
+    <ClCompile Include="src\operator\sbx.cpp" />
+    <ClCompile Include="src\print.cpp" />
+    <ClCompile Include="vendor\random\random.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\algorithm\algorithm.h" />
+    <ClInclude Include="src\algorithm\nsga2.h" />
+    <ClInclude Include="src\core\global.h" />
+    <ClInclude Include="src\individual.h" />
+    <ClInclude Include="src\operator\mutation.h" />
+    <ClInclude Include="src\operator\sbx.h" />
+    <ClInclude Include="src\print.h" />
+    <ClInclude Include="src\problem\problem.hpp" />
+    <ClInclude Include="src\problem\zdt.hpp" />
+    <ClInclude Include="vendor\random\random.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
