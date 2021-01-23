@@ -1,4 +1,4 @@
-#include "algorithm/algorithm.h"
+#include "algorithms/algorithm.h"
 
 #include <iostream>
 
@@ -21,12 +21,12 @@ namespace emoc {
 		for (int i = 0; i < g_GlobalSettings->population_num_; ++i)
 		{
 			std::cout << "population[" << i << "]: \n";
-			std::cout << "    dec:";
+			std::cout << "dec:";
 			for (int j = 0; j < g_GlobalSettings->dec_num_; ++j)
 			{
 				std::cout << g_GlobalSettings->parent_population_[i]->dec_[j] << " ";
 			}
-			std::cout << " obj:";
+			std::cout << "obj:";
 			for (int j = 0; j < g_GlobalSettings->obj_num_; ++j)
 			{
 				std::cout << g_GlobalSettings->parent_population_[i]->obj_[j] << " ";
@@ -46,6 +46,7 @@ namespace emoc {
 	void Algorithm::EvaluateInd(Individual *ind)
 	{
 		problem_->CalObj(ind);
+		g_GlobalSettings->current_evaluation_++;
 	}
 
 	int Algorithm::MergePopulation(Individual **pop_src1, int pop_num1, Individual **pop_src2, int pop_num2, Individual **pop_dest)

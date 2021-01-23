@@ -1,6 +1,6 @@
 #pragma once
 #include "problem/problem.hpp"
-#include "individual.h"
+#include "core/individual.h"
 
 namespace emoc {
 

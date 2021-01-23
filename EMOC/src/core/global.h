@@ -5,6 +5,10 @@
 
 #include "individual.h"
 
+
+#define INF 1.0e14
+#define PI 3.14159265358979323846
+
 namespace emoc {
 	typedef struct{
 		double crossover_pro;

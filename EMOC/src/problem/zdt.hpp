@@ -1,7 +1,7 @@
 #pragma once
 #include <cmath>
 
-#include "individual.h"
+#include "core/individual.h"
 #include "problem/problem.hpp"
 
 namespace emoc {

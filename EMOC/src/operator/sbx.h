@@ -1,5 +1,5 @@
 #pragma once
-#include "individual.h"
+#include "core/individual.h"
 
 namespace emoc {
 

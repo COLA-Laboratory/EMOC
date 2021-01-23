@@ -134,10 +134,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\algorithm\algorithm.cpp" />
-    <ClCompile Include="src\algorithm\nsga2.cpp" />
+    <ClCompile Include="src\algorithms\algorithm.cpp" />
+    <ClCompile Include="src\algorithms\nsga2.cpp" />
     <ClCompile Include="src\core\global.cpp" />
-    <ClCompile Include="src\individual.cpp" />
+    <ClCompile Include="src\core\nd_sort.cpp" />
+    <ClCompile Include="src\core\tournament_selection.cpp" />
+    <ClCompile Include="src\core\individual.cpp" />
+    <ClCompile Include="src\core\utility.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\operator\mutation.cpp" />
     <ClCompile Include="src\operator\sbx.cpp" />
@@ -145,10 +148,13 @@
     <ClCompile Include="vendor\random\random.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\algorithm\algorithm.h" />
-    <ClInclude Include="src\algorithm\nsga2.h" />
+    <ClInclude Include="src\algorithms\algorithm.h" />
+    <ClInclude Include="src\algorithms\nsga2.h" />
     <ClInclude Include="src\core\global.h" />
-    <ClInclude Include="src\individual.h" />
+    <ClInclude Include="src\core\nd_sort.h" />
+    <ClInclude Include="src\core\tournament_selection.h" />
+    <ClInclude Include="src\core\individual.h" />
+    <ClInclude Include="src\core\utility.h" />
     <ClInclude Include="src\operator\mutation.h" />
     <ClInclude Include="src\operator\sbx.h" />
     <ClInclude Include="src\print.h" />

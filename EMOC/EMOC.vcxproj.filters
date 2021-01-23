@@ -18,12 +18,6 @@
     <ClCompile Include="src\main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\individual.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\algorithm\nsga2.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="src\core\global.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -33,23 +27,32 @@
     <ClCompile Include="vendor\random\random.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\algorithm\algorithm.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="src\operator\sbx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\operator\mutation.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\core\tournament_selection.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\individual.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\nd_sort.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\utility.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\algorithms\algorithm.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\algorithms\nsga2.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\individual.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\algorithm\nsga2.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="src\problem\zdt.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -65,13 +68,28 @@
     <ClInclude Include="vendor\random\random.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\algorithm\algorithm.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="src\operator\sbx.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\operator\mutation.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\tournament_selection.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\individual.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\nd_sort.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\utility.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\algorithms\algorithm.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\algorithms\nsga2.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

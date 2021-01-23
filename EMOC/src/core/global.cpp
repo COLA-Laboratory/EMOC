@@ -1,4 +1,4 @@
-#include "global.h"
+#include "core/global.h"
 
 #include "random/random.h"
 
@@ -49,12 +49,9 @@ namespace emoc {
 	}
 
 
-
-
-
-
 	void Global::Init()
 	{
+		randomize();
 		AllocateMemory();
 		SetDecBound();
 	}
