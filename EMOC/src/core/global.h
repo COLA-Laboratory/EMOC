@@ -10,16 +10,23 @@
 #define PI 3.14159265358979323846
 
 namespace emoc {
-	typedef struct{
+
+	typedef struct
+	{
 		double crossover_pro;
 		double eta_c;
 	}SBXPara;
 
-	typedef struct{
+	typedef struct
+	{
 		double muatation_pro;
 		double eta_m;
 	}PolyMutationPara;
 
+	// Global class holds all necessary parameter settings and datas for algorithms to run and
+	// provides some useful foundmental functions. It can be considered as a manager class. A
+	// global variable g_GlobalSettings is given to access all settings.
+	// Note: the structure may be changed
 	class Global
 	{
 	public:
@@ -27,8 +34,10 @@ namespace emoc {
 			int dec_num, int obj_num, int max_evaluation);
 		~Global();
 
+		// initialize given population, i.e. set the decision variables' value
 		void InitializePopulation(Individual **pop, int pop_num);
-		void InitializeIndividual(Individual *pop);
+		void InitializeIndividual(Individual *ind);
+
 		bool IsTermination();
 
 	public:
@@ -60,5 +69,5 @@ namespace emoc {
 		void DestroyMemory();
 	};
 
-	extern Global *g_GlobalSettings;
+	extern Global *g_GlobalSettings;  // provide global settings to whole project 
 }

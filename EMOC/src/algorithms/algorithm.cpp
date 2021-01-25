@@ -53,10 +53,13 @@ namespace emoc {
 	{
 		int i = 0, j = 0;
 
+		// copy fist population
 		for (i = 0; i < pop_num1; i++)
 		{
 			CopyIndividual(pop_src1[i], pop_dest[i]);
 		}
+
+		// copy second population
 		for (j = 0; j < pop_num2; j++, i++)
 		{
 			CopyIndividual(pop_src2[j], pop_dest[i]);
@@ -66,9 +69,11 @@ namespace emoc {
 
 	void Algorithm::CopyIndividual(Individual *ind_src, Individual *ind_dest)
 	{
+		// copy individual properties
 		ind_dest->fitness_ = ind_src->fitness_;
 		ind_dest->rank_ = ind_src->rank_;
 
+		// copy individual decision and objective datas
 		memcpy(ind_dest->dec_, ind_src->dec_, sizeof(double) * g_GlobalSettings->dec_num_);
 		memcpy(ind_dest->obj_, ind_src->obj_, sizeof(double) * g_GlobalSettings->obj_num_);
 	}

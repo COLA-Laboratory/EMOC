@@ -2,6 +2,8 @@
 
 namespace emoc {
 
+	// Class for each solution in optimization process, and
+	// it holds some basic datas of each solution.
 	class Individual
 	{
 	public:

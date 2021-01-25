@@ -2,8 +2,8 @@
 
 #include <cmath>
 
-#include "random/random.h"
 #include "core/global.h"
+#include "random/random.h"
 
 namespace emoc {
 
@@ -21,10 +21,6 @@ namespace emoc {
 			y = ind->dec_[i];
 			if (randomperc() <= mutation_pro)
 			{
-
-
-				/*这里暂时给定值写成0*/
-
 				delta1 = (y - yl) / (yu - yl);
 				delta2 = (yu - y) / (yu - yl);
 				rnd = randomperc();
@@ -62,4 +58,5 @@ namespace emoc {
 	{
 		PolynomialMutation(ind);
 	}
+
 }

@@ -1,5 +1,8 @@
+// This file provides some random number utility functions
 #pragma once
 #define RAND_MAX 0x7fff
+
+
 
 void advance_random();
 void warmup_random(double seed);

@@ -51,14 +51,17 @@
     <ClCompile Include="src\algorithms\nsga2.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\metric\igd.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\problem\problem.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\problem\zdt.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\problem\zdt.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\problem\problem.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="src\core\global.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -90,6 +93,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\algorithms\nsga2.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\metric\igd.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\problem\problem.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\problem\zdt.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

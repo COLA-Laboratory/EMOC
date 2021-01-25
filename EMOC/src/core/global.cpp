@@ -51,7 +51,9 @@ namespace emoc {
 
 	void Global::Init()
 	{
+		// initilize some bases for random number
 		randomize();
+
 		AllocateMemory();
 		SetDecBound();
 	}

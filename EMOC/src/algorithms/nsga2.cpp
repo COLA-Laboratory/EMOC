@@ -28,11 +28,16 @@ namespace emoc {
 		Initialization();
 		while (!g_GlobalSettings->IsTermination())
 		{
+			// begin each iteration
+			g_GlobalSettings->iteration_num_++;
+
+			// generate offspring population
 			Crossover(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->offspring_population_.data());
 			MutationPop(g_GlobalSettings->offspring_population_.data(), 2 * g_GlobalSettings->population_num_ / 2);
 			EvaluatePop(g_GlobalSettings->offspring_population_.data(), 2 * g_GlobalSettings->population_num_ / 2);
 			MergePopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_, g_GlobalSettings->offspring_population_.data(), 
 				2 * g_GlobalSettings->population_num_ / 2, g_GlobalSettings->mixed_population_.data());
+			// select next generation's population
 			EnvironmentalSelection(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->mixed_population_.data());
 		}
 	}
@@ -45,6 +50,7 @@ namespace emoc {
 
 	void NSGA2::Crossover(Individual **parent_pop, Individual **offspring_pop)
 	{
+		// generate random permutation index for tournment selection
 		int *index1 = new int[g_GlobalSettings->population_num_];
 		int *index2 = new int[g_GlobalSettings->population_num_];
 		random_permutation(index1, g_GlobalSettings->population_num_);
@@ -63,6 +69,7 @@ namespace emoc {
 	
 	void NSGA2::SetDistanceInfo(std::vector<DistanceInfo> &distanceinfo_vec, int target_index, double distance)
 	{
+		// search the target_index and set it's distance
 		for (int i = 0; i < distanceinfo_vec.size(); ++i)
 		{
 			if (distanceinfo_vec[i].index == target_index)
@@ -80,7 +87,7 @@ namespace emoc {
 		std::vector<int> sort_arr(pop_num, 0);
 		std::vector<DistanceInfo> distanceinfo_vec(pop_num, { -1,0.0 });
 
-		/*找出所有对应rank的值*/
+		// find all the indviduals with rank rank_index
 		for (int i = 0; i < pop_num; i++)
 		{
 			mixed_pop[i]->fitness_ = 0;
@@ -94,16 +101,18 @@ namespace emoc {
 
 		for (int i = 0; i < g_GlobalSettings->obj_num_; i++)
 		{
+			// sort the population with i-th obj
 			sort(sort_arr.begin(), sort_arr.begin()+num_in_rank, [=](int left, int right){
 				return mixed_pop[left]->obj_[i] < mixed_pop[right]->obj_[i];
 			});
 
-			/*第一个和最后一个赋值为无穷大，为了使其能够保存下来*/
+			// set the first and last individual with INF fitness (crowding distance)
 			mixed_pop[sort_arr[0]]->fitness_ = INF;
 			SetDistanceInfo(distanceinfo_vec, sort_arr[0], INF);
 			mixed_pop[sort_arr[num_in_rank - 1]]->fitness_ = INF;
 			SetDistanceInfo(distanceinfo_vec, sort_arr[num_in_rank - 1], INF);
 
+			// calculate each solution's crowding distance
 			for (int j = 1; j < num_in_rank - 1; j++)
 			{
 				if (INF != mixed_pop[sort_arr[j]]->fitness_)
@@ -114,9 +123,10 @@ namespace emoc {
 					}
 					else
 					{
-						mixed_pop[sort_arr[j]]->fitness_ += (mixed_pop[sort_arr[j + 1]]->obj_[i] - mixed_pop[sort_arr[j - 1]]->obj_[i]) / 
+						double distance = (mixed_pop[sort_arr[j + 1]]->obj_[i] - mixed_pop[sort_arr[j - 1]]->obj_[i]) /
 							(mixed_pop[sort_arr[num_in_rank - 1]]->obj_[i] - mixed_pop[sort_arr[0]]->obj_[i]);
-						SetDistanceInfo(distanceinfo_vec, sort_arr[j], mixed_pop[sort_arr[j]]->fitness_);
+						mixed_pop[sort_arr[j]]->fitness_ += distance;
+						SetDistanceInfo(distanceinfo_vec, sort_arr[j], distance);
 					}
 				}
 			}
@@ -126,6 +136,7 @@ namespace emoc {
 			return left.distance < right.distance;
 		});
 
+		// copy sort result
 		for (int i = 0; i < num_in_rank; i++)
 		{
 			pop_sort[i] = distanceinfo_vec[i].index;
@@ -136,12 +147,12 @@ namespace emoc {
 
 	void NSGA2::EnvironmentalSelection(Individual **parent_pop, Individual **mixed_pop)
 	{
-	
 		int current_popnum = 0, rank_index = 0;
 		int mixed_popnum = g_GlobalSettings->population_num_ + 2 * g_GlobalSettings->population_num_ / 2;
 
 		NonDominatedSort(mixed_pop, mixed_popnum);
 
+		// select individuals by rank
 		while (1)
 		{
 			int temp_number = 0;
@@ -168,6 +179,7 @@ namespace emoc {
 				break;
 		}
 
+		// select individuals by crowding distance
 		int sort_num = 0;
 		int *pop_sort = new int[mixed_popnum];
 
@@ -187,6 +199,8 @@ namespace emoc {
 				}
 			}
 		}
+
+		// clear crowding distance value
 		for (int i = 0; i < g_GlobalSettings->population_num_; i++)
 		{
 			parent_pop[i]->fitness_ = 0;

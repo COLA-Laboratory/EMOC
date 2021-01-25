@@ -1,5 +1,7 @@
 #include "core/utility.h"
 
+#include <cmath>
+
 namespace emoc {
 
 	DominateReleation CheckDominance(Individual *ind1, Individual *ind2)
@@ -26,6 +28,14 @@ namespace emoc {
 			else
 				return (NON_DOMINATED);
 		}
+	}
+
+	double CalEuclidianDistance(double *a, double *b, int dimension)
+	{
+		double distance = 0.0;
+		for (int i = 0; i < dimension; i++)
+			distance += (a[i] - b[i]) * (a[i] - b[i]);
+		return sqrt(distance);
 	}
 
 }

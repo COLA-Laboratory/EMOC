@@ -9,11 +9,14 @@ namespace emoc {
 
 	void NonDominatedSort(Individual **pop, int pop_num)
 	{
-		int index = 0; /*临时索引号*/
-		int current_rank = 0, unrank_num = pop_num; /*rank用于等级赋值，unrank_num用于判断是否停止循环*/
+		int index = 0; 
 		int dominate_relation = 0;
-		int *ni = nullptr, **si = nullptr, *Q = nullptr;/*ni用于表示支配第i个solution的解的个数，si是一个集合，存放第i个元素支配的解,Q集合用于存放当前ni为0的solution*/
-		int *dominate_num = nullptr;   /*用于存储I支配的解的个数*/
+		int current_rank = 0, unrank_num = pop_num; 
+
+		int *ni = nullptr;             // store the number of points that dominate i-th solution
+		int **si = nullptr;            // store the solution index of which i-th solution dominates
+		int	*Q = nullptr;              // store the solution which ni is 0
+		int *dominate_num = nullptr;   // store the number of dominate points of i-th solution
 		Individual *ind_tempA = nullptr, *ind_tempB = nullptr;
 
 		ni = (int *)malloc(sizeof(int) * pop_num);
@@ -45,13 +48,10 @@ namespace emoc {
 				dominate_relation = CheckDominance(ind_tempA, ind_tempB);
 				if (DOMINATE == dominate_relation)
 				{
-					/*I支配J*/
 					si[i][index++] = j;
-
 				}
-				else if (DOMINATED == dominate_relation)/*J支配I*/
+				else if (DOMINATED == dominate_relation)
 				{
-
 					ni[i]++;
 				}
 				else;

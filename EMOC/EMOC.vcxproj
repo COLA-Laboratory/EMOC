@@ -88,19 +88,25 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
+      <Optimization>MaxSpeed</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)vendor</AdditionalIncludeDirectories>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <FloatingPointModel>Precise</FloatingPointModel>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
+      <Optimization>MaxSpeed</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)vendor</AdditionalIncludeDirectories>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <FloatingPointModel>Precise</FloatingPointModel>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -112,6 +118,9 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)vendor</AdditionalIncludeDirectories>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -127,6 +136,9 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)vendor</AdditionalIncludeDirectories>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -142,9 +154,12 @@
     <ClCompile Include="src\core\individual.cpp" />
     <ClCompile Include="src\core\utility.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\metric\igd.cpp" />
     <ClCompile Include="src\operator\mutation.cpp" />
     <ClCompile Include="src\operator\sbx.cpp" />
     <ClCompile Include="src\print.cpp" />
+    <ClCompile Include="src\problem\problem.cpp" />
+    <ClCompile Include="src\problem\zdt.cpp" />
     <ClCompile Include="vendor\random\random.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -155,11 +170,12 @@
     <ClInclude Include="src\core\tournament_selection.h" />
     <ClInclude Include="src\core\individual.h" />
     <ClInclude Include="src\core\utility.h" />
+    <ClInclude Include="src\metric\igd.h" />
     <ClInclude Include="src\operator\mutation.h" />
     <ClInclude Include="src\operator\sbx.h" />
     <ClInclude Include="src\print.h" />
-    <ClInclude Include="src\problem\problem.hpp" />
-    <ClInclude Include="src\problem\zdt.hpp" />
+    <ClInclude Include="src\problem\problem.h" />
+    <ClInclude Include="src\problem\zdt.h" />
     <ClInclude Include="vendor\random\random.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

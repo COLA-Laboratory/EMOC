@@ -1,3 +1,4 @@
+// This file provides some important utility functions
 #pragma once
 #include "core/global.h"
 #include "core/individual.h"
@@ -12,5 +13,7 @@ namespace emoc {
 	};
 
 	DominateReleation CheckDominance(Individual *ind1, Individual *ind2);
+
+	double CalEuclidianDistance(double *a, double *b, int dimension);
 
 }
