@@ -1,7 +1,7 @@
-#include "algorithms/nsga2.h"
+#include "algorithms/nsga2/nsga2.h"
 
-#include <algorithm>
 #include <vector>
+#include <algorithm>
 #include <iostream>
 
 #include "core/global.h"
@@ -44,6 +44,7 @@ namespace emoc {
 
 	void NSGA2::Initialization()
 	{
+		// initialize parent population
 		g_GlobalSettings->InitializePopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_);
 		EvaluatePop(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_);
 	}
@@ -102,7 +103,7 @@ namespace emoc {
 		for (int i = 0; i < g_GlobalSettings->obj_num_; i++)
 		{
 			// sort the population with i-th obj
-			sort(sort_arr.begin(), sort_arr.begin()+num_in_rank, [=](int left, int right){
+			std::sort(sort_arr.begin(), sort_arr.begin()+num_in_rank, [=](int left, int right){
 				return mixed_pop[left]->obj_[i] < mixed_pop[right]->obj_[i];
 			});
 
@@ -132,7 +133,7 @@ namespace emoc {
 			}
 		}
 
-		sort(distanceinfo_vec.begin(), distanceinfo_vec.begin()+num_in_rank, [](DistanceInfo &left, DistanceInfo &right) {
+		std::sort(distanceinfo_vec.begin(), distanceinfo_vec.begin()+num_in_rank, [](DistanceInfo &left, DistanceInfo &right) {
 			return left.distance < right.distance;
 		});
 

@@ -38,4 +38,44 @@ namespace emoc {
 		return sqrt(distance);
 	}
 
+	int Combination(int n, int k)
+	{
+		if (n < k)
+			return -1;
+
+		double ans = 1;
+		for (int i = k + 1; i <= n; i++)
+		{
+			ans = ans * i;
+			ans = ans / (double)(i - k);
+		}
+
+		return (int)ans;
+	}
+
+
+	void UpdateIdealpoint(Individual *ind, double *ideal_point)
+	{
+		for (int i = 0; i < g_GlobalSettings->obj_num_; i++)
+		{
+			if (ind->obj_[i] < ideal_point[i])
+				ideal_point[i] = ind->obj_[i];
+		}
+	}
+
+
+	void UpdateIdealpoint(Individual **pop, int pop_num, double *ideal_point)
+	{
+		for (int i = 0; i < g_GlobalSettings->obj_num_; ++i)
+			ideal_point[i] = INF;
+
+		for (int i = 0; i < pop_num; i++)
+		{
+			for (int j = 0; j < g_GlobalSettings->obj_num_; j++)
+			{
+				if (pop[i]->obj_[j] < ideal_point[j])
+					ideal_point[j] = pop[i]->obj_[j];
+			}
+		}
+	}
 }

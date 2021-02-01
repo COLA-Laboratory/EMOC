@@ -5,8 +5,12 @@
 namespace emoc {
 
 	Global::Global(const char *algorithn_name, const char *problem_name, int population_num, int dec_num, int obj_num,int max_evaluation):
-		algorithm_name_(algorithn_name),problem_name_(problem_name),population_num_(population_num),
-		dec_num_(dec_num),obj_num_(obj_num),max_evaluation_(max_evaluation)
+		algorithm_name_(algorithn_name),
+		problem_name_(problem_name),
+		population_num_(population_num),
+		dec_num_(dec_num),
+		obj_num_(obj_num),
+		max_evaluation_(max_evaluation)
 	{
 		iteration_num_ = 0;
 		current_evaluation_ = 0;
@@ -64,7 +68,7 @@ namespace emoc {
 		{
 			for (int i = 0; i < dec_num_; ++i)
 			{
-				dec_lower_bound_[i] = 0.0;
+				dec_lower_bound_[i] = 0.0; // TODO: 这里其实可以改一改接口，创建具体的问题的时候，让问题的构造函数来赋值
 				dec_upper_bound_[i] = 1.0;
 			}
 		}

@@ -11,9 +11,12 @@ namespace emoc {
 		NON_DOMINATED = 0,
 		DOMINATE = 1
 	};
-
 	DominateReleation CheckDominance(Individual *ind1, Individual *ind2);
 
+	int Combination(int n, int k);
 	double CalEuclidianDistance(double *a, double *b, int dimension);
+
+	void UpdateIdealpoint(Individual *ind, double *ideal_point);
+	void UpdateIdealpoint(Individual **pop, int pop_num, double *ideal_point);
 
 }

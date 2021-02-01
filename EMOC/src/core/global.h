@@ -23,6 +23,13 @@ namespace emoc {
 		double eta_m;
 	}PolyMutationPara;
 
+	typedef struct 
+	{
+		double CR;
+		double F;
+		double K;
+	}DEPara;
+
 	// Global class holds all necessary parameter settings and datas for algorithms to run and
 	// provides some useful foundmental functions. It can be considered as a manager class. A
 	// global variable g_GlobalSettings is given to access all settings.

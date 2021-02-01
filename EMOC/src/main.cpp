@@ -1,13 +1,14 @@
 #include <ctime>
 #include <iostream>
 #include <memory>
+#include <algorithm>
 #include <vector>
-
 
 #include "core/global.h"
 #include "core/individual.h"
 #include "problem/zdt.h"
-#include "algorithms/nsga2.h"
+#include "algorithms/moead/moead.h"
+#include "algorithms/nsga2/nsga2.h"
 #include "metric/igd.h"
 #include "random/random.h"
 
@@ -19,9 +20,9 @@ int main()
 	clock_t start, end;
 	start = clock();
 
-	g_GlobalSettings = new emoc::Global("nsga2", "zdt1", 100, 30, 2, 25000);
+	g_GlobalSettings = new emoc::Global("moead", "zdt1", 200, 30, 2,1000000);
 	emoc::Problem *problem = new emoc::ZDT1(g_GlobalSettings->dec_num_, g_GlobalSettings->obj_num_);
-	emoc::Algorithm *algorithm = new emoc::NSGA2(problem);
+	emoc::Algorithm *algorithm = new emoc::MOEAD(problem);
 
 	algorithm->Run();
 	//algorithm->PrintPop();

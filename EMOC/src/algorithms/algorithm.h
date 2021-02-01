@@ -10,7 +10,7 @@ namespace emoc {
 	{
 	public:
 		Algorithm(Problem *problem);
-		~Algorithm();
+		virtual ~Algorithm();
 
 		void PrintPop();
 		virtual void Run() = 0;
