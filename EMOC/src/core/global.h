@@ -8,6 +8,7 @@
 
 #define INF 1.0e14
 #define PI 3.14159265358979323846
+#define EPS 1.0e-6
 
 namespace emoc {
 

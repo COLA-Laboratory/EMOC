@@ -24,7 +24,6 @@ namespace emoc {
 
 	private:
 		void Initialization();
-		// use sbx to do crossover, and the result is stored in offspring_pop
 		void Crossover(Individual **parent_pop, Individual **offspring_pop);
 
 		// set the crowding distance of given individual index

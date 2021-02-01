@@ -24,6 +24,8 @@ namespace emoc {
 		void Initialization();
 		void SetNeighbours();
 		void Crossover(Individual **parent_pop, int current_index, Individual *offspring);
+
+		// use offspring to update the neighbour of current_index-th individual with specified aggregation function
 		void UpdateSubproblem(Individual *offspring, int current_index, int aggregation_type);
 
 
@@ -34,6 +36,7 @@ namespace emoc {
 		int neighbour_num_;                // the number of neighbours
 		double *ideal_point_;
 		int aggregation_type_;
+		double pbi_theta_;
 	};
 
 

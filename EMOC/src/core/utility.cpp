@@ -78,4 +78,60 @@ namespace emoc {
 			}
 		}
 	}
+
+	double CalWeightedSum(Individual *ind, double *weight_vector, double *ideal_point)
+	{
+		double fitness = 0;
+		for (int i = 0; i < g_GlobalSettings->obj_num_; i++)
+		{
+			fitness += ind->obj_[i] * weight_vector[i];
+		}
+
+		ind->fitness_ = fitness;
+
+		return fitness;
+	}
+
+	double CalInverseChebycheff(Individual *ind, double *weight_vector, double *ideal_point)
+	{
+		double fitness = 0, max = -1.0e+20;
+
+		for (int i = 0; i < g_GlobalSettings->obj_num_; ++i)
+		{
+			double diff = fabs(ind->obj_[i] - ideal_point[i]);
+			if (weight_vector[i] < EPS)
+				fitness = diff / 0.000001;
+			else
+				fitness = diff / weight_vector[i];
+
+			if (fitness > max)
+				max = fitness;
+		}
+
+		fitness = max;
+		ind->fitness_ = fitness;
+
+		return fitness;
+	}
+
+	double CalPBI(Individual *ind, double *weight_vector, double *ideal_point, double theta)
+	{
+		theta == 0.0 ? 5.0 : theta;
+		double d1 = 0.0, d2 = 0.0, nl = 0.0;
+
+		for (int i = 0; i < g_GlobalSettings->obj_num_; ++i)
+		{
+			d1 += (ind->obj_[i] - ideal_point[i]) * weight_vector[i];
+			nl += weight_vector[i] * weight_vector[i];
+		}
+		nl = sqrt(nl);
+		d1 = fabs(d1) / nl;
+
+		for (int i = 0; i < g_GlobalSettings->obj_num_; ++i)
+			d2 += ((ind->obj_[i] - ideal_point[i]) - d1 * (weight_vector[i] / nl)) * ((ind->obj_[i] - ideal_point[i]) - d1 * (weight_vector[i] / nl));
+		d2 = sqrt(d2);
+
+		ind->fitness_ = d1 + theta * d2;
+		return  (d1 + theta * d2);
+	}
 }

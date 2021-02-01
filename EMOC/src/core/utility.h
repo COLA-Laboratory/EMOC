@@ -19,4 +19,8 @@ namespace emoc {
 	void UpdateIdealpoint(Individual *ind, double *ideal_point);
 	void UpdateIdealpoint(Individual **pop, int pop_num, double *ideal_point);
 
+	double CalWeightedSum(Individual *ind, double *weight_vector, double *ideal_point);
+	double CalInverseChebycheff(Individual *ind, double *weight_vector, double *ideal_point);
+	double CalPBI(Individual *ind, double *weight_vector, double *ideal_point, double theta = 0.0 );
+
 }
