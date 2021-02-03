@@ -67,12 +67,18 @@ namespace emoc {
 
 	void Global::SetDecBound()
 	{
-		if (problem_name_ == "zdt1")
+		for (int i = 0; i < dec_num_; ++i)
 		{
-			for (int i = 0; i < dec_num_; ++i)
+			dec_lower_bound_[i] = 0.0; // TODO: 这里其实可以改一改接口，创建具体的问题的时候，让问题的构造函数来赋值
+			dec_upper_bound_[i] = 1.0;
+		}
+
+		if (problem_name_ == "zdt4")
+		{
+			for (int i = 1; i < dec_num_; ++i)
 			{
-				dec_lower_bound_[i] = 0.0; // TODO: 这里其实可以改一改接口，创建具体的问题的时候，让问题的构造函数来赋值
-				dec_upper_bound_[i] = 1.0;
+				dec_lower_bound_[i] = -5.0;
+				dec_upper_bound_[i] = 5.0;
 			}
 		}
 	}

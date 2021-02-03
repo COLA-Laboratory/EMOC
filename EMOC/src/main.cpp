@@ -21,9 +21,9 @@ int main()
 	clock_t start, end;
 	start = clock();
 
-	g_GlobalSettings = new emoc::Global("moead", "zdt1", 100, 30, 2,25000);
-	emoc::Problem *problem = new emoc::ZDT1(g_GlobalSettings->dec_num_, g_GlobalSettings->obj_num_);
-	emoc::Algorithm *algorithm = new emoc::MOEAD(problem);
+	g_GlobalSettings = new emoc::Global("moead", "zdt6", 100, 30, 2,150000);
+	emoc::Problem *problem = new emoc::ZDT6(g_GlobalSettings->dec_num_, g_GlobalSettings->obj_num_);
+	emoc::Algorithm *algorithm = new emoc::MOEADDE(problem);
 
 	algorithm->Run();
 	//algorithm->PrintPop();

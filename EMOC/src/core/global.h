@@ -3,8 +3,9 @@
 #include <string>
 #include <vector>
 
-#include "individual.h"
-
+#include "core/individual.h"
+#include "problem/problem.h"
+#include "algorithms/algorithm.h"
 
 #define INF 1.0e14
 #define PI 3.14159265358979323846
@@ -72,6 +73,9 @@ namespace emoc {
 		SBXPara sbx_parameter_;
 		DEPara de_parameter_;
 		PolyMutationPara pm_parameter_;
+
+		Problem *problem_;
+		Algorithm *algorithm_;
 
 	private:
 		void Init();

@@ -4,6 +4,7 @@
 #include <direct.h>
 #include <fstream>
 #include <iostream>
+#include <string>
 
 #include "core/global.h"
 #include "core/utility.h"
@@ -17,10 +18,20 @@ namespace emoc {
 		// reset pf_size
 		pf_size = 0;
 
+		// get problem name without number
+		int pos = -1;
+		for (auto c : g_GlobalSettings->problem_name_)
+		{
+			pos++;
+			if (c >= '0' && c <= '9')
+				break;
+		}
+		std::string temp_problemname = g_GlobalSettings->problem_name_.substr(0, pos);
+
 		// open pf data file
 		double **pf_data = nullptr;
 		char pf_filename[255] = { 0 };
-		sprintf(pf_filename, "pf_data/zdt/%s.%dD.pf", g_GlobalSettings->problem_name_.c_str(), g_GlobalSettings->obj_num_);
+		sprintf(pf_filename, "pf_data/%s/%s.%dD.pf", temp_problemname.c_str(), g_GlobalSettings->problem_name_.c_str(), g_GlobalSettings->obj_num_);
 		std::fstream pf_file(pf_filename);
 
 
