@@ -5,7 +5,7 @@
 
 namespace emoc {
 
-	class MOEAD : public Algorithm
+	class MOEADDE : public Algorithm
 	{
 	public:
 		typedef struct
@@ -14,8 +14,14 @@ namespace emoc {
 			double distance;
 		}DistanceInfo;  // store euclidian distance to the index-th weight vector
 
-		MOEAD(Problem *problem);
-		virtual ~MOEAD();
+		typedef enum 
+		{
+			NEIGHBOUR,
+			GLOBAL
+		}NeighbourType;
+
+		MOEADDE(Problem *problem);
+		virtual ~MOEADDE();
 
 		void Run();
 
@@ -25,7 +31,7 @@ namespace emoc {
 		void Crossover(Individual **parent_pop, int current_index, Individual *offspring);
 
 		// use offspring to update the neighbour of current_index-th individual with specified aggregation function
-		void UpdateSubproblem(Individual *offspring, int current_index, int aggregation_type);
+		void UpdateSubproblem(Individual *offspring, int current_index);
 
 
 	private:
@@ -33,9 +39,10 @@ namespace emoc {
 		int weight_num_;                   // the number of weight vector
 		int **neighbour_;	               // neighbours of each individual
 		int neighbour_num_;                // the number of neighbours
+		int replace_num;                   // the number of maximum replaced individual
+		double neighbour_selectpro_;       // the probability of select neighbour scope
+		NeighbourType neighbour_type_;
 		double *ideal_point_;
-		int aggregation_type_;
-		double pbi_theta_;
 	};
 
 }

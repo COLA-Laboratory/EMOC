@@ -66,6 +66,12 @@
     <ClCompile Include="src\core\uniform_point.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\algorithms\moead_de\moead_de.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\operator\de.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\global.h">
@@ -114,6 +120,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\core\uniform_point.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\algorithms\moead_de\moead_de.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\operator\de.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

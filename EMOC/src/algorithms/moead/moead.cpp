@@ -19,7 +19,7 @@ namespace emoc {
 		neighbour_(nullptr),
 		ideal_point_(new double[g_GlobalSettings->obj_num_]), 
 		aggregation_type_(0),
-		pbi_theta_(0.0)
+		pbi_theta_(5.0)
 	{
 
 	}
@@ -191,5 +191,4 @@ namespace emoc {
 		delete[] neighbour_fitness;
 		delete[] offspring_fitness;
 	}
-
 }

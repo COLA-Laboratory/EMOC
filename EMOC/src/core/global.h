@@ -20,16 +20,18 @@ namespace emoc {
 
 	typedef struct
 	{
+		double crossover_pro;
+		double F;
+		double K;
+	}DEPara;
+
+	typedef struct
+	{
 		double muatation_pro;
 		double eta_m;
 	}PolyMutationPara;
 
-	typedef struct 
-	{
-		double CR;
-		double F;
-		double K;
-	}DEPara;
+
 
 	// Global class holds all necessary parameter settings and datas for algorithms to run and
 	// provides some useful foundmental functions. It can be considered as a manager class. A
@@ -68,6 +70,7 @@ namespace emoc {
 		double *dec_upper_bound_;
 
 		SBXPara sbx_parameter_;
+		DEPara de_parameter_;
 		PolyMutationPara pm_parameter_;
 
 	private:

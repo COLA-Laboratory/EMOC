@@ -8,6 +8,7 @@
 #include "core/individual.h"
 #include "problem/zdt.h"
 #include "algorithms/moead/moead.h"
+#include "algorithms/moead_de/moead_de.h"
 #include "algorithms/nsga2/nsga2.h"
 #include "metric/igd.h"
 #include "random/random.h"
@@ -20,7 +21,7 @@ int main()
 	clock_t start, end;
 	start = clock();
 
-	g_GlobalSettings = new emoc::Global("moead", "zdt1", 200, 30, 2,599000);
+	g_GlobalSettings = new emoc::Global("moead", "zdt1", 100, 30, 2,25000);
 	emoc::Problem *problem = new emoc::ZDT1(g_GlobalSettings->dec_num_, g_GlobalSettings->obj_num_);
 	emoc::Algorithm *algorithm = new emoc::MOEAD(problem);
 

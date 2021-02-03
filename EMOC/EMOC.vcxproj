@@ -164,6 +164,7 @@
   <ItemGroup>
     <ClCompile Include="src\algorithms\algorithm.cpp" />
     <ClCompile Include="src\algorithms\moead\moead.cpp" />
+    <ClCompile Include="src\algorithms\moead_de\moead_de.cpp" />
     <ClCompile Include="src\algorithms\nsga2\nsga2.cpp" />
     <ClCompile Include="src\core\global.cpp" />
     <ClCompile Include="src\core\nd_sort.cpp" />
@@ -173,6 +174,7 @@
     <ClCompile Include="src\core\utility.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\metric\igd.cpp" />
+    <ClCompile Include="src\operator\de.cpp" />
     <ClCompile Include="src\operator\mutation.cpp" />
     <ClCompile Include="src\operator\sbx.cpp" />
     <ClCompile Include="src\print.cpp" />
@@ -183,6 +185,7 @@
   <ItemGroup>
     <ClInclude Include="src\algorithms\algorithm.h" />
     <ClInclude Include="src\algorithms\moead\moead.h" />
+    <ClInclude Include="src\algorithms\moead_de\moead_de.h" />
     <ClInclude Include="src\algorithms\nsga2\nsga2.h" />
     <ClInclude Include="src\core\global.h" />
     <ClInclude Include="src\core\nd_sort.h" />
@@ -191,6 +194,7 @@
     <ClInclude Include="src\core\uniform_point.h" />
     <ClInclude Include="src\core\utility.h" />
     <ClInclude Include="src\metric\igd.h" />
+    <ClInclude Include="src\operator\de.h" />
     <ClInclude Include="src\operator\mutation.h" />
     <ClInclude Include="src\operator\sbx.h" />
     <ClInclude Include="src\print.h" />
