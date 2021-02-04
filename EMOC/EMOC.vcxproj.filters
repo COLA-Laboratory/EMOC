@@ -72,6 +72,18 @@
     <ClCompile Include="src\operator\de.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\algorithms\ibea\ibea.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\problem\dtlz.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\metric\hv.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\wfg\iwfg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\global.h">
@@ -126,6 +138,18 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\operator\de.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\algorithms\ibea\ibea.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\problem\dtlz.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\metric\hv.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\wfg\iwfg.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

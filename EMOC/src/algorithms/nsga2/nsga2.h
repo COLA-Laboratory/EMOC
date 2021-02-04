@@ -7,7 +7,6 @@
 
 namespace emoc {
 
-	// NSGA2 implement details class, the workflow is defined in Run()
 	class NSGA2 : public Algorithm
 	{
 	public:
