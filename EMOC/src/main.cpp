@@ -11,6 +11,7 @@
 #include "algorithms/moead_de/moead_de.h"
 #include "algorithms/nsga2/nsga2.h"
 #include "algorithms/ibea/ibea.h"
+#include "algorithms/spea2/spea2.h"
 #include "metric/hv.h"
 #include "metric/igd.h"
 #include "random/random.h"
@@ -23,9 +24,9 @@ int main()
 	clock_t start, end;
 	start = clock();
 
-	g_GlobalSettings = new emoc::Global("moead", "zdt4", 100, 10, 2,20000);
-	emoc::Problem *problem = new emoc::ZDT4(g_GlobalSettings->dec_num_, g_GlobalSettings->obj_num_);
-	emoc::Algorithm *algorithm = new emoc::IBEA(problem);
+	g_GlobalSettings = new emoc::Global("moead", "zdt1", 100, 30, 2,20000);
+	emoc::Problem *problem = new emoc::ZDT1(g_GlobalSettings->dec_num_, g_GlobalSettings->obj_num_);
+	emoc::Algorithm *algorithm = new emoc::SPEA2(problem);
 
 	algorithm->Run();
 	//algorithm->PrintPop();

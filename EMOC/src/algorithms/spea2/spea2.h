@@ -1,15 +1,17 @@
 #pragma once
+#include <unordered_map>
+
 #include "core/individual.h"
 #include "algorithms/algorithm.h"
 #include "problem/problem.h"
 
 namespace emoc {
 
-	class IBEA : public Algorithm
+	class SPEA2 : public Algorithm
 	{
 	public:
-		IBEA(Problem *problem);
-		virtual ~IBEA();
+		SPEA2(Problem *problem);
+		virtual ~SPEA2();
 
 		void Run();
 
@@ -17,12 +19,13 @@ namespace emoc {
 		void Initialization();
 		void Crossover(Individual **parent_pop, Individual **offspring_pop);
 
-		double CalEpsIndicator(Individual *ind1, Individual *ind2);
-		void CalFitness(Individual **pop, int pop_num, double *fitness);
+		void CalDistance(Individual **pop, int pop_num, double **distance, bool is_sort);
+		void CalFitness(Individual **pop, int pop_num);
+		std::unordered_map<int, int> TruncatePop(double **distance, int candidate_num);
 		void EnvironmentalSelection(Individual **parent_pop, Individual **mixed_pop);
 
 	private:
-		double kappa;
+		int para_k;
 	};
 
 }

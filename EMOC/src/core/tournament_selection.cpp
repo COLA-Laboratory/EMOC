@@ -23,4 +23,24 @@ namespace emoc {
 		}
 	}
 
+	// the smaller the better
+	Individual* TournamentByFitness(Individual *ind1, Individual *ind2)
+	{
+		if (ind1->fitness_ < ind2->fitness_)
+		{
+			return ind1;
+		}
+		else if (ind2->fitness_ < ind1->fitness_)
+		{
+			return ind2;
+		}
+		else
+		{
+			if (randomperc() <= 0.5)
+				return (ind1);
+			else
+				return (ind2);
+		}
+	}
+
 }

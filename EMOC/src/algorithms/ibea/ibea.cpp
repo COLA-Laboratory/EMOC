@@ -36,6 +36,7 @@ namespace emoc {
 			EvaluatePop(g_GlobalSettings->offspring_population_.data(), 2 * g_GlobalSettings->population_num_ / 2);
 			MergePopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_, g_GlobalSettings->offspring_population_.data(),
 				2 * g_GlobalSettings->population_num_ / 2, g_GlobalSettings->mixed_population_.data());
+			
 			// select next generation's population
 			EnvironmentalSelection(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->mixed_population_.data());
 		}
@@ -58,8 +59,8 @@ namespace emoc {
 
 		for (int i = 0; i < g_GlobalSettings->population_num_ / 2; ++i)
 		{
-			Individual *parent1 = TournamentByRank(parent_pop[index1[2 * i]], parent_pop[index1[2 * i + 1]]);
-			Individual *parent2 = TournamentByRank(parent_pop[index2[2 * i]], parent_pop[index2[2 * i + 1]]);
+			Individual *parent1 = TournamentByFitness(parent_pop[index1[2 * i]], parent_pop[index1[2 * i + 1]]);
+			Individual *parent2 = TournamentByFitness(parent_pop[index2[2 * i]], parent_pop[index2[2 * i + 1]]);
 			SBX(parent1, parent2, offspring_pop[2 * i], offspring_pop[2 * i + 1]);
 		}
 
@@ -85,34 +86,34 @@ namespace emoc {
 		return max_eps;
 	}
 
-	void IBEA::CalFitness(Individual **mixed_pop, int mixed_popnum, double *fitness)
+	void IBEA::CalFitness(Individual **pop, int pop_num, double *fitness)
 	{
 		// determine indicator values and their maximum
 		double max_fitness = 0;
-		for (int i = 0; i < mixed_popnum; ++i)
+		for (int i = 0; i < pop_num; ++i)
 		{
-			for (int j = 0; j < mixed_popnum; ++j)
+			for (int j = 0; j < pop_num; ++j)
 			{
-				fitness[i * mixed_popnum + j] = CalEpsIndicator(mixed_pop[i], mixed_pop[j]);
-				if (max_fitness < fabs(fitness[i * mixed_popnum + j]))
-					max_fitness = fabs(fitness[i * mixed_popnum + j]);
+				fitness[i * pop_num + j] = CalEpsIndicator(pop[i], pop[j]);
+				if (max_fitness < fabs(fitness[i * pop_num + j]))
+					max_fitness = fabs(fitness[i * pop_num + j]);
 			}
 		}
 
 		// calculate for each pair of individuals the corresponding value component
-		for (int i = 0; i < mixed_popnum;++i)
-			for (int j = 0; j < mixed_popnum; j++)
-				fitness[i * mixed_popnum + j] = exp((-fitness[i * mixed_popnum + j] / max_fitness) / kappa);
+		for (int i = 0; i < pop_num;++i)
+			for (int j = 0; j < pop_num; j++)
+				fitness[i * pop_num + j] = exp((-fitness[i * pop_num + j] / max_fitness) / kappa);
 
 		// set individual's fitness
-		for (int i = 0; i < mixed_popnum; ++i)
+		for (int i = 0; i < pop_num; ++i)
 		{
 			double sum = 0;
-			for (int j = 0; j < mixed_popnum; ++j)
+			for (int j = 0; j < pop_num; ++j)
 				if (i != j)
-					sum += fitness[j * mixed_popnum + i];
+					sum += fitness[j * pop_num + i];
 
-			mixed_pop[i]->fitness_ = sum;
+			pop[i]->fitness_ = sum;
 		}
 	}
 

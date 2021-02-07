@@ -84,6 +84,9 @@
     <ClCompile Include="vendor\wfg\iwfg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\algorithms\spea2\spea2.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\global.h">
@@ -150,6 +153,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="vendor\wfg\iwfg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\algorithms\spea2\spea2.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

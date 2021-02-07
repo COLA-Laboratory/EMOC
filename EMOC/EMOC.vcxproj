@@ -167,6 +167,7 @@
     <ClCompile Include="src\algorithms\moead\moead.cpp" />
     <ClCompile Include="src\algorithms\moead_de\moead_de.cpp" />
     <ClCompile Include="src\algorithms\nsga2\nsga2.cpp" />
+    <ClCompile Include="src\algorithms\spea2\spea2.cpp" />
     <ClCompile Include="src\core\global.cpp" />
     <ClCompile Include="src\core\nd_sort.cpp" />
     <ClCompile Include="src\core\tournament_selection.cpp" />
@@ -192,6 +193,7 @@
     <ClInclude Include="src\algorithms\moead\moead.h" />
     <ClInclude Include="src\algorithms\moead_de\moead_de.h" />
     <ClInclude Include="src\algorithms\nsga2\nsga2.h" />
+    <ClInclude Include="src\algorithms\spea2\spea2.h" />
     <ClInclude Include="src\core\global.h" />
     <ClInclude Include="src\core\nd_sort.h" />
     <ClInclude Include="src\core\tournament_selection.h" />

@@ -7,7 +7,7 @@
 #include "problem/problem.h"
 #include "algorithms/algorithm.h"
 
-#define INF 1.0e14
+#define INF 1.0e9
 #define PI 3.14159265358979323846
 #define EPS 1.0e-6
 
