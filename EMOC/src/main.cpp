@@ -7,6 +7,7 @@
 #include "core/global.h"
 #include "core/individual.h"
 #include "problem/zdt.h"
+#include "problem/dtlz.h"
 #include "algorithms/moead/moead.h"
 #include "algorithms/moead_de/moead_de.h"
 #include "algorithms/nsga2/nsga2.h"
@@ -21,12 +22,12 @@ using emoc::g_GlobalSettings;
 
 int main()
 {
-	clock_t start, end;
+	clock_t start, end; 
 	start = clock();
 
-	g_GlobalSettings = new emoc::Global("moead", "zdt1", 100, 30, 2,20000);
-	emoc::Problem *problem = new emoc::ZDT1(g_GlobalSettings->dec_num_, g_GlobalSettings->obj_num_);
-	emoc::Algorithm *algorithm = new emoc::SPEA2(problem);
+	g_GlobalSettings = new emoc::Global("moead", "dtlz6", 200, 12, 3,60000);
+	emoc::Problem *problem = new emoc::DTLZ6(g_GlobalSettings->dec_num_, g_GlobalSettings->obj_num_);
+	emoc::Algorithm *algorithm = new emoc::MOEAD(problem);
 
 	algorithm->Run();
 	//algorithm->PrintPop();
@@ -36,9 +37,9 @@ int main()
 	printf("runtime : %fs\n", time);
 
 	double igd = emoc::CalculateIGD(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_);
-	double hv = emoc::CalculateHV(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_);
+	//double hv = emoc::CalculateHV(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_);
 	printf("igd : %f\n", igd);
-	printf("hv : %f\n", hv);
+	//printf("hv : %f\n", hv);
 
 	delete g_GlobalSettings;
 	delete problem;
