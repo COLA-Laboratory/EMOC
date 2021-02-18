@@ -87,6 +87,15 @@
     <ClCompile Include="src\algorithms\spea2\spea2.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\algorithms\smsemoa\smsemoa.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\algorithms\moead_frrmab\moead_frrmab.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\algorithms\moead_dra\moead_dra.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\global.h">
@@ -156,6 +165,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\algorithms\spea2\spea2.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\algorithms\smsemoa\smsemoa.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\algorithms\moead_frrmab\moead_frrmab.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\algorithms\moead_dra\moead_dra.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

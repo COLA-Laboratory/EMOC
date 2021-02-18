@@ -17,7 +17,9 @@ namespace emoc {
 	double CalEuclidianDistance(double *a, double *b, int dimension);
 
 	void UpdateIdealpoint(Individual *ind, double *ideal_point);
+	void UpdateNadirpoint(Individual *ind, double *nadir_point);
 	void UpdateIdealpoint(Individual **pop, int pop_num, double *ideal_point);
+	void UpdateNadirpoint(Individual **pop, int pop_num, double *nadir_point);
 
 	// aggregation functions
 	double CalWeightedSum(Individual *ind, double *weight_vector, double *ideal_point);

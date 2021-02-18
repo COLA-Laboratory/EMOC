@@ -1223,4 +1223,53 @@ void i_ihv(FRONT ps, double *min)
 	i_n++;
 }
 
+void iwfg_read_data(FILECONTENTS *fc, emoc::Individual **pop_table, double *nadir_point, int pop_size)
+{
+	int i, j, k;
+	int front, point, objective;
+
+	// init the struct
+	fc->nFronts = 0;
+	fc->fronts = NULL;
+	front = fc->nFronts;
+	fc->nFronts++;
+	fc->fronts = (FRONT*)realloc(fc->fronts, sizeof(FRONT) * fc->nFronts);
+	fc->fronts[front].nPoints = 0;
+	fc->fronts[front].points = NULL;
+
+	// read the data
+	for (i = 0; i < pop_size; i++)
+	{
+		FRONT *f = &fc->fronts[front];
+		point = f->nPoints;
+		f->nPoints++;
+		f->points = (POINT*)realloc(f->points, sizeof(POINT) * f->nPoints);
+		f->n = 0;
+		f->points[point].objectives = NULL;
+
+		for (j = 0; j < emoc::g_GlobalSettings->obj_num_; j++)
+		{
+			POINT *p = &f->points[point];
+			objective = f->n;
+			f->n++;
+			p->objectives = (OBJECTIVE*)realloc(p->objectives, sizeof(OBJECTIVE) * f->n);
+			p->objectives[objective] = pop_table[i]->obj_[j];
+		}
+	}
+
+	/*normalize*/
+	for (i = 0; i < fc->nFronts; i++)
+	{
+		//        printf("here!,%d\n",fc->nFronts);
+		for (j = 0; j < fc->fronts[i].nPoints; j++)
+		{
+			for (k = 0; k < fc->fronts[i].n; k++)
+			{
+				fc->fronts[i].points[j].objectives[k] = nadir_point[k] - fc->fronts[i].points[j].objectives[k];
+				if (fc->fronts[i].points[j].objectives[k] < 0)
+					fc->fronts[i].points[j].objectives[k] = 0;
+			}
+		}
+	}
+}
 

@@ -166,7 +166,10 @@
     <ClCompile Include="src\algorithms\ibea\ibea.cpp" />
     <ClCompile Include="src\algorithms\moead\moead.cpp" />
     <ClCompile Include="src\algorithms\moead_de\moead_de.cpp" />
+    <ClCompile Include="src\algorithms\moead_dra\moead_dra.cpp" />
+    <ClCompile Include="src\algorithms\moead_frrmab\moead_frrmab.cpp" />
     <ClCompile Include="src\algorithms\nsga2\nsga2.cpp" />
+    <ClCompile Include="src\algorithms\smsemoa\smsemoa.cpp" />
     <ClCompile Include="src\algorithms\spea2\spea2.cpp" />
     <ClCompile Include="src\core\global.cpp" />
     <ClCompile Include="src\core\nd_sort.cpp" />
@@ -192,7 +195,10 @@
     <ClInclude Include="src\algorithms\ibea\ibea.h" />
     <ClInclude Include="src\algorithms\moead\moead.h" />
     <ClInclude Include="src\algorithms\moead_de\moead_de.h" />
+    <ClInclude Include="src\algorithms\moead_dra\moead_dra.h" />
+    <ClInclude Include="src\algorithms\moead_frrmab\moead_frrmab.h" />
     <ClInclude Include="src\algorithms\nsga2\nsga2.h" />
+    <ClInclude Include="src\algorithms\smsemoa\smsemoa.h" />
     <ClInclude Include="src\algorithms\spea2\spea2.h" />
     <ClInclude Include="src\core\global.h" />
     <ClInclude Include="src\core\nd_sort.h" />

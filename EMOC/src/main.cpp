@@ -13,6 +13,7 @@
 #include "algorithms/nsga2/nsga2.h"
 #include "algorithms/ibea/ibea.h"
 #include "algorithms/spea2/spea2.h"
+#include "algorithms/smsemoa/smsemoa.h"
 #include "metric/hv.h"
 #include "metric/igd.h"
 #include "random/random.h"
@@ -25,9 +26,10 @@ int main()
 	clock_t start, end; 
 	start = clock();
 
-	g_GlobalSettings = new emoc::Global("moead", "dtlz6", 200, 12, 3,60000);
-	emoc::Problem *problem = new emoc::DTLZ6(g_GlobalSettings->dec_num_, g_GlobalSettings->obj_num_);
-	emoc::Algorithm *algorithm = new emoc::MOEAD(problem);
+	// todo: move this into global member function and take care lower/upper case
+	g_GlobalSettings = new emoc::Global("smsemoa", "zdt1", 100, 30, 2, 100000);
+	emoc::Problem *problem = new emoc::ZDT1(g_GlobalSettings->dec_num_, g_GlobalSettings->obj_num_);
+	emoc::Algorithm *algorithm = new emoc::SMSEMOA(problem);
 
 	algorithm->Run();
 	//algorithm->PrintPop();
