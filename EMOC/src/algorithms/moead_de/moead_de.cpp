@@ -17,7 +17,7 @@ namespace emoc {
 		lambda_(nullptr),
 		weight_num_(0),
 		neighbour_(nullptr),
-		replace_num(2),
+		replace_num_(2),
 		neighbour_selectpro_(0.9),
 		ideal_point_(new double[g_GlobalSettings->obj_num_])
 	{
@@ -163,7 +163,7 @@ namespace emoc {
 		// calculate fitness and update subproblem;
 		for (int i = 0; i < size; ++i)
 		{
-			if (count >= replace_num)
+			if (count >= replace_num_)
 				break;
 			
 			if (neighbour_type_ == NEIGHBOUR)

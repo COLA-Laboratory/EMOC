@@ -231,11 +231,12 @@ namespace emoc {
 		// copy the remaining individual if necessary
 		if (front_size[last_front_index] != 1)
 		{
+			int temp_popnum = 0, min_hv_index = 0;
 			std::vector<Individual*> temp_pop;
+
 			for (int i = 0; i < g_GlobalSettings->population_num_ + 1; ++i)
 				temp_pop.push_back(new Individual(g_GlobalSettings->dec_num_, g_GlobalSettings->obj_num_));
 
-			int temp_popnum = 0, min_hv_index = 0;
 			for (int j = 0; j < front_size[last_front_index]; j++)
 			{
 				CopyIndividual(g_GlobalSettings->mixed_population_[front[last_front_index][j]], temp_pop[temp_popnum]);

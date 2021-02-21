@@ -14,6 +14,7 @@
 #include "algorithms/ibea/ibea.h"
 #include "algorithms/spea2/spea2.h"
 #include "algorithms/smsemoa/smsemoa.h"
+#include "algorithms/moead_dra/moead_dra.h"
 #include "metric/hv.h"
 #include "metric/igd.h"
 #include "random/random.h"
@@ -27,9 +28,9 @@ int main()
 	start = clock();
 
 	// todo: move this into global member function and take care lower/upper case
-	g_GlobalSettings = new emoc::Global("smsemoa", "zdt1", 100, 30, 2, 100000);
-	emoc::Problem *problem = new emoc::ZDT1(g_GlobalSettings->dec_num_, g_GlobalSettings->obj_num_);
-	emoc::Algorithm *algorithm = new emoc::SMSEMOA(problem);
+	g_GlobalSettings = new emoc::Global("moead_dra", "dtlz3", 200, 12, 3, 70000);
+	emoc::Problem *problem = new emoc::DTLZ3(g_GlobalSettings->dec_num_, g_GlobalSettings->obj_num_);
+	emoc::Algorithm *algorithm = new emoc::MOEADDRA(problem);
 
 	algorithm->Run();
 	//algorithm->PrintPop();

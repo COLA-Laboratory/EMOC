@@ -39,7 +39,7 @@ namespace emoc {
 		int weight_num_;                   // the number of weight vector
 		int **neighbour_;	               // neighbours of each individual
 		int neighbour_num_;                // the number of neighbours
-		int replace_num;                   // the number of maximum replaced individual
+		int replace_num_;                   // the number of maximum replaced individual
 		double neighbour_selectpro_;       // the probability of select neighbour scope
 		NeighbourType neighbour_type_;
 		double *ideal_point_;
