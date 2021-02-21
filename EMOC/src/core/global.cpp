@@ -52,15 +52,12 @@ namespace emoc {
 
 	bool Global::IsTermination()
 	{
-		return current_evaluation_ > max_evaluation_;
+		return current_evaluation_ >= max_evaluation_;
 	}
 
 
 	void Global::Init()
 	{
-		// initilize some bases for random number
-		randomize();
-
 		AllocateMemory();
 		SetDecBound();
 	}

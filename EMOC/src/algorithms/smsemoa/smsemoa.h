@@ -1,6 +1,8 @@
 #pragma once
-
 #include "algorithms/algorithm.h"
+#include "core/individual.h"
+#include "problem/problem.h"
+
 namespace emoc {
 
 	class SMSEMOA : public Algorithm
