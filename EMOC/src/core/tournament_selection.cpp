@@ -1,7 +1,7 @@
 #include "core/tournament_selection.h"
 
 #include "random/random.h"
-
+#include <cstdio>
 namespace emoc {
 
 	Individual* TournamentByRank(Individual *ind1, Individual *ind2)
@@ -23,16 +23,15 @@ namespace emoc {
 		}
 	}
 
-	// the smaller the better
-	Individual* TournamentByFitness(Individual *ind1, Individual *ind2)
+	Individual* TournamentByFitness(Individual *ind1, Individual *ind2, int greater_is_better)
 	{
 		if (ind1->fitness_ < ind2->fitness_)
 		{
-			return ind1;
+			return greater_is_better ? ind2 : ind1;
 		}
 		else if (ind2->fitness_ < ind1->fitness_)
 		{
-			return ind2;
+			return greater_is_better ? ind1 : ind2;
 		}
 		else
 		{

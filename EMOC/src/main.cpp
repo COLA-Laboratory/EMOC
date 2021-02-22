@@ -16,6 +16,7 @@
 #include "algorithms/smsemoa/smsemoa.h"
 #include "algorithms/moead_dra/moead_dra.h"
 #include "algorithms/moead_frrmab/moead_frrmab.h"
+#include "algorithms/hype/hype.h"
 #include "metric/hv.h"
 #include "metric/igd.h"
 #include "random/random.h"
@@ -28,15 +29,15 @@ int main()
 	double igd_sum = 0;
 	// initilize some bases for random number
 	randomize();
-	for (int i = 0; i < 10; ++i)
+	for (int i = 0; i < 1; ++i)
 	{
 		clock_t start, end;
 		start = clock();
 
 		// todo: move this into global member function and take care lower/upper case
-		g_GlobalSettings = new emoc::Global("MOEADFRRMAB", "zdt6", 100, 20, 2, 50000);
-		emoc::Problem *problem = new emoc::ZDT6(g_GlobalSettings->dec_num_, g_GlobalSettings->obj_num_);
-		emoc::Algorithm *algorithm = new emoc::MOEADFRRMAB(problem);
+		g_GlobalSettings = new emoc::Global("HypE", "zdt1", 100, 3, 2, 30000);
+		emoc::Problem *problem = new emoc::ZDT1(g_GlobalSettings->dec_num_, g_GlobalSettings->obj_num_);
+		emoc::Algorithm *algorithm = new emoc::HypE(problem);
 
 		algorithm->Run();
 		//algorithm->PrintPop();

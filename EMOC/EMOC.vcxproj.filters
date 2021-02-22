@@ -96,6 +96,9 @@
     <ClCompile Include="src\algorithms\moead_dra\moead_dra.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\algorithms\hype\hype.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\global.h">
@@ -174,6 +177,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\algorithms\moead_dra\moead_dra.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\algorithms\hype\hype.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

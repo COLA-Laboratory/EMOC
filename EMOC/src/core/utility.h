@@ -12,6 +12,7 @@ namespace emoc {
 		DOMINATE = 1
 	};
 	DominateReleation CheckDominance(Individual *ind1, Individual *ind2);
+	int WeaklyDominates(double *point1, double *point2, int obj_num);
 
 	int Combination(int n, int k);
 	double CalEuclidianDistance(double *a, double *b, int dimension);

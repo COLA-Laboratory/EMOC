@@ -30,6 +30,17 @@ namespace emoc {
 		}
 	}
 
+	int WeaklyDominates(double *point1, double *point2, int obj_num)
+	{
+		int i = 0, better = 1;
+		while (i < obj_num && better)
+		{
+			better = point1[i] <= point2[i];
+			i++;
+		}
+		return better;
+	}
+
 	double CalEuclidianDistance(double *a, double *b, int dimension)
 	{
 		double distance = 0.0;
@@ -156,4 +167,7 @@ namespace emoc {
 		ind->fitness_ = d1 + theta * d2;
 		return  (d1 + theta * d2);
 	}
+
+
+
 }
