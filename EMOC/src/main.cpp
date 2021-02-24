@@ -19,6 +19,8 @@
 #include "algorithms/hype/hype.h"
 #include "metric/hv.h"
 #include "metric/igd.h"
+#include "metric/gd.h"
+#include "metric/spacing.h"
 #include "random/random.h"
 
 
@@ -29,34 +31,33 @@ int main()
 	double igd_sum = 0;
 	// initilize some bases for random number
 	randomize();
-	for (int i = 0; i < 1; ++i)
+	for (int i = 0; i < 100; ++i)
 	{
 		clock_t start, end;
 		start = clock();
 
 		// todo: move this into global member function and take care lower/upper case
-		g_GlobalSettings = new emoc::Global("HypE", "zdt1", 100, 3, 2, 30000);
-		emoc::Problem *problem = new emoc::ZDT1(g_GlobalSettings->dec_num_, g_GlobalSettings->obj_num_);
-		emoc::Algorithm *algorithm = new emoc::HypE(problem);
-
-		algorithm->Run();
-		//algorithm->PrintPop();
+		g_GlobalSettings = new emoc::Global("MOEAD", "Zdt1", 100, 30, 2, 50000);
+		g_GlobalSettings->Start();
 
 		end = clock();
 		double time = (double)(end - start) / CLOCKS_PER_SEC;
-		printf("runtime : %fs\n", time);
 
 		double igd = emoc::CalculateIGD(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_);
-		igd_sum += igd;
-		//double hv = emoc::CalculateHV(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_);
+		double gd = emoc::CalculateGD(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_);
+		double hv = emoc::CalculateHV(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_);
+		double spacing = emoc::CalculateSpacing(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_);
+
 		printf("igd : %f\n", igd);
-		//printf("hv : %f\n", hv);
+		printf("hv : %f\n", hv);
+		printf("gd : %f\n", gd);
+		printf("spacing : %f\n", spacing);
+		printf("runtime : %fs\n", time);
 
 		delete g_GlobalSettings;
-		delete problem;
-		delete algorithm;
 	}
-	printf("mean igd : %f\n", igd_sum/10.0);
+
+	// printf("mean igd : %f\n", igd_sum/10.0);
 
 
 

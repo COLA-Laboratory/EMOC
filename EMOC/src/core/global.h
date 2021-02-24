@@ -1,5 +1,4 @@
 #pragma once
-
 #include <string>
 #include <vector>
 
@@ -49,7 +48,9 @@ namespace emoc {
 		void InitializePopulation(Individual **pop, int pop_num);
 		void InitializeIndividual(Individual *ind);
 
+		void Start();
 		bool IsTermination();
+		void DisplayMetrics();
 
 	public:
 		int dec_num_;
@@ -74,12 +75,14 @@ namespace emoc {
 		DEPara de_parameter_;
 		PolyMutationPara pm_parameter_;
 
-		Problem *problem_;
+		Problem *problem_;				
 		Algorithm *algorithm_;
 
 	private:
 		void Init();
 		void SetDecBound();
+		void InitializeProblem();
+		void InitializeAlgorithm();
 		void AllocateMemory();
 		void DestroyMemory();
 	};

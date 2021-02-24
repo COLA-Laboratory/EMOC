@@ -1,6 +1,11 @@
 #include "core/global.h"
 
+#include <iostream>
+#include <cstdlib>
+
 #include "random/random.h"
+#include "problem/problem_head_collect.h"
+#include "algorithms/algorithm_head_collect.h"
 
 namespace emoc {
 
@@ -50,6 +55,13 @@ namespace emoc {
 		}
 	}
 
+	void Global::Start()
+	{
+		InitializeProblem();
+		InitializeAlgorithm();
+		algorithm_->Run();
+	}
+
 	bool Global::IsTermination()
 	{
 		return current_evaluation_ >= max_evaluation_;
@@ -77,6 +89,87 @@ namespace emoc {
 				dec_lower_bound_[i] = -5.0;
 				dec_upper_bound_[i] = 5.0;
 			}
+		}
+	}
+
+	void Global::InitializeProblem()
+	{
+		// modify problem name to lower case
+		std::string problem_name(problem_name_);
+		for (auto &c : problem_name)
+		{
+			if(c >= '0' && c <= '9') continue;
+			c = tolower(c);
+		}
+
+		std::cout << problem_name << std::endl;
+		if (problem_name == "zdt1")
+			problem_ = new ZDT1(dec_num_, obj_num_);
+		else if (problem_name == "zdt2")
+			problem_ = new ZDT2(dec_num_, obj_num_);
+		else if (problem_name == "zdt3")
+			problem_ = new ZDT3(dec_num_, obj_num_);
+		else if (problem_name == "zdt4")
+			problem_ = new ZDT4(dec_num_, obj_num_);
+		else if (problem_name == "zdt6")
+			problem_ = new ZDT6(dec_num_, obj_num_);
+		else if (problem_name == "dtlz1")
+			problem_ = new DTLZ1(dec_num_, obj_num_);
+		else if (problem_name == "dtlz2")
+			problem_ = new DTLZ2(dec_num_, obj_num_);
+		else if (problem_name == "dtlz3")
+			problem_ = new DTLZ3(dec_num_, obj_num_);
+		else if (problem_name == "dtlz4")
+			problem_ = new DTLZ4(dec_num_, obj_num_);
+		else if (problem_name == "dtlz5")
+			problem_ = new DTLZ5(dec_num_, obj_num_);
+		else if (problem_name == "dtlz6")
+			problem_ = new DTLZ6(dec_num_, obj_num_);
+		else if (problem_name == "dtlz7")
+			problem_ = new DTLZ7(dec_num_, obj_num_);
+		else
+		{
+			std::cout << "the problem name is wrong, please check it again" << std::endl;
+			std::cout << "press enter to exit" << std::endl;
+			std::cin.get();
+			exit(-1);
+		}
+	}
+
+	void Global::InitializeAlgorithm()
+	{
+		// modify problem name to lower case
+		std::string algorithm_name(algorithm_name_);
+		for (auto &c : algorithm_name)
+		{
+			if (c >= '0' && c <= '9') continue;
+			c = tolower(c);
+		}
+		std::cout << algorithm_name << std::endl;
+		if (algorithm_name == "nsga2")
+			algorithm_ = new NSGA2(problem_);
+		if (algorithm_name == "spea2")
+			algorithm_ = new SPEA2(problem_);
+		else if (algorithm_name == "moead")
+			algorithm_ = new MOEAD(problem_);
+		else if (algorithm_name == "moeadde")
+			algorithm_ = new MOEADDE(problem_);
+		else if (algorithm_name == "moeaddra")
+			algorithm_ = new MOEADDRA(problem_);
+		else if (algorithm_name == "moeadfrrmab")
+			algorithm_ = new MOEADFRRMAB(problem_);
+		else if (algorithm_name == "ibea")
+			algorithm_ = new IBEA(problem_);
+		else if (algorithm_name == "smsemoa")
+			algorithm_ = new SMSEMOA(problem_);
+		else if (algorithm_name == "hype")
+			algorithm_ = new HypE(problem_);
+		else
+		{
+			std::cout << "the algorithm name is wrong, please check it again" << std::endl;			
+			std::cout << "press enter to exit" << std::endl;
+			std::cin.get();
+			exit(-1);
 		}
 	}
 
@@ -112,6 +205,9 @@ namespace emoc {
 			mixed_population_[i] = nullptr;
 			mixed_population_[i + population_num_] = nullptr;
 		}
+
+		delete problem_;
+		delete algorithm_;
 	}
 
 	Global *g_GlobalSettings = nullptr;

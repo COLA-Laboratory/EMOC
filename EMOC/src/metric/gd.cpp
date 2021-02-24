@@ -1,11 +1,10 @@
 #define _CRT_SECURE_NO_WARNINGS
 
-#include "metric/igd.h"
+#include "metric/gd.h"
 
-#include <direct.h>
+#include <string>
 #include <fstream>
 #include <iostream>
-#include <string>
 
 #include "core/global.h"
 #include "core/utility.h"
@@ -61,45 +60,43 @@ namespace emoc {
 		return pf_data;
 	}
 
-	double CalculateIGD(Individual **pop, int pop_num)
+	double CalculateGD(Individual **pop, int pop_num)
 	{
-		//char buff[1000];
-		//_getcwd(buff, 1000);
-		//std::cout << "current path£º" << buff << std::endl;
-
 		// load pf data
 		int pf_size = 0;
 		double **pfdata = nullptr;
 		pfdata = LoadPFData(pf_size);
 
 		// calculate igd value
-		double igd_value = 0;
+		double gd_value = 0;
 		Individual *temp_ind = nullptr;
 		double min_distance = 0, temp_distance = 0;
 
-		for (int i = 0; i < pf_size; i++)
+		for (int i = 0; i < pop_num; i++)
 		{
 			min_distance = INF;
-			for (int j = 0; j < pop_num; j++)
+			temp_ind = pop[i];
+			for (int j = 0; j < pf_size; j++)
 			{
-				temp_ind = pop[j];
-				temp_distance = CalEuclidianDistance(pfdata[i],temp_ind->obj_,g_GlobalSettings->obj_num_);
+				temp_distance = CalEuclidianDistance(pfdata[j], temp_ind->obj_, g_GlobalSettings->obj_num_);
 
 				if (min_distance > temp_distance)
 				{
 					min_distance = temp_distance;
 				}
 			}
-			igd_value += min_distance;
+			gd_value += min_distance;
 		}
-		igd_value /= pf_size;
+		gd_value /= pop_num;
 
 		// free pf data memory
 		for (int i = 0; i < pf_size; ++i)
 			delete[] pfdata[i];
 		delete[] pfdata;
 
-		return 	igd_value;
+		return 	gd_value;
 	}
 
 }
+
+

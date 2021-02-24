@@ -99,6 +99,12 @@
     <ClCompile Include="src\algorithms\hype\hype.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\metric\gd.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\metric\spacing.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\global.h">
@@ -180,6 +186,18 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\algorithms\hype\hype.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\metric\gd.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\metric\spacing.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\problem\problem_head_collect.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\algorithms\algorithm_head_collect.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -179,8 +179,10 @@
     <ClCompile Include="src\core\uniform_point.cpp" />
     <ClCompile Include="src\core\utility.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\metric\gd.cpp" />
     <ClCompile Include="src\metric\hv.cpp" />
     <ClCompile Include="src\metric\igd.cpp" />
+    <ClCompile Include="src\metric\spacing.cpp" />
     <ClCompile Include="src\operator\de.cpp" />
     <ClCompile Include="src\operator\mutation.cpp" />
     <ClCompile Include="src\operator\sbx.cpp" />
@@ -193,6 +195,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\algorithms\algorithm.h" />
+    <ClInclude Include="src\algorithms\algorithm_head_collect.h" />
     <ClInclude Include="src\algorithms\hype\hype.h" />
     <ClInclude Include="src\algorithms\ibea\ibea.h" />
     <ClInclude Include="src\algorithms\moead\moead.h" />
@@ -208,14 +211,17 @@
     <ClInclude Include="src\core\individual.h" />
     <ClInclude Include="src\core\uniform_point.h" />
     <ClInclude Include="src\core\utility.h" />
+    <ClInclude Include="src\metric\gd.h" />
     <ClInclude Include="src\metric\hv.h" />
     <ClInclude Include="src\metric\igd.h" />
+    <ClInclude Include="src\metric\spacing.h" />
     <ClInclude Include="src\operator\de.h" />
     <ClInclude Include="src\operator\mutation.h" />
     <ClInclude Include="src\operator\sbx.h" />
     <ClInclude Include="src\print.h" />
     <ClInclude Include="src\problem\dtlz.h" />
     <ClInclude Include="src\problem\problem.h" />
+    <ClInclude Include="src\problem\problem_head_collect.h" />
     <ClInclude Include="src\problem\zdt.h" />
     <ClInclude Include="vendor\random\random.h" />
     <ClInclude Include="vendor\wfg\iwfg.h" />

@@ -21,12 +21,12 @@ namespace emoc {
 		for (int i = 0; i < 2; ++i)
 		{
 			std::cout << "population[" << i << "]: \n";
-			std::cout << "dec:";
+			std::cout << "--dec--:";
 			for (int j = 0; j < g_GlobalSettings->dec_num_; ++j)
 			{
 				std::cout << g_GlobalSettings->parent_population_[i]->dec_[j] << " ";
 			}
-			std::cout << "obj:";
+			std::cout << "\n--obj--:";
 			for (int j = 0; j < g_GlobalSettings->obj_num_; ++j)
 			{
 				std::cout << g_GlobalSettings->parent_population_[i]->obj_[j] << " ";

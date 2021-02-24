@@ -381,7 +381,7 @@ namespace emoc {
 
 				if (fitness_info[0].index != temp_number - 1)
 				{
-					CopyIndividual(temp_pop[temp_number - 1], temp_pop[fitness_info[0].index]);
+					CopyIndividual(temp_pop[fitness_info[0].index], temp_pop[temp_number - 1]);
 				}
 
 				temp_number--;
