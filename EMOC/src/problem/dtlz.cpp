@@ -8,7 +8,11 @@ namespace emoc {
 
 	DTLZ1::DTLZ1(int dec_num, int obj_num) :Problem(dec_num, obj_num)
 	{
-
+		for (int i = 0; i < dec_num; ++i)
+		{
+			lower_bound_[i] = 0.0;
+			upper_bound_[i] = 1.0;
+		}
 	}
 
 	DTLZ1::~DTLZ1()
@@ -42,7 +46,11 @@ namespace emoc {
 
 	DTLZ2::DTLZ2(int dec_num, int obj_num) :Problem(dec_num, obj_num)
 	{
-
+		for (int i = 0; i < dec_num; ++i)
+		{
+			lower_bound_[i] = 0.0;
+			upper_bound_[i] = 1.0;
+		}
 	}
 
 	DTLZ2::~DTLZ2()
@@ -75,7 +83,11 @@ namespace emoc {
 
 	DTLZ3::DTLZ3(int dec_num, int obj_num) :Problem(dec_num, obj_num)
 	{
-
+		for (int i = 0; i < dec_num; ++i)
+		{
+			lower_bound_[i] = 0.0;
+			upper_bound_[i] = 1.0;
+		}
 	}
 
 	DTLZ3::~DTLZ3()
@@ -109,7 +121,11 @@ namespace emoc {
 
 	DTLZ4::DTLZ4(int dec_num, int obj_num) :Problem(dec_num, obj_num)
 	{
-
+		for (int i = 0; i < dec_num; ++i)
+		{
+			lower_bound_[i] = 0.0;
+			upper_bound_[i] = 1.0;
+		}
 	}
 
 	DTLZ4::~DTLZ4()
@@ -144,6 +160,11 @@ namespace emoc {
 	DTLZ5::DTLZ5(int dec_num, int obj_num) :Problem(dec_num, obj_num)
 	{
 		theta = new double[dec_num];
+		for (int i = 0; i < dec_num; ++i)
+		{
+			lower_bound_[i] = 0.0;
+			upper_bound_[i] = 1.0;
+		}
 	}
 
 	DTLZ5::~DTLZ5()
@@ -184,6 +205,11 @@ namespace emoc {
 	DTLZ6::DTLZ6(int dec_num, int obj_num) :Problem(dec_num, obj_num)
 	{
 		theta = new double[dec_num];
+		for (int i = 0; i < dec_num; ++i)
+		{
+			lower_bound_[i] = 0.0;
+			upper_bound_[i] = 1.0;
+		}
 	}
 
 	DTLZ6::~DTLZ6()
@@ -222,7 +248,11 @@ namespace emoc {
 
 	DTLZ7::DTLZ7(int dec_num, int obj_num) :Problem(dec_num, obj_num)
 	{
-
+		for (int i = 0; i < dec_num; ++i)
+		{
+			lower_bound_[i] = 0.0;
+			upper_bound_[i] = 1.0;
+		}
 	}
 
 	DTLZ7::~DTLZ7()

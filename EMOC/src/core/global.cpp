@@ -59,6 +59,8 @@ namespace emoc {
 	{
 		InitializeProblem();
 		InitializeAlgorithm();
+		SetDecBound();
+
 		algorithm_->Run();
 	}
 
@@ -71,24 +73,14 @@ namespace emoc {
 	void Global::Init()
 	{
 		AllocateMemory();
-		SetDecBound();
 	}
 
 	void Global::SetDecBound()
 	{
 		for (int i = 0; i < dec_num_; ++i)
 		{
-			dec_lower_bound_[i] = 0.0; // TODO: 这里其实可以改一改接口，创建具体的问题的时候，让问题的构造函数来赋值
-			dec_upper_bound_[i] = 1.0;
-		}
-
-		if (problem_name_ == "zdt4")
-		{
-			for (int i = 1; i < dec_num_; ++i)
-			{
-				dec_lower_bound_[i] = -5.0;
-				dec_upper_bound_[i] = 5.0;
-			}
+			dec_lower_bound_[i] = problem_->lower_bound_[i];
+			dec_upper_bound_[i] = problem_->upper_bound_[i];
 		}
 	}
 
@@ -148,7 +140,7 @@ namespace emoc {
 		std::cout << algorithm_name << std::endl;
 		if (algorithm_name == "nsga2")
 			algorithm_ = new NSGA2(problem_);
-		if (algorithm_name == "spea2")
+		else if (algorithm_name == "spea2")
 			algorithm_ = new SPEA2(problem_);
 		else if (algorithm_name == "moead")
 			algorithm_ = new MOEAD(problem_);

@@ -31,14 +31,14 @@ int main()
 	double igd_sum = 0;
 	// initilize some bases for random number
 	randomize();
-	for (int i = 0; i < 100; ++i)
+	for (int i = 0; i < 1; ++i)
 	{
 		// run time recording
 		clock_t start, end;
 		start = clock();
 
 		// algorithm main entity
-		g_GlobalSettings = new emoc::Global("MOEAD", "Zdt1", 100, 30, 2, 50000);
+		g_GlobalSettings = new emoc::Global("moeaddra", "zdt4", 200, 30, 2, 200000);
 		g_GlobalSettings->Start();
 
 		end = clock();

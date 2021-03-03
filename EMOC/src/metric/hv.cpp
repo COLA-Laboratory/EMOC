@@ -13,7 +13,7 @@ namespace emoc {
 		i_maxm = pop_num; i_maxn = g_GlobalSettings->obj_num_;
 
 		// memory allocation
-		i_fs = (FRONT *)malloc(sizeof(FRONT) * (10));
+		i_fs = (FRONT *)malloc(sizeof(FRONT) * (20));
 		for (int i = 0; i < 10; i++)
 		{
 			i_fs[i].points = (POINT *)malloc(sizeof(POINT) * i_maxm);

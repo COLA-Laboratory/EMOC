@@ -21,15 +21,7 @@ namespace emoc {
 	SMSEMOA::~SMSEMOA()
 	{
 		// free memory for iwfg algorithm
-		for (int i = 0; i < i_maxn - 2; i++)
-		{
-			for (int j = 0; j < i_maxm; j++)
-				free(i_fs[i].points[j].objectives);
-			free(i_fs[i].points);
-		}
-		free(i_fs);
-
-		for (int i = 0; i < i_maxm; i++)
+		for (int i = 0; i < g_GlobalSettings->population_num_ + 1; i++)
 			free(stacks[i]);
 
 		free(partial);
@@ -37,12 +29,12 @@ namespace emoc {
 		free(stacksize);
 		free(stacks);
 
-		for (int i = 0; i < i_maxn; i++)
+		for (int i = 0; i < g_GlobalSettings->obj_num_; i++)
 			free(fsorted[i].points);
 		free(fsorted);
-		for (int i = 0; i < MAX(i_maxn, i_maxm); i++)
+		for (int i = 0; i < MAX(g_GlobalSettings->obj_num_, g_GlobalSettings->population_num_ + 1); i++)
 			free(torder[i]);
-		for (int i = 0; i < i_maxm; i++)
+		for (int i = 0; i <  g_GlobalSettings->population_num_ + 1; i++)
 			free(tcompare[i]);
 
 		free(torder);
@@ -89,8 +81,8 @@ namespace emoc {
 		i_maxn = g_GlobalSettings->obj_num_;
 		i_maxm = g_GlobalSettings->population_num_ + 1;
 		int max_depth = i_maxn - 2;
-
-		i_fs		= (FRONT*)malloc(sizeof(FRONT) * max_depth);
+		if(max_depth > 0)
+			i_fs		= (FRONT*)malloc(sizeof(FRONT) * max_depth);
 		partial		= (double*)malloc(sizeof(double) * i_maxm);
 		heap		= (int*)malloc(sizeof(int) * i_maxm);
 		stacksize	= (int*)malloc(sizeof(int) * i_maxm);
@@ -100,12 +92,16 @@ namespace emoc {
 		tcompare	= (int**)malloc(sizeof(int *) * i_maxm);
 		int max_stacksize = MIN(i_maxn - 2, i_slicingDepth(i_maxn)) + 1;
 
-		for (int i = 0; i < max_depth; i++) {
-			i_fs[i].points = (POINT*)malloc(sizeof(POINT) * i_maxm);
-			for (int j = 0; j < i_maxm; j++) {
-				i_fs[i].points[j].objectives = (OBJECTIVE*)malloc(sizeof(OBJECTIVE) * (i_maxn - i - 1));
+		if (max_depth > 0)
+		{
+			for (int i = 0; i < max_depth; i++) {
+				i_fs[i].points = (POINT*)malloc(sizeof(POINT) * i_maxm);
+				for (int j = 0; j < i_maxm; j++) {
+					i_fs[i].points[j].objectives = (OBJECTIVE*)malloc(sizeof(OBJECTIVE) * (i_maxn - i - 1));
+				}
 			}
 		}
+
 		for (int i = 0; i < i_maxm; i++)
 		{
 			stacks[i] = (SLICE*)malloc(sizeof(SLICE) * max_stacksize);

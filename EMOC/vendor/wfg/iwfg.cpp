@@ -1115,6 +1115,16 @@ void i_ihv2(FRONT ps, double *min)
 	min[2] = vol;
 
 }
+//
+//i_fs = (FRONT*)malloc(sizeof(FRONT) * max_depth);
+//partial = (double*)malloc(sizeof(double) * i_maxm);
+//heap = (int*)malloc(sizeof(int) * i_maxm);
+//stacksize = (int*)malloc(sizeof(int) * i_maxm);
+//stacks = (SLICE**)malloc(sizeof(SLICE*) * i_maxm);
+//fsorted = (FRONT*)malloc(sizeof(FRONT) * i_maxn);
+//torder = (int**)malloc(sizeof(int *) * MAX(i_maxm, i_maxn));
+//tcompare = (int**)malloc(sizeof(int *) * i_maxm);
+//int max_stacksize = MIN(i_maxn - 2, i_slicingDepth(i_maxn)) + 1;
 
 /* returns the minimum exclusive hypervolume of points in ps */
 void i_ihv(FRONT ps, double *min)
