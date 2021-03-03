@@ -194,16 +194,17 @@ namespace emoc {
 		dec_lower_bound_ = nullptr;
 		dec_upper_bound_ = nullptr;
 
-		for (int i = 0; i < population_num_; ++i)
+		int size = parent_population_.size();
+		for (int i = 0; i < size; ++i)
 		{
 			delete parent_population_[i];
 			delete offspring_population_[i];
 			delete mixed_population_[i];
-			delete mixed_population_[i + population_num_];
+			delete mixed_population_[i + size];
 			parent_population_[i] = nullptr;
 			offspring_population_[i] = nullptr;
 			mixed_population_[i] = nullptr;
-			mixed_population_[i + population_num_] = nullptr;
+			mixed_population_[i + size] = nullptr;
 		}
 
 		delete problem_;

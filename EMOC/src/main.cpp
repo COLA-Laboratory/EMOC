@@ -33,10 +33,11 @@ int main()
 	randomize();
 	for (int i = 0; i < 100; ++i)
 	{
+		// run time recording
 		clock_t start, end;
 		start = clock();
 
-		// todo: move this into global member function and take care lower/upper case
+		// algorithm main entity
 		g_GlobalSettings = new emoc::Global("MOEAD", "Zdt1", 100, 30, 2, 50000);
 		g_GlobalSettings->Start();
 
