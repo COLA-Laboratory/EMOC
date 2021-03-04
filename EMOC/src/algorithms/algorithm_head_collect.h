@@ -8,3 +8,4 @@
 #include "algorithms/moead_dra/moead_dra.h"
 #include "algorithms/moead_frrmab/moead_frrmab.h"
 #include "algorithms/hype/hype.h"
+#include "algorithms/ens_moead/ens_moead.h"

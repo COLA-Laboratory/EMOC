@@ -194,6 +194,8 @@ namespace emoc {
 			algorithm_ = new SMSEMOA(problem_);
 		else if (algorithm_name == "hype")
 			algorithm_ = new HypE(problem_);
+		else if (algorithm_name == "ensmoead")
+			algorithm_ = new ENSMOEAD(problem_);
 		else
 		{
 			std::cout << "the algorithm name is wrong, please check it again" << std::endl;			

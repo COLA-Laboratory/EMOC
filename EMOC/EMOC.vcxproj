@@ -163,6 +163,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\algorithms\algorithm.cpp" />
+    <ClCompile Include="src\algorithms\ens_moead\ens_moead.cpp" />
     <ClCompile Include="src\algorithms\hype\hype.cpp" />
     <ClCompile Include="src\algorithms\ibea\ibea.cpp" />
     <ClCompile Include="src\algorithms\moead\moead.cpp" />
@@ -198,6 +199,7 @@
   <ItemGroup>
     <ClInclude Include="src\algorithms\algorithm.h" />
     <ClInclude Include="src\algorithms\algorithm_head_collect.h" />
+    <ClInclude Include="src\algorithms\ens_moead\ens_moead.h" />
     <ClInclude Include="src\algorithms\hype\hype.h" />
     <ClInclude Include="src\algorithms\ibea\ibea.h" />
     <ClInclude Include="src\algorithms\moead\moead.h" />
