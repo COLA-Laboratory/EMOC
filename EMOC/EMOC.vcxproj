@@ -190,6 +190,7 @@
     <ClCompile Include="src\problem\dtlz.cpp" />
     <ClCompile Include="src\problem\problem.cpp" />
     <ClCompile Include="src\problem\uf.cpp" />
+    <ClCompile Include="src\problem\wfg.cpp" />
     <ClCompile Include="src\problem\zdt.cpp" />
     <ClCompile Include="vendor\random\random.cpp" />
     <ClCompile Include="vendor\wfg\iwfg.cpp" />
@@ -224,6 +225,7 @@
     <ClInclude Include="src\problem\problem.h" />
     <ClInclude Include="src\problem\problem_head_collect.h" />
     <ClInclude Include="src\problem\uf.h" />
+    <ClInclude Include="src\problem\wfg.h" />
     <ClInclude Include="src\problem\zdt.h" />
     <ClInclude Include="vendor\random\random.h" />
     <ClInclude Include="vendor\wfg\iwfg.h" />

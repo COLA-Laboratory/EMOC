@@ -119,6 +119,44 @@ namespace emoc {
 			problem_ = new DTLZ6(dec_num_, obj_num_);
 		else if (problem_name == "dtlz7")
 			problem_ = new DTLZ7(dec_num_, obj_num_);
+		else if (problem_name == "uf1")
+			problem_ = new UF1(dec_num_, obj_num_);
+		else if (problem_name == "uf2")
+			problem_ = new UF2(dec_num_, obj_num_);
+		else if (problem_name == "uf3")
+			problem_ = new UF3(dec_num_, obj_num_);
+		else if (problem_name == "uf4")
+			problem_ = new UF4(dec_num_, obj_num_);
+		else if (problem_name == "uf5")
+			problem_ = new UF5(dec_num_, obj_num_);
+		else if (problem_name == "uf6")
+			problem_ = new UF6(dec_num_, obj_num_);
+		else if (problem_name == "uf7")
+			problem_ = new UF7(dec_num_, obj_num_);
+		else if (problem_name == "uf8")
+			problem_ = new UF8(dec_num_, obj_num_);
+		else if (problem_name == "uf9")
+			problem_ = new UF9(dec_num_, obj_num_);
+		else if (problem_name == "uf10")
+			problem_ = new UF10(dec_num_, obj_num_);
+		else if (problem_name == "wfg1")
+			problem_ = new WFG1(dec_num_, obj_num_);
+		else if (problem_name == "wfg2")
+			problem_ = new WFG2(dec_num_, obj_num_);
+		else if (problem_name == "wfg3")
+			problem_ = new WFG3(dec_num_, obj_num_);
+		else if (problem_name == "wfg4")
+			problem_ = new WFG4(dec_num_, obj_num_);
+		else if (problem_name == "wfg5")
+			problem_ = new WFG5(dec_num_, obj_num_);
+		else if (problem_name == "wfg6")
+			problem_ = new WFG6(dec_num_, obj_num_);
+		else if (problem_name == "wfg7")
+			problem_ = new WFG7(dec_num_, obj_num_);
+		else if (problem_name == "wfg8")
+			problem_ = new WFG8(dec_num_, obj_num_);
+		else if (problem_name == "wfg9")
+			problem_ = new WFG9(dec_num_, obj_num_);
 		else
 		{
 			std::cout << "the problem name is wrong, please check it again" << std::endl;

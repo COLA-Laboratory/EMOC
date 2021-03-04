@@ -31,14 +31,15 @@ int main()
 	double igd_sum = 0;
 	// initilize some bases for random number
 	randomize();
-	for (int i = 0; i < 1; ++i)
+	int run = 5;
+	for (int i = 0; i < run; ++i)
 	{
 		// run time recording
 		clock_t start, end;
 		start = clock();
 
 		// algorithm main entity
-		g_GlobalSettings = new emoc::Global("moeaddra", "zdt4", 200, 30, 2, 200000);
+		g_GlobalSettings = new emoc::Global("MOEADFRRMAB", "wfg9", 100, 38, 2, 25000);
 		g_GlobalSettings->Start();
 
 		end = clock();
@@ -48,17 +49,17 @@ int main()
 		double gd = emoc::CalculateGD(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_);
 		double hv = emoc::CalculateHV(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_);
 		double spacing = emoc::CalculateSpacing(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_);
-
+		igd_sum += igd;
 		printf("igd : %f\n", igd);
-		printf("hv : %f\n", hv);
-		printf("gd : %f\n", gd);
-		printf("spacing : %f\n", spacing);
+		//printf("hv : %f\n", hv);
+		//printf("gd : %f\n", gd);
+		//printf("spacing : %f\n", spacing);
 		printf("runtime : %fs\n", time);
 
 		delete g_GlobalSettings;
 	}
 
-	// printf("mean igd : %f\n", igd_sum/10.0);
+	 printf("mean igd : %f\n", igd_sum/ run);
 
 
 
