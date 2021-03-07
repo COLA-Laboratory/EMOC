@@ -159,8 +159,8 @@ namespace emoc {
 			problem_ = new WFG9(dec_num_, obj_num_);
 		else
 		{
-			std::cout << "the problem name is wrong, please check it again" << std::endl;
-			std::cout << "press enter to exit" << std::endl;
+			std::cout << "The problem name is wrong, please check it again" << std::endl;
+			std::cout << "Press enter to exit" << std::endl;
 			std::cin.get();
 			exit(-1);
 		}
@@ -196,10 +196,12 @@ namespace emoc {
 			algorithm_ = new HypE(problem_);
 		else if (algorithm_name == "ensmoead")
 			algorithm_ = new ENSMOEAD(problem_);
+		else if (algorithm_name == "moeadgra")
+			algorithm_ = new MOEADGRA(problem_);
 		else
 		{
-			std::cout << "the algorithm name is wrong, please check it again" << std::endl;			
-			std::cout << "press enter to exit" << std::endl;
+			std::cout << "The algorithm name is wrong, please check it again" << std::endl;			
+			std::cout << "Press enter to exit" << std::endl;
 			std::cin.get();
 			exit(-1);
 		}

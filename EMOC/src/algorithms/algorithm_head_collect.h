@@ -9,3 +9,4 @@
 #include "algorithms/moead_frrmab/moead_frrmab.h"
 #include "algorithms/hype/hype.h"
 #include "algorithms/ens_moead/ens_moead.h"
+#include "algorithms/moead_gra/moead_gra.h"

@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <algorithm>
+#include <iostream>
 
 #include "core/global.h"
 #include "core/utility.h"
@@ -27,8 +28,6 @@ namespace emoc {
 		neighbour_selectpro_(0.9),
 		ideal_point_(new double[g_GlobalSettings->obj_num_])
 	{
-		// todo: check the population size
-
 		for (int i = 0; i < 4; ++i)
 		{
 			R_[i] = 0.0001;
@@ -126,6 +125,14 @@ namespace emoc {
 
 		// generate weight vectors
 		lambda_ = UniformPoint(g_GlobalSettings->population_num_, &weight_num_);
+		// check the population size
+		if (weight_num_ <= 120)
+		{
+			std::cout << "The population size should more than 120, or you need to change the NS parameters for algorithm" << std::endl;
+			std::cout << "Press enter to exit" << std::endl;
+			std::cin.get();
+			exit(-1);
+		}
 		replace_num_ = (weight_num_ / 100) ? (weight_num_ / 100) : 2;
 
 		// set the neighbours of each individual

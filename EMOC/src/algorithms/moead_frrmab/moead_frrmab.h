@@ -53,6 +53,7 @@ namespace emoc {
 		int replace_num_;                  // the number of maximum replaced individual
 		double neighbour_selectpro_;       // the probability of select neighbour scope
 		NeighbourType neighbour_type_;
+		double *ideal_point_;
 
 		// MOEADDRA parameters
 		int *selected_indices_;			   // the indices of selected individuals of current iteration
@@ -69,6 +70,5 @@ namespace emoc {
 		double D;						   // the decay parameter
 		double C;						   // the exploration parameter in UCB
 
-		double *ideal_point_;
 	};
 }

@@ -114,6 +114,9 @@
     <ClCompile Include="src\algorithms\ens_moead\ens_moead.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\algorithms\moead_gra\moead_gra.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\global.h">
@@ -216,6 +219,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\algorithms\ens_moead\ens_moead.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\algorithms\moead_gra\moead_gra.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

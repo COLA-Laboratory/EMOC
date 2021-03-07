@@ -39,7 +39,7 @@ int main()
 		start = clock();
 
 		// algorithm main entity
-		g_GlobalSettings = new emoc::Global("ENSMOEAD", "UF1", 600, 30, 2, 300000);
+		g_GlobalSettings = new emoc::Global("moeadgra", "dtlz1", 100, 12, 2, 60000);
 		g_GlobalSettings->Start();
 
 		end = clock();

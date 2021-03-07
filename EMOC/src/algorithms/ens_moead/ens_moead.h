@@ -42,19 +42,18 @@ namespace emoc {
 	private:
 		double **lambda_;                  // weight vector
 		int weight_num_;                   // the number of weight vector
-
 		int **neighbour_;	               // neighbours of each individual
 		int neighbour_num_;                // the number of neighbours
 		int replace_num_;                  // the number of maximum replaced individual
 		double neighbour_selectpro_;       // the probability of select neighbour scope
 		NeighbourType neighbour_type_;
+		double *ideal_point_;
+
 		int *selected_indices_;			   // the indices of selected individuals of current iteration
 		int selected_size_;				   // the number of selected individuals
-
 		double *old_obj_;				   // old Tchebycheff function value of each solution on its subproblem
 		double *utility_;				   // utility for each subproblem
 		double *delta_;					   // difference between new and old individuals' fitness	
-		double *ideal_point_;
 
 		// parameters for ENSMOEAD
 		double FEs_[4];
