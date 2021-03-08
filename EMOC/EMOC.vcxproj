@@ -92,7 +92,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)vendor</AdditionalIncludeDirectories>
-      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <FloatingPointModel>Fast</FloatingPointModel>
       <InlineFunctionExpansion>
@@ -108,7 +108,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)vendor</AdditionalIncludeDirectories>
-      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <FloatingPointModel>Fast</FloatingPointModel>
       <InlineFunctionExpansion>
@@ -126,7 +126,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)vendor</AdditionalIncludeDirectories>
-      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <FloatingPointModel>Fast</FloatingPointModel>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <InlineFunctionExpansion>
@@ -148,7 +148,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)vendor</AdditionalIncludeDirectories>
-      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <FloatingPointModel>Fast</FloatingPointModel>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <InlineFunctionExpansion>
@@ -171,6 +171,7 @@
     <ClCompile Include="src\algorithms\moead_dra\moead_dra.cpp" />
     <ClCompile Include="src\algorithms\moead_frrmab\moead_frrmab.cpp" />
     <ClCompile Include="src\algorithms\moead_gra\moead_gra.cpp" />
+    <ClCompile Include="src\algorithms\moead_ira\moead_ira.cpp" />
     <ClCompile Include="src\algorithms\nsga2\nsga2.cpp" />
     <ClCompile Include="src\algorithms\smsemoa\smsemoa.cpp" />
     <ClCompile Include="src\algorithms\spea2\spea2.cpp" />
@@ -208,6 +209,7 @@
     <ClInclude Include="src\algorithms\moead_dra\moead_dra.h" />
     <ClInclude Include="src\algorithms\moead_frrmab\moead_frrmab.h" />
     <ClInclude Include="src\algorithms\moead_gra\moead_gra.h" />
+    <ClInclude Include="src\algorithms\moead_ira\moead_ira.h" />
     <ClInclude Include="src\algorithms\nsga2\nsga2.h" />
     <ClInclude Include="src\algorithms\smsemoa\smsemoa.h" />
     <ClInclude Include="src\algorithms\spea2\spea2.h" />

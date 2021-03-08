@@ -130,7 +130,7 @@ namespace emoc {
 	void MOEADGRA::SetNeighbours()
 	{
 		// set neighbour size and allocate memory
-		neighbour_num_ = weight_num_ / 10;
+		neighbour_num_ = 20;
 		neighbour_ = new int*[weight_num_];
 		for (int i = 0; i < weight_num_; ++i)
 		{

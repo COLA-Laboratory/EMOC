@@ -33,6 +33,7 @@ namespace emoc {
 		// use offspring to update the neighbour of current_index-th individual with specified aggregation function
 		void UpdateSubproblem(Individual *offspring, int current_index);
 
+		void CalculateSD();
 		void CalculateFitness(Individual **pop, int pop_num, double *fitness);
 		void UpdateProbability();
 
@@ -45,8 +46,10 @@ namespace emoc {
 		NeighbourType neighbour_type_;
 		double *ideal_point_;
 
-		double **fitness_history_;		   // fitness of each subproblem for recent generations
+		double *old_obj_;				   // old Tchebycheff function value of each solution on its subproblem
 		double *delta_;					   // difference between new and old individuals' fitness	
 		double *P_;						   // selection probability for each subproblem
+		double beta_;
+		int *sd_;						   // the number of solutions in each subproblem's subregion.
 	};
 }

@@ -198,6 +198,8 @@ namespace emoc {
 			algorithm_ = new ENSMOEAD(problem_);
 		else if (algorithm_name == "moeadgra")
 			algorithm_ = new MOEADGRA(problem_);
+		else if (algorithm_name == "moeadira")
+			algorithm_ = new MOEADIRA(problem_);
 		else
 		{
 			std::cout << "The algorithm name is wrong, please check it again" << std::endl;			

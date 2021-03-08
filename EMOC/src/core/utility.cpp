@@ -49,6 +49,15 @@ namespace emoc {
 		return sqrt(distance);
 	}
 
+	double CalPerpendicularDistance(double *a, double *weight, int dimension)
+	{
+		double sin = CalculateSin(a, weight, dimension);
+		double d2 = CalculateNorm(a, dimension);
+		d2 = d2 * sin;
+
+		return d2;
+	}
+
 	int Combination(int n, int k)
 	{
 		if (n < k)
@@ -62,6 +71,37 @@ namespace emoc {
 		}
 
 		return (int)ans;
+	}
+
+	double CalculateDotProduct(double *vector1, double *vector2, int dimension)
+	{
+		double dot_product = 0;
+		for (int i = 0; i < dimension; i++)
+			dot_product += vector1[i] * vector2[i];
+
+		return dot_product;
+	}
+
+	double CalculateCos(double *a, double *b, int dimension)
+	{
+		return CalculateDotProduct(a, b, dimension) / (CalculateNorm(a, dimension) * CalculateNorm(b, dimension));
+	}
+
+	double CalculateSin(double *a, double *b, int dimension)
+	{
+		double cos = CalculateCos(a, b, dimension);
+		return sqrt(1 - pow(cos, 2.0));
+	}
+
+	double CalculateNorm(double *vector, int dimension)
+	{
+		double norm = 0;
+		for (int i = 0; i < dimension; i++)
+		{
+			norm += (vector[i] * vector[i]);
+		}
+
+		return sqrt(norm);
 	}
 
 	void UpdateIdealpoint(Individual *ind, double *ideal_point)

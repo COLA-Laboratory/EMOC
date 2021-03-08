@@ -15,7 +15,12 @@ namespace emoc {
 	int WeaklyDominates(double *point1, double *point2, int obj_num);
 
 	int Combination(int n, int k);
+	double CalculateDotProduct(double *vector1, double *vector2, int dimension);
+	double CalculateCos(double *a, double *b, int dimension);
+	double CalculateSin(double *a, double *b, int dimension);
+	double CalculateNorm(double *vector, int dimension);
 	double CalEuclidianDistance(double *a, double *b, int dimension);
+	double CalPerpendicularDistance(double *a, double *weight, int dimension);
 
 	void UpdateIdealpoint(Individual *ind, double *ideal_point);
 	void UpdateNadirpoint(Individual *ind, double *nadir_point);

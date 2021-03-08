@@ -18,18 +18,14 @@ namespace emoc {
 		weight_num_(0),
 		neighbour_(nullptr),
 		neighbour_selectpro_(0.8),
-		ideal_point_(new double[g_GlobalSettings->obj_num_])
+		ideal_point_(new double[g_GlobalSettings->obj_num_]),
+		beta_(0.98)
 	{
 
 	}
 
 	MOEADIRA::~MOEADIRA()
 	{
-		for (int i = 0; i < 20; ++i)
-		{
-			delete[] fitness_history_[i];
-			fitness_history_[i] = nullptr;
-		}
 
 		for (int i = 0; i < weight_num_; ++i)
 		{
@@ -38,18 +34,20 @@ namespace emoc {
 			lambda_[i] = nullptr;
 			neighbour_[i] = nullptr;
 		}
-
-		delete[] fitness_history_;
 		delete[] lambda_;
 		delete[] neighbour_;
 		delete[] ideal_point_;
+		delete[] old_obj_;
 		delete[] delta_;
 		delete[] P_;
+		delete[] sd_;
 		lambda_ = nullptr;
 		neighbour_ = nullptr;
 		ideal_point_ = nullptr;
+		old_obj_ = nullptr;
 		delta_ = nullptr;
 		P_ = nullptr;
+		sd_ = nullptr;
 	}
 
 	void MOEADIRA::Run()
@@ -57,7 +55,7 @@ namespace emoc {
 		Initialization();
 
 		// calculate first generation's fitness
-		CalculateFitness(g_GlobalSettings->parent_population_.data(), weight_num_, fitness_history_[0]);
+		CalculateFitness(g_GlobalSettings->parent_population_.data(), weight_num_, old_obj_);
 
 		Individual *offspring = g_GlobalSettings->offspring_population_[0];
 		while (!g_GlobalSettings->IsTermination())
@@ -89,12 +87,10 @@ namespace emoc {
 			}
 
 			// update selection probability if necessary
-			if (g_GlobalSettings->iteration_num_ >= 20)
+			if (g_GlobalSettings->iteration_num_ % 20 == 0)
 				UpdateProbability();
+	
 
-			// record population's fitness
-			for (int i = 0; i < weight_num_; ++i)
-				fitness_history_[g_GlobalSettings->iteration_num_ % 20][i] = g_GlobalSettings->parent_population_[i]->fitness_;
 		}
 	}
 
@@ -113,28 +109,29 @@ namespace emoc {
 		// initialize ideal point
 		UpdateIdealpoint(g_GlobalSettings->parent_population_.data(), weight_num_, ideal_point_);
 
-		// initialize GRA related data
-		fitness_history_ = new double*[20];
-		for (int i = 0; i < 20; ++i)
-			fitness_history_[i] = new double[weight_num_];
+		// initialize IRA related data
+		old_obj_ = new double[weight_num_];
 		delta_ = new double[weight_num_];
 		P_ = new double[weight_num_];
+		sd_ = new int[weight_num_];
 
 		for (int i = 0; i < weight_num_; ++i)
 		{
 			P_[i] = 0.5;
 			delta_[i] = 0.0;
+			old_obj_[i] = 0.0;
+			sd_[i] = 0;
 		}
 	}
 
 	void MOEADIRA::SetNeighbours()
 	{
 		// set neighbour size and allocate memory
-		neighbour_num_ = weight_num_ / 10;
+		neighbour_num_ = 20;
 		neighbour_ = new int*[weight_num_];
 		for (int i = 0; i < weight_num_; ++i)
 		{
-			neighbour_[i] = new int[neighbour_num_];
+			neighbour_[i] = new int[weight_num_ - 1];
 		}
 
 		DistanceInfo *sort_list = new DistanceInfo[weight_num_];
@@ -157,7 +154,7 @@ namespace emoc {
 				return left.distance < right.distance;
 			});
 
-			for (int j = 0; j < neighbour_num_; j++)
+			for (int j = 0; j < weight_num_ - 1; j++)
 			{
 				neighbour_[i][j] = sort_list[j + 1].index;
 			}
@@ -168,25 +165,48 @@ namespace emoc {
 
 	void MOEADIRA::Crossover(Individual **parent_pop, int current_index, Individual *offspring)
 	{
-		int size = neighbour_type_ == NEIGHBOUR ? neighbour_num_ : weight_num_;
+		int size = neighbour_type_ == NEIGHBOUR ? neighbour_num_ : weight_num_ - 1;
 		int parent2_index = 0, parent3_index = 0;
 
-		// randomly select two parents according to neighbour type
-		if (neighbour_type_ == NEIGHBOUR)
+		// calculate probability of selecting each subproblem as parent
+		double *pn = new double[size], sum = 0.0;
+		for (int i = 0; i < size; ++i)
 		{
-			parent2_index = neighbour_[current_index][rnd(0, size - 1)];
-			parent3_index = neighbour_[current_index][rnd(0, size - 1)];
+			pn[i] = 0.05 + 0.95*(1 - 1 / (1 + 0.05 * exp(-20 * (double)(i + 1) / neighbour_num_ - 0.7)));
+			sum += pn[i];
 		}
-		else
+
+		for (int i = 0; i < size; ++i)
+			pn[i] = pn[i] / sum;
+		
+		// select parent
+		for (int i = 0; i < 2; ++i)
 		{
-			parent2_index = rnd(0, size - 1);
-			parent3_index = rnd(0, size - 1);
+			int index = -1;
+			double temp_sum = 0;
+			double rand = randomperc();
+			for (int j = 0; j < size; ++j)
+			{
+				if (rand >= temp_sum && rand < temp_sum + pn[j])
+				{
+					index = j;
+					break;
+				}
+				temp_sum += pn[j];
+			}
+
+			if (i % 2 == 0)
+				parent2_index = neighbour_[current_index][index];
+			else
+				parent3_index = neighbour_[current_index][index];
 		}
 
 		Individual *parent1 = parent_pop[current_index];
 		Individual *parent2 = parent_pop[parent2_index];
 		Individual *parent3 = parent_pop[parent3_index];
 		DE(parent1, parent2, parent3, offspring);
+
+		delete[] pn;
 	}
 
 	void MOEADIRA::UpdateSubproblem(Individual *offspring, int current_index)
@@ -221,6 +241,66 @@ namespace emoc {
 
 
 
+	void MOEADIRA::CalculateSD()
+	{
+		for (int i = 0; i < weight_num_; ++i)
+			sd_[i] = 0;
+
+		// find maximum and minimum of each objective
+		double *max = (double *)malloc(sizeof(double) * g_GlobalSettings->obj_num_);
+		double *min = (double *)malloc(sizeof(double) * g_GlobalSettings->obj_num_);
+
+		for (int j = 0; j < g_GlobalSettings->obj_num_; ++j)
+		{
+			max[j] = g_GlobalSettings->parent_population_[0]->obj_[j];
+			min[j] = g_GlobalSettings->parent_population_[0]->obj_[j];
+		}
+
+		for (int i = 0; i < weight_num_; ++i)
+		{
+			for (int j = 0; j < g_GlobalSettings->obj_num_; ++j)
+			{
+				if (max[j] < g_GlobalSettings->parent_population_[i]->obj_[j])
+					max[j] = g_GlobalSettings->parent_population_[i]->obj_[j];
+				if (min[j] > g_GlobalSettings->parent_population_[i]->obj_[j])
+					min[j] = g_GlobalSettings->parent_population_[i]->obj_[j];
+			}
+		}
+
+		double *dis = (double *)malloc(sizeof(double) * weight_num_);
+		double *point = (double *)malloc(sizeof(double) * g_GlobalSettings->obj_num_);
+
+		int min_index = 0;
+		double temp_min = 0;
+		for (int i = 0; i < weight_num_; i++)
+		{
+			// normalize the solution
+			for (int k = 0; k < g_GlobalSettings->obj_num_; k++)
+				point[k] = (g_GlobalSettings->parent_population_[i]->obj_[k] - min[k]) / (max[k] - min[k]);
+
+			// find belonged subregion
+			for (int j = 0; j < weight_num_; j++)
+				dis[j] = CalPerpendicularDistance(point, lambda_[j], g_GlobalSettings->obj_num_);
+
+			temp_min = INF;
+			for (int j = 0; j < weight_num_; ++j)
+			{
+				if (dis[j] < temp_min)
+				{
+					temp_min = dis[j];
+					min_index = j;
+				}
+			}
+
+			sd_[min_index] += 1;
+		}
+
+		free(max);
+		free(min);
+		free(dis);
+		free(point);
+	}
+
 	void MOEADIRA::CalculateFitness(Individual **pop, int pop_num, double *fitness)
 	{
 		for (int i = 0; i < pop_num; ++i)
@@ -232,21 +312,29 @@ namespace emoc {
 
 	void MOEADIRA::UpdateProbability()
 	{
-		int index = g_GlobalSettings->iteration_num_ % 20;
+		// update delta_
 		for (int i = 0; i < weight_num_; ++i)
-			delta_[i] = fabs(g_GlobalSettings->parent_population_[i]->fitness_ - fitness_history_[index][i]) / fitness_history_[index][i];
+		{
+			delta_[i] = fabs(g_GlobalSettings->parent_population_[i]->fitness_ - old_obj_[i]) / old_obj_[i];
+			old_obj_[i] = g_GlobalSettings->parent_population_[i]->fitness_;
+		}
 
-		double max = delta_[0];
+		// calculate the number of solution in each subregion
+		CalculateSD();
+
+		// find max delta and max sd
+		double max_delta = delta_[0];
+		int max_sd = sd_[0];
 		for (int i = 1; i < weight_num_; ++i)
 		{
-			if (max < delta_[i])
-				max = delta_[i];
+			if (max_delta < delta_[i]) max_delta = delta_[i];
+			if (max_sd < sd_[i])	   max_sd = sd_[i];
 		}
 
+		// update selection probability of each subproblem
 		for (int i = 0; i < weight_num_; ++i)
-		{
-			P_[i] = (delta_[i] + 0.0000000000001) / (max + 0.0000000000001);
-		}
+			P_[i] = beta_ * ((delta_[i] + 0.0000000000001) / (max_delta + 0.0000000000001)) + 
+			(1 - beta_) * (1 - (double)sd_[i] / (double)max_sd);
 	}
 
 }
