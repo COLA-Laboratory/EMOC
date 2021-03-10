@@ -160,7 +160,7 @@ namespace emoc {
 			problem_ = new WFG9(dec_num_, obj_num_);
 		else
 		{
-			std::cout << "The problem name is wrong, please check it again" << std::endl;
+			std::cout <<problem_name<< " The problem name is wrong, please check it again" << std::endl;
 			std::cout << "Press enter to exit" << std::endl;
 			std::cin.get();
 			exit(-1);
