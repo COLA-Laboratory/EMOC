@@ -20,7 +20,7 @@ namespace emoc {
 			GLOBAL
 		}NeighbourType;
 
-		MOEADGRA(Problem *problem);
+		MOEADGRA(Problem *problem, int thread_num);
 		virtual ~MOEADGRA();
 
 		void Run();

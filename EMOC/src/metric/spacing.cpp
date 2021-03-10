@@ -7,7 +7,7 @@
 
 namespace emoc {
 
-	double CalculateSpacing(Individual **pop, int pop_num)
+	double CalculateSpacing(Individual **pop, int pop_num, int obj_num)
 	{
 		// calculate igd value
 		double *spacing = new double[pop_num];
@@ -22,7 +22,7 @@ namespace emoc {
 				if(i == j)
 					continue;
 
-				temp_distance = CalEuclidianDistance(pop[i]->obj_, pop[j]->obj_, g_GlobalSettings->obj_num_);
+				temp_distance = CalEuclidianDistance(pop[i]->obj_, pop[j]->obj_, obj_num);
 
 				if (min_distance > temp_distance)
 				{

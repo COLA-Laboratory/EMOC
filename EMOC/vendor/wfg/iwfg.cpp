@@ -41,7 +41,7 @@ FRONT *i_fs;    // memory management stuff
 int i_maxm; // maxmimum number of points
 int i_maxn; // maximum number of objectives
 int i_safe;
-
+int objective_num;
 
 double* partial; //partial exclusive hypervolumes
 int* heap; //heap-based priority queue
@@ -995,7 +995,7 @@ void i_slice(FRONT pl)
 
 int i_binarySearch(POINT p, int d)
 {
-	int i, j;
+	//int i, j;
 	int min, mid, max;
 
 	min = 0;
@@ -1012,18 +1012,18 @@ int i_binarySearch(POINT p, int d)
 			min = mid + 1;
 	}
 	//print_error (1, 1, "EE: Cannot find the point in binary search");
-	printf("p:");
-	for (i = 0; i < emoc::g_GlobalSettings->obj_num_; i++)
-		printf("%lf ", p.objectives[i]);
-	printf("\n");
+	//printf("p:");
+	//for (i = 0; i < emoc::g_GlobalSettings->obj_num_; i++)
+	//	printf("%lf ", p.objectives[i]);
+	//printf("\n");
 
-	printf("ps:");
-	for (j = 0; j < fsorted[d].nPoints; j++)
-	{
-		for (i = 0; i < emoc::g_GlobalSettings->obj_num_; i++)
-			printf("%lf ", fsorted[d].points[j].objectives[i]);
-		printf("\n");
-	}
+	//printf("ps:");
+	//for (j = 0; j < fsorted[d].nPoints; j++)
+	//{
+	//	for (i = 0; i < emoc::g_GlobalSettings->obj_num_; i++)
+	//		printf("%lf ", fsorted[d].points[j].objectives[i]);
+	//	printf("\n");
+	//}
 
 	return -1;
 }
@@ -1233,7 +1233,7 @@ void i_ihv(FRONT ps, double *min)
 	i_n++;
 }
 
-void iwfg_read_data(FILECONTENTS *fc, emoc::Individual **pop_table, double *nadir_point, int pop_size)
+void iwfg_read_data(FILECONTENTS *fc, emoc::Individual **pop_table, double *nadir_point, int pop_size, int obj_num)
 {
 	int i, j, k;
 	int front, point, objective;
@@ -1257,7 +1257,7 @@ void iwfg_read_data(FILECONTENTS *fc, emoc::Individual **pop_table, double *nadi
 		f->n = 0;
 		f->points[point].objectives = NULL;
 
-		for (j = 0; j < emoc::g_GlobalSettings->obj_num_; j++)
+		for (j = 0; j < obj_num; j++)
 		{
 			POINT *p = &f->points[point];
 			objective = f->n;

@@ -2,12 +2,11 @@
 
 #include <cmath>
 
-#include "core/global.h"
 #include "random/random.h"
 
 namespace emoc {
 
-	void PolynomialMutation(Individual *ind)
+	void PolynomialMutation(Individual *ind, Global *g_GlobalSettings)
 	{
 		double rnd, delta1, delta2, mut_pow, deltaq;
 		double y, yl, yu, val, xy;
@@ -48,15 +47,15 @@ namespace emoc {
 	}
 
 
-	void MutationPop(Individual **pop, int pop_num)
+	void MutationPop(Individual **pop, int pop_num, Global *g_GlobalSettings)
 	{
 		for (int i = 0; i < pop_num; ++i)
-			MutationInd(pop[i]);
+			MutationInd(pop[i], g_GlobalSettings);
 	}
 
-	void MutationInd(Individual *ind)
+	void MutationInd(Individual *ind, Global *g_GlobalSettings)
 	{
-		PolynomialMutation(ind);
+		PolynomialMutation(ind, g_GlobalSettings);
 	}
 
 }

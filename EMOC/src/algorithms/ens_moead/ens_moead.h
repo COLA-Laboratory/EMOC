@@ -20,7 +20,7 @@ namespace emoc {
 			GLOBAL
 		}NeighbourType;
 
-		ENSMOEAD(Problem *problem);
+		ENSMOEAD(Problem *problem, int thread_num);
 		virtual ~ENSMOEAD();
 
 		void Run();

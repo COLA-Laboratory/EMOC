@@ -2,14 +2,16 @@
 #include "problem/problem.h"
 #include "core/individual.h"
 
+
 namespace emoc {
-	
+
+	class Global;
 	// Basic class of all algorithms, it provides some useful functions to derived classes.
 	// All derived classes need to override Run() which implement the real algorithm details
 	class Algorithm
 	{
 	public:
-		Algorithm(Problem *problem);
+		Algorithm(Problem *problem, int thread_num);
 		virtual ~Algorithm();
 
 		void PrintPop();
@@ -24,7 +26,9 @@ namespace emoc {
 		void CopyIndividual(Individual *ind_src, Individual *ind_dest);
 
 	protected:
+		Global *g_GlobalSettings;
 		Problem *problem_; // it is released outside
+		int thread_num_;   // current thread number
 	};
 
 }

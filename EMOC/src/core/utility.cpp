@@ -4,11 +4,11 @@
 
 namespace emoc {
 
-	DominateReleation CheckDominance(Individual *ind1, Individual *ind2)
+	DominateReleation CheckDominance(Individual *ind1, Individual *ind2, int obj_num)
 	{
 		int flag1 = 0, flag2 = 0;
 
-		for (int i = 0; i < g_GlobalSettings->obj_num_; ++i)
+		for (int i = 0; i < obj_num; ++i)
 		{
 			if (ind1->obj_[i] < ind2->obj_[i])
 				flag1 = 1;
@@ -104,23 +104,23 @@ namespace emoc {
 		return sqrt(norm);
 	}
 
-	void UpdateIdealpoint(Individual *ind, double *ideal_point)
+	void UpdateIdealpoint(Individual *ind, double *ideal_point, int obj_num)
 	{
-		for (int i = 0; i < g_GlobalSettings->obj_num_; i++)
+		for (int i = 0; i < obj_num; i++)
 		{
 			if (ind->obj_[i] < ideal_point[i])
 				ideal_point[i] = ind->obj_[i];
 		}
 	}
 
-	void UpdateIdealpoint(Individual **pop, int pop_num, double *ideal_point)
+	void UpdateIdealpoint(Individual **pop, int pop_num, double *ideal_point, int obj_num)
 	{
-		for (int i = 0; i < g_GlobalSettings->obj_num_; ++i)
+		for (int i = 0; i < obj_num; ++i)
 			ideal_point[i] = INF;
 
 		for (int i = 0; i < pop_num; i++)
 		{
-			for (int j = 0; j < g_GlobalSettings->obj_num_; j++)
+			for (int j = 0; j < obj_num; j++)
 			{
 				if (pop[i]->obj_[j] < ideal_point[j])
 					ideal_point[j] = pop[i]->obj_[j];
@@ -128,23 +128,23 @@ namespace emoc {
 		}
 	}
 
-	void UpdateNadirpoint(Individual *ind, double *nadir_point)
+	void UpdateNadirpoint(Individual *ind, double *nadir_point, int obj_num)
 	{
-		for (int i = 0; i < g_GlobalSettings->obj_num_; i++)
+		for (int i = 0; i < obj_num; i++)
 		{
 			if (ind->obj_[i] > nadir_point[i])
 				nadir_point[i] = ind->obj_[i];
 		}
 	}
 
-	void UpdateNadirpoint(Individual **pop, int pop_num, double *nadir_point)
+	void UpdateNadirpoint(Individual **pop, int pop_num, double *nadir_point, int obj_num)
 	{
-		for (int i = 0; i < g_GlobalSettings->obj_num_; ++i)
+		for (int i = 0; i < obj_num; ++i)
 			nadir_point[i] = -INF;
 
 		for (int i = 0; i < pop_num; i++)
 		{
-			for (int j = 0; j < g_GlobalSettings->obj_num_; j++)
+			for (int j = 0; j < obj_num; j++)
 			{
 				if (pop[i]->obj_[j] > nadir_point[j])
 					nadir_point[j] = pop[i]->obj_[j];
@@ -152,10 +152,10 @@ namespace emoc {
 		}
 	}
 
-	double CalWeightedSum(Individual *ind, double *weight_vector, double *ideal_point)
+	double CalWeightedSum(Individual *ind, double *weight_vector, double *ideal_point, int obj_num)
 	{
 		double fitness = 0;
-		for (int i = 0; i < g_GlobalSettings->obj_num_; i++)
+		for (int i = 0; i < obj_num; i++)
 		{
 			fitness += ind->obj_[i] * weight_vector[i];
 		}
@@ -165,11 +165,11 @@ namespace emoc {
 		return fitness;
 	}
 
-	double CalInverseChebycheff(Individual *ind, double *weight_vector, double *ideal_point)
+	double CalInverseChebycheff(Individual *ind, double *weight_vector, double *ideal_point, int obj_num)
 	{
 		double fitness = 0, max = -1.0e+20;
 
-		for (int i = 0; i < g_GlobalSettings->obj_num_; ++i)
+		for (int i = 0; i < obj_num; ++i)
 		{
 			double diff = fabs(ind->obj_[i] - ideal_point[i]);
 			if (weight_vector[i] < EPS)
@@ -187,12 +187,12 @@ namespace emoc {
 		return fitness;
 	}
 
-	double CalPBI(Individual *ind, double *weight_vector, double *ideal_point, double theta)
+	double CalPBI(Individual *ind, double *weight_vector, double *ideal_point, int obj_num, double theta)
 	{
 		theta == 0.0 ? 5.0 : theta;
 		double d1 = 0.0, d2 = 0.0, nl = 0.0;
 
-		for (int i = 0; i < g_GlobalSettings->obj_num_; ++i)
+		for (int i = 0; i < obj_num; ++i)
 		{
 			d1 += (ind->obj_[i] - ideal_point[i]) * weight_vector[i];
 			nl += weight_vector[i] * weight_vector[i];
@@ -200,7 +200,7 @@ namespace emoc {
 		nl = sqrt(nl);
 		d1 = fabs(d1) / nl;
 
-		for (int i = 0; i < g_GlobalSettings->obj_num_; ++i)
+		for (int i = 0; i < obj_num; ++i)
 			d2 += ((ind->obj_[i] - ideal_point[i]) - d1 * (weight_vector[i] / nl)) * ((ind->obj_[i] - ideal_point[i]) - d1 * (weight_vector[i] / nl));
 		d2 = sqrt(d2);
 

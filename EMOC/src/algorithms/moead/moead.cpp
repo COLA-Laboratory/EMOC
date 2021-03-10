@@ -12,8 +12,8 @@
 
 namespace emoc {
 
-	MOEAD::MOEAD(Problem *problem):
-		Algorithm(problem),
+	MOEAD::MOEAD(Problem *problem, int thread_num):
+		Algorithm(problem,thread_num),
 		lambda_(nullptr),
 		weight_num_(0),
 		neighbour_(nullptr),
@@ -54,11 +54,11 @@ namespace emoc {
 			{
                 // generate offspring for current subproblem
 				Crossover(g_GlobalSettings->parent_population_.data(), i, offspring);
-				MutationInd(offspring);
+				MutationInd(offspring, g_GlobalSettings);
 				EvaluateInd(offspring);
 
 				// update ideal point
-				UpdateIdealpoint(offspring, ideal_point_);
+				UpdateIdealpoint(offspring, ideal_point_, g_GlobalSettings->obj_num_);
 
 				// update neighbours' subproblem 
 				UpdateSubproblem(offspring, i, aggregation_type_);
@@ -73,13 +73,13 @@ namespace emoc {
 		EvaluatePop(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_);
 
 		// generate weight vectors
-		lambda_ = UniformPoint(g_GlobalSettings->population_num_, &weight_num_);
+		lambda_ = UniformPoint(g_GlobalSettings->population_num_, &weight_num_, g_GlobalSettings->obj_num_);
 
 		// set the neighbours of each individual
 		SetNeighbours();
 
 		// initialize ideal point
-		UpdateIdealpoint(g_GlobalSettings->parent_population_.data(), weight_num_, ideal_point_);
+		UpdateIdealpoint(g_GlobalSettings->parent_population_.data(), weight_num_, ideal_point_, g_GlobalSettings->obj_num_);
 	}
 
 	void MOEAD::SetNeighbours()
@@ -129,7 +129,7 @@ namespace emoc {
 		Individual *parent1 = parent_pop[neighbour_[current_index][k]];
 		Individual *parent2 = parent_pop[neighbour_[current_index][l]];
 
-		SBX(parent1, parent2, g_GlobalSettings->offspring_population_[1], offspring);
+		SBX(parent1, parent2, g_GlobalSettings->offspring_population_[1], offspring, g_GlobalSettings);
 
 	}
 
@@ -147,8 +147,8 @@ namespace emoc {
 			{
 				int weight_index = neighbour_[current_index][i];
 				Individual *current_ind = g_GlobalSettings->parent_population_[weight_index];
-				neighbour_fitness[i] = CalInverseChebycheff(current_ind, lambda_[weight_index], ideal_point_);
-				offspring_fitness[i] = CalInverseChebycheff(offspring, lambda_[weight_index], ideal_point_);
+				neighbour_fitness[i] = CalInverseChebycheff(current_ind, lambda_[weight_index], ideal_point_, g_GlobalSettings->obj_num_);
+				offspring_fitness[i] = CalInverseChebycheff(offspring, lambda_[weight_index], ideal_point_, g_GlobalSettings->obj_num_);
 			}
 			break;
 
@@ -158,8 +158,8 @@ namespace emoc {
 			{
 				int weight_index = neighbour_[current_index][i];
 				Individual *current_ind = g_GlobalSettings->parent_population_[weight_index];
-				neighbour_fitness[i] = CalWeightedSum(current_ind, lambda_[weight_index], ideal_point_);
-				offspring_fitness[i] = CalWeightedSum(offspring, lambda_[weight_index], ideal_point_);
+				neighbour_fitness[i] = CalWeightedSum(current_ind, lambda_[weight_index], ideal_point_, g_GlobalSettings->obj_num_);
+				offspring_fitness[i] = CalWeightedSum(offspring, lambda_[weight_index], ideal_point_, g_GlobalSettings->obj_num_);
 			}
 			break;
 
@@ -169,8 +169,8 @@ namespace emoc {
 			{
 				int weight_index = neighbour_[current_index][i];
 				Individual *current_ind = g_GlobalSettings->parent_population_[weight_index];
-				neighbour_fitness[i] = CalPBI(current_ind, lambda_[weight_index], ideal_point_, pbi_theta_);
-				offspring_fitness[i] = CalPBI(offspring, lambda_[weight_index], ideal_point_, pbi_theta_);
+				neighbour_fitness[i] = CalPBI(current_ind, lambda_[weight_index], ideal_point_, g_GlobalSettings->obj_num_, pbi_theta_);
+				offspring_fitness[i] = CalPBI(offspring, lambda_[weight_index], ideal_point_, g_GlobalSettings->obj_num_, pbi_theta_);
 			}
 			break;
 

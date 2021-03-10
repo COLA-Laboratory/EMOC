@@ -3,6 +3,6 @@
 
 namespace emoc {
 
-	double CalculateHV(Individual **pop, int pop_num);
+	double CalculateHV(Individual **pop, int pop_num, int obj_num);
 
 }

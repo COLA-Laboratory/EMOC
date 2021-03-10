@@ -28,9 +28,9 @@ namespace emoc {
 		double *obj = ind->obj_;
 		double *xreal = ind->dec_;
 
-		for (int i = 2; i <= g_GlobalSettings->dec_num_; i++)
+		for (int i = 2; i <= dec_num_; i++)
 		{
-			yj = xreal[i - 1] - sin(6.0 * PI * xreal[0] + i * PI / g_GlobalSettings->dec_num_);
+			yj = xreal[i - 1] - sin(6.0 * PI * xreal[0] + i * PI / dec_num_);
 			yj = yj * yj;
 			if (i % 2 == 0)
 			{
@@ -72,19 +72,19 @@ namespace emoc {
 		double *obj = ind->obj_;
 		double *xreal = ind->dec_;
 
-		for (int i = 2; i <= g_GlobalSettings->dec_num_; i++)
+		for (int i = 2; i <= dec_num_; i++)
 		{
 			if (i % 2 == 0)
 			{
-				yj = xreal[i - 1] - 0.3 * xreal[0] * (xreal[0] * cos(24.0 * PI * xreal[0] + 4.0 * i * PI / g_GlobalSettings->dec_num_) + 2.0) * 
-					sin(6.0 * PI * xreal[0] + i * PI / g_GlobalSettings->dec_num_);
+				yj = xreal[i - 1] - 0.3 * xreal[0] * (xreal[0] * cos(24.0 * PI * xreal[0] + 4.0 * i * PI / dec_num_) + 2.0) * 
+					sin(6.0 * PI * xreal[0] + i * PI / dec_num_);
 				sum2 += yj * yj;
 				count2++;
 			}
 			else
 			{
-				yj = xreal[i - 1] - 0.3 * xreal[0] * (xreal[0] * cos(24.0 * PI * xreal[0] + 4.0 * i * PI / g_GlobalSettings->dec_num_) + 2.0) * 
-					cos(6.0 * PI * xreal[0] + i * PI / g_GlobalSettings->dec_num_);
+				yj = xreal[i - 1] - 0.3 * xreal[0] * (xreal[0] * cos(24.0 * PI * xreal[0] + 4.0 * i * PI / dec_num_) + 2.0) * 
+					cos(6.0 * PI * xreal[0] + i * PI / dec_num_);
 				sum1 += yj * yj;
 				count1++;
 			}
@@ -117,9 +117,9 @@ namespace emoc {
 		double *obj = ind->obj_;
 		double *xreal = ind->dec_;
 
-		for (int i = 2; i <= g_GlobalSettings->dec_num_; i++)
+		for (int i = 2; i <= dec_num_; i++)
 		{
-			yj = xreal[i - 1] - pow(xreal[0], 0.5 * (1.0 + 3.0 * (i - 2.0) / (g_GlobalSettings->dec_num_ - 2.0)));
+			yj = xreal[i - 1] - pow(xreal[0], 0.5 * (1.0 + 3.0 * (i - 2.0) / (dec_num_ - 2.0)));
 			pj = cos(20.0 * yj * PI / sqrt(i + 0.0));
 			if (i % 2 == 0)
 			{
@@ -164,9 +164,9 @@ namespace emoc {
 		double *obj = ind->obj_;
 		double *xreal = ind->dec_;
 
-		for (int i = 2; i <= g_GlobalSettings->dec_num_; i++)
+		for (int i = 2; i <= dec_num_; i++)
 		{
-			yj = xreal[i - 1] - sin(6.0 * PI * xreal[0] + i * PI / g_GlobalSettings->dec_num_);
+			yj = xreal[i - 1] - sin(6.0 * PI * xreal[0] + i * PI / dec_num_);
 			hj = fabs(yj) / (1.0 + exp(2.0 * fabs(yj)));
 			if (i % 2 == 0)
 			{
@@ -209,9 +209,9 @@ namespace emoc {
 		double *obj = ind->obj_;
 		double *xreal = ind->dec_;
 
-		for (int i = 2; i <= g_GlobalSettings->dec_num_; i++)
+		for (int i = 2; i <= dec_num_; i++)
 		{
-			yj = xreal[i - 1] - sin(6.0 * PI * xreal[0] + i * PI / g_GlobalSettings->dec_num_);
+			yj = xreal[i - 1] - sin(6.0 * PI * xreal[0] + i * PI / dec_num_);
 			hj = 2.0 * yj * yj - cos(4.0 * PI * yj) + 1.0;
 			if (i % 2 == 0)
 			{
@@ -256,9 +256,9 @@ namespace emoc {
 		double *obj = ind->obj_;
 		double *xreal = ind->dec_;
 
-		for (int i = 2; i <= g_GlobalSettings->dec_num_; i++)
+		for (int i = 2; i <= dec_num_; i++)
 		{
-			yj = xreal[i - 1] - sin(6.0 * PI * xreal[0] + i * PI / g_GlobalSettings->dec_num_);
+			yj = xreal[i - 1] - sin(6.0 * PI * xreal[0] + i * PI / dec_num_);
 			pj = cos(20.0 * yj * PI / sqrt(i + 0.0));
 			if (i % 2 == 0)
 			{
@@ -304,9 +304,9 @@ namespace emoc {
 		double *obj = ind->obj_;
 		double *xreal = ind->dec_;
 
-		for (int i = 2; i <= g_GlobalSettings->dec_num_; i++)
+		for (int i = 2; i <= dec_num_; i++)
 		{
-			yj = xreal[i - 1] - sin(6.0 * PI * xreal[0] + i * PI / g_GlobalSettings->dec_num_);
+			yj = xreal[i - 1] - sin(6.0 * PI * xreal[0] + i * PI / dec_num_);
 			if (i % 2 == 0)
 			{
 				sum2 += yj * yj;
@@ -352,9 +352,9 @@ namespace emoc {
 		double *obj = ind->obj_;
 		double *xreal = ind->dec_;
 
-		for (int i = 3; i <= g_GlobalSettings->dec_num_; i++)
+		for (int i = 3; i <= dec_num_; i++)
 		{
-			yj = xreal[i - 1] - 2.0 * xreal[1] * sin(2.0 * PI * xreal[0] + i * PI / g_GlobalSettings->dec_num_);
+			yj = xreal[i - 1] - 2.0 * xreal[1] * sin(2.0 * PI * xreal[0] + i * PI / dec_num_);
 			if (i % 3 == 1)
 			{
 				sum1 += yj * yj;
@@ -404,9 +404,9 @@ namespace emoc {
 		double *obj = ind->obj_;
 		double *xreal = ind->dec_;
 
-		for (int i = 3; i <= g_GlobalSettings->dec_num_; i++)
+		for (int i = 3; i <= dec_num_; i++)
 		{
-			yj = xreal[i - 1] - 2.0 * xreal[1] * sin(2.0 * PI * xreal[0] + i * PI / g_GlobalSettings->dec_num_);
+			yj = xreal[i - 1] - 2.0 * xreal[1] * sin(2.0 * PI * xreal[0] + i * PI / dec_num_);
 			if (i % 3 == 1)
 			{
 				sum1 += yj * yj;
@@ -458,9 +458,9 @@ namespace emoc {
 		double *obj = ind->obj_;
 		double *xreal = ind->dec_;
 
-		for (int i = 3; i <= g_GlobalSettings->dec_num_; i++)
+		for (int i = 3; i <= dec_num_; i++)
 		{
-			yj = xreal[i - 1] - 2.0 * xreal[1] * sin(2.0 * PI * xreal[0] + i * PI / g_GlobalSettings->dec_num_);
+			yj = xreal[i - 1] - 2.0 * xreal[1] * sin(2.0 * PI * xreal[0] + i * PI / dec_num_);
 			hj = 4.0 * yj * yj - cos(8.0 * PI * yj) + 1.0;
 			if (i % 3 == 1)
 			{

@@ -11,7 +11,9 @@ namespace emoc {
 	double *wfg_temp;
 	double *temp;
 	double *wfg_w;
-	int wfg_K; // Position parameter
+	int wfg_K; // position parameter
+	int decision_num;
+	int objective_num;
 
 	int next_int(char *st, int st_len, int pos)
 	{
@@ -39,9 +41,9 @@ namespace emoc {
 	void WFG_ini()
 	{
 		wfg_K = 18;
-		wfg_w = (double *)malloc(sizeof(double) * g_GlobalSettings->dec_num_ + g_GlobalSettings->obj_num_);
-		temp = (double *)malloc(sizeof(double) * g_GlobalSettings->obj_num_);
-		wfg_temp = (double *)malloc(sizeof(double) * (g_GlobalSettings->dec_num_ + g_GlobalSettings->obj_num_));
+		wfg_w = (double *)malloc(sizeof(double) * decision_num + objective_num);
+		temp = (double *)malloc(sizeof(double) * objective_num);
+		wfg_temp = (double *)malloc(sizeof(double) * (decision_num + objective_num));
 	}
 
 	void WFG_free()
@@ -551,6 +553,8 @@ namespace emoc {
 
 	WFG1::WFG1(int dec_num, int obj_num) : Problem(dec_num, obj_num)
 	{
+		decision_num = dec_num;
+		objective_num = obj_num;
 		for (int i = 0; i < dec_num; ++i)
 		{
 			lower_bound_[i] = 0.0;
@@ -573,11 +577,11 @@ namespace emoc {
 
 		WFG_ini();
 
-		size = g_GlobalSettings->dec_num_;
+		size = dec_num_;
 		size = WFG1_t1(xreal, size, wfg_K, wfg_temp);
 		size = WFG1_t2(wfg_temp, size, wfg_K, wfg_temp);
 		size = WFG1_t3(wfg_temp, size, wfg_temp);
-		size = WFG1_t4(wfg_temp, size, wfg_K,g_GlobalSettings->obj_num_, wfg_temp);
+		size = WFG1_t4(wfg_temp, size, wfg_K, obj_num_, wfg_temp);
 		WFG1_shape(wfg_temp, size, obj);
 
 		WFG_free();
@@ -585,6 +589,8 @@ namespace emoc {
 
 	WFG2::WFG2(int dec_num, int obj_num) : Problem(dec_num, obj_num)
 	{
+		decision_num = dec_num;
+		objective_num = obj_num;
 		for (int i = 0; i < dec_num; ++i)
 		{
 			lower_bound_[i] = 0.0;
@@ -607,10 +613,10 @@ namespace emoc {
 
 		WFG_ini();
 
-		size = g_GlobalSettings->dec_num_;
+		size = dec_num_;
 		size = WFG1_t1(xreal, size, wfg_K, wfg_temp);
 		size = WFG2_t2(wfg_temp, size, wfg_K, wfg_temp);
-		size = WFG2_t3(wfg_temp, size, wfg_K, g_GlobalSettings->obj_num_, wfg_temp);
+		size = WFG2_t3(wfg_temp, size, wfg_K, obj_num_, wfg_temp);
 		WFG2_shape(wfg_temp, size, obj);
 
 		WFG_free();
@@ -618,6 +624,8 @@ namespace emoc {
 
 	WFG3::WFG3(int dec_num, int obj_num) : Problem(dec_num, obj_num)
 	{
+		decision_num = dec_num;
+		objective_num = obj_num;
 		for (int i = 0; i < dec_num; ++i)
 		{
 			lower_bound_[i] = 0.0;
@@ -640,10 +648,10 @@ namespace emoc {
 
 		WFG_ini();
 
-		size = g_GlobalSettings->dec_num_;
+		size = dec_num_;
 		size = WFG1_t1(xreal, size, wfg_K, wfg_temp);
 		size = WFG2_t2(wfg_temp, size, wfg_K, wfg_temp);
-		size = WFG2_t3(wfg_temp, size, wfg_K, g_GlobalSettings->obj_num_, wfg_temp);
+		size = WFG2_t3(wfg_temp, size, wfg_K, obj_num_, wfg_temp);
 		WFG3_shape(wfg_temp, size, obj);
 
 		WFG_free();
@@ -651,6 +659,8 @@ namespace emoc {
 
 	WFG4::WFG4(int dec_num, int obj_num) : Problem(dec_num, obj_num)
 	{
+		decision_num = dec_num;
+		objective_num = obj_num;
 		for (int i = 0; i < dec_num; ++i)
 		{
 			lower_bound_[i] = 0.0;
@@ -673,9 +683,9 @@ namespace emoc {
 
 		WFG_ini();
 
-		size = g_GlobalSettings->dec_num_;
+		size = dec_num_;
 		size = WFG4_t1(xreal, size, wfg_temp);
-		size = WFG2_t3(wfg_temp, size, wfg_K, g_GlobalSettings->obj_num_, wfg_temp);
+		size = WFG2_t3(wfg_temp, size, wfg_K, obj_num_, wfg_temp);
 		WFG4_shape(wfg_temp, size, obj);
 
 		WFG_free();
@@ -683,6 +693,8 @@ namespace emoc {
 
 	WFG5::WFG5(int dec_num, int obj_num) : Problem(dec_num, obj_num)
 	{
+		decision_num = dec_num;
+		objective_num = obj_num;
 		for (int i = 0; i < dec_num; ++i)
 		{
 			lower_bound_[i] = 0.0;
@@ -705,9 +717,9 @@ namespace emoc {
 
 		WFG_ini();
 
-		size = g_GlobalSettings->dec_num_;
+		size = dec_num_;
 		size = WFG5_t1(xreal, size, wfg_temp);
-		size = WFG2_t3(wfg_temp, size, wfg_K, g_GlobalSettings->obj_num_, wfg_temp);
+		size = WFG2_t3(wfg_temp, size, wfg_K, obj_num_, wfg_temp);
 		WFG4_shape(wfg_temp, size, obj);
 
 		WFG_free();
@@ -715,6 +727,8 @@ namespace emoc {
 
 	WFG6::WFG6(int dec_num, int obj_num) : Problem(dec_num, obj_num)
 	{
+		decision_num = dec_num;
+		objective_num = obj_num;
 		for (int i = 0; i < dec_num; ++i)
 		{
 			lower_bound_[i] = 0.0;
@@ -737,9 +751,9 @@ namespace emoc {
 
 		WFG_ini();
 
-		size = g_GlobalSettings->dec_num_;
+		size = dec_num_;
 		size = WFG1_t1(xreal, size, wfg_K, wfg_temp);
-		size = WFG6_t2(wfg_temp, size, wfg_K, g_GlobalSettings->obj_num_, wfg_temp);
+		size = WFG6_t2(wfg_temp, size, wfg_K, obj_num_, wfg_temp);
 		WFG4_shape(wfg_temp, size, obj);
 
 		WFG_free();
@@ -747,6 +761,8 @@ namespace emoc {
 
 	WFG7::WFG7(int dec_num, int obj_num) : Problem(dec_num, obj_num)
 	{
+		decision_num = dec_num;
+		objective_num = obj_num;
 		for (int i = 0; i < dec_num; ++i)
 		{
 			lower_bound_[i] = 0.0;
@@ -769,10 +785,10 @@ namespace emoc {
 
 		WFG_ini();
 
-		size = g_GlobalSettings->dec_num_;
+		size = dec_num_;
 		size = WFG7_t1(xreal, size, wfg_K, wfg_temp);
 		size = WFG1_t1(xreal, size, wfg_K, wfg_temp);
-		size = WFG2_t3(wfg_temp, size, wfg_K, g_GlobalSettings->obj_num_, wfg_temp);
+		size = WFG2_t3(wfg_temp, size, wfg_K, obj_num_, wfg_temp);
 		WFG4_shape(wfg_temp, size, obj);
 
 		WFG_free();
@@ -780,6 +796,8 @@ namespace emoc {
 
 	WFG8::WFG8(int dec_num, int obj_num) : Problem(dec_num, obj_num)
 	{
+		decision_num = dec_num;
+		objective_num = obj_num;
 		for (int i = 0; i < dec_num; ++i)
 		{
 			lower_bound_[i] = 0.0;
@@ -802,10 +820,10 @@ namespace emoc {
 
 		WFG_ini();
 
-		size = g_GlobalSettings->dec_num_;
+		size = dec_num_;
 		size = WFG8_t1(xreal, size, wfg_K, wfg_temp);
 		size = WFG1_t1(xreal, size, wfg_K, wfg_temp);
-		size = WFG2_t3(wfg_temp, size, wfg_K, g_GlobalSettings->obj_num_, wfg_temp);
+		size = WFG2_t3(wfg_temp, size, wfg_K, obj_num_, wfg_temp);
 		WFG4_shape(wfg_temp, size, obj);
 
 		WFG_free();
@@ -813,6 +831,8 @@ namespace emoc {
 
 	WFG9::WFG9(int dec_num, int obj_num) : Problem(dec_num, obj_num)
 	{
+		decision_num = dec_num;
+		objective_num = obj_num;
 		for (int i = 0; i < dec_num; ++i)
 		{
 			lower_bound_[i] = 0.0;
@@ -835,10 +855,10 @@ namespace emoc {
 
 		WFG_ini();
 
-		size = g_GlobalSettings->dec_num_;
+		size = dec_num_;
 		size = WFG9_t1(xreal, size, wfg_temp);
 		size = WFG9_t2(xreal, size, wfg_K, wfg_temp);
-		size = WFG6_t2(wfg_temp, size, wfg_K, g_GlobalSettings->obj_num_, wfg_temp);
+		size = WFG6_t2(wfg_temp, size, wfg_K, obj_num_, wfg_temp);
 		WFG4_shape(wfg_temp, size, obj);
 
 		WFG_free();

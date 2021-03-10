@@ -12,8 +12,8 @@
 
 namespace emoc {
 
-	MOEADDE::MOEADDE(Problem *problem) :
-		Algorithm(problem),
+	MOEADDE::MOEADDE(Problem *problem, int thread_num) :
+		Algorithm(problem,thread_num),
 		lambda_(nullptr),
 		weight_num_(0),
 		neighbour_(nullptr),
@@ -60,11 +60,11 @@ namespace emoc {
 
 				// generate offspring for current subproblem
 				Crossover(g_GlobalSettings->parent_population_.data(), i, offspring);
-				MutationInd(offspring);
+				MutationInd(offspring,g_GlobalSettings);
 				EvaluateInd(offspring);
 
 				// update ideal point
-				UpdateIdealpoint(offspring, ideal_point_);
+				UpdateIdealpoint(offspring, ideal_point_, g_GlobalSettings->obj_num_);
 
 				// update neighbours' subproblem 
 				UpdateSubproblem(offspring, i);
@@ -79,13 +79,13 @@ namespace emoc {
 		EvaluatePop(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_);
 
 		// generate weight vectors
-		lambda_ = UniformPoint(g_GlobalSettings->population_num_, &weight_num_);
+		lambda_ = UniformPoint(g_GlobalSettings->population_num_, &weight_num_, g_GlobalSettings->obj_num_);
 
 		// set the neighbours of each individual
 		SetNeighbours();
 
 		// initialize ideal point
-		UpdateIdealpoint(g_GlobalSettings->parent_population_.data(), weight_num_, ideal_point_);
+		UpdateIdealpoint(g_GlobalSettings->parent_population_.data(), weight_num_, ideal_point_, g_GlobalSettings->obj_num_);
 	}
 
 	void MOEADDE::SetNeighbours()
@@ -147,7 +147,7 @@ namespace emoc {
 		Individual *parent1 = parent_pop[current_index];
 		Individual *parent2 = parent_pop[parent2_index];
 		Individual *parent3 = parent_pop[parent3_index];
-		DE(parent1, parent2, parent3, offspring);
+		DE(parent1, parent2, parent3, offspring,g_GlobalSettings);
 	}
 
 	void MOEADDE::UpdateSubproblem(Individual *offspring, int current_index)
@@ -172,8 +172,8 @@ namespace emoc {
 				weight_index = perm_index[i];
 
 			Individual *current_ind = g_GlobalSettings->parent_population_[weight_index];
-			offspring_fitness = CalInverseChebycheff(offspring, lambda_[weight_index], ideal_point_);
-			neighbour_fitness = CalInverseChebycheff(current_ind, lambda_[weight_index], ideal_point_);
+			offspring_fitness = CalInverseChebycheff(offspring, lambda_[weight_index], ideal_point_, g_GlobalSettings->obj_num_);
+			neighbour_fitness = CalInverseChebycheff(current_ind, lambda_[weight_index], ideal_point_, g_GlobalSettings->obj_num_);
 			if (offspring_fitness < neighbour_fitness)
 			{
 				CopyIndividual(offspring, g_GlobalSettings->parent_population_[weight_index]);

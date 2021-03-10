@@ -12,7 +12,7 @@
 namespace emoc {
 
 
-	IBEA::IBEA(Problem *problem):Algorithm(problem),kappa(0.05)
+	IBEA::IBEA(Problem *problem, int thread_num):Algorithm(problem, thread_num),kappa(0.05)
 	{
 
 	}
@@ -32,7 +32,7 @@ namespace emoc {
 
 			// generate offspring population
 			Crossover(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->offspring_population_.data());
-			MutationPop(g_GlobalSettings->offspring_population_.data(), 2 * g_GlobalSettings->population_num_ / 2);
+			MutationPop(g_GlobalSettings->offspring_population_.data(), 2 * g_GlobalSettings->population_num_ / 2, g_GlobalSettings);
 			EvaluatePop(g_GlobalSettings->offspring_population_.data(), 2 * g_GlobalSettings->population_num_ / 2);
 			MergePopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_, g_GlobalSettings->offspring_population_.data(),
 				2 * g_GlobalSettings->population_num_ / 2, g_GlobalSettings->mixed_population_.data());
@@ -61,7 +61,7 @@ namespace emoc {
 		{
 			Individual *parent1 = TournamentByFitness(parent_pop[index1[2 * i]], parent_pop[index1[2 * i + 1]]);
 			Individual *parent2 = TournamentByFitness(parent_pop[index2[2 * i]], parent_pop[index2[2 * i + 1]]);
-			SBX(parent1, parent2, offspring_pop[2 * i], offspring_pop[2 * i + 1]);
+			SBX(parent1, parent2, offspring_pop[2 * i], offspring_pop[2 * i + 1], g_GlobalSettings);
 		}
 
 		delete[] index1;

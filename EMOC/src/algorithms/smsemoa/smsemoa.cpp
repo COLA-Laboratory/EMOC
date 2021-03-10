@@ -13,7 +13,9 @@
 
 namespace emoc {
 
-	SMSEMOA::SMSEMOA(Problem *problem):Algorithm(problem),nadir_point_(new double[problem->obj_num_])
+	SMSEMOA::SMSEMOA(Problem *problem, int thread_num):
+		Algorithm(problem, thread_num),
+		nadir_point_(new double[problem->obj_num_])
 	{
 
 	}
@@ -56,11 +58,11 @@ namespace emoc {
 			{
 				// generate offspring for current subproblem
 				Crossover(g_GlobalSettings->parent_population_.data(), offspring);
-				MutationInd(offspring);
+				MutationInd(offspring, g_GlobalSettings);
 				EvaluateInd(offspring);
 
 				// update nadir point
-				UpdateNadirpoint(offspring, nadir_point_);
+				UpdateNadirpoint(offspring, nadir_point_, g_GlobalSettings->obj_num_);
 
 				// environmental selection
 				EnvironmentalSelection(g_GlobalSettings->parent_population_.data(), offspring);
@@ -75,7 +77,7 @@ namespace emoc {
 		EvaluatePop(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_);
 
 		// initialize nadir point
-		UpdateNadirpoint(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_, nadir_point_);
+		UpdateNadirpoint(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_, nadir_point_, g_GlobalSettings->obj_num_);
 
 		// preparation for IWFG algorithm, which is used for calculating the individual Hypervolume contribution
 		i_maxn = g_GlobalSettings->obj_num_;
@@ -124,9 +126,9 @@ namespace emoc {
 		Individual *parent1 = parent_pop[index[0]];
 		Individual *parent2 = parent_pop[index[1]];
 		Individual **offspring_pop = g_GlobalSettings->offspring_population_.data();
-		SBX(parent1, parent2, offspring_pop[1], offspring_pop[2]);
+		SBX(parent1, parent2, offspring_pop[1], offspring_pop[2], g_GlobalSettings);
 
-		DominateReleation res = CheckDominance(offspring_pop[1], offspring_pop[2]);
+		DominateReleation res = CheckDominance(offspring_pop[1], offspring_pop[2], g_GlobalSettings->obj_num_);
 		if (DOMINATED == res)
 			CopyIndividual(offspring_pop[2], offspring);
 		else
@@ -143,7 +145,7 @@ namespace emoc {
 
 		min = (double *)malloc(sizeof(double) * (g_GlobalSettings->obj_num_ + 2));
 		i_n = g_GlobalSettings->obj_num_;
-		iwfg_read_data(&f, pop, nadir_point_, pop_num);
+		iwfg_read_data(&f, pop, nadir_point_, pop_num, g_GlobalSettings->obj_num_);
 
 		if (g_GlobalSettings->obj_num_ == 2)
 		{
@@ -189,7 +191,7 @@ namespace emoc {
 			CopyIndividual(parent_pop[i], g_GlobalSettings->mixed_population_[i]);
 		}
 		CopyIndividual(offspring, g_GlobalSettings->mixed_population_[g_GlobalSettings->population_num_]);
-		NonDominatedSort(g_GlobalSettings->mixed_population_.data(), g_GlobalSettings->population_num_ + 1);
+		NonDominatedSort(g_GlobalSettings->mixed_population_.data(), g_GlobalSettings->population_num_ + 1, g_GlobalSettings->obj_num_);
 
 		// restore each front's index
 		for (int i = 0; i < g_GlobalSettings->population_num_ + 1; i++)

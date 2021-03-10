@@ -7,7 +7,7 @@
 
 namespace emoc {
 
-	void NonDominatedSort(Individual **pop, int pop_num)
+	void NonDominatedSort(Individual **pop, int pop_num, int obj_num)
 	{
 		int index = 0; 
 		int dominate_relation = 0;
@@ -45,7 +45,7 @@ namespace emoc {
 					continue;
 
 				ind_tempB = pop[j];
-				dominate_relation = CheckDominance(ind_tempA, ind_tempB);
+				dominate_relation = CheckDominance(ind_tempA, ind_tempB, obj_num);
 				if (DOMINATE == dominate_relation)
 				{
 					si[i][index++] = j;

@@ -13,8 +13,8 @@
 
 namespace emoc {
 
-	HypE::HypE(Problem *problem):
-		Algorithm(problem),
+	HypE::HypE(Problem *problem, int thread_num):
+		Algorithm(problem, thread_num),
 		ideal_point_(new double[problem->obj_num_]),
 		nadir_point_(new double[problem->obj_num_])
 	{
@@ -38,12 +38,12 @@ namespace emoc {
 
 			// generate offspring population
 			Crossover(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->offspring_population_.data());
-			MutationPop(g_GlobalSettings->offspring_population_.data(), 2 * g_GlobalSettings->population_num_ / 2);
+			MutationPop(g_GlobalSettings->offspring_population_.data(), 2 * g_GlobalSettings->population_num_ / 2, g_GlobalSettings);
 			EvaluatePop(g_GlobalSettings->offspring_population_.data(), 2 * g_GlobalSettings->population_num_ / 2);
 
 			// update nadir and ideal point
-			UpdateIdealpoint(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_, ideal_point_);
-			UpdateNadirpoint(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_, nadir_point_);
+			UpdateIdealpoint(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_, ideal_point_, g_GlobalSettings->obj_num_);
+			UpdateNadirpoint(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_, nadir_point_, g_GlobalSettings->obj_num_);
 
 			// select for next generation
 			MergePopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_, g_GlobalSettings->offspring_population_.data(),
@@ -59,8 +59,8 @@ namespace emoc {
 		EvaluatePop(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_);
 
 		// initialize ideal and nadir point
-		UpdateIdealpoint(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_, ideal_point_);
-		UpdateNadirpoint(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_, nadir_point_);
+		UpdateIdealpoint(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_, ideal_point_, g_GlobalSettings->obj_num_);
+		UpdateNadirpoint(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_, nadir_point_, g_GlobalSettings->obj_num_);
 	}
 
 	void HypE::Crossover(Individual **parent_pop, Individual **offspring_pop)
@@ -76,7 +76,7 @@ namespace emoc {
 		{
 			Individual *parent1 = TournamentByFitness(parent_pop[index1[2 * i]], parent_pop[index1[2 * i + 1]], greater_is_better);
 			Individual *parent2 = TournamentByFitness(parent_pop[index2[2 * i]], parent_pop[index2[2 * i + 1]], greater_is_better);
-			SBX(parent1, parent2, offspring_pop[2 * i], offspring_pop[2 * i + 1]);
+			SBX(parent1, parent2, offspring_pop[2 * i], offspring_pop[2 * i + 1],g_GlobalSettings);
 		}
 
 		delete[] index1;
@@ -324,7 +324,7 @@ namespace emoc {
 		for (int i = 0; i < mixed_popnum; ++i)
 			temp_pop[i] = new Individual(g_GlobalSettings->dec_num_, g_GlobalSettings->obj_num_);
 
-		NonDominatedSort(mixed_pop, mixed_popnum);
+		NonDominatedSort(mixed_pop, mixed_popnum, g_GlobalSettings->obj_num_);
 
 		// find the front need to extra selection
 		while (1)

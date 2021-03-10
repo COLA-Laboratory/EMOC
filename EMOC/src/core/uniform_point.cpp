@@ -2,20 +2,20 @@
 
 namespace emoc {
 
-	static void SetWeight(double *weight, double unit, double sum, int dim, int *column, double **lambda)
+	static void SetWeight(double *weight, double unit, double sum, int dim, int *column, double **lambda, int obj_num)
 	{
 		int i;
 
-		if (dim == g_GlobalSettings->obj_num_)
+		if (dim == obj_num)
 		{
-			for (i = 0; i < g_GlobalSettings->obj_num_; i++)
+			for (i = 0; i < obj_num; i++)
 				weight[i] = 0;
 		}
 
 		if (dim == 1)
 		{
 			weight[0] = unit - sum;
-			for (i = 0; i < g_GlobalSettings->obj_num_; i++)
+			for (i = 0; i < obj_num; i++)
 				lambda[*column][i] = weight[i];
 			*column = *column + 1;
 			return;
@@ -23,13 +23,13 @@ namespace emoc {
 		for (i = 0; i <= unit - sum; i++)
 		{
 			weight[dim - 1] = i;
-			SetWeight(weight, unit, sum + i, dim - 1, column, lambda);
+			SetWeight(weight, unit, sum + i, dim - 1, column, lambda, obj_num);
 		}
 
 		return;
 	}
 
-	double** UniformPoint(int num, int *weight_num)
+	double** UniformPoint(int num, int *weight_num, int obj_num)
 	{
 		int column = 0;
 		double *vec = nullptr;
@@ -39,7 +39,7 @@ namespace emoc {
 		*weight_num = 0;
 		while (1)
 		{
-			int layer_size = Combination(g_GlobalSettings->obj_num_ + gaps - 1, gaps);
+			int layer_size = Combination(obj_num + gaps - 1, gaps);
 
 			if (layer_size > num) break;
 			*weight_num = layer_size;
@@ -50,16 +50,16 @@ namespace emoc {
 		lambda = new double*[*weight_num];
 		for (int i = 0; i < *weight_num; i++)
 		{
-			lambda[i] = new double[g_GlobalSettings->obj_num_];
+			lambda[i] = new double[obj_num];
 		}
 
-		vec = new double[g_GlobalSettings->obj_num_];
-		for (int i = 0; i < g_GlobalSettings->obj_num_; i++)
+		vec = new double[obj_num];
+		for (int i = 0; i < obj_num; i++)
 			vec[i] = 0;
-		SetWeight(vec, gaps, 0, g_GlobalSettings->obj_num_, &column, lambda);
+		SetWeight(vec, gaps, 0, obj_num, &column, lambda,obj_num);
 
 		for (int i = 0; i < *weight_num; i++)
-			for (int j = 0; j < g_GlobalSettings->obj_num_; j++) 
+			for (int j = 0; j < obj_num; j++) 
 				lambda[i][j] = lambda[i][j] / gaps;
 			
 		delete[] vec;

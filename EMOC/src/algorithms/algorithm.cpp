@@ -6,9 +6,9 @@
 
 namespace emoc {
 
-	Algorithm::Algorithm(Problem *problem):problem_(problem)
+	Algorithm::Algorithm(Problem *problem, int thread_num):problem_(problem), thread_num_(thread_num)
 	{
-
+		g_GlobalSettings = g_GlobalSettingsArray[thread_num];
 	}
 
 	Algorithm::~Algorithm()

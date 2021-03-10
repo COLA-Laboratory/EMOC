@@ -107,5 +107,5 @@ int i_greaterorder(const void *v1, const void *v2);
 int i_same(const void *v1, const void *v2);
 int i_greater(const void *v1, const void *v2);
 int i_sorter(const void *a, const void *b);
-void iwfg_read_data(FILECONTENTS *fc, emoc::Individual **pop_table, double *nadir_point, int pop_size);
+void iwfg_read_data(FILECONTENTS *fc, emoc::Individual **pop_table, double *nadir_point, int pop_size, int obj_num);
 #endif

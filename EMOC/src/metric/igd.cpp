@@ -5,7 +5,6 @@
 #include <direct.h>
 #include <fstream>
 #include <iostream>
-#include <string>
 
 #include "core/global.h"
 #include "core/utility.h"
@@ -13,25 +12,25 @@
 
 namespace emoc {
 
-	static double **LoadPFData(int &pf_size)
+	static double **LoadPFData(int &pf_size, int obj_num, std::string &problem_name)
 	{
 		// reset pf_size
 		pf_size = 0;
 
 		// get problem name without number
 		int pos = -1;
-		for (auto c : g_GlobalSettings->problem_name_)
+		for (auto c : problem_name)
 		{
 			pos++;
 			if (c >= '0' && c <= '9')
 				break;
 		}
-		std::string temp_problemname = g_GlobalSettings->problem_name_.substr(0, pos);
+		std::string temp_problemname = problem_name.substr(0, pos);
 
 		// open pf data file
 		double **pf_data = nullptr;
 		char pf_filename[255] = { 0 };
-		sprintf(pf_filename, "pf_data/%s/%s.%dD.pf", temp_problemname.c_str(), g_GlobalSettings->problem_name_.c_str(), g_GlobalSettings->obj_num_);
+		sprintf(pf_filename, "pf_data/%s/%s.%dD.pf", temp_problemname.c_str(), problem_name.c_str(), obj_num);
 		std::fstream pf_file(pf_filename);
 
 
@@ -48,20 +47,20 @@ namespace emoc {
 			// init memory for pf data
 			pf_data = new double*[pf_size];
 			for (int i = 0; i < pf_size; ++i)
-				pf_data[i] = new double[g_GlobalSettings->obj_num_];
+				pf_data[i] = new double[obj_num];
 
 			// read the pf data
 			pf_file.clear();
 			pf_file.seekg(0);
 			for (int i = 0; i < pf_size; i++)
-				for (int j = 0; j < g_GlobalSettings->obj_num_; j++)
+				for (int j = 0; j < obj_num; j++)
 					pf_file >> pf_data[i][j];
 		}
 
 		return pf_data;
 	}
 
-	double CalculateIGD(Individual **pop, int pop_num)
+	double CalculateIGD(Individual **pop, int pop_num, int obj_num, std::string &problem_name)
 	{
 		//char buff[1000];
 		//_getcwd(buff, 1000);
@@ -70,7 +69,7 @@ namespace emoc {
 		// load pf data
 		int pf_size = 0;
 		double **pfdata = nullptr;
-		pfdata = LoadPFData(pf_size);
+		pfdata = LoadPFData(pf_size,obj_num,problem_name);
 
 		// calculate igd value
 		double igd_value = 0;
@@ -83,7 +82,7 @@ namespace emoc {
 			for (int j = 0; j < pop_num; j++)
 			{
 				temp_ind = pop[j];
-				temp_distance = CalEuclidianDistance(pfdata[i],temp_ind->obj_,g_GlobalSettings->obj_num_);
+				temp_distance = CalEuclidianDistance(pfdata[i],temp_ind->obj_, obj_num);
 
 				if (min_distance > temp_distance)
 				{

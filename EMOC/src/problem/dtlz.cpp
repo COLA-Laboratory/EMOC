@@ -23,22 +23,22 @@ namespace emoc {
 	void DTLZ1::CalObj(Individual *ind)
 	{
 		double gx = 0.0;
-		int k = g_GlobalSettings->dec_num_ - g_GlobalSettings->obj_num_ + 1;
+		int k = dec_num_ - obj_num_ + 1;
 
-		for (int i = g_GlobalSettings->dec_num_ - k; i < g_GlobalSettings->dec_num_; i++)
+		for (int i = dec_num_ - k; i < dec_num_; i++)
 			gx += pow((ind->dec_[i] - 0.5), 2.0) - cos(20.0 * PI * (ind->dec_[i] - 0.5));
 		gx = 100.0 * (k + gx);
 
-		for (int i = 0; i < g_GlobalSettings->obj_num_; i++)
+		for (int i = 0; i < obj_num_; i++)
 			ind->obj_[i] = (1.0 + gx) * 0.5;
 
-		for (int i = 0; i < g_GlobalSettings->obj_num_; i++)
+		for (int i = 0; i < obj_num_; i++)
 		{
-			for (int j = 0; j < g_GlobalSettings->obj_num_ - (i + 1); j++)
+			for (int j = 0; j < obj_num_ - (i + 1); j++)
 				ind->obj_[i] *= ind->dec_[j];
 			if (i != 0)
 			{
-				int aux = g_GlobalSettings->obj_num_ - (i + 1);
+				int aux = obj_num_ - (i + 1);
 				ind->obj_[i] *= 1 - ind->dec_[aux];
 			}
 		}
@@ -61,21 +61,21 @@ namespace emoc {
 	void DTLZ2::CalObj(Individual *ind)
 	{
 		double gx = 0.0;
-		int k = g_GlobalSettings->dec_num_ - g_GlobalSettings->obj_num_ + 1;
+		int k = dec_num_ - obj_num_ + 1;
 
-		for (int i = g_GlobalSettings->dec_num_ - k; i < g_GlobalSettings->dec_num_; i++)
+		for (int i = dec_num_ - k; i < dec_num_; i++)
 			gx += pow((ind->dec_[i] - 0.5), 2.0);
 
-		for (int i = 0; i < g_GlobalSettings->obj_num_; i++)
+		for (int i = 0; i < obj_num_; i++)
 			ind->obj_[i] = 1.0 + gx;
 
-		for (int i = 0; i < g_GlobalSettings->obj_num_; i++)
+		for (int i = 0; i < obj_num_; i++)
 		{
-			for (int j = 0; j < g_GlobalSettings->obj_num_ - (i + 1); j++)
+			for (int j = 0; j < obj_num_ - (i + 1); j++)
 				ind->obj_[i] *= cos(PI * 0.5 * ind->dec_[j]);
 			if (i != 0)
 			{
-				int aux = g_GlobalSettings->obj_num_ - (i + 1);
+				int aux = obj_num_ - (i + 1);
 				ind->obj_[i] *= sin(PI * 0.5 * ind->dec_[aux]);
 			}
 		}
@@ -98,22 +98,22 @@ namespace emoc {
 	void DTLZ3::CalObj(Individual *ind)
 	{
 		double gx = 0.0;
-		int k =g_GlobalSettings->dec_num_ -g_GlobalSettings->obj_num_ + 1;
+		int k =dec_num_ -obj_num_ + 1;
 
-		for (int i =g_GlobalSettings->dec_num_ - k; i <g_GlobalSettings->dec_num_; i++)
+		for (int i =dec_num_ - k; i <dec_num_; i++)
 			gx += pow((ind->dec_[i] - 0.5), 2.0) - cos(20.0 * PI * (ind->dec_[i] - 0.5));
 		gx = 100.0 * (k + gx);
 
-		for (int i = 0; i <g_GlobalSettings->obj_num_; i++)
+		for (int i = 0; i <obj_num_; i++)
 			ind->obj_[i] = 1.0 + gx;
 
-		for (int i = 0; i <g_GlobalSettings->obj_num_; i++)
+		for (int i = 0; i <obj_num_; i++)
 		{
-			for (int j = 0; j <g_GlobalSettings->obj_num_ - (i + 1); j++)
+			for (int j = 0; j <obj_num_ - (i + 1); j++)
 				ind->obj_[i] *= cos(PI * 0.5 * ind->dec_[j]);
 			if (i != 0)
 			{
-				int aux =g_GlobalSettings->obj_num_ - (i + 1);
+				int aux =obj_num_ - (i + 1);
 				ind->obj_[i] *= sin(PI * 0.5 * ind->dec_[aux]);
 			}
 		}
@@ -136,21 +136,21 @@ namespace emoc {
 	void DTLZ4::CalObj(Individual *ind)
 	{
 		double gx = 0.0, alpha = 100.0;
-		int k =g_GlobalSettings->dec_num_ -g_GlobalSettings->obj_num_ + 1;
+		int k =dec_num_ -obj_num_ + 1;
 
-		for (int i =g_GlobalSettings->dec_num_ - k; i <g_GlobalSettings->dec_num_; i++)
+		for (int i =dec_num_ - k; i <dec_num_; i++)
 			gx += pow((ind->dec_[i] - 0.5), 2.0);
 
-		for (int i = 0; i <g_GlobalSettings->obj_num_; i++)
+		for (int i = 0; i <obj_num_; i++)
 			ind->obj_[i] = 1.0 + gx;
 
-		for (int i = 0; i <g_GlobalSettings->obj_num_; i++)
+		for (int i = 0; i <obj_num_; i++)
 		{
-			for (int j = 0; j <g_GlobalSettings->obj_num_ - (i + 1); j++)
+			for (int j = 0; j <obj_num_ - (i + 1); j++)
 				ind->obj_[i] *= cos(PI * 0.5 * pow(ind->dec_[j], alpha));
 			if (i != 0)
 			{
-				int aux =g_GlobalSettings->obj_num_ - (i + 1);
+				int aux =obj_num_ - (i + 1);
 				ind->obj_[i] *= sin(PI * 0.5 * pow(ind->dec_[aux], alpha));
 			}
 		}
@@ -176,26 +176,26 @@ namespace emoc {
 	void DTLZ5::CalObj(Individual *ind)
 	{
 		double gx = 0.0;
-		int k = g_GlobalSettings->dec_num_ -g_GlobalSettings->obj_num_ + 1;
+		int k = dec_num_ -obj_num_ + 1;
 
-		for (int i = g_GlobalSettings->dec_num_ - k; i < g_GlobalSettings->dec_num_; i++)
+		for (int i = dec_num_ - k; i < dec_num_; i++)
 			gx += pow((ind->dec_[i] - 0.5), 2.0);
 
 		double temp = PI / (4.0 * (1.0 + gx));
 		theta[0] = ind->dec_[0] * PI / 2.0;
-		for (int i = 1; i < (g_GlobalSettings->obj_num_ - 1); i++)
+		for (int i = 1; i < (obj_num_ - 1); i++)
 			theta[i] = temp * (1.0 + 2.0 * gx * ind->dec_[i]);
 
-		for (int i = 0; i <g_GlobalSettings->obj_num_; i++)
+		for (int i = 0; i <obj_num_; i++)
 			ind->obj_[i] = 1.0 + gx;
 
-		for (int i = 0; i <g_GlobalSettings->obj_num_; i++)
+		for (int i = 0; i <obj_num_; i++)
 		{
-			for (int j = 0; j <g_GlobalSettings->obj_num_ - (i + 1); j++)
+			for (int j = 0; j <obj_num_ - (i + 1); j++)
 				ind->obj_[i] *= cos(theta[j]);
 			if (i != 0)
 			{
-				int aux =g_GlobalSettings->obj_num_ - (i + 1);
+				int aux =obj_num_ - (i + 1);
 				ind->obj_[i] *= sin(theta[aux]);
 			}
 		}
@@ -221,26 +221,26 @@ namespace emoc {
 	void DTLZ6::CalObj(Individual *ind)
 	{
 		double gx = 0.0;
-		int k = g_GlobalSettings->dec_num_ -g_GlobalSettings->obj_num_ + 1;
+		int k = dec_num_ -obj_num_ + 1;
 
-		for (int i = g_GlobalSettings->dec_num_ - k; i < g_GlobalSettings->dec_num_; i++)
+		for (int i = dec_num_ - k; i < dec_num_; i++)
 			gx += pow(ind->dec_[i], 0.1);
 
 		double temp = PI / (4.0 * (1.0 + gx));
 		theta[0] = ind->dec_[0] * PI / 2.0;
-		for (int i = 1; i < (g_GlobalSettings->obj_num_ - 1); i++)
+		for (int i = 1; i < (obj_num_ - 1); i++)
 			theta[i] = temp * (1.0 + 2.0 * gx * ind->dec_[i]);
 
-		for (int i = 0; i <g_GlobalSettings->obj_num_; i++)
+		for (int i = 0; i <obj_num_; i++)
 			ind->obj_[i] = 1.0 + gx;
 
-		for (int i = 0; i <g_GlobalSettings->obj_num_; i++)
+		for (int i = 0; i <obj_num_; i++)
 		{
-			for (int j = 0; j <g_GlobalSettings->obj_num_ - (i + 1); j++)
+			for (int j = 0; j <obj_num_ - (i + 1); j++)
 				ind->obj_[i] *= cos(theta[j]);
 			if (i != 0)
 			{
-				int aux =g_GlobalSettings->obj_num_ - (i + 1);
+				int aux =obj_num_ - (i + 1);
 				ind->obj_[i] *= sin(theta[aux]);
 			}
 		}
@@ -263,21 +263,21 @@ namespace emoc {
 	void DTLZ7::CalObj(Individual *ind)
 	{
 		double gx = 0.0;
-		int k = g_GlobalSettings->dec_num_ -g_GlobalSettings->obj_num_ + 1;
+		int k = dec_num_ -obj_num_ + 1;
 
-		for (int i = g_GlobalSettings->dec_num_ - k; i < g_GlobalSettings->dec_num_; i++)
+		for (int i = dec_num_ - k; i < dec_num_; i++)
 			gx += ind->dec_[i];
 		gx = 1.0 + (9.0 * gx) / k;
 
-		for (int i = 0; i <g_GlobalSettings->obj_num_; i++)
+		for (int i = 0; i <obj_num_; i++)
 			ind->obj_[i] = ind->dec_[i];
 
 		double h = 0.0;
-		for (int i = 0; i <g_GlobalSettings->obj_num_ - 1; i++)
+		for (int i = 0; i <obj_num_ - 1; i++)
 			h += (ind->obj_[i] / (1.0 + gx)) * (1.0 + sin(3.0 * PI * ind->obj_[i]));
-		h =g_GlobalSettings->obj_num_ - h;
+		h =obj_num_ - h;
 
-		ind->obj_[g_GlobalSettings->obj_num_ - 1] = (1 + gx) * h;
+		ind->obj_[obj_num_ - 1] = (1 + gx) * h;
 	}
 
 }

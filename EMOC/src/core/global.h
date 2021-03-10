@@ -1,4 +1,9 @@
 #pragma once
+#define INF 1.0e9
+#define PI 3.14159265358979323846
+#define EPS 1.0e-6
+#define MAX_THREAD_NUM 20
+
 #include <string>
 #include <vector>
 
@@ -6,9 +11,7 @@
 #include "problem/problem.h"
 #include "algorithms/algorithm.h"
 
-#define INF 1.0e9
-#define PI 3.14159265358979323846
-#define EPS 1.0e-6
+
 
 namespace emoc {
 
@@ -41,7 +44,7 @@ namespace emoc {
 	{
 	public:
 		Global(const char *algorithn_name, const char *problem_name, int population_num, 
-			int dec_num, int obj_num, int max_evaluation);
+			int dec_num, int obj_num, int max_evaluation, int thread_num);
 		~Global();
 
 		// initialize given population, i.e. set the decision variables' value
@@ -55,6 +58,7 @@ namespace emoc {
 	public:
 		int dec_num_;
 		int obj_num_;
+		int thread_num_;
 
 		int population_num_;
 		int iteration_num_;
@@ -87,5 +91,5 @@ namespace emoc {
 		void DestroyMemory();
 	};
 
-	extern Global *g_GlobalSettings;  // provide global settings to whole project 
+	extern Global *g_GlobalSettingsArray[MAX_THREAD_NUM];  // provide global settings to whole project 
 }

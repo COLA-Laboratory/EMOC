@@ -13,7 +13,7 @@
 
 namespace emoc {
 
-	NSGA2::NSGA2(Problem *problem):Algorithm(problem)
+	NSGA2::NSGA2(Problem *problem, int thread_num):Algorithm(problem, thread_num)
 	{
 
 	}
@@ -33,7 +33,7 @@ namespace emoc {
 
 			// generate offspring population
 			Crossover(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->offspring_population_.data());
-			MutationPop(g_GlobalSettings->offspring_population_.data(), 2 * g_GlobalSettings->population_num_ / 2);
+			MutationPop(g_GlobalSettings->offspring_population_.data(), 2 * g_GlobalSettings->population_num_ / 2, g_GlobalSettings);
 			EvaluatePop(g_GlobalSettings->offspring_population_.data(), 2 * g_GlobalSettings->population_num_ / 2);
 			MergePopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_, g_GlobalSettings->offspring_population_.data(), 
 				2 * g_GlobalSettings->population_num_ / 2, g_GlobalSettings->mixed_population_.data());
@@ -62,7 +62,7 @@ namespace emoc {
 		{
 			Individual *parent1 = TournamentByRank(parent_pop[index1[2 * i]], parent_pop[index1[2 * i + 1]]);
 			Individual *parent2 = TournamentByRank(parent_pop[index2[2 * i]], parent_pop[index2[2 * i + 1]]);
-			SBX(parent1, parent2, offspring_pop[2 * i], offspring_pop[2 * i + 1]);
+			SBX(parent1, parent2, offspring_pop[2 * i], offspring_pop[2 * i + 1], g_GlobalSettings);
 		}
 		
 		delete[] index1;
@@ -152,7 +152,7 @@ namespace emoc {
 		int current_popnum = 0, rank_index = 0;
 		int mixed_popnum = g_GlobalSettings->population_num_ + 2 * g_GlobalSettings->population_num_ / 2;
 
-		NonDominatedSort(mixed_pop, mixed_popnum);
+		NonDominatedSort(mixed_pop, mixed_popnum, g_GlobalSettings->obj_num_);
 
 		// select individuals by rank
 		while (1)

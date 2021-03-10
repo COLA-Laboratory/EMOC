@@ -8,7 +8,7 @@ namespace emoc {
 	class IBEA : public Algorithm
 	{
 	public:
-		IBEA(Problem *problem);
+		IBEA(Problem *problem, int thread_num);
 		virtual ~IBEA();
 
 		void Run();

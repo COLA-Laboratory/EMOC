@@ -9,13 +9,14 @@
 
 namespace emoc {
 
-	Global::Global(const char *algorithn_name, const char *problem_name, int population_num, int dec_num, int obj_num,int max_evaluation):
+	Global::Global(const char *algorithn_name, const char *problem_name, int population_num, int dec_num, int obj_num,int max_evaluation,int thread_num):
 		algorithm_name_(algorithn_name),
 		problem_name_(problem_name),
 		population_num_(population_num),
 		dec_num_(dec_num),
 		obj_num_(obj_num),
-		max_evaluation_(max_evaluation)
+		max_evaluation_(max_evaluation),
+		thread_num_(thread_num)
 	{
 		iteration_num_ = 0;
 		current_evaluation_ = 0;
@@ -177,29 +178,29 @@ namespace emoc {
 		}
 		std::cout << algorithm_name << std::endl;
 		if (algorithm_name == "nsga2")
-			algorithm_ = new NSGA2(problem_);
+			algorithm_ = new NSGA2(problem_, thread_num_);
 		else if (algorithm_name == "spea2")
-			algorithm_ = new SPEA2(problem_);
+			algorithm_ = new SPEA2(problem_, thread_num_);
 		else if (algorithm_name == "moead")
-			algorithm_ = new MOEAD(problem_);
+			algorithm_ = new MOEAD(problem_, thread_num_);
 		else if (algorithm_name == "moeadde")
-			algorithm_ = new MOEADDE(problem_);
+			algorithm_ = new MOEADDE(problem_, thread_num_);
 		else if (algorithm_name == "moeaddra")
-			algorithm_ = new MOEADDRA(problem_);
+			algorithm_ = new MOEADDRA(problem_, thread_num_);
 		else if (algorithm_name == "moeadfrrmab")
-			algorithm_ = new MOEADFRRMAB(problem_);
+			algorithm_ = new MOEADFRRMAB(problem_, thread_num_);
 		else if (algorithm_name == "ibea")
-			algorithm_ = new IBEA(problem_);
+			algorithm_ = new IBEA(problem_, thread_num_);
 		else if (algorithm_name == "smsemoa")
-			algorithm_ = new SMSEMOA(problem_);
+			algorithm_ = new SMSEMOA(problem_, thread_num_);
 		else if (algorithm_name == "hype")
-			algorithm_ = new HypE(problem_);
+			algorithm_ = new HypE(problem_, thread_num_);
 		else if (algorithm_name == "ensmoead")
-			algorithm_ = new ENSMOEAD(problem_);
+			algorithm_ = new ENSMOEAD(problem_, thread_num_);
 		else if (algorithm_name == "moeadgra")
-			algorithm_ = new MOEADGRA(problem_);
+			algorithm_ = new MOEADGRA(problem_, thread_num_);
 		else if (algorithm_name == "moeadira")
-			algorithm_ = new MOEADIRA(problem_);
+			algorithm_ = new MOEADIRA(problem_, thread_num_);
 		else
 		{
 			std::cout << "The algorithm name is wrong, please check it again" << std::endl;			
@@ -247,5 +248,5 @@ namespace emoc {
 		delete algorithm_;
 	}
 
-	Global *g_GlobalSettings = nullptr;
+	Global *g_GlobalSettingsArray[MAX_THREAD_NUM] = { nullptr };
 }

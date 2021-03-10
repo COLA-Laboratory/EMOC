@@ -1,8 +1,11 @@
 #include <ctime>
-#include <iostream>
+#include <cstdio>
+#include <pthread.h>
 #include <memory>
-#include <algorithm>
 #include <vector>
+#include <string>
+#include <iostream>
+#include <algorithm>
 
 #include "core/global.h"
 #include "core/individual.h"
@@ -23,11 +26,20 @@
 #include "metric/spacing.h"
 #include "random/random.h"
 
+#define NUM_THREADS 5
+using emoc::g_GlobalSettingsArray;
 
-using emoc::g_GlobalSettings;
+//struct EMOCParameters
+//{
+//	std::string algorithm_name
+//};
+
+void *Work(void *args);
+
 
 int main()
-{		
+{
+	int thread_id = 1;
 	double igd_sum = 0;
 	// initilize some bases for random number
 	randomize();
@@ -39,16 +51,18 @@ int main()
 		start = clock();
 
 		// algorithm main entity
-		g_GlobalSettings = new emoc::Global("moeadira", "uf1", 300, 30, 2, 300000);
-		g_GlobalSettings->Start();
+		g_GlobalSettingsArray[thread_id] = new emoc::Global("moeadfrrmab", "dtlz5", 100, 30, 3, 220000, thread_id);
+		g_GlobalSettingsArray[thread_id]->Start();
 
 		end = clock();
 		double time = (double)(end - start) / CLOCKS_PER_SEC;
 
-		double igd = emoc::CalculateIGD(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_);
-		double gd = emoc::CalculateGD(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_);
-		double hv = emoc::CalculateHV(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_);
-		double spacing = emoc::CalculateSpacing(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_);
+		std::string problem_name = g_GlobalSettingsArray[thread_id]->problem_name_;
+		int obj_num = g_GlobalSettingsArray[thread_id]->obj_num_;
+		double igd = emoc::CalculateIGD(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num, problem_name);
+		double gd = emoc::CalculateGD(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num, problem_name);
+		double hv = emoc::CalculateHV(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num);
+		double spacing = emoc::CalculateSpacing(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num);
 		igd_sum += igd;
 		printf("igd : %f\n", igd);
 		//printf("hv : %f\n", hv);
@@ -56,13 +70,48 @@ int main()
 		//printf("spacing : %f\n", spacing);
 		printf("runtime : %fs\n", time);
 
-		delete g_GlobalSettings;
+		delete g_GlobalSettingsArray[0];
 	}
 
-	 printf("mean igd : %f\n", igd_sum/ run);
-
-
-
-	getchar();
+	system("pause");
 	return 0;
+
+
+}
+
+void *Work(void *args)
+{
+	int thread_id = 1;
+	double igd_sum = 0;
+	// initilize some bases for random number
+	randomize();
+	int run = 5;
+	for (int i = 0; i < run; ++i)
+	{
+		// run time recording
+		clock_t start, end;
+		start = clock();
+
+		// algorithm main entity
+		g_GlobalSettingsArray[thread_id] = new emoc::Global("moeadfrrmab", "dtlz5", 100, 30, 3, 220000, thread_id);
+		g_GlobalSettingsArray[thread_id]->Start();
+
+		end = clock();
+		double time = (double)(end - start) / CLOCKS_PER_SEC;
+
+		std::string problem_name = g_GlobalSettingsArray[thread_id]->problem_name_;
+		int obj_num = g_GlobalSettingsArray[thread_id]->obj_num_;
+		double igd = emoc::CalculateIGD(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num, problem_name);
+		double gd = emoc::CalculateGD(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num, problem_name);
+		double hv = emoc::CalculateHV(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num);
+		double spacing = emoc::CalculateSpacing(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num);
+		igd_sum += igd;
+		printf("igd : %f\n", igd);
+		//printf("hv : %f\n", hv);
+		//printf("gd : %f\n", gd);
+		//printf("spacing : %f\n", spacing);
+		printf("runtime : %fs\n", time);
+
+		delete g_GlobalSettingsArray[0];
+	}
 }

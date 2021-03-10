@@ -10,7 +10,7 @@ namespace emoc {
 	class SPEA2 : public Algorithm
 	{
 	public:
-		SPEA2(Problem *problem);
+		SPEA2(Problem *problem, int thread_num);
 		virtual ~SPEA2();
 
 		void Run();

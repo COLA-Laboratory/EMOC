@@ -14,7 +14,7 @@
 
 namespace emoc {
 
-	SPEA2::SPEA2(Problem *problem):Algorithm(problem)
+	SPEA2::SPEA2(Problem *problem, int thread_num):Algorithm(problem, thread_num)
 	{
 
 	}
@@ -35,7 +35,7 @@ namespace emoc {
 
 			// generate offspring population
 			Crossover(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->offspring_population_.data());
-			MutationPop(g_GlobalSettings->offspring_population_.data(), 2 * g_GlobalSettings->population_num_ / 2);
+			MutationPop(g_GlobalSettings->offspring_population_.data(), 2 * g_GlobalSettings->population_num_ / 2, g_GlobalSettings);
 			EvaluatePop(g_GlobalSettings->offspring_population_.data(), 2 * g_GlobalSettings->population_num_ / 2);
 			MergePopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_, g_GlobalSettings->offspring_population_.data(),
 				2 * g_GlobalSettings->population_num_ / 2, g_GlobalSettings->mixed_population_.data());
@@ -67,7 +67,7 @@ namespace emoc {
 		{
 			Individual *parent1 = TournamentByFitness(parent_pop[index1[2 * i]], parent_pop[index1[2 * i + 1]]);
 			Individual *parent2 = TournamentByFitness(parent_pop[index2[2 * i]], parent_pop[index2[2 * i + 1]]);
-			SBX(parent1, parent2, offspring_pop[2 * i], offspring_pop[2 * i + 1]);
+			SBX(parent1, parent2, offspring_pop[2 * i], offspring_pop[2 * i + 1], g_GlobalSettings);
 		}
 
 		delete[] index1;
@@ -116,7 +116,7 @@ namespace emoc {
 				if (i == j)
 					continue;
 
-				DominateReleation res = CheckDominance(pop[i], pop[j]);
+				DominateReleation res = CheckDominance(pop[i], pop[j], g_GlobalSettings->obj_num_);
 				if (res == DOMINATE)
 				{
 					dominate_num[i]++;

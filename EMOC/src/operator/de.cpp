@@ -1,11 +1,10 @@
 #include "operator/de.h"
 
-#include "core/global.h"
 #include "random/random.h"
 
 namespace emoc {
 
-	void DE(Individual *parent1, Individual *parent2, Individual *parent3, Individual *offspring)
+	void DE(Individual *parent1, Individual *parent2, Individual *parent3, Individual *offspring, Global *g_GlobalSettings)
 	{
 		double value = 0.0;
 

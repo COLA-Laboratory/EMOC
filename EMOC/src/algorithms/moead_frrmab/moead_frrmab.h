@@ -26,7 +26,7 @@ namespace emoc {
 			GLOBAL
 		}NeighbourType;
 
-		MOEADFRRMAB(Problem *problem);
+		MOEADFRRMAB(Problem *problem, int thread_num);
 		virtual ~MOEADFRRMAB();
 
 		void Run();

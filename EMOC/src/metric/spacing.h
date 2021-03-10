@@ -3,6 +3,6 @@
 
 namespace emoc {
 
-	double CalculateSpacing(Individual **pop, int pop_num);
+	double CalculateSpacing(Individual **pop, int pop_num, int obj_num);
 
 }

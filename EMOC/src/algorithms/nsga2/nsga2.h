@@ -16,7 +16,7 @@ namespace emoc {
 			double distance;
 		}DistanceInfo;  // store crowding distance of index-th individual
 
-		NSGA2(Problem *problem);
+		NSGA2(Problem *problem, int thread_num);
 		virtual ~NSGA2();
 		
 		void Run();
