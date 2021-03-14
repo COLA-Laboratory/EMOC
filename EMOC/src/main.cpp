@@ -7,6 +7,7 @@
 #include <iostream>
 #include <algorithm>
 
+#include "core/file.h"
 #include "core/global.h"
 #include "core/individual.h"
 #include "problem/zdt.h"
@@ -28,18 +29,8 @@
 
 #define THREAD_NUM 8
 using emoc::g_GlobalSettingsArray;
+using emoc::EMOCParameters;
 
-struct EMOCParameters
-{
-	std::string algorithm_name;
-	std::string problem_name;
-	int population_num;
-	int decision_num;
-	int objective_num;
-	int max_evaluation;
-
-	double *igd_value;
-};
 
 struct ThreadParamters
 {
@@ -51,88 +42,41 @@ struct ThreadParamters
 };
 
 void *Work(void *args);
-
+void EMOCMultiThreadTest(EMOCParameters *parameter);
+void EMOCSingleThreadTest(EMOCParameters *parameter);
 
 int main()
 {	
 	// initilize some bases for random number
 	randomize();
-	// paramater
-	const char *algorithm_name = "moeadde";
-	const char *problem_name = "zdt1";
-	int population_num = 300;
-	int dec_num = 30;
-	int obj_num = 2;
-	int max_eval = 300000;
-	int runs = 26;
 
-	EMOCParameters *parameter = new EMOCParameters(); // 这里只能用new，因为结构体里面有string，如果malloc的话不会做构造，所以malloc出来string是未初始化的，不能正确使用
-	parameter->igd_value = (double*)malloc(sizeof(double) * runs);
+	// initialize parameters
+	emoc::EMOCParameters *parameter = new emoc::EMOCParameters(); // 这里只能用new，因为结构体里面有string，如果malloc的话不会做构造，所以malloc出来string是未初始化的，不能正确使用
+	ReadParametersFromFile("src/config/config.txt", parameter);
+	parameter->igd_value = (double *)malloc(sizeof(double) * parameter->runs_num);
 
-	parameter->algorithm_name = algorithm_name;
-	parameter->problem_name = problem_name;
-	parameter->population_num = population_num;
-	parameter->decision_num = dec_num;
-	parameter->objective_num = obj_num;
-	parameter->max_evaluation = max_eval;
+	clock_t start, end;
+	start = clock();
 
-	std::cout << parameter->algorithm_name << std::endl;
-	std::cout << parameter->problem_name << std::endl;
+	// EMOC test run
+	if (parameter->is_open_multithread)
+		EMOCMultiThreadTest(parameter);
+	else
+		EMOCSingleThreadTest(parameter);
 
+	end = clock();
+	double time = (double)(end - start) / CLOCKS_PER_SEC;
+	printf("total run time: %fs\n", time);
 
-
-	ThreadParamters *thread_para_array[THREAD_NUM];
-	for (int i = 0; i < THREAD_NUM; ++i)
-	{
-		thread_para_array[i] = (ThreadParamters *)malloc(sizeof(ThreadParamters));
-		thread_para_array[i]->para = parameter;
-	}
-
-	pthread_t tid[THREAD_NUM];
-	int job_overload[THREAD_NUM];
-	int interval = (double)runs / THREAD_NUM;
-	int remainder = runs % THREAD_NUM;
-	for (int i = 0; i < THREAD_NUM; ++i)
-	{
-		job_overload[i] = interval;
-		if (remainder-- > 0)
-			job_overload[i]++;
-
-		printf("thread %d: %d runs\n",i, job_overload[i]);
-	}
-
-
-	int total_overload = 0;
-	for (int i = 0; i < THREAD_NUM; ++i)
-	{
-		if (job_overload[i] > 0)
-		{
-			thread_para_array[i]->run_start = total_overload;
-			thread_para_array[i]->run_end = total_overload + job_overload[i] - 1;
-			thread_para_array[i]->thread_id = i;
-			total_overload += job_overload[i];
-		}
-		else
-			continue;
-
-		pthread_create(&tid[i], nullptr, Work, (void *)thread_para_array[i]);
-	}
-
-	for (int i = 0; i < THREAD_NUM; ++i)
-	{
-		if (job_overload[i] > 0)
-			pthread_join(tid[i], nullptr);
-	}
-
-	for (int i = 0; i < runs; ++i)
+	for (int i = 0; i < parameter->runs_num; ++i)
 	{
 		printf("runs %d : %f \n", i, parameter->igd_value[i]);
 	}
 
+	delete parameter;
+
 	system("pause");
 	return 0;
-
-
 }
 
 void *Work(void *args)
@@ -169,14 +113,101 @@ void *Work(void *args)
 
 		printf("current thread id : %d, runs: %d, igd:%f\n", thread_id, run, igd);
 		parameter->para->igd_value[run] = igd;
-		//printf("igd : %f\n", igd);
-		////printf("hv : %f\n", hv);
-		////printf("gd : %f\n", gd);
-		////printf("spacing : %f\n", spacing);
-		//printf("runtime : %fs\n", time);
+
+
+		RecordPop(run, 0, g_GlobalSettingsArray[thread_id]);
 
 		delete g_GlobalSettingsArray[thread_id];
 	}
 
 	return nullptr;
+}
+
+void EMOCMultiThreadTest(EMOCParameters *parameter)
+{
+	int thread_num = parameter->thread_num;
+	std::vector<ThreadParamters*> thread_para_array(thread_num, nullptr);
+	for (int i = 0; i < thread_num; ++i)
+	{
+		thread_para_array[i] = (ThreadParamters *)malloc(sizeof(ThreadParamters));
+		thread_para_array[i]->para = parameter;
+	}
+
+	std::vector<int> job_overload(thread_num, 0);
+	int interval = (double)parameter->runs_num / thread_num;
+	int remainder = parameter->runs_num % thread_num;
+	for (int i = 0; i < thread_num; ++i)
+	{
+		job_overload[i] = interval;
+		if (remainder-- > 0)
+			job_overload[i]++;
+		//printf("thread %d: %d runs\n",i, job_overload[i]);
+	}
+
+	// multithread running
+	std::vector<pthread_t> tid(thread_num);
+	int total_overload = 0;
+	for (int i = 0; i < thread_num; ++i)
+	{
+		if (job_overload[i] > 0)
+		{
+			thread_para_array[i]->run_start = total_overload;
+			thread_para_array[i]->run_end = total_overload + job_overload[i] - 1;
+			thread_para_array[i]->thread_id = i;
+			total_overload += job_overload[i];
+		}
+		else
+			continue;
+
+		pthread_create(&tid[i], nullptr, Work, (void *)thread_para_array[i]);
+	}
+
+	for (int i = 0; i < thread_num; ++i)
+	{
+		if (job_overload[i] > 0)
+			pthread_join(tid[i], nullptr);
+	}
+
+
+	for (int i = 0; i < thread_num; ++i)
+		free(thread_para_array[i]);
+}
+
+void EMOCSingleThreadTest(EMOCParameters *parameter)
+{
+	const char *algorithm_name = parameter->algorithm_name.c_str();
+	const char *problem_name = parameter->problem_name.c_str();
+	int population_num = parameter->population_num;
+	int dec_num = parameter->decision_num;
+	int obj_num = parameter->objective_num;
+	int max_eval = parameter->max_evaluation;
+
+	for (int run = 0; run < parameter->runs_num; ++run)
+	{
+		int thread_id = 0;
+		//run time recording
+		clock_t start, end;
+		start = clock();
+
+		// algorithm main entity
+		g_GlobalSettingsArray[thread_id] = new emoc::Global(algorithm_name, problem_name, population_num, dec_num, obj_num, max_eval, thread_id);
+		g_GlobalSettingsArray[thread_id]->Start();
+
+		end = clock();
+		double time = (double)(end - start) / CLOCKS_PER_SEC;
+
+		std::string problem_name = g_GlobalSettingsArray[thread_id]->problem_name_;
+		int obj_num = g_GlobalSettingsArray[thread_id]->obj_num_;
+		double igd = emoc::CalculateIGD(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num, problem_name);
+		double gd = emoc::CalculateGD(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num, problem_name);
+		double hv = emoc::CalculateHV(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num);
+		double spacing = emoc::CalculateSpacing(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num);
+
+		printf("run time: %fs\n", time);
+
+		parameter->igd_value[run] = igd;
+		RecordPop(run, 0, g_GlobalSettingsArray[thread_id]);
+
+		delete g_GlobalSettingsArray[thread_id];
+	}
 }

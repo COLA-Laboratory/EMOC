@@ -120,6 +120,9 @@
     <ClCompile Include="src\algorithms\moead_ira\moead_ira.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\core\file.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\global.h">
@@ -230,5 +233,11 @@
     <ClInclude Include="src\algorithms\moead_ira\moead_ira.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="src\core\file.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="src\config\config.txt" />
   </ItemGroup>
 </Project>

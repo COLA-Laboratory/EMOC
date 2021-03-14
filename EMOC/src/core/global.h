@@ -3,6 +3,7 @@
 #define PI 3.14159265358979323846
 #define EPS 1.0e-6
 #define MAX_THREAD_NUM 20
+#define MAX_BUFFSIZE 256
 
 #include <string>
 #include <vector>

@@ -1,0 +1,10 @@
+algorithm_name:MOEADDE
+problem_name:UF1
+variable_number:30
+objective_number:2
+population_number:100
+max_evaluation:100000
+output_interval:100
+runs_number:30
+open_multithread:1
+thread_number:8
