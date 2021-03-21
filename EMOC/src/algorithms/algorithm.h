@@ -25,10 +25,12 @@ namespace emoc {
 		int MergePopulation(Individual **pop_src1, int pop_num1, Individual **pop_src2, int pop_num2, Individual **pop_dest);
 		void CopyIndividual(Individual *ind_src, Individual *ind_dest);
 
+		void TrackPopulation(int generation);
+
 	protected:
 		Global *g_GlobalSettings;
 		Problem *problem_; // it is released outside
-		int thread_num_;   // current thread number
+		int thread_id_;   // current thread number
 	};
 
 }

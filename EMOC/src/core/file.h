@@ -22,5 +22,6 @@ namespace emoc {
 	void PrintObjective(const char *filename, int obj_num, Individual **pop_table, int pop_num);
 	void RecordPop(int run_index, int generation, Global *para);
 	void ReadParametersFromFile(const char *filename, EMOCParameters *para);
+	void ParseParamerters(int argc, char *argv[], EMOCParameters *para);
 	void FormalizeStr(char *buff);
 }

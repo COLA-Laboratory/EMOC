@@ -67,6 +67,11 @@ namespace emoc {
 				// environmental selection
 				EnvironmentalSelection(g_GlobalSettings->parent_population_.data(), offspring);
 			}
+
+			// record the population every interval generations and the first and last genration 
+			if (g_GlobalSettings->iteration_num_ % g_GlobalSettings->output_interval_ == 0 || g_GlobalSettings->iteration_num_ == 1
+				|| g_GlobalSettings->IsTermination())
+				TrackPopulation(g_GlobalSettings->iteration_num_);
 		}
 	}
 

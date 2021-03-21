@@ -32,4 +32,6 @@ namespace emoc {
 	double CalInverseChebycheff(Individual *ind, double *weight_vector, double *ideal_point, int obj_num);
 	double CalPBI(Individual *ind, double *weight_vector, double *ideal_point, int obj_num, double theta = 0.0 );
 
+	//
+
 }

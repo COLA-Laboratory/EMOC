@@ -3,12 +3,13 @@
 #include <iostream>
 
 #include "core/global.h"
+#include "core/file.h"
 
 namespace emoc {
 
-	Algorithm::Algorithm(Problem *problem, int thread_num):problem_(problem), thread_num_(thread_num)
+	Algorithm::Algorithm(Problem *problem, int thread_id):problem_(problem), thread_id_(thread_id)
 	{
-		g_GlobalSettings = g_GlobalSettingsArray[thread_num];
+		g_GlobalSettings = g_GlobalSettingsArray[thread_id];
 	}
 
 	Algorithm::~Algorithm()
@@ -76,6 +77,11 @@ namespace emoc {
 		// copy individual decision and objective datas
 		memcpy(ind_dest->dec_, ind_src->dec_, sizeof(double) * g_GlobalSettings->dec_num_);
 		memcpy(ind_dest->obj_, ind_src->obj_, sizeof(double) * g_GlobalSettings->obj_num_);
+	}
+
+	void Algorithm::TrackPopulation(int generation)
+	{
+		RecordPop(g_GlobalSettings->run_id_, generation, g_GlobalSettings);
 	}
 
 }

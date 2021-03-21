@@ -49,6 +49,11 @@ namespace emoc {
 			MergePopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_, g_GlobalSettings->offspring_population_.data(),
 				2 * g_GlobalSettings->population_num_ / 2, g_GlobalSettings->mixed_population_.data());
  			EnvironmentalSelection(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->mixed_population_.data());
+
+			// record the population every interval generations and the first and last genration 
+			if (g_GlobalSettings->iteration_num_ % g_GlobalSettings->output_interval_ == 0 || g_GlobalSettings->iteration_num_ == 1
+				|| g_GlobalSettings->IsTermination())
+				TrackPopulation(g_GlobalSettings->iteration_num_);
 		}
 	}
 

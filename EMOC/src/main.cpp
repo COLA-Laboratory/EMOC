@@ -45,15 +45,29 @@ void *Work(void *args);
 void EMOCMultiThreadTest(EMOCParameters *parameter);
 void EMOCSingleThreadTest(EMOCParameters *parameter);
 
-int main()
+int main(int argc, char* argv[])
 {	
 	// initilize some bases for random number
 	randomize();
 
 	// initialize parameters
 	emoc::EMOCParameters *parameter = new emoc::EMOCParameters(); // 这里只能用new，因为结构体里面有string，如果malloc的话不会做构造，所以malloc出来string是未初始化的，不能正确使用
-	ReadParametersFromFile("src/config/config.txt", parameter);
+	ParseParamerters(argc, argv, parameter);
+	//ReadParametersFromFile("src/config/config.txt", parameter);
 	parameter->igd_value = (double *)malloc(sizeof(double) * parameter->runs_num);
+
+	std::cout << "current task:" << std::endl;
+	std::cout << "-------------------------------------------" << std::endl;
+	std::cout << "problem:              " << parameter->problem_name << std::endl;
+	std::cout << "algorithm:            " << parameter->algorithm_name << std::endl;
+	std::cout << "population number:    " << parameter->population_num << std::endl;
+	std::cout << "decision number:      " << parameter->decision_num << std::endl;
+	std::cout << "objective number:     " << parameter->objective_num << std::endl;
+	std::cout << "evaluation:           " << parameter->max_evaluation << std::endl;
+	std::cout << "runs:                 " << parameter->runs_num << std::endl;
+	std::cout << "is open multithread:  " << parameter->is_open_multithread << std::endl;
+	std::cout << "multithread number:   " << parameter->thread_num << std::endl;
+	std::cout << "-------------------------------------------\n" << std::endl;
 
 	clock_t start, end;
 	start = clock();
@@ -70,7 +84,7 @@ int main()
 
 	for (int i = 0; i < parameter->runs_num; ++i)
 	{
-		printf("runs %d : %f \n", i, parameter->igd_value[i]);
+		printf("run %d igd value: %f \n", i, parameter->igd_value[i]);
 	}
 
 	delete parameter;
@@ -89,6 +103,7 @@ void *Work(void *args)
 	int dec_num = parameter->para->decision_num;
 	int obj_num = parameter->para->objective_num;
 	int max_eval = parameter->para->max_evaluation;
+	int output_interval = parameter->para->output_interval;
 
 	for (int run = parameter->run_start; run <= parameter->run_end; ++run)
 	{
@@ -98,7 +113,7 @@ void *Work(void *args)
 		//start = clock();
 
 		// algorithm main entity
-		g_GlobalSettingsArray[thread_id] = new emoc::Global(algorithm_name, problem_name, population_num, dec_num, obj_num, max_eval, thread_id);
+		g_GlobalSettingsArray[thread_id] = new emoc::Global(algorithm_name, problem_name, population_num, dec_num, obj_num, max_eval, thread_id, output_interval, run);
 		g_GlobalSettingsArray[thread_id]->Start();
 
 		//end = clock();
@@ -115,7 +130,7 @@ void *Work(void *args)
 		parameter->para->igd_value[run] = igd;
 
 
-		RecordPop(run, 0, g_GlobalSettingsArray[thread_id]);
+		//RecordPop(run, 0, g_GlobalSettingsArray[thread_id]);
 
 		delete g_GlobalSettingsArray[thread_id];
 	}
@@ -177,10 +192,12 @@ void EMOCSingleThreadTest(EMOCParameters *parameter)
 {
 	const char *algorithm_name = parameter->algorithm_name.c_str();
 	const char *problem_name = parameter->problem_name.c_str();
+
 	int population_num = parameter->population_num;
 	int dec_num = parameter->decision_num;
 	int obj_num = parameter->objective_num;
 	int max_eval = parameter->max_evaluation;
+	int output_interval = parameter->output_interval;
 
 	for (int run = 0; run < parameter->runs_num; ++run)
 	{
@@ -190,7 +207,7 @@ void EMOCSingleThreadTest(EMOCParameters *parameter)
 		start = clock();
 
 		// algorithm main entity
-		g_GlobalSettingsArray[thread_id] = new emoc::Global(algorithm_name, problem_name, population_num, dec_num, obj_num, max_eval, thread_id);
+		g_GlobalSettingsArray[thread_id] = new emoc::Global(algorithm_name, problem_name, population_num, dec_num, obj_num, max_eval, thread_id, output_interval, run);
 		g_GlobalSettingsArray[thread_id]->Start();
 
 		end = clock();
@@ -203,10 +220,10 @@ void EMOCSingleThreadTest(EMOCParameters *parameter)
 		double hv = emoc::CalculateHV(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num);
 		double spacing = emoc::CalculateSpacing(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num);
 
-		printf("run time: %fs\n", time);
+		printf("run %d time: %fs\n",run, time);
 
 		parameter->igd_value[run] = igd;
-		RecordPop(run, 0, g_GlobalSettingsArray[thread_id]);
+		//RecordPop(run, 0, g_GlobalSettingsArray[thread_id]);
 
 		delete g_GlobalSettingsArray[thread_id];
 	}

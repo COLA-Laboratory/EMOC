@@ -45,7 +45,7 @@ namespace emoc {
 	{
 	public:
 		Global(const char *algorithn_name, const char *problem_name, int population_num, 
-			int dec_num, int obj_num, int max_evaluation, int thread_num);
+			int dec_num, int obj_num, int max_evaluation, int thread_num,int output_interval, int run_id = 0);
 		~Global();
 
 		// initialize given population, i.e. set the decision variables' value
@@ -59,12 +59,14 @@ namespace emoc {
 	public:
 		int dec_num_;
 		int obj_num_;
-		int thread_num_;
+		int thread_id_;
+		int run_id_;
 
 		int population_num_;
 		int iteration_num_;
 		int current_evaluation_;
 		int max_evaluation_;
+		int output_interval_;
 
 		std::string algorithm_name_;
 		std::string problem_name_;

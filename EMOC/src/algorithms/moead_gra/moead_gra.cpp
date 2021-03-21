@@ -95,6 +95,11 @@ namespace emoc {
 			// record population's fitness
 			for (int i = 0; i < weight_num_; ++i)
 				fitness_history_[g_GlobalSettings->iteration_num_ % 20][i] = g_GlobalSettings->parent_population_[i]->fitness_;
+
+			// record the population every interval generations and the first and last genration 
+			if (g_GlobalSettings->iteration_num_ % g_GlobalSettings->output_interval_ == 0 || g_GlobalSettings->iteration_num_ == 1
+				|| g_GlobalSettings->IsTermination())
+				TrackPopulation(g_GlobalSettings->iteration_num_);
 		}
 	}
 

@@ -63,6 +63,11 @@ namespace emoc {
 				// update neighbours' subproblem 
 				UpdateSubproblem(offspring, i, aggregation_type_);
 			}
+
+			// record the population every interval generations and the first and last genration 
+			if (g_GlobalSettings->iteration_num_ % g_GlobalSettings->output_interval_ == 0 || g_GlobalSettings->iteration_num_ == 1
+				|| g_GlobalSettings->IsTermination())
+				TrackPopulation(g_GlobalSettings->iteration_num_);
 		}
 	}
 
