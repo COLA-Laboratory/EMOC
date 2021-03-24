@@ -78,6 +78,14 @@ namespace emoc {
 	void PrintObjective(const char *filename, int obj_num, Individual **pop_table, int pop_num)
 	{
 		FILE *fpt = fopen(filename, "w");
+		
+		if(fpt == nullptr)
+		{
+			std::cout <<filename<< " doesn't exist." << std::endl;
+			std::cout << "Press enter to exit" << std::endl;
+			std::cin.get();
+			exit(-1);
+		}
 
 		for (int i = 0; i < pop_num; ++i)
 		{
