@@ -1,7 +1,6 @@
 # Directories
 .vs/
-bin/
-bin-ind/
+build/
 
 # Files 
 *.user
