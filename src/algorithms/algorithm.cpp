@@ -10,6 +10,7 @@ namespace emoc {
 
 	Algorithm::Algorithm(Problem *problem, int thread_id):problem_(problem), thread_id_(thread_id)
 	{
+		record_file_time_ = 0.0f;
 		g_GlobalSettings = g_GlobalSettingsArray[thread_id];
 	}
 
@@ -82,7 +83,11 @@ namespace emoc {
 
 	void Algorithm::TrackPopulation(int generation)
 	{
-		RecordPop(g_GlobalSettings->run_id_, generation, g_GlobalSettings);
+		start_ = clock();
+		int is_terminal = g_GlobalSettings->IsTermination();
+		RecordPop(g_GlobalSettings->run_id_, generation, g_GlobalSettings,real_popnum_, is_terminal);
+		end_ = clock();
+		record_file_time_ += (double)(end_ - start_) / CLOCKS_PER_SEC;
 	}
 
 }

@@ -26,7 +26,7 @@
 #include "metric/gd.h"
 #include "metric/spacing.h"
 #include "random/random.h"
-
+ 
 #if defined(__linux) || defined(linux)
 #include <sys/time.h>
 #endif
@@ -47,7 +47,7 @@ struct ThreadParamters
 
 void *Work(void *args);
 void EMOCMultiThreadTest(EMOCParameters *parameter);
-void EMOCSingleThreadTest(EMOCParameters *parameter);
+void EMOCSingleThreadTest(EMOCParameters *parameter, double *runtime);
 
 int main(int argc, char* argv[])
 {	
@@ -59,6 +59,7 @@ int main(int argc, char* argv[])
 	ParseParamerters(argc, argv, parameter);
 	//ReadParametersFromFile("src/config/config.txt", parameter);
 	parameter->igd_value = (double *)malloc(sizeof(double) * parameter->runs_num);
+	double *runtime = (double *)malloc(sizeof(double) * parameter->runs_num);
 
 	std::cout << "current task:" << std::endl;
 	std::cout << "-------------------------------------------" << std::endl;
@@ -80,21 +81,24 @@ int main(int argc, char* argv[])
 	if (parameter->is_open_multithread)
 		EMOCMultiThreadTest(parameter);
 	else
-		EMOCSingleThreadTest(parameter);
+		EMOCSingleThreadTest(parameter,runtime);
 
 	end = clock();
 	double time = (double)(end - start) / CLOCKS_PER_SEC;
-	printf("------total run time: %fs--------\n", time);
 
-	for (int i = 0; i < parameter->runs_num; ++i)
-	{
-		printf("run %d igd value: %f \n", i, parameter->igd_value[i]);
-	}
+	//printf("------total run time: %fs--------\n\n", time);
 
+	//for (int i = 0; i < parameter->runs_num; ++i)
+	//{
+	//	printf("run %d igd value: %f \n", i, parameter->igd_value[i]);
+	//}
+
+	free(runtime);
+	free(parameter->igd_value);
 	delete parameter;
 
 	std::cout<<"\nTask has finished, please enter to exit."<<std::endl;
-	std::cin.get();
+
 	
 	return 0;
 }
@@ -129,6 +133,9 @@ void *Work(void *args)
 
 
 		//RecordPop(run, 0, g_GlobalSettingsArray[thread_id]);
+
+
+
 
 		delete g_GlobalSettingsArray[thread_id];
 	}
@@ -186,7 +193,7 @@ void EMOCMultiThreadTest(EMOCParameters *parameter)
 		free(thread_para_array[i]);
 }
 
-void EMOCSingleThreadTest(EMOCParameters *parameter)
+void EMOCSingleThreadTest(EMOCParameters *parameter, double *runtime)
 {
 	const char *algorithm_name = parameter->algorithm_name.c_str();
 	const char *problem_name = parameter->problem_name.c_str();
@@ -214,14 +221,25 @@ void EMOCSingleThreadTest(EMOCParameters *parameter)
 		std::string problem_name = g_GlobalSettingsArray[thread_id]->problem_name_;
 		int obj_num = g_GlobalSettingsArray[thread_id]->obj_num_;
 		double igd = emoc::CalculateIGD(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num, problem_name);
-		double gd = emoc::CalculateGD(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num, problem_name);
-		double hv = emoc::CalculateHV(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num);
-		double spacing = emoc::CalculateSpacing(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num);
+		//double gd = emoc::CalculateGD(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num, problem_name);
+		//double hv = emoc::CalculateHV(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num);
+		//double spacing = emoc::CalculateSpacing(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num);
 
-		printf("run %d time: %fs\n",run, time);
+		printf("run %d time: %fs  igd: %f\n",run, time,igd);
 
+		runtime[run] = time;
 		parameter->igd_value[run] = igd;
 		//RecordPop(run, 0, g_GlobalSettingsArray[thread_id]);
+
+
+		if (!parameter->is_open_multithread && parameter->runs_num == 1)
+		{
+			time = runtime[0];
+			time -= g_GlobalSettingsArray[0]->RecordFileTime();
+			RecordTime(0, parameter, time);
+			printf("---------------------run time file has been recorded %f--------------------\n", time);
+		}
+
 
 		delete g_GlobalSettingsArray[thread_id];
 	}

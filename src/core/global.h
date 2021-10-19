@@ -55,6 +55,7 @@ namespace emoc {
 		void Start();
 		bool IsTermination();
 		void DisplayMetrics();
+		double RecordFileTime();
 
 	public:
 		int dec_num_;

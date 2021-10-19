@@ -1,10 +1,10 @@
 algorithm_name:MOEAD
-problem_name:UF1
+problem_name:ZDT1
 variable_number:30
 objective_number:2
-population_number:100
-max_evaluation:100000
-output_interval:10000
-runs_number:20
+population_number:200
+max_evaluation:250000
+output_interval:10
+runs_number:10
 open_multithread:1
-thread_number:8
+thread_number:4

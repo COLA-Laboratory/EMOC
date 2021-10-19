@@ -18,7 +18,7 @@ namespace emoc {
 		Algorithm(problem, thread_num),
 		nadir_point_(new double[problem->obj_num_])
 	{
-
+		real_popnum_ = g_GlobalSettings->population_num_;
 	}
 
 	SMSEMOA::~SMSEMOA()
@@ -50,6 +50,8 @@ namespace emoc {
 	{
 		Initialization();
 		Individual *offspring = g_GlobalSettings->offspring_population_[0];
+		TrackPopulation(g_GlobalSettings->iteration_num_);
+
 		while (!g_GlobalSettings->IsTermination())
 		{
 			// begin each iteration
@@ -72,7 +74,9 @@ namespace emoc {
 			// record the population every interval generations and the first and last genration 
 			if (g_GlobalSettings->iteration_num_ % g_GlobalSettings->output_interval_ == 0 || g_GlobalSettings->iteration_num_ == 1
 				|| g_GlobalSettings->IsTermination())
+			{
 				TrackPopulation(g_GlobalSettings->iteration_num_);
+			}
 		}
 	}
 

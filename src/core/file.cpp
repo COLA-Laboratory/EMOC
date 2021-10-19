@@ -98,7 +98,7 @@ namespace emoc {
 		fclose(fpt);
 	}
 
-	void RecordPop(int run_index, int generation, Global *para)
+	void RecordPop(int run_index, int generation, Global *para, int real_popnum, int is_terminal)
 	{
 		char output_dir_level0[MAX_BUFFSIZE];
 		char output_dir_level1[MAX_BUFFSIZE];    // upper level directory
@@ -152,8 +152,84 @@ namespace emoc {
 		#endif
 
 
-		sprintf(output_file, "%spop_%d.txt", output_dir_level2, generation);
-		PrintObjective(output_file, para->obj_num_, para->parent_population_.data(), para->population_num_);
+		if(is_terminal)
+			sprintf(output_file, "%spop_final.txt", output_dir_level2);
+		else
+			sprintf(output_file, "%spop_%d.txt", output_dir_level2, generation);
+
+		PrintObjective(output_file, para->obj_num_, para->parent_population_.data(), real_popnum);
+	}
+
+	void RecordTime(int run_index, EMOCParameters *para, double runtime)
+	{
+		char output_dir_level0[MAX_BUFFSIZE];
+		char output_dir_level1[MAX_BUFFSIZE];    // upper level directory
+		char output_dir_level2[MAX_BUFFSIZE];    // lower level directory
+		char output_file[MAX_BUFFSIZE];
+		int n = 0;
+		// set the output directory
+
+		std::string problem_name(para->problem_name);
+		std::string algorithm_name(para->algorithm_name);
+		for (auto &c : problem_name)
+		{
+			if (c >= '0' && c <= '9') continue;
+			c = toupper(c);
+		}
+		for (auto &c : algorithm_name)
+		{
+			if (c >= '0' && c <= '9') continue;
+			c = toupper(c);
+		}
+
+
+		sprintf(output_dir_level0, "./src/output/%s_M%d_D%d",
+			problem_name.c_str(),
+			para->objective_num,
+			para->decision_num
+
+		);
+		sprintf(output_dir_level1, "./src/output/%s_M%d_D%d/%s/",
+			problem_name.c_str(),
+			para->objective_num,
+			para->decision_num,
+			algorithm_name.c_str()
+		);
+		sprintf(output_dir_level2, "./src/output/%s_M%d_D%d/%s/%d/",
+			problem_name.c_str(),
+			para->objective_num,
+			para->decision_num,
+			algorithm_name.c_str(),
+			run_index
+		);
+
+#if defined(_WIN32)
+		_mkdir(output_dir_level0);
+		_mkdir(output_dir_level1);
+		_mkdir(output_dir_level2);
+#elif defined(__linux) || defined(linux)
+		mkdir(output_dir_level0, S_IRWXU);
+		mkdir(output_dir_level1, S_IRWXU);
+		mkdir(output_dir_level2, S_IRWXU);
+#endif
+
+		sprintf(output_file, "%sruntime.txt", output_dir_level2);
+		//printf("output_dir_level0 %s\n", output_dir_level0);
+		//printf("output_dir_level1 %s\n", output_dir_level1);
+		//printf("output_dir_level2 %s\n", output_dir_level2);
+		//printf("%s\n", output_file);
+		FILE *fpt = fopen(output_file, "w");
+
+		if (fpt == nullptr)
+		{
+			std::cout << output_file << " doesn't exist." << std::endl;
+			std::cout << "Press enter to exit" << std::endl;
+			std::cin.get();
+			exit(-1);
+		}
+
+		fprintf(fpt, "%.6lf", runtime);
+		fclose(fpt);	
 	}
 
 	void ReadParametersFromFile(const char *filename, EMOCParameters *para)

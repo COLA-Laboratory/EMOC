@@ -11,13 +11,6 @@
 #include "operator/mutation.h"
 #include "random/random.h"
 
-double *FEs_;
-double *FEs_success_;
-double *R_;						    // reward of each neighborhood size
-double *P_;							// probability of choosing each neighborhood size
-int *NS_;                           // different neighborhood size
-int LP_;
-
 namespace emoc {
 
 	ENSMOEAD::ENSMOEAD(Problem *problem, int thread_num) :
@@ -72,6 +65,9 @@ namespace emoc {
 		CalculateFitness(g_GlobalSettings->parent_population_.data(), weight_num_, old_obj_);
 
 		Individual *offspring = g_GlobalSettings->offspring_population_[0];
+
+		TrackPopulation(g_GlobalSettings->iteration_num_);
+
 		while (!g_GlobalSettings->IsTermination())
 		{
 			// begin each iteration
@@ -116,9 +112,11 @@ namespace emoc {
 			}
 
 			// record the population every interval generations and the first and last genration 
-			if (g_GlobalSettings->iteration_num_ % g_GlobalSettings->output_interval_ == 0||g_GlobalSettings->iteration_num_ == 1
+			if (g_GlobalSettings->iteration_num_ % g_GlobalSettings->output_interval_ == 0 || g_GlobalSettings->iteration_num_ == 1
 				|| g_GlobalSettings->IsTermination())
+			{
 				TrackPopulation(g_GlobalSettings->iteration_num_);
+			}
 		}
 	}
 
@@ -130,6 +128,8 @@ namespace emoc {
 
 		// generate weight vectors
 		lambda_ = UniformPoint(g_GlobalSettings->population_num_, &weight_num_, g_GlobalSettings->obj_num_);
+		real_popnum_ = weight_num_;
+		
 		// check the population size
 		if (weight_num_ <= 120)
 		{

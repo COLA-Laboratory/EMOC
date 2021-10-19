@@ -1,4 +1,6 @@
 #pragma once
+#include <ctime>
+
 #include "problem/problem.h"
 #include "core/individual.h"
 
@@ -27,10 +29,15 @@ namespace emoc {
 
 		void TrackPopulation(int generation);
 
+	public:
+		double record_file_time_;
+
 	protected:
 		Global *g_GlobalSettings;
 		Problem *problem_; // it is released outside
 		int thread_id_;   // current thread number
+		int real_popnum_;
+		clock_t start_, end_;
 	};
 
 }

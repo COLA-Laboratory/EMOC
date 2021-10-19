@@ -62,6 +62,8 @@ namespace emoc {
 		CalculateFitness(g_GlobalSettings->parent_population_.data(), weight_num_, old_obj_);
 
 		Individual *offspring = g_GlobalSettings->offspring_population_[0];
+		TrackPopulation(g_GlobalSettings->iteration_num_);
+
 		while (!g_GlobalSettings->IsTermination())
 		{
 			// begin each iteration
@@ -108,7 +110,9 @@ namespace emoc {
 			// record the population every interval generations and the first and last genration 
 			if (g_GlobalSettings->iteration_num_ % g_GlobalSettings->output_interval_ == 0 || g_GlobalSettings->iteration_num_ == 1
 				|| g_GlobalSettings->IsTermination())
+			{
 				TrackPopulation(g_GlobalSettings->iteration_num_);
+			}
 		}
 
 		for (int i = 0; i < 4; ++i)
@@ -125,6 +129,7 @@ namespace emoc {
 
 		// generate weight vectors
 		lambda_ = UniformPoint(g_GlobalSettings->population_num_, &weight_num_, g_GlobalSettings->obj_num_);
+		real_popnum_ = weight_num_;
 		replace_num_ = 2;
 
 		// set the neighbours of each individual

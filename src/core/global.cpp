@@ -73,6 +73,10 @@ namespace emoc {
 		return current_evaluation_ >= max_evaluation_;
 	}
 
+	double Global::RecordFileTime()
+	{
+		return algorithm_->record_file_time_;
+	}
 
 	void Global::Init()
 	{

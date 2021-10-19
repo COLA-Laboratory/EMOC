@@ -1,6 +1,7 @@
 #include "algorithms/moead/moead.h"
 
 #include <cmath>
+#include <ctime>
 #include <iostream>
 #include <algorithm>
 
@@ -46,6 +47,10 @@ namespace emoc {
 	{
 		Initialization();
 		Individual *offspring = g_GlobalSettings->offspring_population_[0];
+
+		TrackPopulation(g_GlobalSettings->iteration_num_);
+
+		//printf("%d %d\n", g_GlobalSettings->iteration_num_, g_GlobalSettings->current_evaluation_);
 		while (!g_GlobalSettings->IsTermination())
 		{
 			// begin each iteration
@@ -65,10 +70,14 @@ namespace emoc {
 				UpdateSubproblem(offspring, i, aggregation_type_);
 			}
 
+
 			// record the population every interval generations and the first and last genration 
 			if (g_GlobalSettings->iteration_num_ % g_GlobalSettings->output_interval_ == 0 || g_GlobalSettings->iteration_num_ == 1
 				|| g_GlobalSettings->IsTermination())
+			{
 				TrackPopulation(g_GlobalSettings->iteration_num_);
+			}
+
 		}
 	}
 
@@ -80,6 +89,7 @@ namespace emoc {
 
 		// generate weight vectors
 		lambda_ = UniformPoint(g_GlobalSettings->population_num_, &weight_num_, g_GlobalSettings->obj_num_);
+		real_popnum_ = weight_num_;
 
 		// set the neighbours of each individual
 		SetNeighbours();

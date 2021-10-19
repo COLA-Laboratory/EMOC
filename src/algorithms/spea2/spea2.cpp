@@ -16,7 +16,7 @@ namespace emoc {
 
 	SPEA2::SPEA2(Problem *problem, int thread_num):Algorithm(problem, thread_num)
 	{
-
+		real_popnum_ = g_GlobalSettings->population_num_;
 	}
 
 	SPEA2::~SPEA2()
@@ -28,6 +28,8 @@ namespace emoc {
 	{
 		Initialization();
 		CalFitness(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_);
+		TrackPopulation(g_GlobalSettings->iteration_num_);
+
 		while (!g_GlobalSettings->IsTermination())
 		{
 			// begin each iteration
@@ -46,7 +48,9 @@ namespace emoc {
 			// record the population every interval generations and the first and last genration 
 			if (g_GlobalSettings->iteration_num_ % g_GlobalSettings->output_interval_ == 0 || g_GlobalSettings->iteration_num_ == 1
 				|| g_GlobalSettings->IsTermination())
+			{
 				TrackPopulation(g_GlobalSettings->iteration_num_);
+			}
 		}
 	}
 
