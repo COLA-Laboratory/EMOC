@@ -348,17 +348,19 @@ namespace emoc {
 
 	void ParseParamerters(int argc, char *argv[], EMOCParameters *para)
 	{
+		
 		// defalut value
-		para->algorithm_name = "nsga2";
-		para->problem_name = "zdt1";
+		para->algorithm_name = "MOEAD";
+		para->problem_name = "ZDT1";
+		para->is_plotting = false;
 		para->population_num = 100;
 		para->decision_num = 30;
 		para->objective_num = 2;
 		para->max_evaluation = 25000;
-		para->output_interval = 10000;	// no output except the first and last gerneration
-		para->runs_num = 1;
+		para->output_interval = 1000000;	// no output except the first and last gerneration
+		para->runs_num = 10;
 		para->is_open_multithread = 0;
-		para->thread_num = 0;
+		para->thread_num = 8;
 
 		// parse parameter from command line
 		if (argc == 1)

@@ -1,6 +1,14 @@
 # Directories
 .vs/
 build/
+TEMPTEST/
+BUILDBACKUP/
+plotfile/
 
 # Files 
 *.user
+build32.bat
+EMOC.exe
+gnulotTest.cpp
+main_backup.cpp
+matplotlibcpp.h

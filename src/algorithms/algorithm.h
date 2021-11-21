@@ -19,6 +19,13 @@ namespace emoc {
 		void PrintPop();
 		virtual void Run() = 0;
 
+		inline int GetRealPopNum() { return real_popnum_; }
+		inline bool GetFinish() { return is_finish_; }
+		inline bool GetPause() { return is_finish_; }
+		inline void SetPlot(bool is_plotting) { is_plotting_ = is_plotting; }
+		inline void SetPause(bool is_pause) { is_pause_ = is_pause; }
+		inline void SetFinish(bool is_finish) { is_finish_ = is_finish; }
+
 	protected:
 		void EvaluatePop(Individual **pop, int pop_num);
 		void EvaluateInd(Individual *ind);
@@ -28,6 +35,7 @@ namespace emoc {
 		void CopyIndividual(Individual *ind_src, Individual *ind_dest);
 
 		void TrackPopulation(int generation);
+		void PlotPopulation(Individual** pop, int gen);
 
 	public:
 		double record_file_time_;
@@ -37,6 +45,10 @@ namespace emoc {
 		Problem *problem_; // it is released outside
 		int thread_id_;   // current thread number
 		int real_popnum_;
+		bool is_plotting_;
+		bool is_pause_;
+		bool is_finish_;
+
 		clock_t start_, end_;
 	};
 

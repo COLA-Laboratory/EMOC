@@ -35,7 +35,6 @@ namespace emoc {
 		pm_parameter_.muatation_pro = 1.0 / (double)dec_num;
 		pm_parameter_.eta_m = 20.0;
 
-		Init();
 	}
 
 	Global::~Global()
@@ -61,11 +60,8 @@ namespace emoc {
 
 	void Global::Start()
 	{
-		InitializeProblem();
-		InitializeAlgorithm();
-		SetDecBound();
-
 		algorithm_->Run();
+		algorithm_->SetFinish(true);
 	}
 
 	bool Global::IsTermination()
@@ -81,6 +77,12 @@ namespace emoc {
 	void Global::Init()
 	{
 		AllocateMemory();
+
+		// Because the initialization of algorithm needs the Global object has been created,
+		// we need delay the following into Start() or just put it in another function and call it before Start()
+		InitializeProblem();
+		InitializeAlgorithm();
+		SetDecBound();
 	}
 
 	void Global::SetDecBound()
@@ -255,5 +257,5 @@ namespace emoc {
 		delete algorithm_;
 	}
 
-	Global *g_GlobalSettingsArray[MAX_THREAD_NUM] = { nullptr };
+	//Global *g_GlobalSettingsArray[MAX_THREAD_NUM] = { nullptr };
 }

@@ -26,7 +26,9 @@ namespace emoc {
 	void NSGA2::Run()
 	{
 		Initialization();
-		TrackPopulation(g_GlobalSettings->iteration_num_);
+		TrackPopulation(g_GlobalSettings->iteration_num_);		
+		PlotPopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->iteration_num_);
+
 
 		while (!g_GlobalSettings->IsTermination())
 		{
@@ -49,6 +51,7 @@ namespace emoc {
 			{
 				TrackPopulation(g_GlobalSettings->iteration_num_);
 			}
+			PlotPopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->iteration_num_);
 		}
 	}
 

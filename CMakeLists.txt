@@ -9,32 +9,24 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_BUILD_TYPE "Debug")
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -Ot")
-	set(INCLUDEDIR 
-		./src
-		./vendor
-		./vendor/imgui
-		./vendor/glfw/include
-		./vendor/pthread/prebuilt/include
-	)
-	set(LIBDIR
-		./lib
-		./vendor/glfw/libs
-	)
-	
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -Ot")	
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -w")
-	set(INCLUDEDIR 
-		./src
-		./vendor
-		./vendor/imgui
-		./vendor/glfw/include
-	)
-	set(LIBDIR
-		./vendor/glfw/libs
-	)
-	
 endif()	
+
+set(INCLUDEDIR 
+    ./src
+    ./vendor
+    ./vendor/imgui
+    ./vendor/glfw/include
+    # ./vendor/pthread/prebuilt/include
+    # for my matplot test
+    # F:\Anaconda\include
+    # F:\Anaconda\Lib\site-packages\numpy\core\include
+)
+set(LIBDIR
+    ./vendor/glfw/libs
+)
 	
 link_directories(${LIBDIR})
 include_directories(${INCLUDEDIR})
@@ -42,6 +34,7 @@ include_directories(${INCLUDEDIR})
 set(HEADERS
 		vendor/random/random.h
 		vendor/wfg/iwfg.h
+		vendor/glfw/include/GLFW/glfw3.h
 		vendor/imgui/imconfig.h
 		vendor/imgui/imgui.h
 		vendor/imgui/imgui_internal.h
@@ -59,6 +52,8 @@ set(HEADERS
         src/ui/imgui_impl_glfw.h
         src/ui/imgui_impl_opengl3.h
         src/ui/imgui_impl_opengl3_loader.h
+        src/ui/plot.h
+        src/ui/uipanel_manager.h
         src/problem/problem.h
         src/problem/problem_head_collect.h
         src/problem/dtlz.h
@@ -86,12 +81,13 @@ set(HEADERS
         src/metric/hv.h
         src/metric/igd.h
         src/metric/spacing.h
+        src/emoc_app.h
         )
 
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-	set(HEADERS ${HEADERS} 
-		vendor/pthread/prebuilt/include/pthread.h)
-endif()
+# if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+# 	set(HEADERS ${HEADERS} 
+# 		vendor/pthread/prebuilt/include/pthread.h)
+# endif()
 		
 		
 set(SRC
@@ -112,6 +108,8 @@ set(SRC
         src/core/emoc_manager.cpp
         src/ui/imgui_impl_glfw.cpp
         src/ui/imgui_impl_opengl3.cpp
+        src/ui/plot.cpp
+        src/ui/uipanel_manager.cpp
         src/problem/problem.cpp
         src/problem/dtlz.cpp
         src/problem/uf.cpp
@@ -137,17 +135,19 @@ set(SRC
         src/metric/hv.cpp
         src/metric/igd.cpp
         src/metric/spacing.cpp
+        src/emoc_app.cpp
+        src/main_backup.cpp
         src/main.cpp
         )
 		
 add_executable(EMOC ${HEADERS} ${SRC})
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    target_link_libraries(EMOC pthreadVC2.lib pthreadVCE2.lib pthreadVSE2.lib glfw3.lib opengl32.lib)
+    target_link_libraries(EMOC glfw3.lib opengl32.lib)
 	set_directory_properties(PROPERTIES VS_STARTUP_PROJECT EMOC)
 	set_target_properties(EMOC PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
 	source_group(TREE "${CMAKE_SOURCE_DIR}" FILES ${HEADERS} ${SRC})
-	add_custom_command(TARGET EMOC POST_BUILD COMMAND copy ..\\bin\\pthreadVC2.dll ..\\pthreadVC2.dll)
+	# add_custom_command(TARGET EMOC POST_BUILD COMMAND copy ..\\bin\\pthreadVC2.dll ..\\pthreadVC2.dll)
 	add_custom_command(TARGET EMOC POST_BUILD COMMAND copy ..\\build\\Release\\EMOC.exe ..\\EMOC.exe)
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     target_link_libraries(EMOC pthread)

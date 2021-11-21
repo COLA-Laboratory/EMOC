@@ -12,6 +12,9 @@
 #include "operator/mutation.h"
 #include "random/random.h"
 
+// for test now
+#include "emoc_app.h"
+
 namespace emoc {
 
 	MOEAD::MOEAD(Problem *problem, int thread_num):
@@ -49,10 +52,25 @@ namespace emoc {
 		Individual *offspring = g_GlobalSettings->offspring_population_[0];
 
 		TrackPopulation(g_GlobalSettings->iteration_num_);
+		PlotPopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->iteration_num_);
 
-		//printf("%d %d\n", g_GlobalSettings->iteration_num_, g_GlobalSettings->current_evaluation_);
 		while (!g_GlobalSettings->IsTermination())
 		{
+			// check stop and pause
+			{
+				std::unique_lock<std::mutex> locker(finish_mutex);
+				if (is_finish_) return;
+			}
+
+			{
+				std::unique_lock<std::mutex> locker(pause_mutex);
+				if (is_pause_)
+					cond.wait(locker, [&]() {return !is_pause_; });
+			
+			}
+			//std::cout << "is_pause: " << is_pause_ << "\n";
+			
+
 			// begin each iteration
 			g_GlobalSettings->iteration_num_++;
 
@@ -70,15 +88,15 @@ namespace emoc {
 				UpdateSubproblem(offspring, i, aggregation_type_);
 			}
 
-
 			// record the population every interval generations and the first and last genration 
 			if (g_GlobalSettings->iteration_num_ % g_GlobalSettings->output_interval_ == 0 || g_GlobalSettings->iteration_num_ == 1
 				|| g_GlobalSettings->IsTermination())
 			{
 				TrackPopulation(g_GlobalSettings->iteration_num_);
 			}
-
+			PlotPopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->iteration_num_);
 		}
+
 	}
 
 	void MOEAD::Initialization()

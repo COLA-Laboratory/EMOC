@@ -2590,7 +2590,7 @@ static void ShowDemoWindowLayout()
 
         ImGui::Text("SetNextItemWidth/PushItemWidth(-GetContentRegionAvail().x * 0.5f)");
         ImGui::SameLine(); HelpMarker("Align to right edge minus half");
-        ImGui::PushItemWidth(-ImGui::GetContentRegionAvail().x * 0.5f);
+        ImGui::PushItemWidth(-100);
         ImGui::DragFloat("float##4a", &f);
         if (show_indented_items)
         {

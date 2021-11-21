@@ -4,6 +4,7 @@
 #define EPS 1.0e-6
 #define MAX_THREAD_NUM 20
 #define MAX_BUFFSIZE 256
+#define GNUPLOT_COMMAND "gnuplot"
 
 #include <string>
 #include <vector>
@@ -52,10 +53,18 @@ namespace emoc {
 		void InitializePopulation(Individual **pop, int pop_num);
 		void InitializeIndividual(Individual *ind);
 
+		void Init();
 		void Start();
 		bool IsTermination();
 		void DisplayMetrics();
 		double RecordFileTime();
+
+		// utility function implemented by algorithm class
+		inline void SetPlot(bool is_plotting) { algorithm_->SetPlot(is_plotting); }
+		inline void SetPause(bool is_pause) { algorithm_->SetPause(is_pause); }
+		inline void SetFinish(bool is_finish) { algorithm_->SetFinish(is_finish); }
+		inline bool GetFinish() { return algorithm_->GetFinish(); }
+
 
 	public:
 		int dec_num_;
@@ -87,7 +96,6 @@ namespace emoc {
 		Algorithm *algorithm_;
 
 	private:
-		void Init();
 		void SetDecBound();
 		void InitializeProblem();
 		void InitializeAlgorithm();
@@ -95,5 +103,5 @@ namespace emoc {
 		void DestroyMemory();
 	};
 
-	extern Global *g_GlobalSettingsArray[MAX_THREAD_NUM];  // provide global settings to whole project 
+	//extern Global *g_GlobalSettingsArray[MAX_THREAD_NUM];  // provide global settings to whole project 
 }
