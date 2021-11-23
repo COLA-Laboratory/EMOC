@@ -5,6 +5,7 @@
 #include <chrono>
 #include <iostream>
 
+#include "emoc_app.h"
 #include "core/global.h"
 #include "core/file.h"
 #include "core/emoc_manager.h"
@@ -15,10 +16,7 @@ namespace emoc {
 	Algorithm::Algorithm(Problem *problem, int thread_id):
 		problem_(problem),
 		thread_id_(thread_id),
-		record_file_time_(0.0f),
-		is_plotting_(false),
-		is_pause_(false),
-		is_finish_(false)
+		record_file_time_(0.0f)
 	{
 		g_GlobalSettings = EMOCManager::Instance()->GetGlobalSetting(thread_id);
 	}
@@ -106,7 +104,7 @@ namespace emoc {
 		clock_t end_ = clock();
 
 
-		if (is_plotting_ == false)
+		if (EMOCManager::Instance()->GetPlot() == false)
 			return;
 
 		// open data file and script file for gnuplot
@@ -192,7 +190,29 @@ namespace emoc {
 		//std::cout << (double)end_ << " " << (double)start_ << "\n";
 		testTime += (double)(end_ - start_) / CLOCKS_PER_SEC;
 		std::cout << (double)(end_ - start_) / CLOCKS_PER_SEC << " total draw time:" << testTime << "\n";
-		std::this_thread::sleep_for(std::chrono::milliseconds(20));
+
+		double waiting_time = 15.0 * real_popnum_ / 100.0;
+
+		waiting_time = waiting_time > 20.0 ? waiting_time : 20.0;
+
+		std::this_thread::sleep_for(std::chrono::milliseconds((int)waiting_time));
+	}
+
+	bool Algorithm::CheckStopAndPause()
+	{
+		// check stop and pause
+		{
+			std::lock_guard<std::mutex> locker(EMOCLock::finish_mutex);
+			if (EMOCManager::Instance()->GetFinish()) return true;
+		}
+
+		{
+			std::unique_lock<std::mutex> locker(EMOCLock::pause_mutex);
+			if (EMOCManager::Instance()->GetPause())
+				EMOCLock::pause_cond.wait(locker, [&]() {return !EMOCManager::Instance()->GetPause(); });
+		}
+
+		return false;
 	}
 
 }

@@ -49,10 +49,10 @@ namespace emoc {
 		while (!is_finish_)
 		{
 			{
-				std::unique_lock<std::mutex> locker(finish_mutex);
+				std::unique_lock<std::mutex> locker(EMOCLock::finish_mutex);
 				// predicate for protection from spurious wakeups
 				
-				cond.wait(locker, [&]() { return is_finish_ || !plot_cmds_.empty();});
+				EMOCLock::pause_cond.wait(locker, [&]() { return is_finish_ || !plot_cmds_.empty();});
 				
 				count++;
 				if (is_finish_)

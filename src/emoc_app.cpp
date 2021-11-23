@@ -2,9 +2,11 @@
 
 namespace emoc {
 
+	std::mutex EMOCLock::finish_mutex;
+	std::mutex EMOCLock::pause_mutex;
+	std::condition_variable EMOCLock::pause_cond;
 
 
-	std::mutex finish_mutex;
-	std::mutex pause_mutex;
-	std::condition_variable cond;
+
+
 }

@@ -8,7 +8,7 @@ namespace emoc {
 	{
 		std::string algorithm_name;
 		std::string problem_name;
-		bool is_plotting;
+		bool is_plot;
 		int population_num;
 		int decision_num;
 		int objective_num;
@@ -21,7 +21,7 @@ namespace emoc {
 		EMOCParameters() :
 			algorithm_name("NSGA2"),
 			problem_name("ZDT1"),
-			is_plotting(false),
+			is_plot(false),
 			population_num(100),
 			decision_num(30),
 			objective_num(2),

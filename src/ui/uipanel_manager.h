@@ -1,6 +1,7 @@
 #pragma once
 #include <mutex>
 #include <string>
+#include <vector>
 
 #include "imgui.h"
 #include "GLFW/glfw3.h"
@@ -34,14 +35,21 @@ namespace emoc {
 		UIPanelManager(const UIPanelManager&);
 		UIPanelManager& operator=(const UIPanelManager&);
 
-
+		// initialiation functions
 		void InitGLFW(int width, int height, const std::string& title);
 		void InitImGui();
-		void EmbraceTheClassic();
-		void EmbraceTheDarkness();
+		void InitAlgorithmList();
+		void InitProlbemList();
+
 		void RenderTestPanel();
 		void RenderExperimentPanel();
 		void RenderAnalysePanel();
+
+		
+
+		// UI style
+		void EmbraceTheClassic();
+		void EmbraceTheDarkness();
 
 		static void glfw_error_callback(int error, const char* description)
 		{
@@ -93,6 +101,11 @@ namespace emoc {
 		int N = 100;
 		int Evaluation = 26000;
 		// for test now
+
+		// UI data
+		int algorithm_index, problem_index;
+		std::vector<char*> algorithm_names;
+		std::vector<char*> problem_names;
 	};
 
 }

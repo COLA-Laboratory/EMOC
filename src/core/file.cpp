@@ -352,7 +352,7 @@ namespace emoc {
 		// defalut value
 		para->algorithm_name = "MOEAD";
 		para->problem_name = "ZDT1";
-		para->is_plotting = false;
+		para->is_plot = false;
 		para->population_num = 100;
 		para->decision_num = 30;
 		para->objective_num = 2;

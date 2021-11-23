@@ -8,6 +8,13 @@
 
 namespace emoc {
 
+	struct EMOCLock
+	{
+		static std::mutex finish_mutex;
+		static std::mutex pause_mutex;
+		static std::condition_variable pause_cond;
+	};
+
 	class EMOCApplication
 	{
 	public:
@@ -23,7 +30,4 @@ namespace emoc {
 		EMOCManager* emoc_manager_;
 	};
 
-	extern std::mutex finish_mutex;
-	extern std::mutex pause_mutex;
-	extern std::condition_variable cond;
 }

@@ -298,12 +298,12 @@ namespace emoc {
 			"load '%s'\n"
 			, scriptFileName);
 
-		{
-			std::lock_guard<std::mutex> locker(finish_mutex);
-			auto &cmd_queue = PlotManager::Instance()->GetPlotCMDQueue();
-			cmd_queue.push(realCMD);
-			cond.notify_one();
-		}
+		//{
+		//	std::lock_guard<std::mutex> locker(finish_mutex);
+		//	auto &cmd_queue = PlotManager::Instance()->GetPlotCMDQueue();
+		//	cmd_queue.push(realCMD);
+		//	cond.notify_one();
+		//}
 
 
 		//fprintf(gp, realCMD);

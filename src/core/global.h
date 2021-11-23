@@ -39,8 +39,7 @@ namespace emoc {
 
 
 	// Global class holds all necessary parameter settings and datas for algorithms to run and
-	// provides some useful foundmental functions. It can be considered as a manager class. A
-	// global variable g_GlobalSettings is given to access all settings.
+	// provides some useful foundmental functions.
 	// Note: the structure may be changed
 	class Global
 	{
@@ -58,12 +57,6 @@ namespace emoc {
 		bool IsTermination();
 		void DisplayMetrics();
 		double RecordFileTime();
-
-		// utility function implemented by algorithm class
-		inline void SetPlot(bool is_plotting) { algorithm_->SetPlot(is_plotting); }
-		inline void SetPause(bool is_pause) { algorithm_->SetPause(is_pause); }
-		inline void SetFinish(bool is_finish) { algorithm_->SetFinish(is_finish); }
-		inline bool GetFinish() { return algorithm_->GetFinish(); }
 
 
 	public:

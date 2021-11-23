@@ -42,7 +42,7 @@ namespace emoc {
 	{
 		std::string algorithm_name = para_.algorithm_name;
 		std::string problem_name = para_.problem_name;
-		bool is_plotting = para_.is_plotting;
+		bool is_plot = para_.is_plot;
 		int population_num = para_.population_num;
 		int dec_num = para_.decision_num;
 		int obj_num = para_.objective_num;
@@ -63,7 +63,7 @@ namespace emoc {
 			g_GlobalSettingsArray[thread_id] = new emoc::Global(algorithm_name.c_str(), problem_name.c_str(), population_num,
 				dec_num, obj_num, max_eval, thread_id, output_interval, run);
 			g_GlobalSettingsArray[thread_id]->Init();
-			g_GlobalSettingsArray[thread_id]->SetPlot(is_plotting);
+			SetPlot(is_plot);
 			g_GlobalSettingsArray[thread_id]->Start();
 
 			end = clock();
@@ -87,34 +87,6 @@ namespace emoc {
 			printf("---------------------store file time %f--------------------\n", g_GlobalSettingsArray[thread_id]->RecordFileTime());
 
 			// release the memory per run
-			delete g_GlobalSettingsArray[thread_id];
-		}
-	}
-
-	void EMOCManager::MultiThreadWorker(int run_start, int run_end, int thread_id)
-	{
-		const char* algorithm_name = para_.algorithm_name.c_str();
-		const char* problem_name = para_.problem_name.c_str();
-		bool is_plotting = para_.is_plotting;
-		int population_num = para_.population_num;
-		int dec_num = para_.decision_num;
-		int obj_num = para_.objective_num;
-		int max_eval = para_.max_evaluation;
-		int output_interval = para_.output_interval;
-
-		for (int run = run_start; run <= run_end; ++run)
-		{
-			// algorithm main entity
-			g_GlobalSettingsArray[thread_id] = new emoc::Global(algorithm_name, problem_name, population_num, dec_num, obj_num, max_eval, thread_id, output_interval, run);
-			g_GlobalSettingsArray[thread_id]->Init();
-			g_GlobalSettingsArray[thread_id]->SetPlot(is_plotting);
-			g_GlobalSettingsArray[thread_id]->Start();
-
-			std::string problem_name = g_GlobalSettingsArray[thread_id]->problem_name_;
-			int obj_num = g_GlobalSettingsArray[thread_id]->obj_num_;
-			double igd = CalculateIGD(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num, problem_name);
-
-			printf("current thread id : %d, runs: %d, igd:%f\n", thread_id, run, igd);
 			delete g_GlobalSettingsArray[thread_id];
 		}
 	}
@@ -161,10 +133,40 @@ namespace emoc {
 
 	}
 
+	void EMOCManager::MultiThreadWorker(int run_start, int run_end, int thread_id)
+	{
+		const char* algorithm_name = para_.algorithm_name.c_str();
+		const char* problem_name = para_.problem_name.c_str();
+		bool is_plot = para_.is_plot;
+		int population_num = para_.population_num;
+		int dec_num = para_.decision_num;
+		int obj_num = para_.objective_num;
+		int max_eval = para_.max_evaluation;
+		int output_interval = para_.output_interval;
+
+		for (int run = run_start; run <= run_end; ++run)
+		{
+			// algorithm main entity
+			g_GlobalSettingsArray[thread_id] = new emoc::Global(algorithm_name, problem_name, population_num, dec_num, obj_num, max_eval, thread_id, output_interval, run);
+			g_GlobalSettingsArray[thread_id]->Init();
+			SetPlot(is_plot);
+			g_GlobalSettingsArray[thread_id]->Start();
+
+			std::string problem_name = g_GlobalSettingsArray[thread_id]->problem_name_;
+			int obj_num = g_GlobalSettingsArray[thread_id]->obj_num_;
+			double igd = CalculateIGD(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num, problem_name);
+
+			printf("current thread id : %d, runs: %d, igd:%f\n", thread_id, run, igd);
+			delete g_GlobalSettingsArray[thread_id];
+		}
+	}
 
 	EMOCManager::EMOCManager() :
 		para_(),
 		is_para_set_(false),
+		is_plot_(false),
+		is_finish_(true),
+		is_pause_(false),
 		g_GlobalSettingsArray(MAX_THREAD_NUM,nullptr)
 	{
 		// for random number initialization

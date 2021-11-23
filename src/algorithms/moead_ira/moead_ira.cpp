@@ -59,9 +59,13 @@ namespace emoc {
 
 		Individual *offspring = g_GlobalSettings->offspring_population_[0];
 		TrackPopulation(g_GlobalSettings->iteration_num_);
+		PlotPopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->iteration_num_);
 
 		while (!g_GlobalSettings->IsTermination())
 		{
+			// check stop and pause
+			if (CheckStopAndPause()) return;
+
 			// begin each iteration
 			g_GlobalSettings->iteration_num_++;
 
@@ -98,6 +102,7 @@ namespace emoc {
 			{
 				TrackPopulation(g_GlobalSettings->iteration_num_);
 			}
+			PlotPopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->iteration_num_);
 		}
 	}
 

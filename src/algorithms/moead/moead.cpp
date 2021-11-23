@@ -8,12 +8,10 @@
 #include "core/global.h"
 #include "core/utility.h"
 #include "core/uniform_point.h"
+#include "core/emoc_manager.h"
 #include "operator/sbx.h"
 #include "operator/mutation.h"
 #include "random/random.h"
-
-// for test now
-#include "emoc_app.h"
 
 namespace emoc {
 
@@ -55,21 +53,9 @@ namespace emoc {
 		PlotPopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->iteration_num_);
 
 		while (!g_GlobalSettings->IsTermination())
-		{
+		{	
 			// check stop and pause
-			{
-				std::unique_lock<std::mutex> locker(finish_mutex);
-				if (is_finish_) return;
-			}
-
-			{
-				std::unique_lock<std::mutex> locker(pause_mutex);
-				if (is_pause_)
-					cond.wait(locker, [&]() {return !is_pause_; });
-			
-			}
-			//std::cout << "is_pause: " << is_pause_ << "\n";
-			
+			if(CheckStopAndPause()) return;
 
 			// begin each iteration
 			g_GlobalSettings->iteration_num_++;

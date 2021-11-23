@@ -3,12 +3,12 @@
 #include <iostream>
 #include <thread>
 
+#include "emoc_app.h"
 #include "core/file.h"
 #include "core/emoc_manager.h"
 #include "ui/imgui_impl_glfw.h"
 #include "ui/imgui_impl_opengl3.h"
-
-#include "emoc_app.h"
+#include "imgui_internal.h"
 
 namespace emoc {
 
@@ -103,8 +103,13 @@ namespace emoc {
 		title_("EMOC"),
 		glsl_version_("#version 130"),
 		window_(nullptr),
-		panel_state_(UIPanel::TestPanel)
-	{}
+		panel_state_(UIPanel::TestPanel),
+		algorithm_index(0),
+		problem_index(0)
+	{
+		InitAlgorithmList();
+		InitProlbemList();
+	}
 
 	void UIPanelManager::InitGLFW(int width, int height, const std::string& title)
 	{
@@ -202,77 +207,89 @@ namespace emoc {
 		if (show_demo_window)
 			ImGui::ShowDemoWindow(&show_demo_window);
 
-		// this is a simple try for design the ui for EMOC
+		
+		ImGui::Begin("Algorithm and Problem Selection");
+
+		//ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 100.0f);
+		ImGui::Text("Algorithm");
+		ImGui::Spacing();
+		ImGui::Combo("##Algorithm", &algorithm_index, algorithm_names.data(), algorithm_names.size());
+
+		//ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 100.0f);
+		ImGui::Text("Problem");
+		ImGui::Spacing();
+		ImGui::Combo("##Problem", &problem_index, problem_names.data(),problem_names.size());
+
+		// When algorithm is running, we diable 'Start' button.
+		if (!EMOCManager::Instance()->GetFinish()) ImGui::BeginDisabled();
+		if (ImGui::Button("Start", ImVec2(100, 100)))
 		{
-			ImGui::Begin("Algorithm and Problem Selection");
-			std::vector<char*> test = { "MOEAD", "NSGA2", "IBEA", "MOEADDE" };
-			//char* algorithmName[] = { "MOEAD", "NSGA2", "IBEA", "MOEADDE", };
+			std::cout << algorithm_names[algorithm_index] << "\n"
+				<< problem_names[problem_index] << "\n"
+				<< "population number: " << N << "\n"
+				<< "obj dim: " << M << "\n"
+				<< "dec dim: " << D << "\n"
+				<< "evaluation number: " << Evaluation << "\n";
 			
-			const char* problemName[] = { "ZDT1", "ZDT2", "ZDT3", "ZDT4", "DTLZ1"};
-			static int algorithmIndex = 0; // If the selection isn't within 0..count, Combo won't display a preview
-			static int problemIndex = 0; // If the selection isn't within 0..count, Combo won't display a preview
 
-			//ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 100.0f);
-			ImGui::Text("Algorithm");
-			ImGui::Spacing();
-			ImGui::Combo("##Algorithm", &algorithmIndex, test.data(), test.size());
+			EMOCParameters para;
+			para.algorithm_name = algorithm_names[algorithm_index];
+			para.problem_name = problem_names[problem_index];
+			para.is_plot = true;
+			para.objective_num = M;
+			para.decision_num = D;
+			para.population_num = N;
+			para.max_evaluation = Evaluation;
+			para.output_interval = 100000;
+			para.runs_num = 1;
 
-			//ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 100.0f);
-			ImGui::Text("Problem");
-			ImGui::Spacing();
-			ImGui::Combo("##Problem", &problemIndex, problemName, IM_ARRAYSIZE(problemName));
+			EMOCManager::Instance()->SetTaskParameters(para);
+			std::thread algorithm_thread(&EMOCManager::Run, EMOCManager::Instance());
+			algorithm_thread.detach();
 
-			if (ImGui::Button("Start", ImVec2(100, 100)))
-			{
-				std::cout << test[algorithmIndex] << "\n"
-					<< problemName[problemIndex] << "\n"
-					<< "population number: " << N << "\n"
-					<< "obj dim: " << M << "\n"
-					<< "dec dim: " << D << "\n"
-					<< "evaluation number: " << Evaluation << "\n";
-				// multithread running
-				EMOCParameters para;
-				para.algorithm_name = test[algorithmIndex];
-				para.problem_name = problemName[problemIndex];
-				para.is_plotting = true;
-				para.objective_num = M;
-				para.decision_num = D;
-				para.population_num = N;
-				para.max_evaluation = Evaluation;
-				para.output_interval = 100000;
-				para.runs_num = 1;
+		}		
+		if (!EMOCManager::Instance()->GetFinish()) ImGui::EndDisabled();
 
-				EMOCManager::Instance()->SetTaskParameters(para);
-				std::thread algorithm_thread(&EMOCManager::Run, EMOCManager::Instance());
-				algorithm_thread.detach();
 
-				//pthread_t thread1;
-				//pthread_create(&thread1, nullptr, TestWork, (void*)para);
-			}
+			
 
-			if (ImGui::Button("Stop", ImVec2(100, 100)))
-			{
-				std::cout << "Stop!\n";
-				std::unique_lock<std::mutex> locker(finish_mutex);
-				EMOCManager::Instance()->GetGlobalSetting(0)->SetFinish(true);
-			}
-
-			if (ImGui::Button("Continue", ImVec2(100, 100)))
-			{
-				std::cout << "Continue!\n";
-				std::unique_lock<std::mutex> locker(pause_mutex);
-				EMOCManager::Instance()->GetGlobalSetting(0)->SetPause(false);
-				cond.notify_one();
-			}
-
-			if (ImGui::Button("Pause", ImVec2(100, 100)))
-			{
-				std::cout << "Pause\n";
-				std::unique_lock<std::mutex> locker(pause_mutex);
-				EMOCManager::Instance()->GetGlobalSetting(0)->SetPause(true);
-			}
-			ImGui::End();
+		// When algorithm (is not running) or (running but not paused), we diable 'Continue' button.
+		if (EMOCManager::Instance()->GetFinish() || 
+			(!EMOCManager::Instance()->GetFinish() && !EMOCManager::Instance()->GetPause())) ImGui::BeginDisabled();
+		if (ImGui::Button("Continue", ImVec2(100, 100)))
+		{
+			std::cout << "Continue!\n";
+			std::lock_guard<std::mutex> locker(EMOCLock::pause_mutex);
+			EMOCManager::Instance()->SetPause(false);
+			std::cout << "After click continue button, the pause value is: " << EMOCManager::Instance()->GetPause() << "\n";
+			EMOCLock::pause_cond.notify_all();
 		}
+		if (EMOCManager::Instance()->GetFinish() ||
+			(!EMOCManager::Instance()->GetFinish() && !EMOCManager::Instance()->GetPause())) ImGui::EndDisabled();
+
+		// When algorithm (is not running) or (is running but paused), we diable 'Pause' and 'Stop' button.
+		if (EMOCManager::Instance()->GetFinish() ||
+			(!EMOCManager::Instance()->GetFinish() && EMOCManager::Instance()->GetPause())) ImGui::BeginDisabled();
+		if (ImGui::Button("Pause", ImVec2(100, 100)))
+		{
+			std::cout << "Pause\n";
+			std::lock_guard<std::mutex> locker(EMOCLock::pause_mutex);
+			EMOCManager::Instance()->SetPause(true);
+		}
+
+		if (ImGui::Button("Stop", ImVec2(100, 100)))
+		{
+			std::cout << "Stop!\n";
+			std::lock_guard<std::mutex> locker(EMOCLock::finish_mutex);
+			EMOCManager::Instance()->SetFinish(true);
+			std::cout << "After click continue button, the finish value is: " << EMOCManager::Instance()->GetFinish() << "\n";
+		}
+		if (EMOCManager::Instance()->GetFinish() ||
+			(!EMOCManager::Instance()->GetFinish() && EMOCManager::Instance()->GetPause())) ImGui::EndDisabled();
+
+
+		ImGui::End();
+		
 
 		// this is a simple try for design the ui for EMOC
 		{
@@ -457,5 +474,131 @@ namespace emoc {
 		colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
 	}
 
+	void UIPanelManager::EmbraceTheDarkness()
+	{
+		ImVec4* colors = ImGui::GetStyle().Colors;
+		colors[ImGuiCol_Text] = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
+		colors[ImGuiCol_TextDisabled] = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
+		colors[ImGuiCol_WindowBg] = ImVec4(0.10f, 0.10f, 0.10f, 1.00f);
+		colors[ImGuiCol_ChildBg] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+		colors[ImGuiCol_PopupBg] = ImVec4(0.19f, 0.19f, 0.19f, 0.92f);
+		colors[ImGuiCol_Border] = ImVec4(0.19f, 0.19f, 0.19f, 0.29f);
+		colors[ImGuiCol_BorderShadow] = ImVec4(0.00f, 0.00f, 0.00f, 0.24f);
+		colors[ImGuiCol_FrameBg] = ImVec4(0.05f, 0.05f, 0.05f, 0.54f);
+		colors[ImGuiCol_FrameBgHovered] = ImVec4(0.19f, 0.19f, 0.19f, 0.54f);
+		colors[ImGuiCol_FrameBgActive] = ImVec4(0.20f, 0.22f, 0.23f, 1.00f);
+		colors[ImGuiCol_TitleBg] = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
+		colors[ImGuiCol_TitleBgActive] = ImVec4(0.06f, 0.06f, 0.06f, 1.00f);
+		colors[ImGuiCol_TitleBgCollapsed] = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
+		colors[ImGuiCol_MenuBarBg] = ImVec4(0.14f, 0.14f, 0.14f, 1.00f);
+		colors[ImGuiCol_ScrollbarBg] = ImVec4(0.05f, 0.05f, 0.05f, 0.54f);
+		colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.34f, 0.34f, 0.34f, 0.54f);
+		colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.40f, 0.40f, 0.40f, 0.54f);
+		colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.56f, 0.56f, 0.56f, 0.54f);
+		colors[ImGuiCol_CheckMark] = ImVec4(0.33f, 0.67f, 0.86f, 1.00f);
+		colors[ImGuiCol_SliderGrab] = ImVec4(0.34f, 0.34f, 0.34f, 0.54f);
+		colors[ImGuiCol_SliderGrabActive] = ImVec4(0.56f, 0.56f, 0.56f, 0.54f);
+		colors[ImGuiCol_Button] = ImVec4(0.05f, 0.05f, 0.05f, 0.54f);
+		colors[ImGuiCol_ButtonHovered] = ImVec4(0.19f, 0.19f, 0.19f, 0.54f);
+		colors[ImGuiCol_ButtonActive] = ImVec4(0.20f, 0.22f, 0.23f, 1.00f);
+		colors[ImGuiCol_Header] = ImVec4(0.00f, 0.00f, 0.00f, 0.52f);
+		colors[ImGuiCol_HeaderHovered] = ImVec4(0.00f, 0.00f, 0.00f, 0.36f);
+		colors[ImGuiCol_HeaderActive] = ImVec4(0.20f, 0.22f, 0.23f, 0.33f);
+		colors[ImGuiCol_Separator] = ImVec4(0.28f, 0.28f, 0.28f, 0.29f);
+		colors[ImGuiCol_SeparatorHovered] = ImVec4(0.44f, 0.44f, 0.44f, 0.29f);
+		colors[ImGuiCol_SeparatorActive] = ImVec4(0.40f, 0.44f, 0.47f, 1.00f);
+		colors[ImGuiCol_ResizeGrip] = ImVec4(0.28f, 0.28f, 0.28f, 0.29f);
+		colors[ImGuiCol_ResizeGripHovered] = ImVec4(0.44f, 0.44f, 0.44f, 0.29f);
+		colors[ImGuiCol_ResizeGripActive] = ImVec4(0.40f, 0.44f, 0.47f, 1.00f);
+		colors[ImGuiCol_Tab] = ImVec4(0.00f, 0.00f, 0.00f, 0.52f);
+		colors[ImGuiCol_TabHovered] = ImVec4(0.14f, 0.14f, 0.14f, 1.00f);
+		colors[ImGuiCol_TabActive] = ImVec4(0.20f, 0.20f, 0.20f, 0.36f);
+		colors[ImGuiCol_TabUnfocused] = ImVec4(0.00f, 0.00f, 0.00f, 0.52f);
+		colors[ImGuiCol_TabUnfocusedActive] = ImVec4(0.14f, 0.14f, 0.14f, 1.00f);
+		colors[ImGuiCol_DockingPreview] = ImVec4(0.33f, 0.67f, 0.86f, 1.00f);
+		colors[ImGuiCol_DockingEmptyBg] = ImVec4(1.00f, 0.00f, 0.00f, 1.00f);
+		colors[ImGuiCol_PlotLines] = ImVec4(1.00f, 0.00f, 0.00f, 1.00f);
+		colors[ImGuiCol_PlotLinesHovered] = ImVec4(1.00f, 0.00f, 0.00f, 1.00f);
+		colors[ImGuiCol_PlotHistogram] = ImVec4(1.00f, 0.00f, 0.00f, 1.00f);
+		colors[ImGuiCol_PlotHistogramHovered] = ImVec4(1.00f, 0.00f, 0.00f, 1.00f);
+		colors[ImGuiCol_TableHeaderBg] = ImVec4(0.00f, 0.00f, 0.00f, 0.52f);
+		colors[ImGuiCol_TableBorderStrong] = ImVec4(0.00f, 0.00f, 0.00f, 0.52f);
+		colors[ImGuiCol_TableBorderLight] = ImVec4(0.28f, 0.28f, 0.28f, 0.29f);
+		colors[ImGuiCol_TableRowBg] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+		colors[ImGuiCol_TableRowBgAlt] = ImVec4(1.00f, 1.00f, 1.00f, 0.06f);
+		colors[ImGuiCol_TextSelectedBg] = ImVec4(0.20f, 0.22f, 0.23f, 1.00f);
+		colors[ImGuiCol_DragDropTarget] = ImVec4(0.33f, 0.67f, 0.86f, 1.00f);
+		colors[ImGuiCol_NavHighlight] = ImVec4(1.00f, 0.00f, 0.00f, 1.00f);
+		colors[ImGuiCol_NavWindowingHighlight] = ImVec4(1.00f, 0.00f, 0.00f, 0.70f);
+		colors[ImGuiCol_NavWindowingDimBg] = ImVec4(1.00f, 0.00f, 0.00f, 0.20f);
+		colors[ImGuiCol_ModalWindowDimBg] = ImVec4(1.00f, 0.00f, 0.00f, 0.35f);
+
+		ImGuiStyle& style = ImGui::GetStyle();
+		style.WindowPadding = ImVec2(8.00f, 8.00f);
+		style.FramePadding = ImVec2(5.00f, 2.00f);
+		style.CellPadding = ImVec2(6.00f, 6.00f);
+		style.ItemSpacing = ImVec2(6.00f, 6.00f);
+		style.ItemInnerSpacing = ImVec2(6.00f, 6.00f);
+		style.TouchExtraPadding = ImVec2(0.00f, 0.00f);
+		style.IndentSpacing = 25;
+		style.ScrollbarSize = 15;
+		style.GrabMinSize = 10;
+		style.WindowBorderSize = 1;
+		style.ChildBorderSize = 1;
+		style.PopupBorderSize = 1;
+		style.FrameBorderSize = 1;
+		style.TabBorderSize = 1;
+		style.WindowRounding = 7;
+		style.ChildRounding = 4;
+		style.FrameRounding = 3;
+		style.PopupRounding = 4;
+		style.ScrollbarRounding = 9;
+		style.GrabRounding = 3;
+		style.LogSliderDeadzone = 4;
+		style.TabRounding = 4;
+	}
+
+	void UIPanelManager::InitAlgorithmList()
+	{
+		algorithm_names.push_back("MOEAD");
+		algorithm_names.push_back("MOEADDE");
+		algorithm_names.push_back("MOEADDRA");
+		algorithm_names.push_back("MOEADFRRMAB");
+		algorithm_names.push_back("MOEADGRA");
+		algorithm_names.push_back("MOEADIRA");
+		algorithm_names.push_back("NSGA2");
+		algorithm_names.push_back("SPEA2");
+		algorithm_names.push_back("IBEA");
+		algorithm_names.push_back("ENSMOEAD");
+		algorithm_names.push_back("HYPE");
+		algorithm_names.push_back("SMSEMOA");
+	}
+
+	void UIPanelManager::InitProlbemList()
+	{
+		problem_names.push_back("DTLZ1");
+		problem_names.push_back("DTLZ2");
+		problem_names.push_back("DTLZ3");
+		problem_names.push_back("DTLZ4");
+		problem_names.push_back("DTLZ5");
+		problem_names.push_back("DTLZ6");
+		problem_names.push_back("DTLZ7");
+		problem_names.push_back("UF1");
+		problem_names.push_back("UF2");
+		problem_names.push_back("UF3");
+		problem_names.push_back("UF4");
+		problem_names.push_back("UF5");
+		problem_names.push_back("UF6");
+		problem_names.push_back("UF7");
+		problem_names.push_back("UF8");
+		problem_names.push_back("UF9");
+		problem_names.push_back("UF10");
+		problem_names.push_back("ZDT1");
+		problem_names.push_back("ZDT2");
+		problem_names.push_back("ZDT3");
+		problem_names.push_back("ZDT4");
+		problem_names.push_back("ZDT5");
+		problem_names.push_back("ZDT6");
+	}
 
 }

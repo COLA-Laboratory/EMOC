@@ -4,6 +4,7 @@
 #include <cstdlib>
 
 #include "random/random.h"
+#include "core/emoc_manager.h"
 #include "problem/problem_head_collect.h"
 #include "algorithms/algorithm_head_collect.h"
 
@@ -60,8 +61,10 @@ namespace emoc {
 
 	void Global::Start()
 	{
+		EMOCManager::Instance()->SetPause(false);
+		EMOCManager::Instance()->SetFinish(false);
 		algorithm_->Run();
-		algorithm_->SetFinish(true);
+		EMOCManager::Instance()->SetFinish(true);
 	}
 
 	bool Global::IsTermination()

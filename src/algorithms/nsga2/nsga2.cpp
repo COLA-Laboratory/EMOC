@@ -32,6 +32,9 @@ namespace emoc {
 
 		while (!g_GlobalSettings->IsTermination())
 		{
+			// check stop and pause
+			if (CheckStopAndPause()) return;
+
 			// begin each iteration
 			g_GlobalSettings->iteration_num_++;
 

@@ -34,9 +34,18 @@ namespace emoc{
 		static EMOCManager* Instance();
 		void Run();
 
+		// Getters
+		inline bool GetPause() { return is_pause_; }
+		inline bool GetPlot() { return is_plot_; }
+		inline bool GetFinish() { return is_finish_; }
 		inline Global* GetGlobalSetting(int index) { return g_GlobalSettingsArray[index]; }
 		inline int GetSingleThreadResultSize() { return single_thread_result_historty_.size(); }
 		inline const EMOCSingleThreadResult& GetSingleThreadResult(int index) { return single_thread_result_historty_[index]; }
+
+		// Setters
+		inline void SetPlot(bool is_plot) { is_plot_ = is_plot; }
+		inline void SetPause(bool is_pause) { is_pause_ = is_pause; }
+		inline void SetFinish(bool is_finish) { is_finish_ = is_finish; }
 		inline void SetTaskParameters(const EMOCParameters& para) { para_ = para; is_para_set_ = true;}
 
 
@@ -47,8 +56,8 @@ namespace emoc{
 		EMOCManager& operator=(const EMOCManager &);
 
 		void EMOCSingleThreadRun();
-		void MultiThreadWorker(int run_start, int run_end, int thread_id);
 		void EMOCMultiThreadRun();
+		void MultiThreadWorker(int run_start, int run_end, int thread_id);
 
 	private:
 		// for release EMOCManager instance
@@ -69,10 +78,15 @@ namespace emoc{
 		static EMOCManager* s_Instance;
 		static std::mutex singleton_mutex_;
 
+		// EMOC state variables
 		EMOCParameters para_;
 		bool is_para_set_;
-		std::vector<Global*> g_GlobalSettingsArray;
+		bool is_plot_;
+		bool is_pause_;
+		bool is_finish_;
 
+
+		std::vector<Global*> g_GlobalSettingsArray;
 		std::vector<EMOCSingleThreadResult> single_thread_result_historty_;
 
 	};
