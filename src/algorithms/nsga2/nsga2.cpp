@@ -26,15 +26,9 @@ namespace emoc {
 	void NSGA2::Run()
 	{
 		Initialization();
-		TrackPopulation(g_GlobalSettings->iteration_num_);		
-		PlotPopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->iteration_num_);
 
-
-		while (!g_GlobalSettings->IsTermination())
+		while (!IsTermination())
 		{
-			// check stop and pause
-			if (CheckStopAndPause()) return;
-
 			// begin each iteration
 			g_GlobalSettings->iteration_num_++;
 
@@ -47,14 +41,6 @@ namespace emoc {
 			
 			// select next generation's population
 			EnvironmentalSelection(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->mixed_population_.data());
-
-			// record the population every interval generations and the first and last genration 
-			if (g_GlobalSettings->iteration_num_ % g_GlobalSettings->output_interval_ == 0 || g_GlobalSettings->iteration_num_ == 1
-				|| g_GlobalSettings->IsTermination())
-			{
-				TrackPopulation(g_GlobalSettings->iteration_num_);
-			}
-			PlotPopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->iteration_num_);
 		}
 	}
 

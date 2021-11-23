@@ -26,7 +26,6 @@ namespace emoc {
 
 	MOEADIRA::~MOEADIRA()
 	{
-
 		for (int i = 0; i < weight_num_; ++i)
 		{
 			delete[] lambda_[i];
@@ -56,16 +55,10 @@ namespace emoc {
 
 		// calculate first generation's fitness
 		CalculateFitness(g_GlobalSettings->parent_population_.data(), weight_num_, old_obj_);
-
 		Individual *offspring = g_GlobalSettings->offspring_population_[0];
-		TrackPopulation(g_GlobalSettings->iteration_num_);
-		PlotPopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->iteration_num_);
 
-		while (!g_GlobalSettings->IsTermination())
+		while (!IsTermination())
 		{
-			// check stop and pause
-			if (CheckStopAndPause()) return;
-
 			// begin each iteration
 			g_GlobalSettings->iteration_num_++;
 
@@ -95,14 +88,6 @@ namespace emoc {
 			// update selection probability if necessary
 			if (g_GlobalSettings->iteration_num_ % 20 == 0)
 				UpdateProbability();
-	
-			// record the population every interval generations and the first and last genration 
-			if (g_GlobalSettings->iteration_num_ % g_GlobalSettings->output_interval_ == 0 || g_GlobalSettings->iteration_num_ == 1
-				|| g_GlobalSettings->IsTermination())
-			{
-				TrackPopulation(g_GlobalSettings->iteration_num_);
-			}
-			PlotPopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->iteration_num_);
 		}
 	}
 

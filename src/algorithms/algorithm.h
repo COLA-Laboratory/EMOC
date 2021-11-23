@@ -20,8 +20,10 @@ namespace emoc {
 		virtual void Run() = 0;
 
 		inline int GetRealPopNum() { return real_popnum_; }
+		inline double GetRuntime() { return runtime_; }
 
 	protected:
+		bool IsTermination();
 		void EvaluatePop(Individual **pop, int pop_num);
 		void EvaluateInd(Individual *ind);
 
@@ -33,9 +35,6 @@ namespace emoc {
 		void PlotPopulation(Individual** pop, int gen);
 		bool CheckStopAndPause();
 
-	public:
-		double record_file_time_;
-
 	protected:
 		Global *g_GlobalSettings;	// pointer to current run's global settings
 		Problem *problem_;			// it is released outside
@@ -43,6 +42,8 @@ namespace emoc {
 		int real_popnum_;
 
 		clock_t start_, end_;
+		double runtime_;
+		double record_file_time_;
 	};
 
 }

@@ -55,19 +55,13 @@ namespace emoc {
 	void MOEADGRA::Run()
 	{
 		Initialization();
-
+		
 		// calculate first generation's fitness
 		CalculateFitness(g_GlobalSettings->parent_population_.data(), weight_num_, fitness_history_[0]);
-
 		Individual *offspring = g_GlobalSettings->offspring_population_[0];
-		TrackPopulation(g_GlobalSettings->iteration_num_);
-		PlotPopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->iteration_num_);
 
-		while (!g_GlobalSettings->IsTermination())
+		while (!IsTermination())
 		{
-			// check stop and pause
-			if (CheckStopAndPause()) return;
-
 			// begin each iteration
 			g_GlobalSettings->iteration_num_++;
 			
@@ -75,13 +69,13 @@ namespace emoc {
 			{
 				if(randomperc() > P_[i])
 					continue;
-
+	
 				// set current iteration's neighbour type
 				if (randomperc() < neighbour_selectpro_)
 					neighbour_type_ = NEIGHBOUR;
 				else
 					neighbour_type_ = GLOBAL;
-
+				
 				// generate offspring for current subproblem
 				Crossover(g_GlobalSettings->parent_population_.data(), i, offspring);
 				MutationInd(offspring, g_GlobalSettings);
@@ -101,14 +95,6 @@ namespace emoc {
 			// record population's fitness
 			for (int i = 0; i < weight_num_; ++i)
 				fitness_history_[g_GlobalSettings->iteration_num_ % 20][i] = g_GlobalSettings->parent_population_[i]->fitness_;
-
-			// record the population every interval generations and the first and last genration 
-			if (g_GlobalSettings->iteration_num_ % g_GlobalSettings->output_interval_ == 0 || g_GlobalSettings->iteration_num_ == 1
-				|| g_GlobalSettings->IsTermination())
-			{
-				TrackPopulation(g_GlobalSettings->iteration_num_);
-			}
-			PlotPopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->iteration_num_);
 		}
 	}
 

@@ -54,9 +54,6 @@ namespace emoc {
 
 		void Init();
 		void Start();
-		bool IsTermination();
-		void DisplayMetrics();
-		double RecordFileTime();
 
 
 	public:
@@ -64,7 +61,7 @@ namespace emoc {
 		int obj_num_;
 		int thread_id_;
 		int run_id_;
-
+		
 		int population_num_;
 		int iteration_num_;
 		int current_evaluation_;

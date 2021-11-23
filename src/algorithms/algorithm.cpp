@@ -16,7 +16,8 @@ namespace emoc {
 	Algorithm::Algorithm(Problem *problem, int thread_id):
 		problem_(problem),
 		thread_id_(thread_id),
-		record_file_time_(0.0f)
+		record_file_time_(0.0f),
+		runtime_(0.0)
 	{
 		g_GlobalSettings = EMOCManager::Instance()->GetGlobalSetting(thread_id);
 	}
@@ -45,7 +46,29 @@ namespace emoc {
 		}
 	}
 
-	void Algorithm::EvaluatePop(Individual **pop, int pop_num)
+	bool Algorithm::IsTermination()
+	{
+		// record runtime
+		end_ = clock();
+		if(g_GlobalSettings->iteration_num_ >= 1) runtime_ += (double)(end_ - start_) / CLOCKS_PER_SEC;
+
+		// check stop and pause
+		if (CheckStopAndPause()) return true;
+
+		// record the population every interval generations and the first and last genration 
+		bool is_terminate = g_GlobalSettings->current_evaluation_ >= g_GlobalSettings->max_evaluation_;
+		if (g_GlobalSettings->iteration_num_ % g_GlobalSettings->output_interval_ == 0 || g_GlobalSettings->iteration_num_ == 1
+			|| is_terminate)
+		{
+			TrackPopulation(g_GlobalSettings->iteration_num_);
+		}
+		PlotPopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->iteration_num_);
+		
+		start_ = clock();
+		return is_terminate;
+	}
+
+	void Algorithm::EvaluatePop(Individual** pop, int pop_num)
 	{
 		for (int i = 0; i < pop_num; ++i)
 		{
@@ -90,11 +113,8 @@ namespace emoc {
 
 	void Algorithm::TrackPopulation(int generation)
 	{
-		start_ = clock();
-		int is_terminal = g_GlobalSettings->IsTermination();
+		int is_terminal = g_GlobalSettings->current_evaluation_ >= g_GlobalSettings->max_evaluation_;
 		RecordPop(g_GlobalSettings->run_id_, generation, g_GlobalSettings,real_popnum_, is_terminal);
-		end_ = clock();
-		record_file_time_ += (double)(end_ - start_) / CLOCKS_PER_SEC;
 	}
 
 	double testTime = 0.0;

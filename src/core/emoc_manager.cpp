@@ -80,11 +80,11 @@ namespace emoc {
 			result.description = para_.algorithm_name + " on" + para_.problem_name + " Run" + std::to_string(count);
 			result.last_igd = igd;
 			result.last_hv = hv;
-			result.runtime = time;
+			result.runtime = g_GlobalSettingsArray[thread_id]->algorithm_->GetRuntime();
 			single_thread_result_historty_.push_back(result);
 
 			printf("run %d time: %fs  igd: %f\n", run, time, igd);
-			printf("---------------------store file time %f--------------------\n", g_GlobalSettingsArray[thread_id]->RecordFileTime());
+			//printf("---------------------store file time %f--------------------\n", g_GlobalSettingsArray[thread_id]->RecordFileTime());
 
 			// release the memory per run
 			delete g_GlobalSettingsArray[thread_id];

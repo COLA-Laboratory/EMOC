@@ -67,16 +67,6 @@ namespace emoc {
 		EMOCManager::Instance()->SetFinish(true);
 	}
 
-	bool Global::IsTermination()
-	{
-		return current_evaluation_ >= max_evaluation_;
-	}
-
-	double Global::RecordFileTime()
-	{
-		return algorithm_->record_file_time_;
-	}
-
 	void Global::Init()
 	{
 		AllocateMemory();

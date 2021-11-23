@@ -97,6 +97,8 @@ namespace emoc {
 
 	void PlotManager::RefreshPipe()
 	{
+		if (is_window_close_)
+			OpenPlotPipe();
 		fprintf(gp_, "\n\n\n");
 		fflush(gp_);
 	}
@@ -111,35 +113,47 @@ namespace emoc {
 
 	void PlotManager::OpenPlotPipe()
 	{
-		gp_ = _popen("gnuplot", "w");
-		if (!gp_)
+		if (is_window_close_)
 		{
-			std::cout << "<Error> Could not open a pipe to gnuplot, check the definition of GNUPLOT_COMMAND" << std::endl;
-			exit(-1);
+			gp_ = _popen("gnuplot", "w");
+			if (!gp_)
+			{
+				std::cout << "<Error> Could not open a pipe to gnuplot, check the definition of GNUPLOT_COMMAND" << std::endl;
+				exit(-1);
+			}
+			is_window_close_ = false;
 		}
-		is_window_close_ = false;
 	}
 
 	void PlotManager::ClosePlotPipe()
 	{
-		is_window_close_ = true;
-		_pclose(gp_);
-		gp_ = nullptr;
-
-
+		if (!is_window_close_)
+		{
+			if (gp_ != nullptr)
+			{
+				_pclose(gp_);
+				gp_ = nullptr;
+			}
+			is_window_close_ = true;
+		}
 
 		//cond.notify_one();
 	}
 
 	PlotManager::PlotManager():
 		is_finish_(false),
-		is_window_close_(false),
+		is_window_close_(true),
 		gp_(nullptr),
 		plot_cmds_(),
 		plot_execute_cmds_()
-	{}
+	{
+		OpenPlotPipe();
+	}
 
-	PlotManager::~PlotManager(){}
+	PlotManager::~PlotManager()
+	{
+		ClosePlotPipe();
+	}
 
 }
 

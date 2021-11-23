@@ -37,9 +37,10 @@ namespace emoc {
 		height_ = height;
 		title_ = title;
 
+		InitAlgorithmList();
+		InitProlbemList();
 		InitGLFW(width, height, title);
 		InitImGui();
-
 	}
 
 	void UIPanelManager::RenderPanel()
@@ -88,6 +89,7 @@ namespace emoc {
 			ImGui::RenderPlatformWindowsDefault();
 			glfwMakeContextCurrent(backup_current_context);
 		}
+
 		glfwSwapBuffers(window_);
 		// Poll and handle events (inputs, window resize, etc.)
 		// You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
@@ -107,8 +109,7 @@ namespace emoc {
 		algorithm_index(0),
 		problem_index(0)
 	{
-		InitAlgorithmList();
-		InitProlbemList();
+
 	}
 
 	void UIPanelManager::InitGLFW(int width, int height, const std::string& title)
@@ -286,6 +287,11 @@ namespace emoc {
 		}
 		if (EMOCManager::Instance()->GetFinish() ||
 			(!EMOCManager::Instance()->GetFinish() && EMOCManager::Instance()->GetPause())) ImGui::EndDisabled();
+
+		if (ImGui::Button("ClosePlotWindow", ImVec2(100, 100)))
+		{
+			PlotManager::Instance()->ClosePlotPipe();
+		}
 
 
 		ImGui::End();
