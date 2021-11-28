@@ -58,8 +58,6 @@ namespace emoc {
 
 		while (!IsTermination())
 		{
-			// begin each iteration
-			g_GlobalSettings->iteration_num_++;
 			for (int subgeneration = 0; subgeneration < 5; ++subgeneration)
 			{
 				SelectCurrentSubproblem();

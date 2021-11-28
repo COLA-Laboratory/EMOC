@@ -7,6 +7,11 @@
 
 namespace emoc{
 
+	struct EMOCTask
+	{
+
+	};
+
 	struct EMOCMultiThreadResult
 	{
 
@@ -21,6 +26,7 @@ namespace emoc{
 		double last_spread;
 		double last_spacing;
 		double runtime;
+		int max_iteration;
 
 		std::vector<double> igd_history;
 		std::vector<double> hv_history;
@@ -32,14 +38,16 @@ namespace emoc{
 	{
 	public:
 		static EMOCManager* Instance();
+		
 		void Run();
 
 		// Getters
 		inline bool GetPause() { return is_pause_; }
 		inline bool GetPlot() { return is_plot_; }
 		inline bool GetFinish() { return is_finish_; }
+		inline const EMOCParameters &GetParameters() { return para_; }
 		inline Global* GetGlobalSetting(int index) { return g_GlobalSettingsArray[index]; }
-		inline int GetSingleThreadResultSize() { return single_thread_result_historty_.size(); }
+		inline int GetSingleThreadResultSize() { return (int)single_thread_result_historty_.size(); }
 		inline const EMOCSingleThreadResult& GetSingleThreadResult(int index) { return single_thread_result_historty_[index]; }
 
 		// Setters

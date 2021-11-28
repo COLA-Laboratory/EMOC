@@ -41,6 +41,6 @@ int main(int argc, char* argv[])
 	//emoc_manager->SetTaskParameters(parameter);
 	//emoc_manager->Run();
 
-
+	
 	return 0;
 }

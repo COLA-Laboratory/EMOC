@@ -10,6 +10,7 @@
 #include "core/file.h"
 #include "core/emoc_manager.h"
 #include "ui/plot.h"
+#include "ui/uipanel_manager.h"
 
 namespace emoc {
 
@@ -52,6 +53,9 @@ namespace emoc {
 		end_ = clock();
 		if(g_GlobalSettings->iteration_num_ >= 1) runtime_ += (double)(end_ - start_) / CLOCKS_PER_SEC;
 
+		// update uipanel's data
+		UIPanelManager::Instance()->SetCurrentEvaluation(g_GlobalSettings->current_evaluation_);
+
 		// check stop and pause
 		if (CheckStopAndPause()) return true;
 
@@ -63,7 +67,10 @@ namespace emoc {
 			TrackPopulation(g_GlobalSettings->iteration_num_);
 		}
 		PlotPopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->iteration_num_);
-		
+
+		// increase iteration number if is not terminated
+		if(!is_terminate)	g_GlobalSettings->iteration_num_++;
+
 		start_ = clock();
 		return is_terminate;
 	}
@@ -114,7 +121,7 @@ namespace emoc {
 	void Algorithm::TrackPopulation(int generation)
 	{
 		int is_terminal = g_GlobalSettings->current_evaluation_ >= g_GlobalSettings->max_evaluation_;
-		RecordPop(g_GlobalSettings->run_id_, generation, g_GlobalSettings,real_popnum_, is_terminal);
+		RecordPop(g_GlobalSettings->run_id_, generation, g_GlobalSettings,real_popnum_);
 	}
 
 	double testTime = 0.0;
@@ -212,8 +219,7 @@ namespace emoc {
 		std::cout << (double)(end_ - start_) / CLOCKS_PER_SEC << " total draw time:" << testTime << "\n";
 
 		double waiting_time = 15.0 * real_popnum_ / 100.0;
-
-		waiting_time = waiting_time > 20.0 ? waiting_time : 20.0;
+		waiting_time = waiting_time > 22.0 ? waiting_time : 22.0;
 
 		std::this_thread::sleep_for(std::chrono::milliseconds((int)waiting_time));
 	}

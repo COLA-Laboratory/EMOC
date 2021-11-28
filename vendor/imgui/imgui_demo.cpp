@@ -2590,7 +2590,7 @@ static void ShowDemoWindowLayout()
 
         ImGui::Text("SetNextItemWidth/PushItemWidth(-GetContentRegionAvail().x * 0.5f)");
         ImGui::SameLine(); HelpMarker("Align to right edge minus half");
-        ImGui::PushItemWidth(-100);
+        ImGui::PushItemWidth(-ImGui::GetContentRegionAvail().x * 0.5f);
         ImGui::DragFloat("float##4a", &f);
         if (show_indented_items)
         {
@@ -3956,7 +3956,8 @@ static void ShowDemoWindowTables()
         {
             // Submit columns name with TableSetupColumn() and call TableHeadersRow() to create a row with a header in each column.
             // (Later we will show how TableSetupColumn() has other uses, optional flags, sizing weight etc.)
-            ImGui::TableSetupColumn("One");
+			ImGui::TableSetupColumn("One");
+
             ImGui::TableSetupColumn("Two");
             ImGui::TableSetupColumn("Three");
             ImGui::TableHeadersRow();
@@ -4788,10 +4789,18 @@ static void ShowDemoWindowTables()
                 const char* column_name = ImGui::TableGetColumnName(column); // Retrieve name passed to TableSetupColumn()
                 ImGui::PushID(column);
                 ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-                ImGui::Checkbox("##checkall", &column_selected[column]);
+				//ImGui::Checkbox("##checkall", &column_selected[column]);      
+
+                static char* algorithm_names[] = { "a","b","c" };
+				static int index = 0;
+                ImGui::SetNextItemWidth(-FLT_MIN);
+				ImGui::Combo("##Algorithm3", &index, algorithm_names, 3);
                 ImGui::PopStyleVar();
                 ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-                ImGui::TableHeader(column_name);
+                char name[256];
+                sprintf(name, "##header%d", column);
+                ImGui::TableHeader(name);
+
                 ImGui::PopID();
             }
 

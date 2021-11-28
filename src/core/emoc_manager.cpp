@@ -6,6 +6,7 @@
 #include "metric/igd.h"
 #include "metric/hv.h"
 #include "random/random.h"
+#include "ui/uipanel_manager.h"
 
 namespace emoc {
 
@@ -47,45 +48,39 @@ namespace emoc {
 		int dec_num = para_.decision_num;
 		int obj_num = para_.objective_num;
 		int max_eval = para_.max_evaluation;
-		int output_interval = para_.output_interval;
 
+		// In default test module, we record population each generation for the convinience of plotting.
+		int output_interval = 1;     
 
 		for (int run = 0; run < para_.runs_num; ++run)
 		{
-			// for single thread test run, we use default 0 thread id
+			// For default test module, we only use one thread, so always 0 thread id.
 			int thread_id = 0;
 
-			//run time recording
-			clock_t start, end;
-			start = clock();
-
-			// algorithm main entity
+			// create EMOC main entity
 			g_GlobalSettingsArray[thread_id] = new emoc::Global(algorithm_name.c_str(), problem_name.c_str(), population_num,
 				dec_num, obj_num, max_eval, thread_id, output_interval, run);
 			g_GlobalSettingsArray[thread_id]->Init();
 			SetPlot(is_plot);
 			g_GlobalSettingsArray[thread_id]->Start();
 
-			end = clock();
-			double time = (double)(end - start) / CLOCKS_PER_SEC;
-
+			// collect results
 			int obj_num = g_GlobalSettingsArray[thread_id]->obj_num_;
 			double igd = CalculateIGD(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num, problem_name);
 			double hv = CalculateHV(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num);
 
 			EMOCSingleThreadResult result;
-			int count = single_thread_result_historty_.size();
+			int count = (int)single_thread_result_historty_.size();
 			result.para = para_;
 			result.para.population_num = g_GlobalSettingsArray[thread_id]->algorithm_->GetRealPopNum();
 			result.description = para_.algorithm_name + " on" + para_.problem_name + " Run" + std::to_string(count);
 			result.last_igd = igd;
 			result.last_hv = hv;
 			result.runtime = g_GlobalSettingsArray[thread_id]->algorithm_->GetRuntime();
+			result.max_iteration = g_GlobalSettingsArray[thread_id]->iteration_num_;
 			single_thread_result_historty_.push_back(result);
 
-			printf("run %d time: %fs  igd: %f\n", run, time, igd);
-			//printf("---------------------store file time %f--------------------\n", g_GlobalSettingsArray[thread_id]->RecordFileTime());
-
+			printf("run %d time: %fs  igd: %f\n", run, result.runtime, igd);
 			// release the memory per run
 			delete g_GlobalSettingsArray[thread_id];
 		}
@@ -99,7 +94,7 @@ namespace emoc {
 		std::vector<int> job_overload(thread_num, 0);
 
 		// allocate runs to different threads
-		int interval = (double)para_.runs_num / thread_num;
+		int interval = (int)((double)para_.runs_num / thread_num);
 		int remainder = para_.runs_num % thread_num;
 		for (int i = 0; i < thread_num; ++i)
 		{

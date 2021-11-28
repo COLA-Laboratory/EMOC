@@ -33,8 +33,6 @@ namespace emoc {
 
 		while (!IsTermination())
 		{
-			// begin each iteration
-			g_GlobalSettings->iteration_num_++;
 			CalculateFitness(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_, g_GlobalSettings->population_num_);
 
 			// generate offspring population

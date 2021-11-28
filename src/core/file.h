@@ -1,4 +1,6 @@
 #pragma once
+#include <string>
+
 #include "core/global.h"
 #include "core/individual.h"
 
@@ -35,10 +37,10 @@ namespace emoc {
 		~EMOCParameters() {}
 	};
 
-	void PrintObjective(const char *filename, int obj_num, Individual **pop_table, int pop_num);
-	void RecordPop(int run_index, int generation, Global *para, int real_popnum, int is_terminal);
-	void RecordTime(int run_index, EMOCParameters *para, double time);
-	void ReadParametersFromFile(const char *filename, EMOCParameters *para);
-	void ParseParamerters(int argc, char *argv[], EMOCParameters *para);
-	void FormalizeStr(char *buff);
+	void PrintObjective(const char* filename, int obj_num, Individual** pop_table, int pop_num);
+	void RecordPop(int run_index, int generation, Global* para, int real_popnum);
+	void ReadParametersFromFile(const char* filename, EMOCParameters* para);
+	void ParseParamerters(int argc, char* argv[], EMOCParameters* para);
+	void FormalizeStr(char* buff);
+	int CreateDirectory(const std::string& path);
 }

@@ -9,11 +9,14 @@
 
 #if defined(_WIN32)
 #include <direct.h>
+#include <io.h>
 #elif defined(__linux) || defined(linux)
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <cstring>
 #endif
+
+#include "core/emoc_manager.h"
 
 namespace emoc {
 
@@ -98,15 +101,12 @@ namespace emoc {
 		fclose(fpt);
 	}
 
-	void RecordPop(int run_index, int generation, Global *para, int real_popnum, int is_terminal)
+	void RecordPop(int run_index, int generation, Global *para, int real_popnum)
 	{
-		char output_dir_level0[MAX_BUFFSIZE];
-		char output_dir_level1[MAX_BUFFSIZE];    // upper level directory
-		char output_dir_level2[MAX_BUFFSIZE];    // lower level directory
+		char output_dir[MAX_BUFFSIZE];
 		char output_file[MAX_BUFFSIZE];
-		int n = 0;
-		// set the output directory
 
+		// set the output directory
 		std::string problem_name(para->problem_name_);
 		std::string algorithm_name(para->algorithm_name_);
 		for (auto &c : problem_name)
@@ -120,116 +120,26 @@ namespace emoc {
 			c = toupper(c);
 		}
 
-
-		sprintf(output_dir_level0, "./src/output/%s_M%d_D%d",
-			problem_name.c_str(),
-			para->obj_num_,
-			para->dec_num_
-
-		);
-		sprintf(output_dir_level1, "./src/output/%s_M%d_D%d/%s/",
-			problem_name.c_str(),
-			para->obj_num_,
-			para->dec_num_,
-			algorithm_name.c_str()
-		);
-		sprintf(output_dir_level2, "./src/output/%s_M%d_D%d/%s/%d/",
-			problem_name.c_str(),
-			para->obj_num_,
-			para->dec_num_,
-			algorithm_name.c_str(),
-			run_index
-		);
-		
-		#if defined(_WIN32)
-			_mkdir(output_dir_level0);
-			_mkdir(output_dir_level1);
-			_mkdir(output_dir_level2);
-		#elif defined(__linux) || defined(linux)
-			mkdir(output_dir_level0,S_IRWXU);
-			mkdir(output_dir_level1,S_IRWXU);
-			mkdir(output_dir_level2,S_IRWXU);
-		#endif
-
-
-		if(is_terminal)
-			sprintf(output_file, "%spop_final.txt", output_dir_level2);
+		if (EMOCManager::Instance()->GetParameters().is_open_multithread)
+		{
+			sprintf(output_dir, "./output/experiment_module/%s_M%d_D%d/%s/%d/",
+				problem_name.c_str(),
+				para->obj_num_,
+				para->dec_num_,
+				algorithm_name.c_str(),
+				run_index
+			);
+		}
 		else
-			sprintf(output_file, "%spop_%d.txt", output_dir_level2, generation);
+		{
+			sprintf(output_dir, "./output/test_module/run%d/",
+				EMOCManager::Instance()->GetSingleThreadResultSize()
+			);
+		}
+		CreateDirectory(output_dir);
+		sprintf(output_file, "%spop_%d.txt", output_dir, generation);
 
 		PrintObjective(output_file, para->obj_num_, para->parent_population_.data(), real_popnum);
-	}
-
-	void RecordTime(int run_index, EMOCParameters *para, double runtime)
-	{
-		char output_dir_level0[MAX_BUFFSIZE];
-		char output_dir_level1[MAX_BUFFSIZE];    // upper level directory
-		char output_dir_level2[MAX_BUFFSIZE];    // lower level directory
-		char output_file[MAX_BUFFSIZE];
-		int n = 0;
-		// set the output directory
-
-		std::string problem_name(para->problem_name);
-		std::string algorithm_name(para->algorithm_name);
-		for (auto &c : problem_name)
-		{
-			if (c >= '0' && c <= '9') continue;
-			c = toupper(c);
-		}
-		for (auto &c : algorithm_name)
-		{
-			if (c >= '0' && c <= '9') continue;
-			c = toupper(c);
-		}
-
-
-		sprintf(output_dir_level0, "./src/output/%s_M%d_D%d",
-			problem_name.c_str(),
-			para->objective_num,
-			para->decision_num
-
-		);
-		sprintf(output_dir_level1, "./src/output/%s_M%d_D%d/%s/",
-			problem_name.c_str(),
-			para->objective_num,
-			para->decision_num,
-			algorithm_name.c_str()
-		);
-		sprintf(output_dir_level2, "./src/output/%s_M%d_D%d/%s/%d/",
-			problem_name.c_str(),
-			para->objective_num,
-			para->decision_num,
-			algorithm_name.c_str(),
-			run_index
-		);
-
-#if defined(_WIN32)
-		_mkdir(output_dir_level0);
-		_mkdir(output_dir_level1);
-		_mkdir(output_dir_level2);
-#elif defined(__linux) || defined(linux)
-		mkdir(output_dir_level0, S_IRWXU);
-		mkdir(output_dir_level1, S_IRWXU);
-		mkdir(output_dir_level2, S_IRWXU);
-#endif
-
-		sprintf(output_file, "%sruntime.txt", output_dir_level2);
-		//printf("output_dir_level0 %s\n", output_dir_level0);
-		//printf("output_dir_level1 %s\n", output_dir_level1);
-		//printf("output_dir_level2 %s\n", output_dir_level2);
-		//printf("%s\n", output_file);
-		FILE *fpt = fopen(output_file, "w");
-
-		if (fpt == nullptr)
-		{
-			std::cout << output_file << " doesn't exist." << std::endl;
-			std::cout << "Press enter to exit" << std::endl;
-			std::cin.get();
-			exit(-1);
-		}
-
-		fprintf(fpt, "%.6lf", runtime);
-		fclose(fpt);	
 	}
 
 	void ReadParametersFromFile(const char *filename, EMOCParameters *para)
@@ -394,4 +304,35 @@ namespace emoc {
 			}
 		}
 	}
+
+	int CreateDirectory(const std::string& path)
+	{
+		int len = path.length();
+		char tmpDirPath[512] = { 0 };
+		for (int i = 0; i < len; i++)
+		{
+			tmpDirPath[i] = path[i];
+			if (tmpDirPath[i] == '\\' || tmpDirPath[i] == '/')
+			{
+#if defined(_WIN32)
+				if (_access(tmpDirPath, 0) == -1)
+				{
+					int ret = _mkdir(tmpDirPath);
+#elif defined(__linux) || defined(linux)
+				if (access(tmpDirPath, F_OK) == -1)
+				{
+					int ret = mkdir(tmpDirPath, S_IRWXU | S_IRWXG | S_IRWXO);
+#endif
+
+					if (ret == -1)
+					{
+						std::cerr << "CREATE SAVE DIRECTORY FAIL!\n";
+						return 0;
+					}
+				}
+			}
+		}
+		return 1;
+	}
+	
 }

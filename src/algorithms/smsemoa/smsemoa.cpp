@@ -53,9 +53,6 @@ namespace emoc {
 
 		while (!IsTermination())
 		{
-			// begin each iteration
-			g_GlobalSettings->iteration_num_++;
-
 			for (int i = 0; i < g_GlobalSettings->population_num_; ++i)
 			{
 				// generate offspring for current subproblem

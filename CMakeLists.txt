@@ -54,6 +54,8 @@ set(HEADERS
         src/ui/imgui_impl_opengl3_loader.h
         src/ui/plot.h
         src/ui/uipanel_manager.h
+        src/ui/test_panel.h
+        src/ui/experiment_panel.h
         src/problem/problem.h
         src/problem/problem_head_collect.h
         src/problem/dtlz.h
@@ -110,6 +112,8 @@ set(SRC
         src/ui/imgui_impl_opengl3.cpp
         src/ui/plot.cpp
         src/ui/uipanel_manager.cpp
+        src/ui/test_panel.cpp
+        src/ui/experiment_panel.cpp
         src/problem/problem.cpp
         src/problem/dtlz.cpp
         src/problem/uf.cpp

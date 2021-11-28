@@ -49,9 +49,6 @@ namespace emoc {
 
 		while (!IsTermination())
 		{
-			// begin each iteration
-			g_GlobalSettings->iteration_num_++;
-
 			for (int i = 0; i < weight_num_; ++i)
 			{
 				// set current iteration's neighbour type

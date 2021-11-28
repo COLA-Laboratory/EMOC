@@ -29,9 +29,6 @@ namespace emoc {
 
 		while (!IsTermination())
 		{
-			// begin each iteration
-			g_GlobalSettings->iteration_num_++;
-
 			// generate offspring population
 			Crossover(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->offspring_population_.data());
 			MutationPop(g_GlobalSettings->offspring_population_.data(), 2 * g_GlobalSettings->population_num_ / 2, g_GlobalSettings);
