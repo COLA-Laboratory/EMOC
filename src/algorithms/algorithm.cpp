@@ -53,10 +53,12 @@ namespace emoc {
 		end_ = clock();
 		if(g_GlobalSettings->iteration_num_ >= 1) runtime_ += (double)(end_ - start_) / CLOCKS_PER_SEC;
 
-		// update uipanel's data
+		// update uipanel's data when necessary
+		// TODO... if(is_gui_on)
 		UIPanelManager::Instance()->SetCurrentEvaluation(g_GlobalSettings->current_evaluation_);
 
 		// check stop and pause
+		// TODO... if(is_gui_on)
 		if (CheckStopAndPause()) return true;
 
 		// record the population every interval generations and the first and last genration 
@@ -66,7 +68,8 @@ namespace emoc {
 		{
 			TrackPopulation(g_GlobalSettings->iteration_num_);
 		}
-		PlotPopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->iteration_num_);
+		if (EMOCManager::Instance()->GetIsPlot())
+			PlotPopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->iteration_num_);
 
 		// increase iteration number if is not terminated
 		if(!is_terminate)	g_GlobalSettings->iteration_num_++;
@@ -129,10 +132,6 @@ namespace emoc {
 	{
 		clock_t start_ = clock();
 		clock_t end_ = clock();
-
-
-		if (EMOCManager::Instance()->GetPlot() == false)
-			return;
 
 		// open data file and script file for gnuplot
 		FILE* data_file = nullptr, *script_file = nullptr;
@@ -219,24 +218,42 @@ namespace emoc {
 		std::cout << (double)(end_ - start_) / CLOCKS_PER_SEC << " total draw time:" << testTime << "\n";
 
 		double waiting_time = 15.0 * real_popnum_ / 100.0;
-		waiting_time = waiting_time > 22.0 ? waiting_time : 22.0;
+		waiting_time = waiting_time > 25.0 ? waiting_time : 25.0;
 
 		std::this_thread::sleep_for(std::chrono::milliseconds((int)waiting_time));
 	}
 
 	bool Algorithm::CheckStopAndPause()
 	{
-		// check stop and pause
+		// check stop and pause for test module
+		if (!EMOCManager::Instance()->GetIsExperiment())
 		{
-			std::lock_guard<std::mutex> locker(EMOCLock::finish_mutex);
-			if (EMOCManager::Instance()->GetFinish()) return true;
+			{
+				std::lock_guard<std::mutex> locker(EMOCLock::finish_mutex);
+				if (EMOCManager::Instance()->GetFinish()) return true;
+			}
+
+			{
+				std::unique_lock<std::mutex> locker(EMOCLock::pause_mutex);
+				if (EMOCManager::Instance()->GetPause())
+					EMOCLock::pause_cond.wait(locker, [&]() {return !EMOCManager::Instance()->GetPause(); });
+			}
+		}
+		// check stop and pause for experiment module
+		else
+		{
+			{
+				std::lock_guard<std::mutex> locker(EMOCLock::experiment_finish_mutex);
+				if (EMOCManager::Instance()->GetExperimentFinish()) return true;
+			}
+
+			{
+				std::unique_lock<std::mutex> locker(EMOCLock::experiment_pause_mutex);
+				if (EMOCManager::Instance()->GetExperimentPause())
+					EMOCLock::experiment_pause_cond.wait(locker, [&]() {return !EMOCManager::Instance()->GetExperimentPause(); });
+			}
 		}
 
-		{
-			std::unique_lock<std::mutex> locker(EMOCLock::pause_mutex);
-			if (EMOCManager::Instance()->GetPause())
-				EMOCLock::pause_cond.wait(locker, [&]() {return !EMOCManager::Instance()->GetPause(); });
-		}
 
 		return false;
 	}

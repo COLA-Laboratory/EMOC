@@ -1,6 +1,7 @@
 #include "algorithms/moead_frrmab/moead_frrmab.h"
 
 #include <cmath>
+#include <iostream>
 #include <algorithm>
 
 #include "core/global.h"
@@ -103,6 +104,7 @@ namespace emoc {
 				UpdateUtility();
 			}
 		}
+		std::cout << "evaluation:" << g_GlobalSettings->current_evaluation_ << "\n";
 
 		for (int i = 0; i < 4; ++i)
 		{

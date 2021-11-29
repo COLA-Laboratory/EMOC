@@ -11,8 +11,12 @@ namespace emoc {
 	struct EMOCLock
 	{
 		static std::mutex finish_mutex;
+		static std::mutex experiment_finish_mutex;
 		static std::mutex pause_mutex;
+		static std::mutex experiment_pause_mutex;
+		static std::mutex multithread_data_mutex;
 		static std::condition_variable pause_cond;
+		static std::condition_variable experiment_pause_cond;
 	};
 
 	class EMOCApplication

@@ -18,6 +18,11 @@ using emoc::EMOCApplication;
 
 int main(int argc, char* argv[])
 {
+	double test = -1.0;
+
+	if (test == -1.0)
+		std::cout << "wuhu!\n";
+
 	// init
 	//PlotManager* plot_manager = PlotManager::Instance();
 	//EMOCManager* emoc_manager = EMOCManager::Instance();
