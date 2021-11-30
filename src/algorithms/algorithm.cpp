@@ -230,13 +230,13 @@ namespace emoc {
 		{
 			{
 				std::lock_guard<std::mutex> locker(EMOCLock::finish_mutex);
-				if (EMOCManager::Instance()->GetFinish()) return true;
+				if (EMOCManager::Instance()->GetTestFinish()) return true;
 			}
 
 			{
 				std::unique_lock<std::mutex> locker(EMOCLock::pause_mutex);
-				if (EMOCManager::Instance()->GetPause())
-					EMOCLock::pause_cond.wait(locker, [&]() {return !EMOCManager::Instance()->GetPause(); });
+				if (EMOCManager::Instance()->GetTestPause())
+					EMOCLock::pause_cond.wait(locker, [&]() {return !EMOCManager::Instance()->GetTestPause(); });
 			}
 		}
 		// check stop and pause for experiment module

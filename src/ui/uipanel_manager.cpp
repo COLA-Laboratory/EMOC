@@ -203,6 +203,7 @@ namespace emoc {
 	{
 		ImGui::GetStyle().FrameRounding = 4.0f;
 		ImGui::GetStyle().GrabRounding = 4.0f;
+		ImGui::GetStyle().WindowMenuButtonPosition = ImGuiDir_Right;
 
 		ImVec4* colors = ImGui::GetStyle().Colors;
 		//ImGui::GetStyle().FrameBorderSize = 1.0f;

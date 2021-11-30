@@ -103,8 +103,8 @@ namespace emoc {
 
 	void RecordPop(int run_index, int generation, Global *para, int real_popnum)
 	{
-		char output_dir[MAX_BUFFSIZE];
-		char output_file[MAX_BUFFSIZE];
+		char output_dir[1024];
+		char output_file[1024];
 
 		// set the output directory
 		std::string problem_name(para->problem_name_);
@@ -120,7 +120,7 @@ namespace emoc {
 			c = toupper(c);
 		}
 
-		if (EMOCManager::Instance()->GetParameters().is_open_multithread)
+		if (EMOCManager::Instance()->GetIsExperiment())
 		{
 			sprintf(output_dir, "./output/experiment_module/%s_M%d_D%d/%s/%d/",
 				problem_name.c_str(),
@@ -260,7 +260,7 @@ namespace emoc {
 	{
 		
 		// defalut value
-		para->algorithm_name = "MOEAD";
+		para->algorithm_name = "SPEA2";
 		para->problem_name = "ZDT1";
 		para->is_plot = false;
 		para->population_num = 100;
@@ -268,7 +268,7 @@ namespace emoc {
 		para->objective_num = 2;
 		para->max_evaluation = 25000;
 		para->output_interval = 1000000;	// no output except the first and last gerneration
-		para->runs_num = 10;
+		para->runs_num = 20;
 		para->is_open_multithread = 0;
 		para->thread_num = 8;
 
@@ -324,11 +324,11 @@ namespace emoc {
 					int ret = mkdir(tmpDirPath, S_IRWXU | S_IRWXG | S_IRWXO);
 #endif
 
-					if (ret == -1)
-					{
-						std::cerr << "CREATE SAVE DIRECTORY FAIL!\n";
-						return 0;
-					}
+					//if (ret == -1)
+					//{
+					//	std::cerr << "CREATE SAVE DIRECTORY FAIL!\n";
+					//	return 0;
+					//}
 				}
 			}
 		}

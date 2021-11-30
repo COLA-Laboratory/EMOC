@@ -32,7 +32,6 @@ namespace emoc {
 		problem_index(0),
 		display_index(0)
 	{
-
 		InitDisplayList(display_names);
 		InitAlgorithmList(algorithm_names);
 		InitProlbemList(problem_names);
@@ -45,16 +44,19 @@ namespace emoc {
 
 	void ExperimentPanel::Render()
 	{
-		// normal way to set table columns
-		//ImGui::TableSetupColumn("Run #", ImGuiTableColumnFlags_None);
-		//ImGui::TableSetupColumn("Algorithm", ImGuiTableColumnFlags_None);
-		//ImGui::TableSetupColumn("Problem", ImGuiTableColumnFlags_None);
-		//ImGui::TableSetupColumn("N", ImGuiTableColumnFlags_None);
-		//ImGui::TableSetupColumn("M", ImGuiTableColumnFlags_None);
-		//ImGui::TableSetupColumn("D", ImGuiTableColumnFlags_None);
-		//ImGui::TableSetupColumn("Evaluation", ImGuiTableColumnFlags_None);
-		//ImGui::TableSetupColumn("Runtime", ImGuiTableColumnFlags_None);
-		//ImGui::TableHeadersRow();
+		// menu bar
+		ImGui::BeginDisabled();
+		if (ImGui::BeginMainMenuBar())
+		{
+			if (ImGui::BeginMenu("Mode"))
+			{
+				if (ImGui::MenuItem("Test Module")) { UIPanelManager::Instance()->SetUIPanelState(UIPanel::TestPanel); }
+				if (ImGui::MenuItem("Experiment Module")) { UIPanelManager::Instance()->SetUIPanelState(UIPanel::ExperimentPanel); }
+				ImGui::EndMenu();
+			}
+			ImGui::EndMainMenuBar();
+		}
+		ImGui::EndDisabled();
 		
 		// update EMOC experiment module running state
 		bool is_finish = EMOCManager::Instance()->GetExperimentFinish();
@@ -138,7 +140,8 @@ namespace emoc {
 			if (ImGui::Button("Start##Experiment", ImVec2(window_width * 0.95f, window_height * 0.08f)))
 			{
 				EMOCManager::Instance()->SetIsExperiment(true);
-				// set the algorithms and problems display in table
+
+				// set the data display in table
 				table_algorithms  = selected_algorithms;
 				table_problems	  = selected_problems;
 				table_Ns          = Ns;
@@ -146,9 +149,6 @@ namespace emoc {
 				table_Ms		  = Ms;
 				table_Evaluations = Evaluations;
 
-
-
-				std::cout << Ns.size() << "\n";
 				ConstructTasks();
 				if (experiment_tasks.size() > 0)
 				{
@@ -268,10 +268,10 @@ namespace emoc {
 			std::vector<std::string> columns;
 			TextCenter("Result Info Display");
 			ImGui::Dummy(ImVec2(0.0f, 5.0f));
-			static bool is_displayN = true; ImGui::Checkbox("N##Experiment", &is_displayN); ImGui::SameLine();
-			static bool is_displayM = true; ImGui::Checkbox("M##Experiment", &is_displayM); ImGui::SameLine();
-			static bool is_displayD = true; ImGui::Checkbox("D##Experiment", &is_displayD); ImGui::SameLine();
-			static bool is_displayEvaluation = true; ImGui::Checkbox("Evaluation##Experiment", &is_displayEvaluation); ImGui::SameLine();
+			static bool is_displayN = false; ImGui::Checkbox("N##Experiment", &is_displayN); ImGui::SameLine();
+			static bool is_displayM = false; ImGui::Checkbox("M##Experiment", &is_displayM); ImGui::SameLine();
+			static bool is_displayD = false; ImGui::Checkbox("D##Experiment", &is_displayD); ImGui::SameLine();
+			static bool is_displayEvaluation = false; ImGui::Checkbox("Evaluation##Experiment", &is_displayEvaluation); ImGui::SameLine();
 			ImGui::SetNextItemWidth(ImGui::CalcTextSize("Runtimexxx").x);
 			ImGui::Combo("##DisplayExperiment", &display_index, display_names.data(), display_names.size());
 
@@ -390,12 +390,14 @@ namespace emoc {
 		const std::string& algorithm = selected_algorithms[index];
 		std::string header_name = algorithm + "##" + std::to_string(index);
 		bool is_open = false;
+		bool is_delete = false;
 		if (is_open = ImGui::CollapsingHeader(header_name.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			DisplayMovePopup(index, true);
-			DisplayAlgorithmParameters(algorithm);
+			DisplayMovePopup(index, true, is_delete);
+			if(!is_delete)
+				DisplayAlgorithmParameters(algorithm);
 		}
-		if (!is_open) DisplayMovePopup(index, true);
+		if (!is_open) DisplayMovePopup(index, true, is_delete);
 	}
 
 	void ExperimentPanel::DisplaySelectedProblem(int index, int item_width, int item_pos)
@@ -404,46 +406,108 @@ namespace emoc {
 		const std::string& problem = selected_problems[index];
 		std::string header_name = problem + "##" + std::to_string(index);
 		bool is_open = false;
+		bool is_delete = false;
 		if (is_open = ImGui::CollapsingHeader(header_name.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			DisplayMovePopup(index, false);
-			ImGui::PushItemWidth(item_width);
-			ImGui::AlignTextToFramePadding();
-			ImGui::Text("D"); ImGui::SameLine();
-			ImGui::SetCursorPosX(item_pos);
-			sprintf(name, "##DExperiment%d", index);
-			ImGui::InputInt(name, &Ds[index], 0);
+			DisplayMovePopup(index, false, is_delete);
+			if (!is_delete)
+			{
+				ImGui::PushItemWidth(item_width);
+				ImGui::AlignTextToFramePadding();
+				ImGui::Text("D"); ImGui::SameLine();
+				ImGui::SetCursorPosX(item_pos);
+				sprintf(name, "##DExperiment%d", index);
+				ImGui::InputInt(name, &Ds[index], 0);
 
-			ImGui::AlignTextToFramePadding();
-			ImGui::Text("M"); ImGui::SameLine();
-			ImGui::SetCursorPosX(item_pos);
-			sprintf(name, "##MExperiment%d", index);
-			ImGui::InputInt(name, &Ms[index], 0);
+				ImGui::AlignTextToFramePadding();
+				ImGui::Text("M"); ImGui::SameLine();
+				ImGui::SetCursorPosX(item_pos);
+				sprintf(name, "##MExperiment%d", index);
+				ImGui::InputInt(name, &Ms[index], 0);
 
-			ImGui::AlignTextToFramePadding();
-			ImGui::Text("N"); ImGui::SameLine();
-			ImGui::SetCursorPosX(item_pos);
-			sprintf(name, "##NExperiment%d", index);
-			ImGui::InputInt(name, &Ns[index], 0);
+				ImGui::AlignTextToFramePadding();
+				ImGui::Text("N"); ImGui::SameLine();
+				ImGui::SetCursorPosX(item_pos);
+				sprintf(name, "##NExperiment%d", index);
+				ImGui::InputInt(name, &Ns[index], 0);
 
-			ImGui::AlignTextToFramePadding();
-			ImGui::Text("Evaluation"); ImGui::SameLine();
-			ImGui::SetCursorPosX(item_pos);
-			sprintf(name, "##EvaluationExperiment%d", index);
-			ImGui::InputInt(name, &Evaluations[index], 0);
-			ImGui::PopItemWidth();
+				ImGui::AlignTextToFramePadding();
+				ImGui::Text("Evaluation"); ImGui::SameLine();
+				ImGui::SetCursorPosX(item_pos);
+				sprintf(name, "##EvaluationExperiment%d", index);
+				ImGui::InputInt(name, &Evaluations[index], 0);
+				ImGui::PopItemWidth();
+			}
 		}
-		if (!is_open) DisplayMovePopup(index, false);
+		if (!is_open) DisplayMovePopup(index, false, is_delete);
 	}
 
-	void ExperimentPanel::DisplayMovePopup(int index, bool is_algorithm_popup)
+	void ExperimentPanel::DisplayMovePopup(int index, bool is_algorithm_popup,bool &is_delete)
 	{
+
 		if (ImGui::BeginPopupContextItem())
 		{
-			ImGui::Button("Move Up     ");
-			ImGui::Button("Move Down");
-			ImGui::Button("Delete          ");
-
+			if(ImGui::Button("Move Up     "))
+			{
+				if (index >= 1)
+				{
+					if (is_algorithm_popup) 
+						std::swap(selected_algorithms[index], selected_algorithms[index - 1]);
+					else
+					{
+						std::swap(selected_problems[index], selected_problems[index - 1]);
+						std::swap(Ns[index], Ns[index - 1]);
+						std::swap(Ds[index], Ds[index - 1]);
+						std::swap(Ms[index], Ms[index - 1]);
+						std::swap(Evaluations[index], Evaluations[index - 1]);
+					}
+				}
+				ImGui::CloseCurrentPopup();
+			}
+			if (ImGui::Button("Move Down"))
+			{
+				if (is_algorithm_popup)
+				{
+					if (index < selected_algorithms.size() - 1)
+						std::swap(selected_algorithms[index], selected_algorithms[index + 1]);
+					
+				}
+				else
+				{
+					if (index < selected_problems.size() - 1)
+					{
+						std::swap(selected_problems[index], selected_problems[index + 1]);
+						std::swap(Ns[index], Ns[index + 1]);
+						std::swap(Ds[index], Ds[index + 1]);
+						std::swap(Ms[index], Ms[index + 1]);
+						std::swap(Evaluations[index], Evaluations[index + 1]);
+					}
+				}
+				ImGui::CloseCurrentPopup();
+			}
+			if(ImGui::Button("Delete         "))
+			{
+				// Note that vector::erase() will cause invalid index for traversing,
+				// but it only display wrong ui in current frame and fixed in next frame.
+				// So we leave the kind of "wrong" code here alone for the simplicity.
+				// It is not recommended in normal programming.
+				if (is_algorithm_popup)
+				{
+					selected_algorithm_map.erase(selected_algorithms[index]);
+					selected_algorithms.erase(selected_algorithms.begin() + index);
+				}
+				else
+				{
+					selected_problem_map.erase(selected_problems[index]);
+					selected_problems.erase(selected_problems.begin() + index);
+					Ns.erase(Ns.begin() + index);
+					Ds.erase(Ds.begin() + index);
+					Ms.erase(Ms.begin() + index);
+					Evaluations.erase(Evaluations.begin() + index);
+				}
+				is_delete = true;
+				ImGui::CloseCurrentPopup();
+			}
 			ImGui::EndPopup();
 		}
 	}

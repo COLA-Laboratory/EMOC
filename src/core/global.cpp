@@ -61,10 +61,16 @@ namespace emoc {
 
 	void Global::Start()
 	{
-		EMOCManager::Instance()->SetPause(false);
-		EMOCManager::Instance()->SetFinish(false);
+		if (!EMOCManager::Instance()->GetIsExperiment())
+		{
+			EMOCManager::Instance()->SetTestPause(false);
+			EMOCManager::Instance()->SetTestFinish(false);
+		}
+
 		algorithm_->Run();
-		EMOCManager::Instance()->SetFinish(true);
+
+		if (!EMOCManager::Instance()->GetIsExperiment())
+			EMOCManager::Instance()->SetTestFinish(true);
 	}
 
 	void Global::Init()

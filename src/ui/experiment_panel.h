@@ -21,7 +21,7 @@ namespace emoc {
 		void DisplayTableProblemProperty(const std::string& col_name, int row);	// column display in default test module's table 
 		void DisplaySelectedAlgorithm(int index);								// algorithm display in experiment module's parameter window 
 		void DisplaySelectedProblem(int index, int item_width, int item_pos);	// problem display in experiment module's parameter window
-		void DisplayMovePopup(int index, bool is_algorithm_popup);				// popups in experiment module's parameter window for moving or deleting selected algorithms and problems
+		void DisplayMovePopup(int index, bool is_algorithm_popup, bool &is_delete);				// popups in experiment module's parameter window for moving or deleting selected algorithms and problems
 
 		void ConstructTasks();
 

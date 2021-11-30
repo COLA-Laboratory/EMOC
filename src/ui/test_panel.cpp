@@ -28,16 +28,28 @@ namespace emoc {
 
 	void TestPanel::Render()
 	{
+		// menu bar
+		if (ImGui::BeginMainMenuBar())
+		{
+			if (ImGui::BeginMenu("Mode"))
+			{
+				if (ImGui::MenuItem("Test Module")) { UIPanelManager::Instance()->SetUIPanelState(UIPanel::TestPanel); }
+				if (ImGui::MenuItem("Experiment Module")) { UIPanelManager::Instance()->SetUIPanelState(UIPanel::ExperimentPanel); }
+				ImGui::EndMenu();
+			}
+			ImGui::EndMainMenuBar();
+		}
+
 		// update EMOC running state
-		bool is_finish = EMOCManager::Instance()->GetFinish();
-		bool is_pause = EMOCManager::Instance()->GetPause();
+		bool is_finish = EMOCManager::Instance()->GetTestFinish();
+		bool is_pause = EMOCManager::Instance()->GetTestPause();
 
 		// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
 		if (show_demo_window)
 			ImGui::ShowDemoWindow(&show_demo_window);
 
 		// Test Module Parameter Setting Window
-		{
+		{ 
 			// Algorithm selection part
 			ImGui::Begin("EMOC Parameter Setting##Test");
 			TextCenter("Algorithm Selection");
@@ -179,8 +191,8 @@ namespace emoc {
 			{
 				std::cout << "Continue!\n";
 				std::lock_guard<std::mutex> locker(EMOCLock::pause_mutex);
-				EMOCManager::Instance()->SetPause(false);
-				std::cout << "After click continue button, the pause value is: " << EMOCManager::Instance()->GetPause() << "\n";
+				EMOCManager::Instance()->SetTestPause(false);
+				std::cout << "After click continue button, the pause value is: " << EMOCManager::Instance()->GetTestPause() << "\n";
 				EMOCLock::pause_cond.notify_all();
 			}
 			ImGui::SameLine(); ImGui::Dummy(ImVec2(10.0f, 0.0f)); ImGui::SameLine();
@@ -192,7 +204,7 @@ namespace emoc {
 			{
 				std::cout << "Pause\n";
 				std::lock_guard<std::mutex> locker(EMOCLock::pause_mutex);
-				EMOCManager::Instance()->SetPause(true);
+				EMOCManager::Instance()->SetTestPause(true);
 			}
 			ImGui::SameLine(); ImGui::Dummy(ImVec2(10.0f, 0.0f)); ImGui::SameLine();
 
@@ -200,8 +212,8 @@ namespace emoc {
 			{
 				std::cout << "Stop!\n";
 				std::lock_guard<std::mutex> locker(EMOCLock::finish_mutex);
-				EMOCManager::Instance()->SetFinish(true);
-				std::cout << "After click continue button, the finish value is: " << EMOCManager::Instance()->GetFinish() << "\n";
+				EMOCManager::Instance()->SetTestFinish(true);
+				std::cout << "After click continue button, the finish value is: " << EMOCManager::Instance()->GetTestFinish() << "\n";
 			}
 			ImGui::SameLine(); ImGui::Dummy(ImVec2(10.0f, 0.0f)); ImGui::SameLine();\
 			if (is_finish || (!is_finish && is_pause)) ImGui::EndDisabled();

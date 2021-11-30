@@ -68,9 +68,9 @@ namespace emoc {
 		inline bool GetIsPlot() { return is_plot_; }
 		inline bool GetIsGUI() { return is_gui_; }
 		inline bool GetIsExperiment() { return is_experiment_; }
-		inline bool GetPause() { return is_pause_; }
+		inline bool GetTestPause() { return is_test_pause_; }
 		inline bool GetExperimentPause() { return is_experiment_pause_; }
-		inline bool GetFinish() { return is_finish_; }
+		inline bool GetTestFinish() { return is_test_finish_; }
 		inline bool GetExperimentFinish() { return is_experiment_finish_; }
 		inline bool GetMultiThreadDataState() { return is_multithread_result_ready; }
 
@@ -86,9 +86,9 @@ namespace emoc {
 		inline void SetIsPlot(bool is_plot) { is_plot_ = is_plot; }
 		inline void SetIsGUI(bool is_gui) { is_gui_ = is_gui; }
 		inline void SetIsExperiment(bool is_experiment) { is_experiment_ = is_experiment; }
-		inline void SetPause(bool is_pause) { is_pause_ = is_pause; }
+		inline void SetTestPause(bool is_pause) { is_test_pause_ = is_pause; }
 		inline void SetExperimentPause(bool is_pause) { is_experiment_pause_ = is_pause; }
-		inline void SetFinish(bool is_finish) { is_finish_ = is_finish; }
+		inline void SetTestFinish(bool is_finish) { is_test_finish_ = is_finish; }
 		inline void SetExperimentFinish(bool is_finish) { is_experiment_finish_ = is_finish; }
 		inline void SetMultiThreadDataState(bool state) { is_multithread_result_ready = state; }
 		inline void SetTaskParameters(const EMOCParameters& para) { para_ = para; is_para_set_ = true;}
@@ -131,8 +131,8 @@ namespace emoc {
 		bool is_gui_;
 		bool is_experiment_;
 
-		bool is_pause_;
-		bool is_finish_;
+		bool is_test_pause_;
+		bool is_test_finish_;
 
 		bool is_experiment_pause_;
 		bool is_experiment_finish_;

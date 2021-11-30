@@ -37,7 +37,6 @@ namespace emoc {
 			EvaluatePop(g_GlobalSettings->offspring_population_.data(), 2 * g_GlobalSettings->population_num_ / 2);
 			MergePopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_, g_GlobalSettings->offspring_population_.data(),
 				2 * g_GlobalSettings->population_num_ / 2, g_GlobalSettings->mixed_population_.data());
-			
 			// select next generation's population
 			EnvironmentalSelection(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->mixed_population_.data());
 		}
@@ -166,12 +165,14 @@ namespace emoc {
 
 	std::unordered_map<int, int> SPEA2::TruncatePop(double **distance, int candidate_num)
 	{
+		clock_t start, end;
 		double **temp = new double *[candidate_num];
 		for (int i = 0; i < candidate_num; ++i)
 			temp[i] = new double[candidate_num];
-		
+
 		std::unordered_map<int, int> delete_map;
 		// truncate
+		start = clock();
 		while (candidate_num - delete_map.size() > g_GlobalSettings->population_num_)
 		{
 			// create temp distance matrix according delete_map and original distance matrix
@@ -212,7 +213,10 @@ namespace emoc {
 			});
 
 			delete_map[sort_index[0]] = 1;
+			//std::cout << sort_index[0] << "\n";
 		}
+		end = clock();
+		printf("EnvironmentalSelection time: %fs\n", (double)(end - start) / CLOCKS_PER_SEC);
 
 		for (int i = 0; i < candidate_num; ++i)
 			delete[] temp[i];
@@ -231,7 +235,7 @@ namespace emoc {
 		for (int i = 0; i < mixed_popnum; ++i)
 			if (mixed_pop[i]->fitness_ < 1)
 				candidate_num++;
-		
+
 		if (candidate_num <= g_GlobalSettings->population_num_)
 		{
 			// copy directly according to fitness
@@ -278,5 +282,6 @@ namespace emoc {
 				delete[] distance[i];
 			delete[] distance;
 		}
+
 	}
 }

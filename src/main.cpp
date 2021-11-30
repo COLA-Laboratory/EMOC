@@ -40,9 +40,10 @@ int main(int argc, char* argv[])
 	emoc_app.Run();
 
 
-	//// multithread test
+	// multithread test
 	//emoc::EMOCParameters parameter;
 	//ParseParamerters(argc, argv, &parameter);
+	//if (parameter.is_open_multithread) emoc_manager->SetIsExperiment(true);
 	//emoc_manager->SetTaskParameters(parameter);
 	//emoc_manager->Run();
 

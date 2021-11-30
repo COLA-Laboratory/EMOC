@@ -29,6 +29,7 @@ namespace emoc {
 		return s_Instance;
 	}
 	
+	// this Run() is for command line mode and test module in gui mode
 	void EMOCManager::Run()
 	{
 		if (is_para_set_ == false)
@@ -40,9 +41,10 @@ namespace emoc {
 			EMOCSingleThreadRun();
 	}
 
-	// each experiment_task here can be separeted into 'run_num' small tasks which represent by EMOCExperimentTask
+	// This ExperimentModuleRun() is for experiment module in gui mode
 	void EMOCManager::ExperimentModuleRun(std::vector<EMOCParameters> experiment_tasks, int thread_num)
 	{
+		// each experiment_task here can be separeted into 'run_num' small tasks which represent by EMOCExperimentTask
 
 		// initialize experiment result
 		multi_thread_result_history_.clear();
@@ -149,6 +151,7 @@ namespace emoc {
 			single_thread_result_historty_.push_back(result);
 
 			printf("run %d time: %fs  igd: %f\n", run, (double)(end - start) / CLOCKS_PER_SEC, igd);
+			printf("run %d time: %fs \n", run, result.runtime);
 			// release the memory per run
 			delete g_GlobalSettingsArray[thread_id];
 		}
@@ -156,73 +159,81 @@ namespace emoc {
 
 	void EMOCManager::EMOCMultiThreadRun()
 	{
-		int thread_num = para_.thread_num;
-		std::vector<int> run_start_indexes;
-		std::vector<int> run_end_indexes;
-		std::vector<int> job_overload(thread_num, 0);
+		// initialize experiment result
+		multi_thread_result_history_.clear();
+		multi_thread_result_history_.push_back(EMOCMultiThreadResult(para_.runs_num));
 
-		// allocate runs to different threads
-		int interval = (int)((double)para_.runs_num / thread_num);
-		int remainder = para_.runs_num % thread_num;
-		for (int i = 0; i < thread_num; ++i)
+		std::cout << "-------------------------------------\n";
+		std::cout << para_.algorithm_name << "\n";
+		std::cout << para_.problem_name << "\n";
+		std::cout << para_.population_num << "\n";
+		std::cout << para_.decision_num << "\n";
+		std::cout << para_.objective_num << "\n";
+		std::cout << para_.max_evaluation << "\n";
+		std::cout << "-------------------------------------\n\n";
+		
+		if (para_.thread_num <= 0) para_.thread_num = 8;
+		std::vector<std::vector<EMOCExperimentTask>> emoc_thread_tasks(para_.thread_num);
+
+		int task_count = 0;
+		for (int j = 0; j < para_.runs_num; j++)
 		{
-			job_overload[i] = interval;
-			if (remainder-- > 0)
-				job_overload[i]++;
+			EMOCExperimentTask t;
+			t.para = para_;
+			t.parameter_index = 0;
+			t.run_index = j;
+			emoc_thread_tasks[task_count % para_.thread_num].push_back(t);
+			task_count++;
 		}
 
 		// multithread running
-		std::vector<std::thread> emoc_threads;
-		int total_overload = 0;
-		for (int i = 0; i < thread_num; ++i)
 		{
-			int run_start = 0, run_end = 0;
-			if (job_overload[i] >= 0)
-			{
-				run_start = total_overload;
-				run_end = total_overload + job_overload[i] - 1;
-				total_overload += job_overload[i];
-			}
-			std::cout <<"start intex:" << run_start << "  end intex:" << run_end << "  \n";
-			run_start_indexes.push_back(run_start);
-			run_end_indexes.push_back(run_end);
-
-			if (job_overload[i] > 0)
-				emoc_threads.push_back(std::thread(&EMOCManager::MultiThreadWorker, EMOCManager::Instance(), run_start_indexes[i], run_end_indexes[i], i));
+			std::lock_guard<std::mutex> locker1(EMOCLock::experiment_finish_mutex);
+			std::lock_guard<std::mutex> locker2(EMOCLock::experiment_pause_mutex);
+			EMOCManager::Instance()->SetExperimentFinish(false);
+			EMOCManager::Instance()->SetExperimentPause(false);
 		}
 
-		for (int i = 0; i < emoc_threads.size(); ++i)
-			emoc_threads[i].join();
+		std::vector<std::thread> experiment_threads;
+		for (int i = 0; i < para_.thread_num; i++)
+			experiment_threads.push_back(std::thread(&EMOCManager::ExperimentWorker, EMOCManager::Instance(), emoc_thread_tasks[i], i));
 
-	}
+		for (int i = 0; i < experiment_threads.size(); i++)
+			experiment_threads[i].join();
 
-	void EMOCManager::MultiThreadWorker(int run_start, int run_end, int thread_id)
-	{
-		const char* algorithm_name = para_.algorithm_name.c_str();
-		const char* problem_name = para_.problem_name.c_str();
-		bool is_plot = para_.is_plot;
-		int population_num = para_.population_num;
-		int dec_num = para_.decision_num;
-		int obj_num = para_.objective_num;
-		int max_eval = para_.max_evaluation;
-		int output_interval = para_.output_interval;
-
-		for (int run = run_start; run <= run_end; ++run)
 		{
-			// algorithm main entity
-			g_GlobalSettingsArray[thread_id] = new emoc::Global(algorithm_name, problem_name, population_num, dec_num, obj_num, max_eval, thread_id, output_interval, run);
-			g_GlobalSettingsArray[thread_id]->Init();
-			SetIsPlot(is_plot);
-			g_GlobalSettingsArray[thread_id]->Start();
-
-			std::string problem_name = g_GlobalSettingsArray[thread_id]->problem_name_;
-			int obj_num = g_GlobalSettingsArray[thread_id]->obj_num_;
-			double igd = CalculateIGD(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num, problem_name);
-
-			printf("current thread id : %d, runs: %d, igd:%f\n", thread_id, run, igd);
-			delete g_GlobalSettingsArray[thread_id];
+			std::lock_guard<std::mutex> locker1(EMOCLock::experiment_finish_mutex);
+			EMOCManager::Instance()->SetExperimentFinish(true);
 		}
 	}
+
+	//void EMOCManager::MultiThreadWorker(int run_start, int run_end, int thread_id)
+	//{
+	//	const char* algorithm_name = para_.algorithm_name.c_str();
+	//	const char* problem_name = para_.problem_name.c_str();
+	//	bool is_plot = para_.is_plot;
+	//	int population_num = para_.population_num;
+	//	int dec_num = para_.decision_num;
+	//	int obj_num = para_.objective_num;
+	//	int max_eval = para_.max_evaluation;
+	//	int output_interval = para_.output_interval;
+
+	//	for (int run = run_start; run <= run_end; ++run)
+	//	{
+	//		// algorithm main entity
+	//		g_GlobalSettingsArray[thread_id] = new emoc::Global(algorithm_name, problem_name, population_num, dec_num, obj_num, max_eval, thread_id, output_interval, run);
+	//		g_GlobalSettingsArray[thread_id]->Init();
+	//		SetIsPlot(is_plot);
+	//		g_GlobalSettingsArray[thread_id]->Start();
+
+	//		std::string problem_name = g_GlobalSettingsArray[thread_id]->problem_name_;
+	//		int obj_num = g_GlobalSettingsArray[thread_id]->obj_num_;
+	//		double igd = CalculateIGD(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num, problem_name);
+
+	//		printf("current thread id : %d, runs: %d, igd:%f\n", thread_id, run, igd);
+	//		delete g_GlobalSettingsArray[thread_id];
+	//	}
+	//}
 
 	void EMOCManager::ExperimentWorker(std::vector<EMOCExperimentTask> tasks, int thread_id)
 	{
@@ -271,8 +282,8 @@ namespace emoc {
 		is_plot_(false),
 		is_gui_(false),
 		is_experiment_(false),
-		is_finish_(true),
-		is_pause_(false),
+		is_test_finish_(true),
+		is_test_pause_(false),
 		is_experiment_pause_(false),
 		is_experiment_finish_(true),
 		is_multithread_result_ready(false),
