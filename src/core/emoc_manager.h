@@ -14,6 +14,7 @@ namespace emoc {
 		int parameter_index;
 	};
 
+	// this is for (multi-thread or multi-run) epxeriment result
 	struct EMOCMultiThreadResult
 	{
 		std::vector<double> runtime_history;
@@ -39,6 +40,7 @@ namespace emoc {
 		}
 	};
 
+	// this is for (single thread or single run) test result
 	struct EMOCSingleThreadResult
 	{
 		std::string description;
@@ -48,6 +50,7 @@ namespace emoc {
 		double last_spread;
 		double last_spacing;
 		double runtime;
+		double pop_num;
 		int max_iteration;
 
 		std::vector<double> igd_history;
@@ -79,8 +82,10 @@ namespace emoc {
 		inline Global* GetGlobalSetting(int index) { return g_GlobalSettingsArray[index]; }
 		inline int GetSingleThreadResultSize() { return (int)single_thread_result_historty_.size(); }
 		inline int GetMultiThreadResultSize() { return (int)multi_thread_result_history_.size(); }
-		inline const EMOCSingleThreadResult& GetSingleThreadResult(int index) { return single_thread_result_historty_[index]; }
-		inline const EMOCMultiThreadResult& GetMultiThreadResult(int index) { return multi_thread_result_history_[index]; }
+
+		inline  EMOCSingleThreadResult& GetSingleThreadResult(int index) { return single_thread_result_historty_[index]; }
+		inline  EMOCMultiThreadResult& GetMultiThreadResult(int index) { return multi_thread_result_history_[index]; }
+
 
 		// Setters
 		inline void SetIsPlot(bool is_plot) { is_plot_ = is_plot; }

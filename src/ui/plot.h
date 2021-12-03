@@ -14,7 +14,7 @@ namespace emoc {
 		void Run();
 		void Stop();
 		void RefreshPipe();
-		void Plot(const std::string& cmd);
+		void Send(const std::string& cmd);
 		void OpenPlotPipe();
 		void ClosePlotPipe();
 

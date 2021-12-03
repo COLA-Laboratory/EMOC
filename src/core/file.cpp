@@ -6,6 +6,8 @@
 #include <cstdlib>
 #include <cctype>
 #include <iostream>
+#include <fstream>
+
 
 #if defined(_WIN32)
 #include <direct.h>
@@ -101,7 +103,41 @@ namespace emoc {
 		fclose(fpt);
 	}
 
-	void RecordPop(int run_index, int generation, Global *para, int real_popnum)
+	std::vector<std::vector<double>> ReadPop(char* filepath, int obj_num)
+	{
+		// open pf data file
+		int pop_num = 0;
+		std::vector<std::vector<double>> data;
+		std::fstream data_file(filepath);
+
+
+		if (!data_file)
+		{
+			std::cerr << filepath << " file doesn't exist!\n";
+		}
+		else
+		{
+			std::string line;
+			while (getline(data_file, line))
+				pop_num++;
+
+
+			// read the pf data
+			data_file.clear();
+			data_file.seekg(0);
+			for (int i = 0; i < pop_num; i++)
+			{
+				data.push_back(std::vector<double>(obj_num, 0));
+				for (int j = 0; j < obj_num; j++)
+				{
+					data_file >> data[i][j];
+				}
+			}
+		}
+		return data;
+	}
+
+	void RecordPop(int run_index, int generation, Global* para, int real_popnum)
 	{
 		char output_dir[1024];
 		char output_file[1024];

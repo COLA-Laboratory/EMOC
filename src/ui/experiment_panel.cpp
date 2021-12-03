@@ -45,7 +45,6 @@ namespace emoc {
 	void ExperimentPanel::Render()
 	{
 		// menu bar
-		ImGui::BeginDisabled();
 		if (ImGui::BeginMainMenuBar())
 		{
 			if (ImGui::BeginMenu("Mode"))
@@ -56,7 +55,6 @@ namespace emoc {
 			}
 			ImGui::EndMainMenuBar();
 		}
-		ImGui::EndDisabled();
 		
 		// update EMOC experiment module running state
 		bool is_finish = EMOCManager::Instance()->GetExperimentFinish();
@@ -334,7 +332,7 @@ namespace emoc {
 							if (EMOCManager::Instance()->GetMultiThreadDataState())
 							{
 								int paramter_index = row * table_algorithms.size() + c - columns.size() - 1;
-								const EMOCMultiThreadResult& res = EMOCManager::Instance()->GetMultiThreadResult(paramter_index);
+								EMOCMultiThreadResult res = EMOCManager::Instance()->GetMultiThreadResult(paramter_index);
 								DisplayTableResult(res, display_names[display_index]);
 							}
 						}
@@ -346,7 +344,7 @@ namespace emoc {
 			ImGui::SetCursorPosX(ImGui::GetWindowSize().x - 260.0f);
 			if (ImGui::Button("Open Plot Window", ImVec2(250.0f, 40.0f)))
 			{
-				UIPanelManager::Instance()->SetUIPanelState(UIPanel::TestPanel);
+				// Open a new ImGui window for experiment module plotting analysis
 			}
 			ImGui::End();
 		}

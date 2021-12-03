@@ -19,7 +19,7 @@ namespace emoc {
 	double CalculateCos(double *a, double *b, int dimension);
 	double CalculateSin(double *a, double *b, int dimension);
 	double CalculateNorm(double *vector, int dimension);
-	double CalEuclidianDistance(double *a, double *b, int dimension);
+	double CalEuclidianDistance(const double* a, const double* b, int dimension);
 	double CalPerpendicularDistance(double *a, double *weight, int dimension);
 
 	void UpdateIdealpoint(Individual *ind, double *ideal_point, int obj_num);

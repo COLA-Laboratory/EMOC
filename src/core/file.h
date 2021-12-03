@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <vector>
 
 #include "core/global.h"
 #include "core/individual.h"
@@ -38,6 +39,7 @@ namespace emoc {
 	};
 
 	void PrintObjective(const char* filename, int obj_num, Individual** pop_table, int pop_num);
+	std::vector<std::vector<double>> ReadPop(char* filepath, int obj_num);
 	void RecordPop(int run_index, int generation, Global* para, int real_popnum);
 	void ReadParametersFromFile(const char* filename, EMOCParameters* para);
 	void ParseParamerters(int argc, char* argv[], EMOCParameters* para);

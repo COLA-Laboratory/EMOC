@@ -35,9 +35,13 @@ namespace emoc {
 		void RenderPanel();
 		void Update();
 
-		inline bool IsTerminate() { return !glfwWindowShouldClose(window_);}
+		void AddAvailSingleThreadResult(std::string res);
+		void AddAvailMultiThreadResult(std::string res) { test_panel_.avail_runs.push_back(res.c_str()); }
 
-		// setters for the convinence of calculating progress, invoked by algorithm
+
+		inline bool IsTerminate() { return !glfwWindowShouldClose(window_); }
+
+		// setter for the convinence of calculating progress, invoked by algorithm
 		void SetCurrentEvaluation(int num) { test_panel_.current_evaluation = num; }
 		void SetUIPanelState(UIPanel state) { panel_state_ = state; }
 

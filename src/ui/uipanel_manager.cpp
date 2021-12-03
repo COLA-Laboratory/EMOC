@@ -95,7 +95,20 @@ namespace emoc {
 		glfwPollEvents();
 	}
 
-	UIPanelManager::UIPanelManager():
+	void UIPanelManager::AddAvailSingleThreadResult(std::string res)
+	{
+		// push back new available run's description string
+		test_panel_.avail_runs_string.push_back(res);
+
+		// update the std::vector<const char*> avail_runs
+		test_panel_.avail_runs.clear();
+		for (int i = 0; i < test_panel_.avail_runs_string.size(); i++)
+		{
+			test_panel_.avail_runs.push_back(test_panel_.avail_runs_string[i].c_str());
+		}
+	}
+
+	UIPanelManager::UIPanelManager() :
 		width_(1600),
 		height_(900),
 		title_("EMOC"),

@@ -103,7 +103,7 @@ namespace emoc {
 		fflush(gp_);
 	}
 
-	void PlotManager::Plot(const std::string& cmd)
+	void PlotManager::Send(const std::string& cmd)
 	{
 		if (is_window_close_)
 			OpenPlotPipe();

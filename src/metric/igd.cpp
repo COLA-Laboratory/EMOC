@@ -11,7 +11,7 @@
 
 namespace emoc {
 
-	static double **LoadPFData(int &pf_size, int obj_num, std::string &problem_name)
+	double **LoadPFData(int &pf_size, int obj_num, std::string &problem_name)
 	{
 		// reset pf_size
 		pf_size = 0;
@@ -96,6 +96,41 @@ namespace emoc {
 			{
 				temp_ind = pop[j];
 				temp_distance = CalEuclidianDistance(pfdata[i],temp_ind->obj_, obj_num);
+
+				if (min_distance > temp_distance)
+				{
+					min_distance = temp_distance;
+				}
+			}
+			igd_value += min_distance;
+		}
+		igd_value /= pf_size;
+
+		// free pf data memory
+		for (int i = 0; i < pf_size; ++i)
+			delete[] pfdata[i];
+		delete[] pfdata;
+
+		return 	igd_value;
+	}
+
+	double CalculateIGD(const std::vector<std::vector<double>>& pop, int pop_num, int obj_num, std::string& problem_name)
+	{
+		// load pf data
+		int pf_size = 0;
+		double** pfdata = nullptr;
+		pfdata = LoadPFData(pf_size, obj_num, problem_name);
+
+		// calculate igd value
+		double igd_value = 0;
+		double min_distance = 0, temp_distance = 0;
+
+		for (int i = 0; i < pf_size; i++)
+		{
+			min_distance = INF;
+			for (int j = 0; j < pop_num; j++)
+			{
+				temp_distance = CalEuclidianDistance(pfdata[i], pop[j].data(), obj_num);
 
 				if (min_distance > temp_distance)
 				{

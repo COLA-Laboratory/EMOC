@@ -57,22 +57,24 @@ namespace emoc {
 		// TODO... if(is_gui_on)
 		UIPanelManager::Instance()->SetCurrentEvaluation(g_GlobalSettings->current_evaluation_);
 
-		// check stop and pause
-		// TODO... if(is_gui_on)
-		if (CheckStopAndPause()) return true;
+
 
 		// record the population every interval generations and the first and last genration 
 		bool is_terminate = g_GlobalSettings->current_evaluation_ >= g_GlobalSettings->max_evaluation_;
-		if (g_GlobalSettings->iteration_num_ % g_GlobalSettings->output_interval_ == 0 || g_GlobalSettings->iteration_num_ == 1
-			|| is_terminate)
+		if (g_GlobalSettings->iteration_num_ % g_GlobalSettings->output_interval_ == 0 || is_terminate)
 		{
 			TrackPopulation(g_GlobalSettings->iteration_num_);
 		}
 		if (EMOCManager::Instance()->GetIsPlot())
 			PlotPopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->iteration_num_);
 
+
+		// check stop and pause
+		// TODO... if(is_gui_on)
+		if (CheckStopAndPause()) return true;
+
 		// increase iteration number if is not terminated
-		if(!is_terminate)	g_GlobalSettings->iteration_num_++;
+		if (!is_terminate)	g_GlobalSettings->iteration_num_++;
 
 		start_ = clock();
 		return is_terminate;
@@ -211,14 +213,14 @@ namespace emoc {
 			PlotManager::Instance()->RefreshPipe();
 
 		start_ = clock();
-		plot_manager->Plot(real_cmd);
+		plot_manager->Send(real_cmd);
 		end_ = clock();
 		//std::cout << (double)end_ << " " << (double)start_ << "\n";
 		testTime += (double)(end_ - start_) / CLOCKS_PER_SEC;
 		std::cout << (double)(end_ - start_) / CLOCKS_PER_SEC << " total draw time:" << testTime << "\n";
 
 		double waiting_time = 15.0 * real_popnum_ / 100.0;
-		waiting_time = waiting_time > 25.0 ? waiting_time : 25.0;
+		waiting_time = waiting_time > 27.5 ? waiting_time : 27.5;
 
 		std::this_thread::sleep_for(std::chrono::milliseconds((int)waiting_time));
 	}

@@ -142,13 +142,14 @@ namespace emoc {
 			EMOCSingleThreadResult result;
 			int count = (int)single_thread_result_historty_.size();
 			result.para = para_;
-			result.para.population_num = g_GlobalSettingsArray[thread_id]->algorithm_->GetRealPopNum();
-			result.description = para_.algorithm_name + " on" + para_.problem_name + " Run" + std::to_string(count);
+			result.description = para_.algorithm_name + " on " + para_.problem_name + " Run" + std::to_string(count);
 			result.last_igd = igd;
 			result.last_hv = hv;
 			result.runtime = g_GlobalSettingsArray[thread_id]->algorithm_->GetRuntime();
+			result.pop_num = g_GlobalSettingsArray[thread_id]->algorithm_->GetRealPopNum();
 			result.max_iteration = g_GlobalSettingsArray[thread_id]->iteration_num_;
 			single_thread_result_historty_.push_back(result);
+			UIPanelManager::Instance()->AddAvailSingleThreadResult(single_thread_result_historty_[count].description);
 
 			printf("run %d time: %fs  igd: %f\n", run, (double)(end - start) / CLOCKS_PER_SEC, igd);
 			printf("run %d time: %fs \n", run, result.runtime);
