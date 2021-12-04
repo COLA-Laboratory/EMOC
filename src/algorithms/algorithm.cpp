@@ -54,10 +54,8 @@ namespace emoc {
 		if(g_GlobalSettings->iteration_num_ >= 1) runtime_ += (double)(end_ - start_) / CLOCKS_PER_SEC;
 
 		// update uipanel's data when necessary
-		// TODO... if(is_gui_on)
+		// TODO... if(is_gui_on && !experiment module) 
 		UIPanelManager::Instance()->SetCurrentEvaluation(g_GlobalSettings->current_evaluation_);
-
-
 
 		// record the population every interval generations and the first and last genration 
 		bool is_terminate = g_GlobalSettings->current_evaluation_ >= g_GlobalSettings->max_evaluation_;

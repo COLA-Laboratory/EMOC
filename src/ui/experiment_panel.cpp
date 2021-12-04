@@ -10,7 +10,7 @@
 
 namespace emoc {
 
-	static double CalculateIndicator(const std::vector<double>& indicator_history, const std::vector<bool>& is_indicator_record, bool &is_valid)
+	static double CalculateDisplayIndicator(const std::vector<double>& indicator_history, const std::vector<bool>& is_indicator_record, bool &is_valid)
 	{
 		double res = 0.0;
 		int count = 0;
@@ -43,7 +43,12 @@ namespace emoc {
 	}
 
 	void ExperimentPanel::Render()
-	{
+	{		
+		// update EMOC experiment module running state
+		bool is_finish = EMOCManager::Instance()->GetExperimentFinish();
+		bool is_pause = EMOCManager::Instance()->GetExperimentPause();
+
+		if (!is_finish) ImGui::BeginDisabled();
 		// menu bar
 		if (ImGui::BeginMainMenuBar())
 		{
@@ -55,11 +60,19 @@ namespace emoc {
 			}
 			ImGui::EndMainMenuBar();
 		}
-		
-		// update EMOC experiment module running state
-		bool is_finish = EMOCManager::Instance()->GetExperimentFinish();
-		bool is_pause = EMOCManager::Instance()->GetExperimentPause();
+		DisplaySelectionWindow(is_finish, is_pause);
+		DisplayParameterWindow(is_finish, is_pause);
+		if (!is_finish) ImGui::EndDisabled();
 
+		if (is_finish) ImGui::BeginDisabled();
+		DisplayControlWindow(is_finish, is_pause);
+		if (is_finish) ImGui::EndDisabled();
+
+		DisplayResultWindow(is_finish, is_pause);
+	}
+
+	void ExperimentPanel::DisplaySelectionWindow(bool is_finish, bool is_pause)
+	{
 		// Experiment Module Algorithm and Problem Selection Window
 		{
 			ImGui::Begin("Algorithm and Problem Selection##Experiment");
@@ -140,11 +153,11 @@ namespace emoc {
 				EMOCManager::Instance()->SetIsExperiment(true);
 
 				// set the data display in table
-				table_algorithms  = selected_algorithms;
-				table_problems	  = selected_problems;
-				table_Ns          = Ns;
-				table_Ds		  = Ds;
-				table_Ms		  = Ms;
+				table_algorithms = selected_algorithms;
+				table_problems = selected_problems;
+				table_Ns = Ns;
+				table_Ds = Ds;
+				table_Ms = Ms;
 				table_Evaluations = Evaluations;
 
 				ConstructTasks();
@@ -153,7 +166,7 @@ namespace emoc {
 					{
 						std::lock_guard<std::mutex> locker(EMOCLock::multithread_data_mutex);
 						EMOCManager::Instance()->SetMultiThreadDataState(false);
-					} 
+					}
 
 					std::thread algorithm_thread(&EMOCManager::ExperimentModuleRun, EMOCManager::Instance(), experiment_tasks, thread_num);
 					algorithm_thread.detach();
@@ -166,7 +179,10 @@ namespace emoc {
 
 			ImGui::End();
 		}
+	}
 
+	void ExperimentPanel::DisplayParameterWindow(bool is_finish, bool is_pause)
+	{
 		// Experiment Module Parameter Setting Window
 		{
 			ImGui::Begin("Parameter Setting##Experiment");
@@ -189,12 +205,14 @@ namespace emoc {
 
 			ImGui::Dummy(ImVec2(0.0f, 2.0f));
 			for (int i = 0; i < selected_problems.size(); i++)
-			{
 				DisplaySelectedProblem(i, item_width, item_pos);
-			}
+			
 			ImGui::End();
 		}
+	}
 
+	void ExperimentPanel::DisplayControlWindow(bool is_finish, bool is_pause)
+	{
 		// Experiment Moduel Control Window
 		{
 			ImGui::Begin("Control##Experiment");
@@ -250,12 +268,15 @@ namespace emoc {
 				EMOCManager::Instance()->SetExperimentFinish(true);
 				std::cout << "After click continue button, the finish value is: " << EMOCManager::Instance()->GetExperimentFinish() << "\n";
 			}
-			ImGui::SameLine(); ImGui::Dummy(ImVec2(10.0f, 0.0f)); ImGui::SameLine(); \
+			ImGui::SameLine(); ImGui::Dummy(ImVec2(10.0f, 0.0f)); ImGui::SameLine(); 
 				if (is_finish || (!is_finish && is_pause)) ImGui::EndDisabled();
 
 			ImGui::End();
 		}
+	}
 
+	void ExperimentPanel::DisplayResultWindow(bool is_finish, bool is_pause)
+	{
 		// Experiment Module Result Infomation Window
 		{
 			ImGui::Begin("Result Infomation##Experiment");
@@ -270,8 +291,8 @@ namespace emoc {
 			static bool is_displayM = false; ImGui::Checkbox("M##Experiment", &is_displayM); ImGui::SameLine();
 			static bool is_displayD = false; ImGui::Checkbox("D##Experiment", &is_displayD); ImGui::SameLine();
 			static bool is_displayEvaluation = false; ImGui::Checkbox("Evaluation##Experiment", &is_displayEvaluation); ImGui::SameLine();
-			ImGui::SetNextItemWidth(ImGui::CalcTextSize("Runtimexxx").x);
-			ImGui::Combo("##DisplayExperiment", &display_index, display_names.data(), display_names.size());
+			ImGui::SetNextItemWidth(ImGui::CalcTextSize("Runtimexxxxx").x);
+			ImGui::Combo("Display Metric##DisplayExperiment", &display_index, display_names.data(), display_names.size());
 
 
 			// set this frame's columns
@@ -290,18 +311,18 @@ namespace emoc {
 
 				// Instead of calling TableHeadersRow() we'll submit custom headers ourselves
 				ImGui::TableNextRow(ImGuiTableRowFlags_Headers);
-				
+
 				// first column is an empty header
 				ImGui::TableHeader("    ");
 				for (int c = 0; c < columns.size(); c++)
 				{
-					ImGui::TableSetColumnIndex(c+1);
-					const char* column_name = columns[c].c_str(); 
+					ImGui::TableSetColumnIndex(c + 1);
+					const char* column_name = columns[c].c_str();
 					ImGui::TableHeader(column_name);
 				}
 				for (int c = 0; c < table_algorithms.size(); c++)
 				{
-					ImGui::TableSetColumnIndex(c + columns.size()+1);
+					ImGui::TableSetColumnIndex(c + columns.size() + 1);
 					const char* column_name = table_algorithms[c].c_str();
 					ImGui::TableHeader(column_name);
 				}
@@ -331,7 +352,7 @@ namespace emoc {
 							// update table's data when data is ready
 							if (EMOCManager::Instance()->GetMultiThreadDataState())
 							{
-								int paramter_index = row * table_algorithms.size() + c - columns.size() - 1;
+								int paramter_index = row * table_algorithms.size() + c - columns.size() - 1; // the -1 is counting for the first empty column header
 								EMOCMultiThreadResult res = EMOCManager::Instance()->GetMultiThreadResult(paramter_index);
 								DisplayTableResult(res, display_names[display_index]);
 							}
@@ -342,10 +363,13 @@ namespace emoc {
 				ImGui::EndTable();
 			}
 			ImGui::SetCursorPosX(ImGui::GetWindowSize().x - 260.0f);
+			if (!is_finish) ImGui::BeginDisabled();
 			if (ImGui::Button("Open Plot Window", ImVec2(250.0f, 40.0f)))
 			{
 				// Open a new ImGui window for experiment module plotting analysis
 			}
+			if (!is_finish) ImGui::EndDisabled();
+
 			ImGui::End();
 		}
 	}
@@ -356,15 +380,15 @@ namespace emoc {
 		bool is_valid = false;
 		if (para == "Runtime")
 		{
-			display = CalculateIndicator(res.runtime_history, res.is_runtime_record, is_valid);
+			display = CalculateDisplayIndicator(res.runtime_history, res.is_runtime_record, is_valid);
 		}
 		else if (para == "IGD")
 		{
-			display = CalculateIndicator(res.igd_history, res.is_igd_record, is_valid);
+			display = CalculateDisplayIndicator(res.igd_history, res.is_igd_record, is_valid);
 		}
 		else if (para == "HV")
 		{
-			display = CalculateIndicator(res.hv_history, res.is_hv_record, is_valid);
+			display = CalculateDisplayIndicator(res.hv_history, res.is_hv_record, is_valid);
 		}
 
 		if(is_valid) ImGui::Text(std::to_string(display).c_str());

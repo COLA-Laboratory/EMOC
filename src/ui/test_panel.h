@@ -19,7 +19,10 @@ namespace emoc {
 	private:
 		void DisplayAccordingToColumn(const EMOCSingleThreadResult& res, const std::string& col_name, int row);	// column display in default test module's table 
 
-		// plot window
+		// variouse windows
+		void DisplayParameterWindow(bool is_finish, bool is_pause);
+		void DisplayControlWindow(bool is_finish, bool is_pause);
+		void DisplayResultWindow(bool is_finish, bool is_pause);
 		void DisplayPlotWindow();
 		void DisplaySelectedRun(int index);
 		void DisplayMovePopup(int index, bool &is_delete);

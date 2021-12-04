@@ -16,6 +16,12 @@ namespace emoc {
 		void Render();
 
 	private:
+		// various window
+		void DisplaySelectionWindow(bool is_finish, bool is_pause);
+		void DisplayParameterWindow(bool is_finish, bool is_pause);
+		void DisplayControlWindow(bool is_finish, bool is_pause);
+		void DisplayResultWindow(bool is_finish, bool is_pause);
+
 		// display functions according current settings		
 		void DisplayTableResult(const EMOCMultiThreadResult& res, const std::string& para);	// display table content according to selected display parameter 
 		void DisplayTableProblemProperty(const std::string& col_name, int row);	// column display in default test module's table 
