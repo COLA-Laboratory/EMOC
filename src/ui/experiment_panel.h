@@ -4,6 +4,7 @@
 #include <unordered_map>
 
 #include "core/emoc_manager.h"
+#include "ui/ui_utility.h"
 
 namespace emoc {
 
@@ -29,13 +30,20 @@ namespace emoc {
 		void DisplaySelectedProblem(int index, int item_width, int item_pos);	// problem display in experiment module's parameter window
 		void DisplayMovePopup(int index, bool is_algorithm_popup, bool &is_delete);				// popups in experiment module's parameter window for moving or deleting selected algorithms and problems
 
+		//
+		void UpdateCurrentAlgorithmList();
+		void UpdateCurrentProblemList();
+		
+
 		void ConstructTasks();
 
 	public:
 		// UI data for experiment module's list and combo
 		int algorithm_index, problem_index, display_index;	// index need to be reset when switching the panel
-		std::vector<char*> algorithm_names;
-		std::vector<char*> problem_names;
+		CategorizedAlgorithmList algorithm_list;
+		CategorizedProblemList problem_list;
+		std::vector<char*> *current_algorithm_names;
+		std::vector<char*> *current_problem_names;
 		std::vector<char*> display_names;
 
 		// UI data for experiment module

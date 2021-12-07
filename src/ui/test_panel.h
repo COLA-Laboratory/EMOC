@@ -5,6 +5,7 @@
 
 #include "imgui.h"
 #include "core/emoc_manager.h"
+#include "ui/ui_utility.h"
 
 namespace emoc {
 
@@ -27,6 +28,10 @@ namespace emoc {
 		void DisplaySelectedRun(int index);
 		void DisplayMovePopup(int index, bool& is_delete);		
 		void DisplayAccordingToColumn(const EMOCSingleThreadResult& res, const std::string& col_name, int row);	// column display in default test module's table 
+		
+		//
+		void UpdateCurrentAlgorithmCombo();
+		void UpdateCurrentProblemCombo();
 
 		// construct and send plot command (for plot window)
 		void ConstructAndSendPlotCMD();
@@ -35,9 +40,11 @@ namespace emoc {
 
 	public:
 		// data for test module parameter settings
-		int algorithm_index, problem_index, display_index;	
-		std::vector<char*> algorithm_names;
-		std::vector<char*> problem_names;
+		int algorithm_index, problem_index, display_index;
+		CategorizedAlgorithmList algorithm_list;
+		CategorizedProblemList problem_list;
+		std::vector<char*> *current_algorithm_names;
+		std::vector<char*> *current_problem_names;
 		std::vector<char*> display_names;
 		int current_evaluation = 0;
 		int max_evaluation = 1000000;

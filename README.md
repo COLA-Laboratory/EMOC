@@ -109,7 +109,8 @@ there is an example of config file in the corresponding directory.
 
 **功能方面：**
 
-- [ ] Table样式，算法和问题类别
+- [ ] Table样式，
+- [x] 算法和问题类别
 - [ ] 画图和实验模块给一个简略的进度条
 - [ ] 画图的canvas大小，位置，让用户指定
 - [ ] 各个Panel下window的大小及其位置的事先固定
@@ -120,7 +121,7 @@ there is an example of config file in the corresponding directory.
 - [ ] 实验模块的画图分析
 - [ ] 实验模块的统计分析功能
 - [ ] 实验结果table的导出功能
-- [ ] EMOC不同状态对应的有些窗口要Disable，防止用户误操作
+- [x] EMOC不同状态对应的有些窗口要Disable，防止用户误操作
 - [ ] 参数合法性检验，以及对应的警告
 - [ ] 命令行调用设计
 - [ ] python调用接口的重新设计

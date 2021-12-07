@@ -5,7 +5,6 @@
 
 #include "emoc_app.h"
 #include "imgui.h"
-#include "ui/ui_utility.h"
 #include "ui/uipanel_manager.h"
 
 namespace emoc {
@@ -30,11 +29,11 @@ namespace emoc {
 	ExperimentPanel::ExperimentPanel():
 		algorithm_index(0),
 		problem_index(0),
-		display_index(0)
+		display_index(0),
+		current_algorithm_names(nullptr),
+		current_problem_names(nullptr)
 	{
 		InitDisplayList(display_names);
-		InitAlgorithmList(algorithm_names);
-		InitProlbemList(problem_names);
 	}
 
 	ExperimentPanel::~ExperimentPanel()
@@ -81,18 +80,24 @@ namespace emoc {
 			float window_width = ImGui::GetWindowSize().x;
 			float window_height = ImGui::GetWindowSize().y;
 			const float TEXT_BASE_HEIGHT = ImGui::GetTextLineHeightWithSpacing();
-			int list_height = (int)(0.28f * window_height / TEXT_BASE_HEIGHT);		// adaptive list height in number of items
+			int list_height = (int)(0.2f * window_height / TEXT_BASE_HEIGHT);		// adaptive list height in number of items
 			list_height = list_height > 3 ? list_height : 3;						// minimal height of list
 
 			// Algorithm selection part
 			TextCenter("Algorithm Selection");
 			ImGui::Dummy(ImVec2(0.0f, 2.0f));
+			ImGui::Text("Catergory"); ImGui::SameLine(); ImGui::Dummy(ImVec2(10.0f, 0.0f)); ImGui::SameLine();
 			ImGui::SetNextItemWidth(-FLT_MIN);
-			bool is_value_changed = ImGui::ListBox("##AlgorithmExperimentListbox", &algorithm_index, algorithm_names.data(), algorithm_names.size(), list_height);
-			if (is_value_changed && selected_algorithm_map.count(algorithm_names[algorithm_index]) == 0)
+			bool is_value_changed = ImGui::Combo("##AlgorithmCategortyExpCombo", &algorithm_list.category_index,
+				algorithm_list.algorithm_category.data(), algorithm_list.algorithm_category.size());
+			if (is_value_changed) algorithm_index = 0;
+			UpdateCurrentAlgorithmList();
+			ImGui::SetNextItemWidth(-FLT_MIN);
+			is_value_changed = ImGui::ListBox("##AlgorithmExperimentListbox", &algorithm_index, (*current_algorithm_names).data(), (*current_algorithm_names).size(), list_height);
+			if (is_value_changed && selected_algorithm_map.count((*current_algorithm_names)[algorithm_index]) == 0)
 			{
-				selected_algorithm_map[algorithm_names[algorithm_index]] = 1;
-				selected_algorithms.push_back(algorithm_names[algorithm_index]);
+				selected_algorithm_map[(*current_algorithm_names)[algorithm_index]] = 1;
+				selected_algorithms.push_back((*current_algorithm_names)[algorithm_index]);
 			}
 			ImGui::Dummy(ImVec2(0.0f, 20.0f));
 
@@ -101,12 +106,18 @@ namespace emoc {
 			ImGui::Separator();
 			TextCenter("Problem Selection");
 			ImGui::Dummy(ImVec2(0.0f, 2.0f));
+			ImGui::Text("Catergory"); ImGui::SameLine(); ImGui::Dummy(ImVec2(10.0f, 0.0f)); ImGui::SameLine();
 			ImGui::SetNextItemWidth(-FLT_MIN);
-			is_value_changed = ImGui::ListBox("##ProblemExperimentListbox", &problem_index, problem_names.data(), problem_names.size(), list_height);
-			if (is_value_changed && selected_problem_map.count(problem_names[problem_index]) == 0)
+			is_value_changed = ImGui::Combo("##ProblemCategortyExpCombo", &problem_list.category_index,
+				problem_list.problem_category.data(), problem_list.problem_category.size());
+			if (is_value_changed) problem_index = 0;
+			UpdateCurrentProblemList();
+			ImGui::SetNextItemWidth(-FLT_MIN);
+			is_value_changed = ImGui::ListBox("##ProblemExperimentListbox", &problem_index, (*current_problem_names).data(), (*current_problem_names).size(), list_height);
+			if (is_value_changed && selected_problem_map.count((*current_problem_names)[problem_index]) == 0)
 			{
-				selected_problem_map[problem_names[problem_index]] = 1;
-				selected_problems.push_back(problem_names[problem_index]);
+				selected_problem_map[(*current_problem_names)[problem_index]] = 1;
+				selected_problems.push_back((*current_problem_names)[problem_index]);
 
 				// add some default problem settings
 				Ns.push_back(100);
@@ -527,6 +538,32 @@ namespace emoc {
 			}
 			ImGui::EndPopup();
 		}
+	}
+
+	void ExperimentPanel::UpdateCurrentAlgorithmList()
+	{
+		std::string category = algorithm_list.algorithm_category[algorithm_list.category_index];
+		if (category == "Docomposition Based")
+			current_algorithm_names = &algorithm_list.decomposition_algorithm_names;
+		else if (category == "Dominance Based")
+			current_algorithm_names = &algorithm_list.dominance_algorithm_names;
+		else if (category == "Indicator Based")
+			current_algorithm_names = &algorithm_list.indicator_algorithm_names;
+		else
+			std::cerr << "Experiment Module ERROR: Algorithm Category " << category << " Doesn't Exists!\n";
+	}
+
+	void ExperimentPanel::UpdateCurrentProblemList()
+	{
+		std::string category = problem_list.problem_category[problem_list.category_index];
+		if (category == "ZDT Series")
+			current_problem_names = &problem_list.zdt_names;
+		else if (category == "DTLZ Series")
+			current_problem_names = &problem_list.dtlz_names;
+		else if (category == "UF Series")
+			current_problem_names = &problem_list.uf_names;
+		else
+			std::cerr << "Experiment Module ERROR: Problem Category " << category << " Doesn't Exists!\n";
 	}
 
 	void ExperimentPanel::ConstructTasks()

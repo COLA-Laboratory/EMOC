@@ -7,7 +7,6 @@
 #include "core/emoc_manager.h"
 #include "metric/igd.h"
 #include "ui/uipanel_manager.h"
-#include "ui/ui_utility.h"
 #include "ui/plot.h"
 
 namespace emoc {
@@ -16,12 +15,12 @@ namespace emoc {
 		algorithm_index(0),
 		problem_index(0),
 		display_index(0),
+		current_algorithm_names(nullptr),
+		current_problem_names(nullptr),
 		run_index(0),
 		is_plot_window_open(false)
 	{
 		// init basic display lists
-		InitAlgorithmList(algorithm_names);
-		InitProlbemList(problem_names);
 		InitDisplayList(display_names);
 		InitPlotMetricList(plot_metrics);
 	}
@@ -148,16 +147,29 @@ namespace emoc {
 			ImGui::Begin("EMOC Parameter Setting##Test");
 			TextCenter("Algorithm Selection");
 			ImGui::Dummy(ImVec2(0.0f, 2.0f));
+			ImGui::Text("Catergory"); ImGui::SameLine(); ImGui::Dummy(ImVec2(10.0f, 0.0f)); ImGui::SameLine();
 			ImGui::SetNextItemWidth(-FLT_MIN);
-			ImGui::Combo("##AlgorithmTestCombo", &algorithm_index, algorithm_names.data(), algorithm_names.size());
+			bool is_value_changed = ImGui::Combo("##AlgorithmCategortyTestCombo", &algorithm_list.category_index, 
+				algorithm_list.algorithm_category.data(), algorithm_list.algorithm_category.size());
+			if (is_value_changed) algorithm_index = 0;
+			UpdateCurrentAlgorithmCombo();
+			ImGui::SetNextItemWidth(-FLT_MIN);
+			ImGui::Combo("##AlgorithmTestCombo", &algorithm_index, (*current_algorithm_names).data(), (*current_algorithm_names).size());
+			
 			ImGui::Dummy(ImVec2(0.0f, 20.0f));
 			ImGui::Separator();
 
 			// Problem selection part
 			TextCenter("Problem Selection");
 			ImGui::Dummy(ImVec2(0.0f, 2.0f));
+			ImGui::Text("Catergory"); ImGui::SameLine(); ImGui::Dummy(ImVec2(10.0f, 0.0f)); ImGui::SameLine();
 			ImGui::SetNextItemWidth(-FLT_MIN);
-			ImGui::Combo("##ProblemTestCombo", &problem_index, problem_names.data(), problem_names.size());
+			is_value_changed = ImGui::Combo("##ProblemCategortyTestCombo", &problem_list.category_index,
+				problem_list.problem_category.data(), problem_list.problem_category.size());
+			if (is_value_changed) problem_index = 0;
+			UpdateCurrentProblemCombo();
+			ImGui::SetNextItemWidth(-FLT_MIN);
+			ImGui::Combo("##ProblemTestCombo", &problem_index, (*current_problem_names).data(), (*current_problem_names).size());
 
 			float window_width = ImGui::GetWindowSize().x;
 			float window_height = ImGui::GetWindowSize().y;
@@ -223,8 +235,8 @@ namespace emoc {
 				EMOCManager::Instance()->SetIsExperiment(false);
 
 				std::cout << "-----------TEST MODULE TASK------------\n";
-				std::cout << algorithm_names[algorithm_index] << "\n"
-					<< problem_names[problem_index] << "\n"
+				std::cout << (*current_algorithm_names)[algorithm_index] << "\n"
+					<< (*current_problem_names)[problem_index] << "\n"
 					<< "population number: " << N << "\n"
 					<< "obj dim: " << M << "\n"
 					<< "dec dim: " << D << "\n"
@@ -235,8 +247,8 @@ namespace emoc {
 
 				// create EMOC task
 				EMOCParameters para;
-				para.algorithm_name = algorithm_names[algorithm_index];
-				para.problem_name = problem_names[problem_index];
+				para.algorithm_name = (*current_algorithm_names)[algorithm_index];
+				para.problem_name = (*current_problem_names)[problem_index];
 				para.is_plot = true;
 				para.objective_num = M;
 				para.decision_num = D;
@@ -492,7 +504,6 @@ namespace emoc {
 		}
 	}
 
-
 	void TestPanel::DisplayAccordingToColumn(const EMOCSingleThreadResult& res, const std::string& col_name, int row)
 	{
 		if (col_name == "Run #")
@@ -662,7 +673,8 @@ namespace emoc {
 		EMOCSingleThreadResult res = EMOCManager::Instance()->GetSingleThreadResult(avail_run_index);
 		int last_generation = res.max_iteration;
 		char data_file[1024];
-		sprintf(data_file, "./output/test_module/run%d/pop_%d.txt", avail_run_index, last_generation);
+		// TODO: the file position needs to be changed
+		sprintf(data_file, "./output/test_module/run%d/pop_%d.txt", avail_run_index, last_generation); 
 		
 		int obj_num = res.para.objective_num;
 		if (obj_num == 2)
@@ -756,6 +768,32 @@ namespace emoc {
 			"unset key\n"
 			"plot '%s' w lp lc 3 lw 2 pt 2 ps 0.7\n"
 			,res.description.c_str(), metric_name.c_str(), data_file_name);
+	}
+
+	void TestPanel::UpdateCurrentAlgorithmCombo()
+	{
+		std::string category = algorithm_list.algorithm_category[algorithm_list.category_index];
+		if (category == "Docomposition Based")
+			current_algorithm_names = &algorithm_list.decomposition_algorithm_names;
+		else if (category == "Dominance Based")
+			current_algorithm_names = &algorithm_list.dominance_algorithm_names;
+		else if (category == "Indicator Based")
+			current_algorithm_names = &algorithm_list.indicator_algorithm_names;
+		else
+			std::cerr << "Test Module ERROR: Algorithm Category " << category << " Doesn't Exists!\n";
+	}
+
+	void TestPanel::UpdateCurrentProblemCombo()
+	{
+		std::string category = problem_list.problem_category[problem_list.category_index];
+		if (category == "ZDT Series")
+			current_problem_names = &problem_list.zdt_names;
+		else if (category == "DTLZ Series")
+			current_problem_names = &problem_list.dtlz_names;
+		else if (category == "UF Series")
+			current_problem_names = &problem_list.uf_names;
+		else
+			std::cerr << "Test Module ERROR: Problem Category " << category << " Doesn't Exists!\n";
 	}
 
 }
