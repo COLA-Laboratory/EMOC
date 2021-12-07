@@ -13,7 +13,7 @@
 
 namespace emoc {
 
-	NSGA2::NSGA2(Problem *problem, int thread_num):Algorithm(problem, thread_num)
+	NSGA2::NSGA2(int thread_id) :Algorithm(thread_id)
 	{
 		real_popnum_ = g_GlobalSettings->population_num_;
 	}
@@ -107,15 +107,15 @@ namespace emoc {
 			});
 
 			// set the first and last individual with INF fitness (crowding distance)
-			mixed_pop[sort_arr[0]]->fitness_ = INF;
-			SetDistanceInfo(distanceinfo_vec, sort_arr[0], INF);
-			mixed_pop[sort_arr[num_in_rank - 1]]->fitness_ = INF;
-			SetDistanceInfo(distanceinfo_vec, sort_arr[num_in_rank - 1], INF);
+			mixed_pop[sort_arr[0]]->fitness_ = EMOC_INF;
+			SetDistanceInfo(distanceinfo_vec, sort_arr[0], EMOC_INF);
+			mixed_pop[sort_arr[num_in_rank - 1]]->fitness_ = EMOC_INF;
+			SetDistanceInfo(distanceinfo_vec, sort_arr[num_in_rank - 1], EMOC_INF);
 
 			// calculate each solution's crowding distance
 			for (int j = 1; j < num_in_rank - 1; j++)
 			{
-				if (INF != mixed_pop[sort_arr[j]]->fitness_)
+				if (EMOC_INF != mixed_pop[sort_arr[j]]->fitness_)
 				{
 					if (mixed_pop[sort_arr[num_in_rank - 1]]->obj_[i] == mixed_pop[sort_arr[0]]->obj_[i])
 					{

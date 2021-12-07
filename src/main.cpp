@@ -1,5 +1,4 @@
 #include <iostream>
-#include <thread>
 
 #include "emoc_app.h"
 #include "core/emoc_manager.h"
@@ -12,9 +11,7 @@ using emoc::PlotManager;
 using emoc::UIPanelManager;
 using emoc::EMOCApplication;
 
-//EMOCApplication emoc_app;
-//emoc_app.Init();
-//emoc_app.Run();
+
 
 int main(int argc, char* argv[])
 {

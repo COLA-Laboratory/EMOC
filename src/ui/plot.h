@@ -11,14 +11,10 @@ namespace emoc {
 	public:
 		static PlotManager* Instance();
 
-		void Run();
-		void Stop();
-		void RefreshPipe();
 		void Send(const std::string& cmd);
+		void RefreshPipe();
 		void OpenPlotPipe();
 		void ClosePlotPipe();
-
-		inline std::queue<std::string>& GetPlotCMDQueue() { return plot_cmds_; }
 
 	private:
 		PlotManager();
@@ -45,11 +41,9 @@ namespace emoc {
 		static PlotManager* s_Instance;
 		static std::mutex singleton_mutex_;
 
+
 		FILE* gp_;
-		bool is_finish_;
 		bool is_window_close_;
-		std::queue<std::string> plot_cmds_;
-		std::queue<std::string> plot_execute_cmds_;
 	};
 
 }

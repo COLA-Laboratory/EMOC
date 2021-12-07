@@ -8,7 +8,7 @@ namespace emoc {
 	class SMSEMOA : public Algorithm
 	{
 	public:
-		SMSEMOA(Problem *problem, int thread_num);
+		SMSEMOA(int thread_id);
 		virtual ~SMSEMOA();
 
 		void Run();

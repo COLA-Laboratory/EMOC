@@ -121,7 +121,7 @@ namespace emoc {
 	void UpdateIdealpoint(Individual **pop, int pop_num, double *ideal_point, int obj_num)
 	{
 		for (int i = 0; i < obj_num; ++i)
-			ideal_point[i] = INF;
+			ideal_point[i] = EMOC_INF;
 
 		for (int i = 0; i < pop_num; i++)
 		{
@@ -145,7 +145,7 @@ namespace emoc {
 	void UpdateNadirpoint(Individual **pop, int pop_num, double *nadir_point, int obj_num)
 	{
 		for (int i = 0; i < obj_num; ++i)
-			nadir_point[i] = -INF;
+			nadir_point[i] = -EMOC_INF;
 
 		for (int i = 0; i < pop_num; i++)
 		{
@@ -177,7 +177,7 @@ namespace emoc {
 		for (int i = 0; i < obj_num; ++i)
 		{
 			double diff = fabs(ind->obj_[i] - ideal_point[i]);
-			if (weight_vector[i] < EPS)
+			if (weight_vector[i] < EMOC_EPS)
 				fitness = diff / 0.000001;
 			else
 				fitness = diff / weight_vector[i];

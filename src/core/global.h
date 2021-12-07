@@ -1,10 +1,9 @@
 #pragma once
-#define INF 1.0e9
+#define EMOC_INF 1.0e9
+#define EMOC_EPS 1.0e-6
 #define PI 3.14159265358979323846
-#define EPS 1.0e-6
 #define MAX_THREAD_NUM 20
 #define MAX_BUFFSIZE 256
-#define GNUPLOT_COMMAND "gnuplot"
 
 #include <string>
 #include <vector>
@@ -48,26 +47,21 @@ namespace emoc {
 			int dec_num, int obj_num, int max_evaluation, int thread_num,int output_interval, int run_id = 0);
 		~Global();
 
-		// initialize given population, i.e. set the decision variables' value
-		void InitializePopulation(Individual **pop, int pop_num);
-		void InitializeIndividual(Individual *ind);
-
 		void Init();
 		void Start();
 
+		// utility functions called by concrete algorithm
+		void InitializePopulation(Individual** pop, int pop_num);	// initialize given population, i.e. set the decision variables' value
+		void InitializeIndividual(Individual* ind);
 
 	public:
 		int dec_num_;
 		int obj_num_;
-		int thread_id_;
-		int run_id_;
-		
 		int population_num_;
 		int iteration_num_;
 		int current_evaluation_;
 		int max_evaluation_;
 		int output_interval_;
-
 		std::string algorithm_name_;
 		std::string problem_name_;
 
@@ -75,8 +69,8 @@ namespace emoc {
 		std::vector<Individual*> offspring_population_;
 		std::vector<Individual*> mixed_population_;
 
-		double *dec_lower_bound_;
-		double *dec_upper_bound_;
+		double *dec_lower_bound_;	// set by problem's lower bound
+		double *dec_upper_bound_;	// set by problem's lower bound
 
 		SBXPara sbx_parameter_;
 		DEPara de_parameter_;
@@ -84,6 +78,9 @@ namespace emoc {
 
 		Problem *problem_;				
 		Algorithm *algorithm_;
+
+		int run_id_;
+		int thread_id_;
 
 	private:
 		void SetDecBound();

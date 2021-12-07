@@ -56,8 +56,6 @@ namespace emoc {
 		case UIPanel::ExperimentPanel:
 			experiment_panel_.Render();
 			break;
-		case UIPanel::AnalysePanel:
-			break;
 		default:
 			break;
 		}
@@ -67,6 +65,7 @@ namespace emoc {
 		int display_w, display_h;
 		glfwGetFramebufferSize(window_, &display_w, &display_h);
 		glViewport(0, 0, display_w, display_h);
+		ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 		glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
 		glClear(GL_COLOR_BUFFER_BIT);
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -116,7 +115,6 @@ namespace emoc {
 		window_(nullptr),
 		panel_state_(UIPanel::TestPanel)
 	{
-
 	}
 
 	void UIPanelManager::InitGLFW(int width, int height, const std::string& title)
@@ -169,17 +167,13 @@ namespace emoc {
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO();
-		//(void)io;
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
-		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-		//io.ConfigViewportsNoAutoMerge = true;
-		//io.ConfigViewportsNoTaskBarIcon = true;
+
 
 		// Setup Dear ImGui style
 		EmbraceTheClassic();
-		//ImGui::StyleColorsClassic();
 
 		// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
 		ImGuiStyle& style = ImGui::GetStyle();
@@ -209,8 +203,16 @@ namespace emoc {
 		//IM_ASSERT(font != NULL);
 	}
 
-	UIPanelManager::~UIPanelManager(){}
+	UIPanelManager::~UIPanelManager()
+	{
+		// cleanup
+		ImGui_ImplOpenGL3_Shutdown();
+		ImGui_ImplGlfw_Shutdown();
+		ImGui::DestroyContext();
 
+		glfwDestroyWindow(window_);
+		glfwTerminate();
+	}
 
 	void UIPanelManager::EmbraceTheClassic()
 	{
@@ -357,6 +359,5 @@ namespace emoc {
 		style.LogSliderDeadzone = 4;
 		style.TabRounding = 4;
 	}
-
 
 }

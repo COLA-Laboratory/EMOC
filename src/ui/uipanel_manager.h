@@ -16,7 +16,6 @@ namespace emoc {
 	{
 		TestPanel,
 		ExperimentPanel,
-		AnalysePanel
 	};
 
 	class UIPanelManager
@@ -35,15 +34,14 @@ namespace emoc {
 		void RenderPanel();
 		void Update();
 
-		void AddAvailSingleThreadResult(std::string res);
-		void AddAvailMultiThreadResult(std::string res) { test_panel_.avail_runs.push_back(res.c_str()); }
-
-
-		inline bool IsTerminate() { return !glfwWindowShouldClose(window_); }
-
 		// setter for the convinence of calculating progress, invoked by algorithm
 		void SetCurrentEvaluation(int num) { test_panel_.current_evaluation = num; }
 		void SetUIPanelState(UIPanel state) { panel_state_ = state; }
+
+		// utility functions
+		inline bool IsTerminate() { return !glfwWindowShouldClose(window_); }
+		void AddAvailSingleThreadResult(std::string res);	// for test panel plot window
+		void AddAvailMultiThreadResult(std::string res);	// for experiment panel plot window
 
 	private:
 		UIPanelManager();
@@ -59,10 +57,8 @@ namespace emoc {
 		void EmbraceTheClassic();
 		void EmbraceTheDarkness();
 
-		static void glfw_error_callback(int error, const char* description)
-		{
-			fprintf(stderr, "Glfw Error %d: %s\n", error, description);
-		}
+		// erroe callback
+		static void glfw_error_callback(int error, const char* description){ fprintf(stderr, "Glfw Error %d: %s\n", error, description);}
 
 	private:
 		// for release UIPanelManager instance
@@ -83,6 +79,7 @@ namespace emoc {
 		static UIPanelManager* s_Instance;
 		static std::mutex singleton_mutex_;
 
+
 		// UI parameters
 		int width_;
 		int height_;
@@ -91,13 +88,10 @@ namespace emoc {
 		GLFWwindow* window_;
 		UIPanel panel_state_;
 
-		// UI panels
+		// different UI panels
 		TestPanel test_panel_;
 		ExperimentPanel experiment_panel_;
 
-
-		// for test now
-		ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 	};
 
 }

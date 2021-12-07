@@ -242,10 +242,8 @@ namespace emoc {
 			if (is_finish || (!is_finish && !is_pause)) ImGui::BeginDisabled();
 			if (ImGui::Button("Continue##Experiment", ImVec2(100, 60)))
 			{
-				std::cout << "Continue!\n";
 				std::lock_guard<std::mutex> locker(EMOCLock::experiment_pause_mutex);
 				EMOCManager::Instance()->SetExperimentPause(false);
-				std::cout << "After click continue button, the pause value is: " << EMOCManager::Instance()->GetExperimentPause() << "\n";
 				EMOCLock::experiment_pause_cond.notify_all();
 			}
 			ImGui::SameLine(); ImGui::Dummy(ImVec2(10.0f, 0.0f)); ImGui::SameLine();
@@ -255,7 +253,6 @@ namespace emoc {
 			if (is_finish || (!is_finish && is_pause)) ImGui::BeginDisabled();
 			if (ImGui::Button("Pause##Experiment", ImVec2(100, 60)))
 			{
-				std::cout << "Pause\n";
 				std::lock_guard<std::mutex> locker(EMOCLock::experiment_pause_mutex);
 				EMOCManager::Instance()->SetExperimentPause(true);
 			}
@@ -263,10 +260,8 @@ namespace emoc {
 
 			if (ImGui::Button("Stop##Experiment", ImVec2(100, 60)))
 			{
-				std::cout << "Stop!\n";
 				std::lock_guard<std::mutex> locker(EMOCLock::experiment_finish_mutex);
 				EMOCManager::Instance()->SetExperimentFinish(true);
-				std::cout << "After click continue button, the finish value is: " << EMOCManager::Instance()->GetExperimentFinish() << "\n";
 			}
 			ImGui::SameLine(); ImGui::Dummy(ImVec2(10.0f, 0.0f)); ImGui::SameLine(); 
 				if (is_finish || (!is_finish && is_pause)) ImGui::EndDisabled();
@@ -326,7 +321,6 @@ namespace emoc {
 					const char* column_name = table_algorithms[c].c_str();
 					ImGui::TableHeader(column_name);
 				}
-
 
 				int rows = table_problems.size();
 				for (int row = 0; row < rows; row++)
@@ -486,6 +480,7 @@ namespace emoc {
 				}
 				ImGui::CloseCurrentPopup();
 			}
+
 			if (ImGui::Button("Move Down"))
 			{
 				if (is_algorithm_popup)

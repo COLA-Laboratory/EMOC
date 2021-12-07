@@ -44,7 +44,7 @@ namespace emoc {
 	// This ExperimentModuleRun() is for experiment module in gui mode
 	void EMOCManager::ExperimentModuleRun(std::vector<EMOCParameters> experiment_tasks, int thread_num)
 	{
-		// each experiment_task here can be separeted into 'run_num' small tasks which represent by EMOCExperimentTask
+		// Each experiment_task here can be separeted into 'run_num' small tasks which represent by EMOCExperimentTask
 
 		// initialize experiment result
 		multi_thread_result_history_.clear();
@@ -53,12 +53,12 @@ namespace emoc {
 
 		{
 			std::lock_guard<std::mutex> locker(EMOCLock::multithread_data_mutex);
-			is_multithread_result_ready = true;
+			is_multithread_result_ready_ = true;
 		}
 
 		for (int i = 0; i < experiment_tasks.size(); i++)
 		{
-			std::cout <<  "-------------------------------------\n";
+			std::cout <<  "----------TASK PARAMETER " <<i <<" ---------\n";
 			std::cout << experiment_tasks[i].algorithm_name << "\n";
 			std::cout << experiment_tasks[i].problem_name << "\n";
 			std::cout << experiment_tasks[i].population_num << "\n";
@@ -85,7 +85,7 @@ namespace emoc {
 		}
 
 
-		// multithread running
+		// update EMOC experiment module state
 		{
 			std::lock_guard<std::mutex> locker1(EMOCLock::experiment_finish_mutex);
 			std::lock_guard<std::mutex> locker2(EMOCLock::experiment_pause_mutex);
@@ -93,6 +93,7 @@ namespace emoc {
 			EMOCManager::Instance()->SetExperimentPause(false);
 		}
 
+		// EMOC experiment task running
 		std::vector<std::thread> experiment_threads;
 		for (int i = 0; i < thread_num; i++)
 			experiment_threads.push_back(std::thread(&EMOCManager::ExperimentWorker, EMOCManager::Instance(), emoc_thread_tasks[i], i));
@@ -100,6 +101,7 @@ namespace emoc {
 		for (int i = 0; i < experiment_threads.size(); i++)
 			experiment_threads[i].join();
 
+		// update EMOC experiment module state
 		{
 			std::lock_guard<std::mutex> locker1(EMOCLock::experiment_finish_mutex);
 			EMOCManager::Instance()->SetExperimentFinish(true);
@@ -118,11 +120,11 @@ namespace emoc {
 		int max_eval = para_.max_evaluation;
 
 		// In default test module, we record population each generation for the convinience of plotting.
-		int output_interval = 1;     
+		int output_interval = is_gui_ ? 1 : para_.output_interval;
 
 		for (int run = 0; run < para_.runs_num; ++run)
 		{
-			// For default test module, we only use one thread, so always 0 thread id.
+			// For default test module, we only use one thread, so always thread id 0.
 			int thread_id = 0;
 
 			// create EMOC main entity
@@ -149,10 +151,11 @@ namespace emoc {
 			result.pop_num = g_GlobalSettingsArray[thread_id]->algorithm_->GetRealPopNum();
 			result.max_iteration = g_GlobalSettingsArray[thread_id]->iteration_num_;
 			single_thread_result_historty_.push_back(result);
-			UIPanelManager::Instance()->AddAvailSingleThreadResult(single_thread_result_historty_[count].description);
+			if(is_gui_) UIPanelManager::Instance()->AddAvailSingleThreadResult(single_thread_result_historty_[count].description);
 
 			printf("run %d time: %fs  igd: %f\n", run, (double)(end - start) / CLOCKS_PER_SEC, igd);
 			printf("run %d time: %fs \n", run, result.runtime);
+
 			// release the memory per run
 			delete g_GlobalSettingsArray[thread_id];
 		}
@@ -187,13 +190,13 @@ namespace emoc {
 			task_count++;
 		}
 
-		// multithread running
-		{
-			std::lock_guard<std::mutex> locker1(EMOCLock::experiment_finish_mutex);
-			std::lock_guard<std::mutex> locker2(EMOCLock::experiment_pause_mutex);
-			EMOCManager::Instance()->SetExperimentFinish(false);
-			EMOCManager::Instance()->SetExperimentPause(false);
-		}
+		//// multithread running
+		//{
+		//	std::lock_guard<std::mutex> locker1(EMOCLock::experiment_finish_mutex);
+		//	std::lock_guard<std::mutex> locker2(EMOCLock::experiment_pause_mutex);
+		//	EMOCManager::Instance()->SetExperimentFinish(false);
+		//	EMOCManager::Instance()->SetExperimentPause(false);
+		//}
 
 		std::vector<std::thread> experiment_threads;
 		for (int i = 0; i < para_.thread_num; i++)
@@ -202,39 +205,11 @@ namespace emoc {
 		for (int i = 0; i < experiment_threads.size(); i++)
 			experiment_threads[i].join();
 
-		{
-			std::lock_guard<std::mutex> locker1(EMOCLock::experiment_finish_mutex);
-			EMOCManager::Instance()->SetExperimentFinish(true);
-		}
+		//{
+		//	std::lock_guard<std::mutex> locker1(EMOCLock::experiment_finish_mutex);
+		//	EMOCManager::Instance()->SetExperimentFinish(true);
+		//}
 	}
-
-	//void EMOCManager::MultiThreadWorker(int run_start, int run_end, int thread_id)
-	//{
-	//	const char* algorithm_name = para_.algorithm_name.c_str();
-	//	const char* problem_name = para_.problem_name.c_str();
-	//	bool is_plot = para_.is_plot;
-	//	int population_num = para_.population_num;
-	//	int dec_num = para_.decision_num;
-	//	int obj_num = para_.objective_num;
-	//	int max_eval = para_.max_evaluation;
-	//	int output_interval = para_.output_interval;
-
-	//	for (int run = run_start; run <= run_end; ++run)
-	//	{
-	//		// algorithm main entity
-	//		g_GlobalSettingsArray[thread_id] = new emoc::Global(algorithm_name, problem_name, population_num, dec_num, obj_num, max_eval, thread_id, output_interval, run);
-	//		g_GlobalSettingsArray[thread_id]->Init();
-	//		SetIsPlot(is_plot);
-	//		g_GlobalSettingsArray[thread_id]->Start();
-
-	//		std::string problem_name = g_GlobalSettingsArray[thread_id]->problem_name_;
-	//		int obj_num = g_GlobalSettingsArray[thread_id]->obj_num_;
-	//		double igd = CalculateIGD(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num, problem_name);
-
-	//		printf("current thread id : %d, runs: %d, igd:%f\n", thread_id, run, igd);
-	//		delete g_GlobalSettingsArray[thread_id];
-	//	}
-	//}
 
 	void EMOCManager::ExperimentWorker(std::vector<EMOCExperimentTask> tasks, int thread_id)
 	{
@@ -287,7 +262,7 @@ namespace emoc {
 		is_test_pause_(false),
 		is_experiment_pause_(false),
 		is_experiment_finish_(true),
-		is_multithread_result_ready(false),
+		is_multithread_result_ready_(false),
 		g_GlobalSettingsArray(MAX_THREAD_NUM,nullptr)
 	{
 		// for random number initialization

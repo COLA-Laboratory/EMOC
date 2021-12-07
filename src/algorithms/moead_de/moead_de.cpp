@@ -13,8 +13,8 @@
 
 namespace emoc {
 
-	MOEADDE::MOEADDE(Problem *problem, int thread_num) :
-		Algorithm(problem,thread_num),
+	MOEADDE::MOEADDE(int thread_id) :
+		Algorithm(thread_id),
 		lambda_(nullptr),
 		weight_num_(0),
 		neighbour_(nullptr),

@@ -15,8 +15,8 @@
 
 namespace emoc {
 
-	MOEAD::MOEAD(Problem *problem, int thread_num):
-		Algorithm(problem,thread_num),
+	MOEAD::MOEAD(int thread_id) :
+		Algorithm(thread_id),
 		lambda_(nullptr),
 		weight_num_(0),
 		neighbour_(nullptr),

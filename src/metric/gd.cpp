@@ -85,7 +85,7 @@ namespace emoc {
 
 		for (int i = 0; i < pop_num; i++)
 		{
-			min_distance = INF;
+			min_distance = EMOC_INF;
 			temp_ind = pop[i];
 			for (int j = 0; j < pf_size; j++)
 			{

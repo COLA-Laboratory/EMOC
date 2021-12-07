@@ -13,10 +13,10 @@
 
 namespace emoc {
 
-	HypE::HypE(Problem *problem, int thread_num):
-		Algorithm(problem, thread_num),
-		ideal_point_(new double[problem->obj_num_]),
-		nadir_point_(new double[problem->obj_num_])
+	HypE::HypE(int thread_id) :
+		Algorithm(thread_id),
+		ideal_point_(new double[g_GlobalSettings->obj_num_]),
+		nadir_point_(new double[g_GlobalSettings->obj_num_])
 	{
 		real_popnum_ = g_GlobalSettings->population_num_;
 	}

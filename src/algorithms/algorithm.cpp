@@ -14,13 +14,15 @@
 
 namespace emoc {
 
-	Algorithm::Algorithm(Problem *problem, int thread_id):
-		problem_(problem),
+	Algorithm::Algorithm(int thread_id) :
+		g_GlobalSettings(nullptr),
 		thread_id_(thread_id),
+		real_popnum_(0),
 		record_file_time_(0.0f),
 		runtime_(0.0)
 	{
 		g_GlobalSettings = EMOCManager::Instance()->GetGlobalSetting(thread_id);
+		real_popnum_ = g_GlobalSettings->population_num_;
 	}
 
 	Algorithm::~Algorithm()
@@ -52,24 +54,25 @@ namespace emoc {
 		// record runtime
 		end_ = clock();
 		if(g_GlobalSettings->iteration_num_ >= 1) runtime_ += (double)(end_ - start_) / CLOCKS_PER_SEC;
+		
+		// get current emoc mode
+		bool is_gui = EMOCManager::Instance()->GetIsGUI();
+		bool is_experiment = EMOCManager::Instance()->GetIsExperiment();
+		bool is_plot = EMOCManager::Instance()->GetIsPlot();
 
 		// update uipanel's data when necessary
-		// TODO... if(is_gui_on && !experiment module) 
-		UIPanelManager::Instance()->SetCurrentEvaluation(g_GlobalSettings->current_evaluation_);
+		if(is_gui && !is_experiment)
+			UIPanelManager::Instance()->SetCurrentEvaluation(g_GlobalSettings->current_evaluation_);
 
 		// record the population every interval generations and the first and last genration 
 		bool is_terminate = g_GlobalSettings->current_evaluation_ >= g_GlobalSettings->max_evaluation_;
 		if (g_GlobalSettings->iteration_num_ % g_GlobalSettings->output_interval_ == 0 || is_terminate)
-		{
 			TrackPopulation(g_GlobalSettings->iteration_num_);
-		}
-		if (EMOCManager::Instance()->GetIsPlot())
+		if (is_plot)
 			PlotPopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->iteration_num_);
 
-
 		// check stop and pause
-		// TODO... if(is_gui_on)
-		if (CheckStopAndPause()) return true;
+		if (is_gui && CheckStopAndPause()) return true;
 
 		// increase iteration number if is not terminated
 		if (!is_terminate)	g_GlobalSettings->iteration_num_++;
@@ -88,7 +91,7 @@ namespace emoc {
 
 	void Algorithm::EvaluateInd(Individual *ind)
 	{
-		problem_->CalObj(ind);
+		g_GlobalSettings->problem_->CalObj(ind);
 		g_GlobalSettings->current_evaluation_++;
 	}
 
@@ -229,14 +232,14 @@ namespace emoc {
 		if (!EMOCManager::Instance()->GetIsExperiment())
 		{
 			{
-				std::lock_guard<std::mutex> locker(EMOCLock::finish_mutex);
+				std::lock_guard<std::mutex> locker(EMOCLock::test_finish_mutex);
 				if (EMOCManager::Instance()->GetTestFinish()) return true;
 			}
 
 			{
-				std::unique_lock<std::mutex> locker(EMOCLock::pause_mutex);
+				std::unique_lock<std::mutex> locker(EMOCLock::test_pause_mutex);
 				if (EMOCManager::Instance()->GetTestPause())
-					EMOCLock::pause_cond.wait(locker, [&]() {return !EMOCManager::Instance()->GetTestPause(); });
+					EMOCLock::test_pause_cond.wait(locker, [&]() {return !EMOCManager::Instance()->GetTestPause(); });
 			}
 		}
 		// check stop and pause for experiment module

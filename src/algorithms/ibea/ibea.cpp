@@ -12,7 +12,7 @@
 namespace emoc {
 
 
-	IBEA::IBEA(Problem *problem, int thread_num):Algorithm(problem, thread_num),kappa(0.05)
+	IBEA::IBEA(int thread_id) :Algorithm(thread_id),kappa(0.05)
 	{
 		real_popnum_ = g_GlobalSettings->population_num_;
 	}

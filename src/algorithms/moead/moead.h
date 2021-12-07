@@ -14,7 +14,7 @@ namespace emoc {
 			double distance;
 		}DistanceInfo;  // store euclidian distance to the index-th weight vector
 
-		MOEAD(Problem *problem, int thread_num);
+		MOEAD(int thread_id);
 		virtual ~MOEAD();
 
 		void Run();

@@ -14,7 +14,7 @@
 
 namespace emoc {
 
-	SPEA2::SPEA2(Problem *problem, int thread_num):Algorithm(problem, thread_num)
+	SPEA2::SPEA2(int thread_id) :Algorithm(thread_id)
 	{
 		real_popnum_ = g_GlobalSettings->population_num_;
 	}
@@ -79,7 +79,7 @@ namespace emoc {
 			{
 				if (i == j)
 				{
-					distance[i][j] = INF;
+					distance[i][j] = EMOC_INF;
 					continue;
 				}
 
@@ -185,8 +185,8 @@ namespace emoc {
 				int index_temp = p.first;
 				for (int i = 0; i < candidate_num; ++i)
 				{
-					temp[index_temp][i] = INF;
-					temp[i][index_temp] = INF;
+					temp[index_temp][i] = EMOC_INF;
+					temp[i][index_temp] = EMOC_INF;
 				}
 			}
 
@@ -203,7 +203,7 @@ namespace emoc {
 				int index = 0;
 				for (int i = 0; i < candidate_num; ++i)
 				{
-					if (fabs(temp[left][i] - temp[right][i]) > EPS)
+					if (fabs(temp[left][i] - temp[right][i]) > EMOC_EPS)
 					{
 						index = i;
 						break;

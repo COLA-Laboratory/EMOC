@@ -91,7 +91,7 @@ namespace emoc {
 
 		for (int i = 0; i < pf_size; i++)
 		{
-			min_distance = INF;
+			min_distance = EMOC_INF;
 			for (int j = 0; j < pop_num; j++)
 			{
 				temp_ind = pop[j];
@@ -127,7 +127,7 @@ namespace emoc {
 
 		for (int i = 0; i < pf_size; i++)
 		{
-			min_distance = INF;
+			min_distance = EMOC_INF;
 			for (int j = 0; j < pop_num; j++)
 			{
 				temp_distance = CalEuclidianDistance(pfdata[i], pop[j].data(), obj_num);

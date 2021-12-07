@@ -29,13 +29,16 @@ namespace emoc {
 			decision_num(30),
 			objective_num(2),
 			max_evaluation(25000),
-			output_interval(INF),
+			output_interval(EMOC_INF),
 			runs_num(1),
 			is_open_multithread(false),
 			thread_num(0)
 		{
 		}
-		~EMOCParameters() {}
+
+		~EMOCParameters() 
+		{
+		}
 	};
 
 	void PrintObjective(const char* filename, int obj_num, Individual** pop_table, int pop_num);

@@ -31,7 +31,7 @@ namespace emoc {
 
 		for (int i = 0; i < obj_num; ++i)
 		{
-			double temp_min = INF, temp_max = -INF;
+			double temp_min = EMOC_INF, temp_max = -EMOC_INF;
 			for (int j = 0; j < pop_num; ++j)
 			{
 				if (temp_min > pop[j]->obj_[i])

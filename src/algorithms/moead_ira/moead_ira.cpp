@@ -12,8 +12,8 @@
 
 namespace emoc {
 
-	MOEADIRA::MOEADIRA(Problem *problem, int thread_num) :
-		Algorithm(problem, thread_num),
+	MOEADIRA::MOEADIRA(int thread_id) :
+		Algorithm(thread_id),
 		lambda_(nullptr),
 		weight_num_(0),
 		neighbour_(nullptr),
@@ -277,7 +277,7 @@ namespace emoc {
 			for (int j = 0; j < weight_num_; j++)
 				dis[j] = CalPerpendicularDistance(point, lambda_[j], g_GlobalSettings->obj_num_);
 
-			temp_min = INF;
+			temp_min = EMOC_INF;
 			for (int j = 0; j < weight_num_; ++j)
 			{
 				if (dis[j] < temp_min)

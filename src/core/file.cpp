@@ -296,7 +296,7 @@ namespace emoc {
 	{
 		
 		// defalut value
-		para->algorithm_name = "SPEA2";
+		para->algorithm_name = "MOEADFRRMAB";
 		para->problem_name = "ZDT1";
 		para->is_plot = false;
 		para->population_num = 100;
@@ -305,7 +305,7 @@ namespace emoc {
 		para->max_evaluation = 25000;
 		para->output_interval = 1000000;	// no output except the first and last gerneration
 		para->runs_num = 20;
-		para->is_open_multithread = 0;
+		para->is_open_multithread = 1;
 		para->thread_num = 8;
 
 		// parse parameter from command line

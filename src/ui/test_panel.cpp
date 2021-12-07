@@ -16,11 +16,10 @@ namespace emoc {
 		algorithm_index(0),
 		problem_index(0),
 		display_index(0),
-		current_evaluation(0),
-		max_evaluation(1000000),
 		run_index(0),
 		is_plot_window_open(false)
 	{
+		// init basic display lists
 		InitAlgorithmList(algorithm_names);
 		InitProlbemList(problem_names);
 		InitDisplayList(display_names);
@@ -33,18 +32,20 @@ namespace emoc {
 	}
 
 	void TestPanel::Render()
-	{
+	{		
 		// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
+		static bool show_demo_window = true;
 		if (show_demo_window)
 			ImGui::ShowDemoWindow(&show_demo_window);
-		// update EMOC running state
+
+		// get EMOC running state
 		bool is_finish = EMOCManager::Instance()->GetTestFinish();
 		bool is_pause = EMOCManager::Instance()->GetTestPause();
+		bool is_plot_open = is_plot_window_open;	// make a copy to avoid imgui assert problems
 
-		if (is_plot_window_open) ImGui::BeginDisabled();
-		// menu bar
+		if (is_plot_open) ImGui::BeginDisabled();	// disable all other windows when open plot window
 
-		
+		// menu bar and parameter window
 		if (!is_finish) ImGui::BeginDisabled();
 		if (ImGui::BeginMainMenuBar())
 		{
@@ -56,7 +57,6 @@ namespace emoc {
 			}
 			ImGui::EndMainMenuBar();
 		}
-
 		DisplayParameterWindow(is_finish, is_pause);
 		if (!is_finish) ImGui::EndDisabled();
 
@@ -65,7 +65,8 @@ namespace emoc {
 		if (is_finish) ImGui::EndDisabled();
 
 		DisplayResultWindow(is_finish, is_pause);
-		if (is_plot_window_open) ImGui::EndDisabled();
+
+		if (is_plot_open) ImGui::EndDisabled(); // disable all other windows when open plot window
 
 		if (is_plot_window_open)
 			DisplayPlotWindow();
@@ -139,31 +140,6 @@ namespace emoc {
 
 	}
 
-	void TestPanel::DisplayAccordingToColumn(const EMOCSingleThreadResult& res, const std::string& col_name, int row)
-	{	
-		if (col_name == "Run #")
-			ImGui::Text("Run %d", row);
-		else if (col_name == "Algorithm")
-			ImGui::Text(res.para.algorithm_name.c_str());
-		else if (col_name == "Problem")
-			ImGui::Text(res.para.problem_name.c_str());
-		else if (col_name == "N")
-			ImGui::Text(std::to_string(res.para.population_num).c_str());
-		else if (col_name == "M")
-			ImGui::Text(std::to_string(res.para.objective_num).c_str());
-		else if (col_name == "D")
-			ImGui::Text(std::to_string(res.para.decision_num).c_str());
-		else if (col_name == "Evaluation")
-			ImGui::Text(std::to_string(res.para.max_evaluation).c_str());
-		else if (col_name == "Runtime")
-			ImGui::Text((std::to_string(res.runtime) + "s").c_str());
-		else if (col_name == "IGD")
-			ImGui::Text(std::to_string(res.last_igd).c_str());
-		else if (col_name == "HV")
-			ImGui::Text(std::to_string(res.last_hv).c_str());
-
-	}
-
 	void TestPanel::DisplayParameterWindow(bool is_finish, bool is_pause)
 	{
 		// Test Module Parameter Setting Window
@@ -213,28 +189,26 @@ namespace emoc {
 			ImGui::Separator();
 
 
-			//// Plot setting part
-			//static int plot_size[2] = { 500,500 };
-			//static int plot_position[2] = { 400, 800 };
-			//TextCenter("Plot Setting");
-			//ImGui::Dummy(ImVec2(0.0f, 2.0f));
-			//max_text_width = ImGui::CalcTextSize("Position").x;
-			//remain_width = window_width - ImGui::CalcTextSize("Position(??)").x;
-			//input_pos = max_text_width + 0.19f * remain_width;
+			// Plot setting part
+			TextCenter("Plot Setting");
+			ImGui::Dummy(ImVec2(0.0f, 2.0f));
+			max_text_width = ImGui::CalcTextSize("Position").x;
+			remain_width = window_width - ImGui::CalcTextSize("Position(??)").x;
+			input_pos = max_text_width + 0.19f * remain_width;
 
-			//ImGui::PushItemWidth(0.8f * remain_width);
-			//ImGui::AlignTextToFramePadding();
-			//ImGui::Text("Size"); ImGui::SameLine();
-			//ImGui::SetCursorPosX(input_pos);
-			//ImGui::InputInt2("##SizeTest", plot_size);
-			//ImGui::SameLine(); HelpMarker("Width and height of plot in pixels");
+			ImGui::PushItemWidth(0.8f * remain_width);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Size"); ImGui::SameLine();
+			ImGui::SetCursorPosX(input_pos);
+			ImGui::InputInt2("##SizeTest", plot_size);
+			ImGui::SameLine(); HelpMarker("Width and height of plot in pixels");
 
-			//ImGui::AlignTextToFramePadding();
-			//ImGui::Text("Position"); ImGui::SameLine();
-			//ImGui::SetCursorPosX(input_pos);
-			//ImGui::InputInt2("##PositionTest", plot_position);
-			//ImGui::SameLine(); HelpMarker("Length in pixels to the left edge and up edge of your screen");
-			//ImGui::PopItemWidth();
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Position"); ImGui::SameLine();
+			ImGui::SetCursorPosX(input_pos);
+			ImGui::InputInt2("##PositionTest", plot_position);
+			ImGui::SameLine(); HelpMarker("Length in pixels to the left edge and up edge of your screen");
+			ImGui::PopItemWidth();
 
 
 			// set start button position
@@ -248,6 +222,7 @@ namespace emoc {
 			{
 				EMOCManager::Instance()->SetIsExperiment(false);
 
+				std::cout << "-----------TEST MODULE TASK------------\n";
 				std::cout << algorithm_names[algorithm_index] << "\n"
 					<< problem_names[problem_index] << "\n"
 					<< "population number: " << N << "\n"
@@ -258,6 +233,7 @@ namespace emoc {
 				current_evaluation = 0;
 				max_evaluation = Evaluation;
 
+				// create EMOC task
 				EMOCParameters para;
 				para.algorithm_name = algorithm_names[algorithm_index];
 				para.problem_name = problem_names[problem_index];
@@ -266,8 +242,9 @@ namespace emoc {
 				para.decision_num = D;
 				para.population_num = N;
 				para.max_evaluation = Evaluation;
-				para.output_interval = 100000;
+				para.output_interval = 100000;			// TODO: change this to 1, and modify the plot code use this output pop
 				para.runs_num = 1;
+				para.is_open_multithread = false;
 
 				EMOCManager::Instance()->SetTaskParameters(para);
 				std::thread algorithm_thread(&EMOCManager::Run, EMOCManager::Instance());
@@ -287,10 +264,9 @@ namespace emoc {
 			float window_width = ImGui::GetWindowSize().x;
 			float window_height = ImGui::GetWindowSize().y;
 			float text_width = ImGui::CalcTextSize("1000000 evaluations").x;
-			float remain_width = window_width - text_width;
+			float remain_width = window_width - text_width;		// width of progress bar 
 			float remain_height = (window_height - 150.0f) > 0.0f ? window_height - 150.0f : 0.0f;
 			ImGui::Dummy(ImVec2(0.0f, remain_height * 0.5f));	// for vertical center
-
 
 			// a simple progress bar
 			static float progress = 0.0f;
@@ -301,7 +277,6 @@ namespace emoc {
 			ImGui::SameLine(); ImGui::Dummy(ImVec2(2.0f, 0.0f)); ImGui::SameLine(); ImGui::Text("%d evaluations", current_evaluation);
 			ImGui::Dummy(ImVec2(0.0f, 10.0f));
 
-
 			// put the button at the appropriate position
 			float button_pos = remain_width * 0.95f > 320.0f ? (remain_width * 0.95 - 320.0) * 0.5f : 0.0f;
 			ImGui::SetCursorPosX(button_pos);
@@ -310,11 +285,9 @@ namespace emoc {
 			if (is_finish || (!is_finish && !is_pause)) ImGui::BeginDisabled();
 			if (ImGui::Button("Continue##Test", ImVec2(100, 60)))
 			{
-				std::cout << "Continue!\n";
-				std::lock_guard<std::mutex> locker(EMOCLock::pause_mutex);
+				std::lock_guard<std::mutex> locker(EMOCLock::test_pause_mutex);
 				EMOCManager::Instance()->SetTestPause(false);
-				std::cout << "After click continue button, the pause value is: " << EMOCManager::Instance()->GetTestPause() << "\n";
-				EMOCLock::pause_cond.notify_all();
+				EMOCLock::test_pause_cond.notify_all();
 			}
 			ImGui::SameLine(); ImGui::Dummy(ImVec2(10.0f, 0.0f)); ImGui::SameLine();
 			if (is_finish || (!is_finish && !is_pause)) ImGui::EndDisabled();
@@ -323,18 +296,15 @@ namespace emoc {
 			if (is_finish || (!is_finish && is_pause)) ImGui::BeginDisabled();
 			if (ImGui::Button("Pause##Test", ImVec2(100, 60)))
 			{
-				std::cout << "Pause\n";
-				std::lock_guard<std::mutex> locker(EMOCLock::pause_mutex);
+				std::lock_guard<std::mutex> locker(EMOCLock::test_pause_mutex);
 				EMOCManager::Instance()->SetTestPause(true);
 			}
 			ImGui::SameLine(); ImGui::Dummy(ImVec2(10.0f, 0.0f)); ImGui::SameLine();
 
 			if (ImGui::Button("Stop##Test", ImVec2(100, 60)))
 			{
-				std::cout << "Stop!\n";
-				std::lock_guard<std::mutex> locker(EMOCLock::finish_mutex);
+				std::lock_guard<std::mutex> locker(EMOCLock::test_finish_mutex);
 				EMOCManager::Instance()->SetTestFinish(true);
-				std::cout << "After click continue button, the finish value is: " << EMOCManager::Instance()->GetTestFinish() << "\n";
 			}
 			ImGui::SameLine(); ImGui::Dummy(ImVec2(10.0f, 0.0f)); ImGui::SameLine();
 			if (is_finish || (!is_finish && is_pause)) ImGui::EndDisabled();
@@ -352,7 +322,7 @@ namespace emoc {
 			const float TEXT_BASE_HEIGHT = ImGui::GetTextLineHeightWithSpacing();
 			static ImGuiTableFlags flags = ImGuiTableFlags_ScrollY | ImGuiTableFlags_RowBg | ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable;
 
-			std::vector<std::string> columns;
+			std::vector<std::string> columns;	// display table's columns
 			TextCenter("Result Info Display");
 			ImGui::Dummy(ImVec2(0.0f, 5.0f));
 			static bool is_displayN = true; ImGui::Checkbox("N##Test", &is_displayN); ImGui::SameLine();
@@ -360,7 +330,7 @@ namespace emoc {
 			static bool is_displayD = true; ImGui::Checkbox("D##Test", &is_displayD); ImGui::SameLine();
 			static bool is_displayEvaluation = true; ImGui::Checkbox("Evaluation##Test", &is_displayEvaluation);
 
-			// set this frame's columns
+			// set this frame's table columns
 			columns.push_back("Run #"); columns.push_back("Algorithm"); columns.push_back("Problem");
 			if (is_displayN) columns.push_back("N");
 			if (is_displayM) columns.push_back("M");
@@ -381,7 +351,6 @@ namespace emoc {
 				{
 					ImGui::TableSetColumnIndex(c);
 					const char* column_name = columns[c].c_str(); // Retrieve name passed to TableSetupColumn()
-					//ImGui::PushID(column);
 
 					// use combobox
 					if (columns[c] == "Runtime")
@@ -392,13 +361,9 @@ namespace emoc {
 						ImGui::Combo(("##DisplayTest" + std::to_string(c)).c_str(), &display_index, display_names.data(), display_names.size());
 						ImGui::PopStyleColor();
 						ImGui::PopStyleVar();
-						//ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-						//ImGui::TableHeader("##DisplayHeader");
 					}
 					else
 						ImGui::TableHeader((column_name + std::string("##Test")).c_str());
-
-					//ImGui::PopID();
 				}
 				columns[columns.size() - 1] = display_names[display_index];
 
@@ -507,7 +472,6 @@ namespace emoc {
 			ImGui::SetCursorPosX(button_pos);
 			if (ImGui::Button("Plot##PlotTest", ImVec2(400, 100)))
 			{
-
 				std::cout << "Plot!\n";
 				ConstructAndSendPlotCMD();
 			}
@@ -526,6 +490,32 @@ namespace emoc {
 
 			ImGui::End();
 		}
+	}
+
+
+	void TestPanel::DisplayAccordingToColumn(const EMOCSingleThreadResult& res, const std::string& col_name, int row)
+	{
+		if (col_name == "Run #")
+			ImGui::Text("Run %d", row);
+		else if (col_name == "Algorithm")
+			ImGui::Text(res.para.algorithm_name.c_str());
+		else if (col_name == "Problem")
+			ImGui::Text(res.para.problem_name.c_str());
+		else if (col_name == "N")
+			ImGui::Text(std::to_string(res.para.population_num).c_str());
+		else if (col_name == "M")
+			ImGui::Text(std::to_string(res.para.objective_num).c_str());
+		else if (col_name == "D")
+			ImGui::Text(std::to_string(res.para.decision_num).c_str());
+		else if (col_name == "Evaluation")
+			ImGui::Text(std::to_string(res.para.max_evaluation).c_str());
+		else if (col_name == "Runtime")
+			ImGui::Text((std::to_string(res.runtime) + "s").c_str());
+		else if (col_name == "IGD")
+			ImGui::Text(std::to_string(res.last_igd).c_str());
+		else if (col_name == "HV")
+			ImGui::Text(std::to_string(res.last_hv).c_str());
+
 	}
 
 	void TestPanel::DisplaySelectedRun(int index)
@@ -555,8 +545,10 @@ namespace emoc {
 				ImGui::SetNextItemWidth(-FLT_MIN);
 				ImGui::Combo(comboname, &plot_metric_indexes[index],plot_metrics.data(), plot_metrics.size());
 
-				if (plot_metrics[plot_metric_indexes[index]] != "Population" && plot_metrics[plot_metric_indexes[index]] != "Runtime")
+				//std::cout << index << " " << plot_metrics[plot_metric_indexes[index]] << "\n";
+				if (plot_metrics[plot_metric_indexes[index]] != std::string("Population") && plot_metrics[plot_metric_indexes[index]] != std::string("Runtime"))
 				{
+					//std::cout << index << " here!" << "\n";
 					char settingname[128];
 					sprintf(settingname, "##PlotTest%s%d", plot_metrics[plot_metric_indexes[index]], index);
 					ImGui::AlignTextToFramePadding();
@@ -645,12 +637,11 @@ namespace emoc {
 			for (int i = 0; i < plot_graph; i++)
 			{
 				char current_cmd[1024];
-				int avail_run_index = selected_runs[i];
 				int plot_metric_index = plot_metric_indexes[i];
-				if (plot_metrics[plot_metric_index] == "Population")
-					ConstructPopulationPlotCMD(current_cmd, avail_run_index);
+				if (plot_metrics[plot_metric_index] == std::string("Population"))
+					ConstructPopulationPlotCMD(current_cmd, i);
 				else 
-					ConstructMetricPlotCMD(current_cmd, avail_run_index, plot_metrics[plot_metric_index], plot_display_nums[i]);
+					ConstructMetricPlotCMD(current_cmd, i, plot_metrics[plot_metric_index], plot_display_nums[i]);
 
 				PlotManager::Instance()->Send(current_cmd);
 			}
@@ -665,8 +656,9 @@ namespace emoc {
 
 
 
-	void TestPanel::ConstructPopulationPlotCMD(char* cmd, int avail_run_index)
+	void TestPanel::ConstructPopulationPlotCMD(char* cmd, int selected_run_intex)
 	{
+		int avail_run_index = selected_runs[selected_run_intex];
 		EMOCSingleThreadResult res = EMOCManager::Instance()->GetSingleThreadResult(avail_run_index);
 		int last_generation = res.max_iteration;
 		char data_file[1024];
@@ -703,10 +695,11 @@ namespace emoc {
 		
 	}
 
-	void TestPanel::ConstructMetricPlotCMD(char* cmd, int avail_run_index, const std::string& metric_name, int display_num)
+	void TestPanel::ConstructMetricPlotCMD(char* cmd, int selected_run_intex, const std::string& metric_name, int display_num)
 	{
 		std::vector<int> generations;
 
+		int avail_run_index = selected_runs[selected_run_intex];
 		EMOCSingleThreadResult res = EMOCManager::Instance()->GetSingleThreadResult(avail_run_index);
 		int last_generation = res.max_iteration;
 		std::cout << "last generation:" << last_generation << "\n";
@@ -724,7 +717,7 @@ namespace emoc {
 
 		FILE* data_file = nullptr;
 		char data_file_name[256];
-		sprintf(data_file_name, "./plotfile/plot_metric%d.txt", avail_run_index);
+		sprintf(data_file_name, "./plotfile/plot_metric%d.txt", selected_run_intex);
 		data_file = fopen(data_file_name, "w");		
 		if (!data_file)
 		{

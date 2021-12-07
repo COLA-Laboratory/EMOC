@@ -50,6 +50,7 @@ namespace emoc {
 		int run_num = 30;
 		int thread_num = 8;
 		int save_interval = 1000000;
+		std::vector<EMOCParameters> experiment_tasks;
 
 		// Table data for experiment module
 		std::vector<std::string> table_algorithms;
@@ -59,7 +60,6 @@ namespace emoc {
 		std::vector<int> table_Ms;
 		std::vector<int> table_Evaluations;
 
-		std::vector<EMOCParameters> experiment_tasks;
 	};
 
 }

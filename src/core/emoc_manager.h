@@ -9,12 +9,12 @@ namespace emoc {
 
 	struct EMOCExperimentTask
 	{
-		EMOCParameters para;
-		int run_index;
-		int parameter_index;
+		EMOCParameters para;	// We let each task own a copy of parameter to prevent some potential bugs.
+		int run_index;			// refer to which run in current parameter needed runs
+		int parameter_index;	// refer to which parameter in received parameter vectors
 	};
 
-	// this is for (multi-thread or multi-run) epxeriment result
+	// for (multi-thread or multi-run) epxeriment result
 	struct EMOCMultiThreadResult
 	{
 		std::vector<double> runtime_history;
@@ -40,11 +40,11 @@ namespace emoc {
 		}
 	};
 
-	// this is for (single thread or single run) test result
+	// for (single thread or single run) test result
 	struct EMOCSingleThreadResult
 	{
 		std::string description;
-		EMOCParameters para;
+		EMOCParameters para;		// for parameter information accesses easily
 		double last_igd;
 		double last_hv;
 		double last_spread;
@@ -67,7 +67,7 @@ namespace emoc {
 		void Run();
 		void ExperimentModuleRun(std::vector<EMOCParameters> experiment_tasks, int thread_num);
 
-		// Getters
+		// Simple Getters
 		inline bool GetIsPlot() { return is_plot_; }
 		inline bool GetIsGUI() { return is_gui_; }
 		inline bool GetIsExperiment() { return is_experiment_; }
@@ -75,19 +75,10 @@ namespace emoc {
 		inline bool GetExperimentPause() { return is_experiment_pause_; }
 		inline bool GetTestFinish() { return is_test_finish_; }
 		inline bool GetExperimentFinish() { return is_experiment_finish_; }
-		inline bool GetMultiThreadDataState() { return is_multithread_result_ready; }
+		inline bool GetMultiThreadDataState() { return is_multithread_result_ready_; }
+		inline const EMOCParameters& GetParameters() { return para_; }
 
-
-		inline const EMOCParameters &GetParameters() { return para_; }
-		inline Global* GetGlobalSetting(int index) { return g_GlobalSettingsArray[index]; }
-		inline int GetSingleThreadResultSize() { return (int)single_thread_result_historty_.size(); }
-		inline int GetMultiThreadResultSize() { return (int)multi_thread_result_history_.size(); }
-
-		inline  EMOCSingleThreadResult& GetSingleThreadResult(int index) { return single_thread_result_historty_[index]; }
-		inline  EMOCMultiThreadResult& GetMultiThreadResult(int index) { return multi_thread_result_history_[index]; }
-
-
-		// Setters
+		// Simple Setters
 		inline void SetIsPlot(bool is_plot) { is_plot_ = is_plot; }
 		inline void SetIsGUI(bool is_gui) { is_gui_ = is_gui; }
 		inline void SetIsExperiment(bool is_experiment) { is_experiment_ = is_experiment; }
@@ -95,9 +86,15 @@ namespace emoc {
 		inline void SetExperimentPause(bool is_pause) { is_experiment_pause_ = is_pause; }
 		inline void SetTestFinish(bool is_finish) { is_test_finish_ = is_finish; }
 		inline void SetExperimentFinish(bool is_finish) { is_experiment_finish_ = is_finish; }
-		inline void SetMultiThreadDataState(bool state) { is_multithread_result_ready = state; }
-		inline void SetTaskParameters(const EMOCParameters& para) { para_ = para; is_para_set_ = true;}
+		inline void SetMultiThreadDataState(bool state) { is_multithread_result_ready_ = state; }
+		inline void SetTaskParameters(const EMOCParameters& para) { para_ = para; is_para_set_ = true; }
 
+		// Getters for some other private variables
+		inline Global* GetGlobalSetting(int index) { return g_GlobalSettingsArray[index]; }
+		inline int GetSingleThreadResultSize() { return (int)single_thread_result_historty_.size(); }
+		inline int GetMultiThreadResultSize() { return (int)multi_thread_result_history_.size(); }
+		inline  EMOCSingleThreadResult& GetSingleThreadResult(int index) { return single_thread_result_historty_[index]; }
+		inline  EMOCMultiThreadResult& GetMultiThreadResult(int index) { return multi_thread_result_history_[index]; }
 
 	private:
 		EMOCManager();
@@ -107,7 +104,6 @@ namespace emoc {
 
 		void EMOCSingleThreadRun();
 		void EMOCMultiThreadRun();
-		void MultiThreadWorker(int run_start, int run_end, int thread_id);
 		void ExperimentWorker(std::vector<EMOCExperimentTask> tasks, int thread_id);
 
 	private:
@@ -129,23 +125,27 @@ namespace emoc {
 		static EMOCManager* s_Instance;
 		static std::mutex singleton_mutex_;
 
+
 		// EMOC state variables
 		EMOCParameters para_;
 		bool is_para_set_;
-		bool is_plot_;
-		bool is_gui_;
-		bool is_experiment_;
+		bool is_plot_;			// whether to activate plot function
+		bool is_gui_;			// whether use gui
+		bool is_experiment_;	// whether in experiment module
 
+		// state variables for test module and experiment module in gui mode
 		bool is_test_pause_;
 		bool is_test_finish_;
-
 		bool is_experiment_pause_;
 		bool is_experiment_finish_;
 
-		std::vector<Global*> g_GlobalSettingsArray;
+		// runs results
 		std::vector<EMOCSingleThreadResult> single_thread_result_historty_;
 		std::vector<EMOCMultiThreadResult> multi_thread_result_history_;
-		bool is_multithread_result_ready;
+		bool is_multithread_result_ready_;
+
+		// reserved Global arrays
+		std::vector<Global*> g_GlobalSettingsArray;
 	};
 
 }

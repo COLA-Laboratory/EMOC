@@ -16,7 +16,7 @@ namespace emoc {
 
 		for (int i = 0; i < pop_num; i++)
 		{
-			min_distance = INF;
+			min_distance = EMOC_INF;
 			for (int j = 0; j < pop_num; j++)
 			{
 				if(i == j)

@@ -12,22 +12,28 @@ namespace emoc {
 
 	Global::Global(const char *algorithn_name, const char *problem_name, int population_num,
 		int dec_num, int obj_num, int max_evaluation, int thread_id, int output_interval, int run_id) :
-		algorithm_name_(algorithn_name),
-		problem_name_(problem_name),
-		population_num_(population_num),
 		dec_num_(dec_num),
 		obj_num_(obj_num),
+		population_num_(population_num),
+		iteration_num_(0),
+		current_evaluation_(0),
 		max_evaluation_(max_evaluation),
-		thread_id_(thread_id),
 		output_interval_(output_interval),
-		run_id_(run_id)
+		algorithm_name_(algorithn_name),
+		problem_name_(problem_name),
+		dec_lower_bound_(nullptr),
+		dec_upper_bound_(nullptr),
+		problem_(nullptr),
+		algorithm_(nullptr),
+		run_id_(run_id),
+		thread_id_(thread_id)
 	{
-		iteration_num_ = 0;
-		current_evaluation_ = 0;
+		// reserve population space
 		parent_population_.reserve(population_num);
 		offspring_population_.reserve(population_num);
 		mixed_population_.reserve(population_num * 2);
 
+		// set default operator parameters
 		sbx_parameter_.crossover_pro = 1.0;
 		sbx_parameter_.eta_c = 20.0;
 		de_parameter_.crossover_pro = 1.0;
@@ -35,7 +41,6 @@ namespace emoc {
 		de_parameter_.K = 0.5;
 		pm_parameter_.muatation_pro = 1.0 / (double)dec_num;
 		pm_parameter_.eta_m = 20.0;
-
 	}
 
 	Global::~Global()
@@ -61,7 +66,12 @@ namespace emoc {
 
 	void Global::Start()
 	{
-		if (!EMOCManager::Instance()->GetIsExperiment())
+		// get current emoc mode
+		bool is_gui = EMOCManager::Instance()->GetIsGUI();
+		bool is_experiment = EMOCManager::Instance()->GetIsExperiment();
+
+		// When test module in gui mode, we need to update the EMOC state.
+		if (is_gui &&!is_experiment)
 		{
 			EMOCManager::Instance()->SetTestPause(false);
 			EMOCManager::Instance()->SetTestFinish(false);
@@ -69,7 +79,7 @@ namespace emoc {
 
 		algorithm_->Run();
 
-		if (!EMOCManager::Instance()->GetIsExperiment())
+		if (is_gui && !is_experiment)
 			EMOCManager::Instance()->SetTestFinish(true);
 	}
 
@@ -78,9 +88,11 @@ namespace emoc {
 		AllocateMemory();
 
 		// Because the initialization of algorithm needs the Global object has been created,
-		// we need delay the following into Start() or just put it in another function and call it before Start()
+		// we need delay the following function after Global has been created and call it before Start().
 		InitializeProblem();
 		InitializeAlgorithm();
+
+		// set decision boundary
 		SetDecBound();
 	}
 
@@ -168,6 +180,7 @@ namespace emoc {
 			problem_ = new WFG9(dec_num_, obj_num_);
 		else
 		{
+			// TODO: move these parameter checking things into some specified function 
 			std::cout <<problem_name<< " The problem name is wrong, please check it again" << std::endl;
 			std::cout << "Press enter to exit" << std::endl;
 			std::cin.get();
@@ -186,31 +199,32 @@ namespace emoc {
 		}
 		//std::cout << algorithm_name << std::endl;
 		if (algorithm_name == "nsga2")
-			algorithm_ = new NSGA2(problem_, thread_id_);
+			algorithm_ = new NSGA2(thread_id_);
 		else if (algorithm_name == "spea2")
-			algorithm_ = new SPEA2(problem_, thread_id_);
+			algorithm_ = new SPEA2(thread_id_);
 		else if (algorithm_name == "moead")
-			algorithm_ = new MOEAD(problem_, thread_id_);
+			algorithm_ = new MOEAD(thread_id_);
 		else if (algorithm_name == "moeadde")
-			algorithm_ = new MOEADDE(problem_, thread_id_);
+			algorithm_ = new MOEADDE(thread_id_);
 		else if (algorithm_name == "moeaddra")
-			algorithm_ = new MOEADDRA(problem_, thread_id_);
+			algorithm_ = new MOEADDRA(thread_id_);
 		else if (algorithm_name == "moeadfrrmab")
-			algorithm_ = new MOEADFRRMAB(problem_, thread_id_);
+			algorithm_ = new MOEADFRRMAB( thread_id_);
 		else if (algorithm_name == "ibea")
-			algorithm_ = new IBEA(problem_, thread_id_);
+			algorithm_ = new IBEA(thread_id_);
 		else if (algorithm_name == "smsemoa")
-			algorithm_ = new SMSEMOA(problem_, thread_id_);
+			algorithm_ = new SMSEMOA(thread_id_);
 		else if (algorithm_name == "hype")
-			algorithm_ = new HypE(problem_, thread_id_);
+			algorithm_ = new HypE(thread_id_);
 		else if (algorithm_name == "ensmoead")
-			algorithm_ = new ENSMOEAD(problem_, thread_id_);
+			algorithm_ = new ENSMOEAD(thread_id_);
 		else if (algorithm_name == "moeadgra")
-			algorithm_ = new MOEADGRA(problem_, thread_id_);
+			algorithm_ = new MOEADGRA(thread_id_);
 		else if (algorithm_name == "moeadira")
-			algorithm_ = new MOEADIRA(problem_, thread_id_);
+			algorithm_ = new MOEADIRA(thread_id_);
 		else
 		{
+			// TODO: move these parameter checking things into some specified function 
 			std::cout << "The algorithm name is wrong, please check it again" << std::endl;			
 			std::cout << "Press enter to exit" << std::endl;
 			std::cin.get();

@@ -12,8 +12,8 @@
 
 namespace emoc {
 
-	MOEADDRA::MOEADDRA(Problem *problem, int thread_num) :
-		Algorithm(problem, thread_num),
+	MOEADDRA::MOEADDRA(int thread_id) :
+		Algorithm(thread_id),
 		lambda_(nullptr),
 		weight_num_(0),
 		neighbour_(nullptr),
@@ -224,7 +224,7 @@ namespace emoc {
 		{
 			for (int j = 0; j < weight_num_; ++j)
 			{
-				if (fabs(lambda_[j][i] - 1) < EPS)
+				if (fabs(lambda_[j][i] - 1) < EMOC_EPS)
 					selected_indices_[i] = j;
 			}
 		}
@@ -237,7 +237,7 @@ namespace emoc {
 				rand[j] = rnd(0, weight_num_ - 1);
 			}
 
-			double max = -INF;
+			double max = -EMOC_INF;
 			for (int j = 0; j < 10; ++j)
 			{
 				if (utility_[rand[j]] > max)

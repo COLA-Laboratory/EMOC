@@ -14,7 +14,7 @@ namespace emoc {
 			double value;
 		}FitnessInfo;
 
-		HypE(Problem *problem, int thread_num);
+		HypE(int thread_id);
 		virtual ~HypE();
 
 		void Run();

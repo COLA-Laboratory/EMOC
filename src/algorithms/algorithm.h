@@ -13,7 +13,7 @@ namespace emoc {
 	class Algorithm
 	{
 	public:
-		Algorithm(Problem *problem, int thread_num);
+		Algorithm(int thread_id);
 		virtual ~Algorithm();
 
 		void PrintPop();
@@ -37,7 +37,6 @@ namespace emoc {
 
 	protected:
 		Global *g_GlobalSettings;	// pointer to current run's global settings
-		Problem *problem_;			// it is released outside
 		int thread_id_;				// current thread id
 		int real_popnum_;
 

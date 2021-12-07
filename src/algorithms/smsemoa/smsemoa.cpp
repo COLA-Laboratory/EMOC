@@ -14,9 +14,9 @@
 
 namespace emoc {
 
-	SMSEMOA::SMSEMOA(Problem *problem, int thread_num):
-		Algorithm(problem, thread_num),
-		nadir_point_(new double[problem->obj_num_])
+	SMSEMOA::SMSEMOA(int thread_id) :
+		Algorithm(thread_id),
+		nadir_point_(new double[g_GlobalSettings->obj_num_])
 	{
 		real_popnum_ = g_GlobalSettings->population_num_;
 	}

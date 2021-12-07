@@ -12,8 +12,8 @@
 
 namespace emoc {
 
-	MOEADGRA::MOEADGRA(Problem *problem, int thread_num) :
-		Algorithm(problem, thread_num),
+	MOEADGRA::MOEADGRA(int thread_id) :
+		Algorithm(thread_id),
 		lambda_(nullptr),
 		weight_num_(0),
 		neighbour_(nullptr),
