@@ -4,6 +4,7 @@
 #define PI 3.14159265358979323846
 #define MAX_THREAD_NUM 20
 #define MAX_BUFFSIZE 256
+#define GNUPLOT_TERMINAL "wxt"
 
 #include <string>
 #include <vector>

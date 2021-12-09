@@ -9,6 +9,7 @@
 #include "ui/imgui_impl_glfw.h"
 #include "ui/imgui_impl_opengl3.h"
 #include "imgui_internal.h"
+#include "IconsFontAwesome5.h"
 
 namespace emoc {
 
@@ -197,10 +198,14 @@ namespace emoc {
 		//io.Fonts->AddFontDefault();
 		//io.Fonts->AddFontFromFileTTF("./fonts/Roboto-Medium.ttf", 16.0f);
 		//io.Fonts->AddFontFromFileTTF("./fonts/Cousine-Regular.ttf", 15.0f);
-		io.Fonts->AddFontFromFileTTF("./resource/fonts/DroidSans.ttf", 22.0f);
 		//io.Fonts->AddFontFromFileTTF("./fonts/ProggyTiny.ttf", 10.0f);
 		//ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
 		//IM_ASSERT(font != NULL);
+
+		io.Fonts->AddFontFromFileTTF("./resource/fonts/DroidSans.ttf", 22.0f);
+		static const ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+		ImFontConfig icons_config; icons_config.MergeMode = true; icons_config.PixelSnapH = true;
+		io.Fonts->AddFontFromFileTTF(FONT_ICON_FILE_NAME_FAS, 17.0f, &icons_config, icons_ranges);
 	}
 
 	UIPanelManager::~UIPanelManager()

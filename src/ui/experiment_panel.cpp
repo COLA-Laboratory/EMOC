@@ -6,6 +6,7 @@
 #include "emoc_app.h"
 #include "imgui.h"
 #include "ui/uipanel_manager.h"
+#include "IconsFontAwesome5.h"
 
 namespace emoc {
 
@@ -53,8 +54,8 @@ namespace emoc {
 		{
 			if (ImGui::BeginMenu("Mode"))
 			{
-				if (ImGui::MenuItem("Test Module")) { UIPanelManager::Instance()->SetUIPanelState(UIPanel::TestPanel); }
-				if (ImGui::MenuItem("Experiment Module")) { UIPanelManager::Instance()->SetUIPanelState(UIPanel::ExperimentPanel); }
+				if (ImGui::MenuItem("Test Module")) { UIPanelManager::Instance()->SetUIPanelState(UIPanel::TestPanel); PlotManager::Instance()->ClosePlotPipe(); }
+				if (ImGui::MenuItem("Experiment Module")) { UIPanelManager::Instance()->SetUIPanelState(UIPanel::ExperimentPanel); PlotManager::Instance()->ClosePlotPipe(); }
 				ImGui::EndMenu();
 			}
 			ImGui::EndMainMenuBar();
@@ -418,13 +419,19 @@ namespace emoc {
 		std::string header_name = algorithm + "##" + std::to_string(index);
 		bool is_open = false;
 		bool is_delete = false;
-		if (is_open = ImGui::CollapsingHeader(header_name.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+
+		float operation_button_pos = ImGui::GetContentRegionAvail().x - ImGui::CalcTextSize("X").x;
+
+		if (is_open = ImGui::CollapsingHeader(header_name.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap))
 		{
-			DisplayMovePopup(index, true, is_delete);
+			DisplayMovePopup(index, operation_button_pos, true, is_delete);
+			//DisplayMovePopup(index, true, is_delete);
+			ImGui::Text("Test!\n");
 			if(!is_delete)
 				DisplayAlgorithmParameters(algorithm);
 		}
-		if (!is_open) DisplayMovePopup(index, true, is_delete);
+		//if (!is_open) DisplayMovePopup(index, true, is_delete);
+		if (!is_open) DisplayMovePopup(index, operation_button_pos, true, is_delete);
 	}
 
 	void ExperimentPanel::DisplaySelectedProblem(int index, int item_width, int item_pos)
@@ -434,9 +441,12 @@ namespace emoc {
 		std::string header_name = problem + "##" + std::to_string(index);
 		bool is_open = false;
 		bool is_delete = false;
-		if (is_open = ImGui::CollapsingHeader(header_name.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+
+		float operation_button_pos = ImGui::GetContentRegionAvail().x - ImGui::CalcTextSize("X").x;
+
+		if (is_open = ImGui::CollapsingHeader(header_name.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap))
 		{
-			DisplayMovePopup(index, false, is_delete);
+			DisplayMovePopup(index, operation_button_pos,false, is_delete);
 			if (!is_delete)
 			{
 				ImGui::PushItemWidth(item_width);
@@ -466,13 +476,31 @@ namespace emoc {
 				ImGui::PopItemWidth();
 			}
 		}
-		if (!is_open) DisplayMovePopup(index, false, is_delete);
+		if (!is_open) DisplayMovePopup(index, operation_button_pos, false, is_delete);
 	}
 
-	void ExperimentPanel::DisplayMovePopup(int index, bool is_algorithm_popup,bool &is_delete)
+	void ExperimentPanel::DisplayMovePopup(int index, float button_pos, bool is_algorithm_popup,bool &is_delete)
 	{
+		char icon_name[128];
+		char popup_name[128];
+		if (is_algorithm_popup)
+		{
+			sprintf(icon_name, "%s##ExpAlgorithmCog%d", ICON_FA_COG, index);
+			sprintf(popup_name, "Popup##ExpAlgorithm%d", index);
+		}
+		else
+		{
+			sprintf(icon_name, "%s##ExpProblemCog%d", ICON_FA_COG, index);
+			sprintf(popup_name, "Popup##ExpProblem%d", index);
+		}
+		ImGui::SameLine();
+		ImGui::SetCursorPosX(button_pos);
+		if (ImGui::Button(icon_name))
+		{
+			ImGui::OpenPopup(popup_name);
+		}
 
-		if (ImGui::BeginPopupContextItem())
+		if (ImGui::BeginPopup(popup_name))
 		{
 			if(ImGui::Button("Move Up     "))
 			{

@@ -10,12 +10,12 @@ namespace emoc {
 		Individual(int dec_num, int obj_num);
 		Individual(const Individual& ind);
 		~Individual();
-
+		
 	public:
 		int rank_;
 		double fitness_;
 		double *dec_;
 		double *obj_;
 	};
-
+	
 }

@@ -50,8 +50,8 @@ namespace emoc {
 		{
 			if (ImGui::BeginMenu("Mode"))
 			{
-				if (ImGui::MenuItem("Test Module")) { UIPanelManager::Instance()->SetUIPanelState(UIPanel::TestPanel); }
-				if (ImGui::MenuItem("Experiment Module")) { UIPanelManager::Instance()->SetUIPanelState(UIPanel::ExperimentPanel); }
+				if (ImGui::MenuItem("Test Module")) { UIPanelManager::Instance()->SetUIPanelState(UIPanel::TestPanel); PlotManager::Instance()->ClosePlotPipe(); }
+				if (ImGui::MenuItem("Experiment Module")) { UIPanelManager::Instance()->SetUIPanelState(UIPanel::ExperimentPanel); PlotManager::Instance()->ClosePlotPipe(); }
 				ImGui::EndMenu();
 			}
 			ImGui::EndMainMenuBar();
@@ -232,6 +232,11 @@ namespace emoc {
 			if (!is_finish) ImGui::BeginDisabled();
 			if (ImGui::Button("Start##Test", ImVec2(window_width * 0.95f, window_height * 0.1f)))
 			{
+				// Reopen the pipe and set position and size.
+				char pos_size_cmd[256];
+				sprintf(pos_size_cmd, "set term wxt position %d,%d size %d,%d\n", plot_position[0], plot_position[1], plot_size[0], plot_size[1]);
+				PlotManager::Instance()->Send(pos_size_cmd);
+
 				EMOCManager::Instance()->SetIsExperiment(false);
 
 				std::cout << "-----------TEST MODULE TASK------------\n";
@@ -625,6 +630,7 @@ namespace emoc {
 	
 	void TestPanel::ConstructAndSendPlotCMD()
 	{
+		PlotManager::Instance()->ClosePlotPipe();
 		PlotManager::Instance()->OpenPlotPipe();
 
 		int graph_width = 400;
@@ -670,7 +676,7 @@ namespace emoc {
 	void TestPanel::ConstructPopulationPlotCMD(char* cmd, int selected_run_intex)
 	{
 		int avail_run_index = selected_runs[selected_run_intex];
-		EMOCSingleThreadResult res = EMOCManager::Instance()->GetSingleThreadResult(avail_run_index);
+		EMOCSingleThreadResult &res = EMOCManager::Instance()->GetSingleThreadResult(avail_run_index);
 		int last_generation = res.max_iteration;
 		char data_file[1024];
 		// TODO: the file position needs to be changed
@@ -712,7 +718,7 @@ namespace emoc {
 		std::vector<int> generations;
 
 		int avail_run_index = selected_runs[selected_run_intex];
-		EMOCSingleThreadResult res = EMOCManager::Instance()->GetSingleThreadResult(avail_run_index);
+		EMOCSingleThreadResult &res = EMOCManager::Instance()->GetSingleThreadResult(avail_run_index);
 		int last_generation = res.max_iteration;
 		std::cout << "last generation:" << last_generation << "\n";
 		int interval = (last_generation) / (display_num - 1);
@@ -742,12 +748,19 @@ namespace emoc {
 		{
 			char pop_data_file[1024];
 			sprintf(pop_data_file, "./output/test_module/run%d/pop_%d.txt", avail_run_index, generations[i]);
-
 			std::vector<std::vector<double>> pop = ReadPop(pop_data_file, res.para.objective_num);
 
 			double igd_vale = 0.0;
-			if(metric_name == "IGD")
-				igd_vale = CalculateIGD(pop, pop.size(), res.para.objective_num, res.para.problem_name);
+			if (metric_name == "IGD")
+			{
+				if (res.igd_history.find(generations[i]) != res.igd_history.end())
+					igd_vale = res.igd_history[generations[i]];
+				else
+				{
+					igd_vale = CalculateIGD(pop, pop.size(), res.para.objective_num, res.para.problem_name);
+					res.igd_history[generations[i]] = igd_vale;
+				}
+			}
 			else if (metric_name == "HV")
 			{
 			}

@@ -19,6 +19,7 @@ set(INCLUDEDIR
     ./vendor
     ./vendor/imgui
     ./vendor/glfw/include
+    ./vendor/IconsFontAwesome5
     # ./vendor/pthread/prebuilt/include
     # for my matplot test
     # F:\Anaconda\include
@@ -41,6 +42,7 @@ set(HEADERS
 		vendor/imgui/imstb_rectpack.h
 		vendor/imgui/imstb_textedit.h
 		vendor/imgui/imstb_truetype.h
+        vendor/IconsFontAwesome5/IconsFontAwesome5.h
         src/core/file.h
         src/core/global.h
         src/core/individual.h

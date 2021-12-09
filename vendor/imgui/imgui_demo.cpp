@@ -4477,32 +4477,31 @@ static void ShowDemoWindowTables()
             ImGui::TableHeadersRow();
 
             ImGui::TableNextColumn();
-            ImGui::Text("A0 Row 0");
+
+            float rows_height = TEXT_BASE_HEIGHT * 2;
+            if (ImGui::BeginTable("table_nested2", 2, ImGuiTableFlags_BordersInner | ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable | ImGuiTableFlags_Hideable))
             {
-                float rows_height = TEXT_BASE_HEIGHT * 2;
-                if (ImGui::BeginTable("table_nested2", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable | ImGuiTableFlags_Hideable))
-                {
-                    ImGui::TableSetupColumn("B0");
-                    ImGui::TableSetupColumn("B1");
-                    ImGui::TableHeadersRow();
+                //ImGui::TableSetupColumn("B0");
+                //ImGui::TableSetupColumn("B1");
+                //ImGui::TableHeadersRow();
 
-                    ImGui::TableNextRow(ImGuiTableRowFlags_None, rows_height);
-                    ImGui::TableNextColumn();
-                    ImGui::Text("B0 Row 0");
-                    ImGui::TableNextColumn();
-                    ImGui::Text("B1 Row 0");
-                    ImGui::TableNextRow(ImGuiTableRowFlags_None, rows_height);
-                    ImGui::TableNextColumn();
-                    ImGui::Text("B0 Row 1");
-                    ImGui::TableNextColumn();
-                    ImGui::Text("B1 Row 1");
+                ImGui::TableNextRow(ImGuiTableRowFlags_None, rows_height);
+                ImGui::TableNextColumn();
+                ImGui::Text("B0 Row 0");
+                ImGui::TableNextColumn();
+                ImGui::Text("B1 Row 0");
+                ImGui::TableNextRow(ImGuiTableRowFlags_None, rows_height);
+                ImGui::TableNextColumn();
+                ImGui::Text("B0 Row 1");
+                ImGui::TableNextColumn();
+                ImGui::Text("B1 Row 1");
 
-                    ImGui::EndTable();
-                }
+                ImGui::EndTable();
             }
+            
             ImGui::TableNextColumn(); ImGui::Text("A1 Row 0");
             ImGui::TableNextColumn(); ImGui::Text("A0 Row 1");
-            ImGui::TableNextColumn(); ImGui::Text("A1 Row 1");
+            ImGui::TableNextColumn(); ImGui::Text("A1 Row 1"); ImGui::SetNextItemWidth(100.0f); ImGui::Separator(); ImGui::Text("A ha!");
             ImGui::EndTable();
         }
         ImGui::TreePop();

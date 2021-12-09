@@ -1397,6 +1397,13 @@ void ImGui::SeparatorEx(ImGuiSeparatorFlags flags)
         if (g.GroupStack.Size > 0 && g.GroupStack.back().WindowID == window->ID)
             x1 += window->DC.Indent.x;
 
+		//if (ImGuiTable* table = g.CurrentTable)
+		//{
+		//	x1 = table->Columns[table->CurrentColumn].MinX;
+		//	x2 = table->Columns[table->CurrentColumn].MaxX;
+		//}
+
+
         ImGuiOldColumns* columns = (flags & ImGuiSeparatorFlags_SpanAllColumns) ? window->DC.CurrentColumns : NULL;
         if (columns)
             PushColumnsBackground();

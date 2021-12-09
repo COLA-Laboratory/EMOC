@@ -101,7 +101,7 @@ there is an example of config file in the corresponding directory.
 
 **整体方面：**
 
-- [ ] Code Review 对整体代码做一个回顾，是否可以改进，局部结构是否可以改善，细节部分代码是否可以更加简洁。
+- [x] Code Review 对整体代码做一个回顾，是否可以改进，局部结构是否可以改善，细节部分代码是否可以更加简洁。
 - [ ] 算法的准确性及其效率的review，从老的算法包移植过来的算法不不知道是否正确。
 - [ ] Indicator的计算，PF可否用公式计算，不用文件读写，以及新的indicator的添加，接口上的real_pop_num问题。
 - [ ] Linux的移植
@@ -109,22 +109,40 @@ there is an example of config file in the corresponding directory.
 
 **功能方面：**
 
-- [ ] Table样式，
+- [ ] Table样式， note：看了一遍demo code，没有这种合并单元格的效果，可能可以提供过nested table来hack一个，先搁置吧
+
 - [x] 算法和问题类别
-- [ ] 画图和实验模块给一个简略的进度条
-- [ ] 画图的canvas大小，位置，让用户指定
-- [ ] 各个Panel下window的大小及其位置的事先固定
-- [ ] 提供一些提示，让用户可以知道Popup需要右键点击才会出现
-- [ ] 一些metric计算之后的cache，防止重复计算
-- [ ] 画图文件存储的优化，和本身种群的Track不要重复。另外都画图用脚本，不要有的是指令，有的是命令，保持统一
-- [ ] SetUIPanel()和CheckPauseAndStop()在指定条件下再调用，包括单线程和多线程的运行状态设置。
-- [ ] 实验模块的画图分析
-- [ ] 实验模块的统计分析功能
-- [ ] 实验结果table的导出功能
+
+- [x] 画图的canvas大小，位置，让用户指定
+
 - [x] EMOC不同状态对应的有些窗口要Disable，防止用户误操作
+
+- [ ] 一些metric计算之后的cache，防止重复计算，Note：现在SingleThreadResult用了unordered_map，MultiThreadResult也可以考虑相应更改一下，不要用一个额外的std::vector<bool>来表示是不是存了，直接用哈希表就行
+
+- [x] SetUIPanelCurrentEvaluation()和CheckPauseAndStop()在指定条件下再调用，包括单线程和多线程的运行状态设置。
+
+- [ ] 提供一些提示，让用户可以知道Popup需要右键点击才会出现，或者引入icon button
+
+- [ ] 画图和实验模块给一个简略的进度条。 note：不怎么重要，先不急
+
+- [ ] 各个Panel下window的大小及其位置的事先固定
+
+- [ ] 画图文件存储的优化，和本身种群的Track不要重复。另外都画图用脚本，不要有的是指令，有的是命令，保持统一
+
+- [ ] Experiment下early stop之后后序任务不应再执行，应该直接停止for循环
+
+- [ ] 实验模块的画图分析
+
+- [ ] 实验模块的统计分析功能
+
+- [ ] 实验结果table的导出功能
+
 - [ ] 参数合法性检验，以及对应的警告
+
 - [ ] 命令行调用设计
+
 - [ ] python调用接口的重新设计
+
 - [ ] ...
 
 **Bug Fix：** 

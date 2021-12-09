@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <mutex>
+#include <unordered_map>
 
 #include "core/file.h"
 #include "core/global.h"
@@ -53,12 +54,14 @@ namespace emoc {
 		double pop_num;
 		int max_iteration;
 
-		std::vector<double> igd_history;
-		std::vector<double> hv_history;
-		std::vector<double> spacing_history;
-		std::vector<double> spread_history;
-	};
+		std::unordered_map<int, double> igd_history;
+		std::unordered_map<int, double> hv_history;
+		std::unordered_map<int, double> spacing_history;
+		std::unordered_map<int, double> spread_history;
 
+		EMOCSingleThreadResult() {}
+	};
+	
 	class EMOCManager
 	{
 	public:

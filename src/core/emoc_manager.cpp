@@ -34,7 +34,7 @@ namespace emoc {
 	{
 		if (is_para_set_ == false)
 			std::cout << "Task parameters are not set, running with default parameters!\n";
-
+		
 		if (para_.is_open_multithread)
 			EMOCMultiThreadRun();
 		else
@@ -45,7 +45,7 @@ namespace emoc {
 	void EMOCManager::ExperimentModuleRun(std::vector<EMOCParameters> experiment_tasks, int thread_num)
 	{
 		// Each experiment_task here can be separeted into 'run_num' small tasks which represent by EMOCExperimentTask
-
+		
 		// initialize experiment result
 		multi_thread_result_history_.clear();
 		for (int i = 0; i < experiment_tasks.size(); i++)
@@ -69,7 +69,7 @@ namespace emoc {
 		}
 
 		std::vector<std::vector<EMOCExperimentTask>> emoc_thread_tasks(thread_num);
-
+		
 		int task_count = 0;
 		for (int i = 0; i < experiment_tasks.size(); i++)
 		{
@@ -150,6 +150,8 @@ namespace emoc {
 			result.runtime = g_GlobalSettingsArray[thread_id]->algorithm_->GetRuntime();
 			result.pop_num = g_GlobalSettingsArray[thread_id]->algorithm_->GetRealPopNum();
 			result.max_iteration = g_GlobalSettingsArray[thread_id]->iteration_num_;
+			result.igd_history[result.max_iteration] = igd;
+			result.hv_history[result.max_iteration] = hv;
 			single_thread_result_historty_.push_back(result);
 			if(is_gui_) UIPanelManager::Instance()->AddAvailSingleThreadResult(single_thread_result_historty_[count].description);
 

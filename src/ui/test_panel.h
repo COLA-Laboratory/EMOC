@@ -52,8 +52,8 @@ namespace emoc {
 		int D = 30;
 		int M = 2;
 		int Evaluation = 25000;
-		int plot_size[2] = {500, 500};
-		int	plot_position[2] = {400, 800}; // settings for test module population plot
+		int plot_size[2] = {500, 400};
+		int	plot_position[2] = {150, 300}; // settings for test module population plot
 
 		// for plot analysis window
 		bool is_plot_window_open = false;
