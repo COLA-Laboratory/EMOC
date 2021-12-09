@@ -114,7 +114,7 @@ namespace emoc {
 		title_("EMOC"),
 		glsl_version_("#version 130"),
 		window_(nullptr),
-		panel_state_(UIPanel::TestPanel)
+		panel_state_(UIPanel::ExperimentPanel)
 	{
 	}
 
@@ -268,6 +268,7 @@ namespace emoc {
 		colors[ImGuiCol_TableHeaderBg] = ImVec4(0.18f, 0.18f, 0.32f, 1.00f);
 		colors[ImGuiCol_TableRowBg] = ImVec4(0.00f, 0.00f, 0.00f, 0.07f);
 		colors[ImGuiCol_TableRowBgAlt] = ImVec4(0.00f, 0.00f, 0.00f, 0.07f);
+		colors[ImGuiCol_TableBorderLight] = ImVec4(0.33f, 0.33f, 0.35f, 1.00f);
 		colors[ImGuiCol_PlotLines] = ImVec4(0.61f, 0.61f, 0.61f, 1.00f);
 		colors[ImGuiCol_PlotLinesHovered] = ImVec4(1.00f, 0.43f, 0.35f, 1.00f);
 		colors[ImGuiCol_PlotHistogram] = ImVec4(0.00f, 0.58f, 0.94f, 1.00f);

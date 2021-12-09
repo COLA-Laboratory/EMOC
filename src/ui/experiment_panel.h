@@ -5,6 +5,7 @@
 
 #include "core/emoc_manager.h"
 #include "ui/ui_utility.h"
+#include "ui/experiment_table.h"
 
 namespace emoc {
 
@@ -25,7 +26,7 @@ namespace emoc {
 
 		// display functions according current settings		
 		void DisplayTableResult(const EMOCMultiThreadResult& res, const std::string& para);	// display table content according to selected display parameter 
-		void DisplayTableProblemProperty(const std::string& col_name, int row);	// column display in default test module's table 
+		void DisplayTableProblemProperty(const std::string& col_name, int row);	
 		void DisplaySelectedAlgorithm(int index);								// algorithm display in experiment module's parameter window 
 		void DisplaySelectedProblem(int index, int item_width, int item_pos);	// problem display in experiment module's parameter window
 		void DisplayMovePopup(int index, float button_pos, bool is_algorithm_popup, bool &is_delete);				// popups in experiment module's parameter window for moving or deleting selected algorithms and problems
@@ -50,7 +51,6 @@ namespace emoc {
 		std::vector<std::string> selected_algorithms;
 		std::unordered_map<std::string, int> selected_algorithm_map;
 		std::vector<std::string> selected_problems;
-		std::unordered_map<std::string, int> selected_problem_map;
 		std::vector<int> Ns;
 		std::vector<int> Ds;
 		std::vector<int> Ms;
@@ -60,13 +60,14 @@ namespace emoc {
 		int save_interval = 1000000;
 		std::vector<EMOCParameters> experiment_tasks;
 
-		// Table data for experiment module
+		// Table data for experiment module, seperate from UI data for static display, i.e. don't change with UI data when current experiment has been finished.
 		std::vector<std::string> table_algorithms;
 		std::vector<std::string> table_problems;
 		std::vector<int> table_Ns;
 		std::vector<int> table_Ds;
 		std::vector<int> table_Ms;
 		std::vector<int> table_Evaluations;
+		ExperimentTable table;
 
 	};
 

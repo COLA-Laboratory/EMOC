@@ -59,6 +59,7 @@ set(HEADERS
         src/ui/ui_utility.h
         src/ui/test_panel.h
         src/ui/experiment_panel.h
+        src/ui/experiment_table.h
         src/problem/problem.h
         src/problem/problem_head_collect.h
         src/problem/dtlz.h
@@ -118,6 +119,7 @@ set(SRC
         src/ui/ui_utility.cpp 
         src/ui/test_panel.cpp
         src/ui/experiment_panel.cpp
+        src/ui/experiment_table.cpp
         src/problem/problem.cpp
         src/problem/dtlz.cpp
         src/problem/uf.cpp

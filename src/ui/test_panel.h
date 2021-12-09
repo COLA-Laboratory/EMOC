@@ -26,7 +26,7 @@ namespace emoc {
 
 		// utility display function
 		void DisplaySelectedRun(int index);
-		void DisplayMovePopup(int index, bool& is_delete);		
+		void DisplayMovePopup(int index, float button_pos, bool& is_delete);
 		void DisplayAccordingToColumn(const EMOCSingleThreadResult& res, const std::string& col_name, int row);	// column display in default test module's table 
 		
 		//

@@ -6,6 +6,7 @@ namespace emoc{
 
 	// text center help function
 	void TextCenter(std::string text);
+	void TextCenterInTableCell(std::string text, float height);
 
 	// tooltip help function
 	void HelpMarker(const char* desc);

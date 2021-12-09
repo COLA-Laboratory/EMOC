@@ -217,6 +217,9 @@ namespace emoc {
 	{
 		for (int i = 0; i < tasks.size(); i++)
 		{
+			// early stop
+			if (is_experiment_finish_) break;
+
 			const char* algorithm_name = tasks[i].para.algorithm_name.c_str();
 			const char* problem_name = tasks[i].para.problem_name.c_str();
 			bool is_plot = tasks[i].para.is_plot;
@@ -247,8 +250,9 @@ namespace emoc {
 				multi_thread_result_history_[parameter_index].is_igd_record[run_index] = true;
 			}
 
+			std::string print_problem = problem + "_" + std::to_string(obj_num) + "_" + std::to_string(dec_num);
 			printf("current thread id : %d, parameter: %d runs: %d, runtime: %f igd:%f algorithm:%s, problem:%s\n", 
-				thread_id, parameter_index, run_index, runtime, igd, algorithm_name, problem_name);
+				thread_id, parameter_index, run_index, runtime, igd, algorithm_name, print_problem.c_str());
 			delete g_GlobalSettingsArray[thread_id];
 		}
 

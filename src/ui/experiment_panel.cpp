@@ -73,6 +73,10 @@ namespace emoc {
 
 	void ExperimentPanel::DisplaySelectionWindow(bool is_finish, bool is_pause)
 	{
+		// for testing
+		clock_t start, end;
+
+
 		// Experiment Module Algorithm and Problem Selection Window
 		{
 			ImGui::Begin("Algorithm and Problem Selection##Experiment");
@@ -115,9 +119,8 @@ namespace emoc {
 			UpdateCurrentProblemList();
 			ImGui::SetNextItemWidth(-FLT_MIN);
 			is_value_changed = ImGui::ListBox("##ProblemExperimentListbox", &problem_index, (*current_problem_names).data(), (*current_problem_names).size(), list_height);
-			if (is_value_changed && selected_problem_map.count((*current_problem_names)[problem_index]) == 0)
+			if (is_value_changed)
 			{
-				selected_problem_map[(*current_problem_names)[problem_index]] = 1;
 				selected_problems.push_back((*current_problem_names)[problem_index]);
 
 				// add some default problem settings
@@ -171,6 +174,16 @@ namespace emoc {
 				table_Ds = Ds;
 				table_Ms = Ms;
 				table_Evaluations = Evaluations;
+
+				start = clock();
+				std::vector<int> parameter_indexes;
+				for (int i = 0; i < table_problems.size(); i++)
+					parameter_indexes.push_back(i * table_algorithms.size());
+				table.UpdateExperimentTable(table_algorithms, table_problems, table_Ms,
+					table_Ds, table_Ns, table_Evaluations, parameter_indexes);
+				table.PrintTable();
+				end = clock();
+				std::cout << "Consturct Table Time: " << (double)(end - start) / CLOCKS_PER_SEC << "s\n";
 
 				ConstructTasks();
 				if (experiment_tasks.size() > 0)
@@ -308,6 +321,7 @@ namespace emoc {
 			if (is_displayD) columns.push_back("D");
 			if (is_displayEvaluation) columns.push_back("Evaluation");
 
+			/*
 			// When using ScrollX or ScrollY we need to specify a size for our table container!
 			// Otherwise by default the table will fit all available space, like a BeginChild() call.
 			ImVec2 outer_size = ImVec2(0.0f, ImGui::GetContentRegionAvail().y - 45.0f);
@@ -368,6 +382,9 @@ namespace emoc {
 
 				ImGui::EndTable();
 			}
+			*/
+
+			table.Render(is_displayM, is_displayD, is_displayN, is_displayEvaluation, display_names[display_index]);
 			ImGui::SetCursorPosX(ImGui::GetWindowSize().x - 260.0f);
 			if (!is_finish) ImGui::BeginDisabled();
 			if (ImGui::Button("Open Plot Window", ImVec2(250.0f, 40.0f)))
@@ -554,7 +571,6 @@ namespace emoc {
 				}
 				else
 				{
-					selected_problem_map.erase(selected_problems[index]);
 					selected_problems.erase(selected_problems.begin() + index);
 					Ns.erase(Ns.begin() + index);
 					Ds.erase(Ds.begin() + index);

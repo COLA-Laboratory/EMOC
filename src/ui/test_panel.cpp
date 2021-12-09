@@ -8,6 +8,7 @@
 #include "metric/igd.h"
 #include "ui/uipanel_manager.h"
 #include "ui/plot.h"
+#include "IconsFontAwesome5.h"
 
 namespace emoc {
 
@@ -540,17 +541,17 @@ namespace emoc {
 		float max_text_width = ImGui::CalcTextSize("Number of Display").x;
 		float remain_width = (window_width - max_text_width) > 0.0 ? (window_width - max_text_width) :0.0;
 		float input_pos = max_text_width + 0.10f * remain_width;
-
+		float operation_button_pos = ImGui::GetContentRegionAvail().x - ImGui::CalcTextSize("X ").x;
 
 		int selected_index = selected_runs[index];
 		const std::string& description = avail_runs[selected_index];
 		std::string header_name = description + "##" + std::to_string(index);
-
 		bool is_open = false;
 		bool is_delete = false;
-		if (is_open = ImGui::CollapsingHeader(header_name.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+
+		if (is_open = ImGui::CollapsingHeader(header_name.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap))
 		{
-			DisplayMovePopup(index, is_delete);
+			DisplayMovePopup(index, operation_button_pos, is_delete);
 			if (!is_delete)
 			{
 				char comboname[128];
@@ -587,12 +588,25 @@ namespace emoc {
 				}
 			}
 		}
-		if (!is_open) DisplayMovePopup(index, is_delete);
+		if (!is_open) DisplayMovePopup(index, operation_button_pos, is_delete);
 	}
 
-	void TestPanel::DisplayMovePopup(int index, bool& is_delete)
+	void TestPanel::DisplayMovePopup(int index, float button_pos, bool& is_delete)
 	{
-		if (ImGui::BeginPopupContextItem())
+		char icon_name[128];
+		char popup_name[128];
+
+		sprintf(icon_name, "%s##TestPlotCog%d", ICON_FA_COG, index);
+		sprintf(popup_name, "Popup##TestPlot%d", index);
+
+		ImGui::SameLine();
+		ImGui::SetCursorPosX(button_pos);
+		if (ImGui::Button(icon_name))
+		{
+			ImGui::OpenPopup(popup_name);
+		}
+
+		if (ImGui::BeginPopup(popup_name))
 		{
 			if (ImGui::Button("Move Up     "))
 			{
@@ -725,13 +739,20 @@ namespace emoc {
 		int remain = (last_generation) % (display_num - 1);
 
 		int generation = 0;
-		for (int i = 0; i < display_num; i++)
+		if (display_num <= last_generation + 1)
 		{
-			if (i == 1) generation += remain;
-			generations.push_back(generation);
-			std::cout << generation << "\n";
-			generation += interval;
+			for (int i = 0; i < display_num; i++)
+			{
+				if (i == 1) generation += remain;
+				generations.push_back(generation);
+				std::cout << generation << "\n";
+				generation += interval;
+			}
 		}
+		else
+			for (int i = 0; i <= last_generation; i++)
+				generations.push_back(i);
+		
 
 		FILE* data_file = nullptr;
 		char data_file_name[256];
@@ -744,7 +765,8 @@ namespace emoc {
 		}
 
 		// write data
-		for (int i = 0; i < display_num; i++)
+		int calculations = last_generation + 1 >= display_num ? display_num : last_generation + 1;
+		for (int i = 0; i < calculations; i++)
 		{
 			char pop_data_file[1024];
 			sprintf(pop_data_file, "./output/test_module/run%d/pop_%d.txt", avail_run_index, generations[i]);

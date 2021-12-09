@@ -121,7 +121,7 @@ there is an example of config file in the corresponding directory.
 
 - [x] SetUIPanelCurrentEvaluation()和CheckPauseAndStop()在指定条件下再调用，包括单线程和多线程的运行状态设置。
 
-- [ ] 提供一些提示，让用户可以知道Popup需要右键点击才会出现，或者引入icon button
+- [x] 提供一些提示，让用户可以知道Popup需要右键点击才会出现，或者引入icon button
 
 - [ ] 画图和实验模块给一个简略的进度条。 note：不怎么重要，先不急
 

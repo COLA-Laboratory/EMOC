@@ -2,6 +2,7 @@
 #include "ui/ui_utility.h"
 
 #include <vector>
+#include <iostream>
 
 #include "imgui.h"
 #include "imgui_internal.h"
@@ -13,7 +14,17 @@ namespace emoc {
 	{
 		float window_width = ImGui::GetWindowSize().x;
 		float text_width = ImGui::CalcTextSize(text.c_str()).x;
-		ImGui::SetCursorPosX(window_width / 2 - text_width / 2);
+		ImGui::SetCursorPosX(ImGui::GetCursorPosX()+window_width / 2 - text_width / 2);
+		ImGui::Text(text.c_str());
+	}
+
+	void TextCenterInTableCell(std::string text, float height)
+	{
+		float width = ImGui::GetContentRegionAvail().x;
+		float text_width = ImGui::CalcTextSize(text.c_str()).x;
+		float text_height = ImGui::GetTextLineHeightWithSpacing();
+		ImGui::SetCursorPosX(ImGui::GetCursorPosX() + width / 2 - text_width / 2);
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + height / 2 - text_height / 2);
 		ImGui::Text(text.c_str());
 	}
 
