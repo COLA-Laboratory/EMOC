@@ -133,36 +133,19 @@ namespace emoc {
 	double testTime = 0.0;
 	void Algorithm::PlotPopulation(Individual** pop, int gen)
 	{
+		int current_run = EMOCManager::Instance()->GetSingleThreadResultSize();
 		clock_t start_ = clock();
 		clock_t end_ = clock();
 
 		// open data file and script file for gnuplot
-		FILE* data_file = nullptr, *script_file = nullptr;
+		FILE  *script_file = nullptr;
 		char data_file_name[256];
 		char script_file_name[256];
-		sprintf(data_file_name, "./plotfile/plot%d.txt", gen);
+		sprintf(data_file_name, "./output/test_module/run%d/pop_%d.txt", current_run, gen);
 		sprintf(script_file_name, "./plotfile/%d.gnu", gen);
-		data_file = fopen(data_file_name, "w");
 		script_file = fopen(script_file_name, "w");
 
-		// write data
-		if (!data_file)
-		{
-			std::cerr << "<Error!!!> Could not open plot data file" << std::endl;
-			exit(-1);
-		}
-
 		int obj_num = g_GlobalSettings->obj_num_;
-		for (int i = 0; i < real_popnum_; i++)
-		{
-			for (int j = 0; j < obj_num - 1; j++)
-			{
-				fprintf(data_file, "%f\t", pop[i]->obj_[j]);
-			}
-			fprintf(data_file, "%f\n", pop[i]->obj_[obj_num - 1]);
-		}
-		fflush(data_file);
-		fclose(data_file);
 
 		// construct plot command
 		char plot_cmd[1024];

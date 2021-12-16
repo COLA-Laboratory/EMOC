@@ -109,48 +109,37 @@ there is an example of config file in the corresponding directory.
 
 **功能方面：**
 
-- [ ] Table样式， note：看了一遍demo code，没有这种合并单元格的效果，可能可以提供过nested table来hack一个，先搁置吧
-
+- [x] Table样式， note：看了一遍demo code，没有这种合并单元格的效果，可能可以提供过nested table来hack一个，最好自己抽象出来一个Experiment的Table类
 - [x] 算法和问题类别
-
 - [x] 画图的canvas大小，位置，让用户指定
-
 - [x] EMOC不同状态对应的有些窗口要Disable，防止用户误操作
-
-- [ ] 一些metric计算之后的cache，防止重复计算，Note：现在SingleThreadResult用了unordered_map，MultiThreadResult也可以考虑相应更改一下，不要用一个额外的std::vector<bool>来表示是不是存了，直接用哈希表就行
-
-- [x] SetUIPanelCurrentEvaluation()和CheckPauseAndStop()在指定条件下再调用，包括单线程和多线程的运行状态设置。
-
+- [x] 一些metric计算之后的cache，防止重复计算，Note：现在SingleThreadResult用了unordered_map，MultiThreadResult也可以考虑相应更改一下，不要用一个额外的std::vector<bool>来表示是不是存了，直接用哈希表就行，**算了还是不用了，因为用了要提供一个额外的参数表示一共有多少run，不如直接size来的简洁明了**
+- [x] SetUIPanelCurrentEvaluation()和CheckPauseAndStop()在指定条件下再调用（在Alogrithm的IsTermination里面）。包括EMOC各种运行状态的正确设置。
 - [x] 提供一些提示，让用户可以知道Popup需要右键点击才会出现，或者引入icon button
-
+- [x] Experiment下early stop之后后序任务不应再执行，应该直接停止for循环
 - [ ] 画图和实验模块给一个简略的进度条。 note：不怎么重要，先不急
-
 - [ ] 各个Panel下window的大小及其位置的事先固定
-
-- [ ] 画图文件存储的优化，和本身种群的Track不要重复。另外都画图用脚本，不要有的是指令，有的是命令，保持统一
-
-- [ ] Experiment下early stop之后后序任务不应再执行，应该直接停止for循环
-
-- [ ] 实验模块的画图分析
-
+- [x] 画图文件存储的优化，和本身种群的Track不要重复。另外都画图用脚本，不要有的是指令，有的是命令，保持统一
+- [x] 科学计数法显示，以及MEDIAN,IQR等等
+- [x] 最佳结果标bold（添加额外字体）
 - [ ] 实验模块的统计分析功能
-
 - [ ] 实验结果table的导出功能
-
 - [ ] 参数合法性检验，以及对应的警告
-
 - [ ] 命令行调用设计
-
 - [ ] python调用接口的重新设计
-
+- [x] hv的计算，好了但没完全好
+- [ ] 函数和问题的注册，可能要用到反射？之后再看，现在先搞米哈游的作业
+- [ ] 算法自身的参数接口 （可以改，但有些麻烦，暂时没必要）
+- [ ] 实验模块的画图分析  （暂时不知道画什么，不着急搞）
 - [ ] ...
 
 **Bug Fix：** 
 
 - [x] ImGUI在某些条件下会出现Begin与End不对等的情况
+- [x] WFG多线程下崩溃， Fixed：全局变量的访问问题
 - [ ] Clock计时在多线程条件下表现不正确
-- [ ] 实验模块问题参数设置在收起header之后对popup选中delete的时有些奇怪的表现
-- [ ] test module plot判断plot metric name的时候不要直接比指针
+- [ ] 实验模块问题参数设置在收起header之后对popup选中delete的时有些奇怪的表现（不是参数错误，是不正常的收起，可能是ImGui自己的问题，初步猜测是ImGui的ID问题，因为我是根据index设置id的，删除一个只会，后面可能会和删除的那个id一样，继承了之前的状态？這個bug問題不大,可以暂时不用管）
+- [x] test module plot判断plot metric name的时候不要直接比指针
 - [x] Test module下如果连续画同一个pop的metric，plot会不work。Fixed:因为同一个pop的metric存的file的name是一样，会出现data invalid（因为可能要画的时候，还正在写），改为了用selected_run的index来命名文件。
 - [x] 运行结果的description显示不正确。 Fixed：指针在vector扩容时会变成野指针
 - [x] Popup之后点击delete button后数组越界。Fixed：如果删除了，在当前帧不再继续显示

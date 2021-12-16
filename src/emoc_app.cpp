@@ -10,6 +10,7 @@ namespace emoc {
 	std::mutex EMOCLock::multithread_data_mutex;
 	std::condition_variable EMOCLock::test_pause_cond;
 	std::condition_variable EMOCLock::experiment_pause_cond;
+	std::array<std::mutex, 32> EMOCLock::mutex_pool;
 
 	EMOCApplication::EMOCApplication() :
 		plot_manager_(nullptr),

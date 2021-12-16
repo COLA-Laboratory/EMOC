@@ -34,9 +34,12 @@ namespace emoc {
 		void RenderPanel();
 		void Update();
 
+		// getter
+		inline int GetExpAlgorithmNum() { return experiment_panel_.table_algorithms.size(); }
+
 		// setter for the convinence of calculating progress, invoked by algorithm
-		void SetCurrentEvaluation(int num) { test_panel_.current_evaluation = num; }
-		void SetUIPanelState(UIPanel state) { panel_state_ = state; }
+		inline void SetCurrentEvaluation(int num) { test_panel_.current_evaluation = num; }
+		inline void SetUIPanelState(UIPanel state) { panel_state_ = state; }
 
 		// utility functions
 		inline bool IsTerminate() { return !glfwWindowShouldClose(window_); }
@@ -59,6 +62,10 @@ namespace emoc {
 
 		// erroe callback
 		static void glfw_error_callback(int error, const char* description){ fprintf(stderr, "Glfw Error %d: %s\n", error, description);}
+
+	public:
+		ImFont* font_bold;
+		ImFont* font_normal;
 
 	private:
 		// for release UIPanelManager instance

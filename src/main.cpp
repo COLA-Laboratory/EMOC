@@ -5,6 +5,8 @@
 #include "ui/plot.h"
 #include "ui/uipanel_manager.h"
 
+#include "alglib/src/statistics.h"
+
 
 using emoc::EMOCManager;
 using emoc::PlotManager;
@@ -15,6 +17,16 @@ using emoc::EMOCApplication;
 
 int main(int argc, char* argv[])
 {
+	std::vector<double> testarray1 = { 1,2,3,4,5,6 };
+	std::vector<double> testarray2 = { 3,4,3,4,1,6 };
+	alglib::real_1d_array t1, t2;
+	t1.setcontent(testarray1.size(), testarray1.data());
+	t2.setcontent(testarray2.size(), testarray2.data());
+	double p1, p2, p3;
+	alglib::mannwhitneyutest(t1, testarray1.size(), t2, testarray2.size(), p1, p2, p3);
+	std::cout << p1 << "\n";
+
+
 	double test = -1.0;
 
 	if (test == -1.0)

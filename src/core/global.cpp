@@ -140,6 +140,14 @@ namespace emoc {
 			problem_ = new DTLZ6(dec_num_, obj_num_);
 		else if (problem_name == "dtlz7")
 			problem_ = new DTLZ7(dec_num_, obj_num_);
+		else if (problem_name == "mdtlz1")
+			problem_ = new MDTLZ1(dec_num_, obj_num_);
+		else if (problem_name == "mdtlz2")
+			problem_ = new MDTLZ2(dec_num_, obj_num_);
+		else if (problem_name == "mdtlz3")
+			problem_ = new MDTLZ3(dec_num_, obj_num_);
+		else if (problem_name == "mdtlz4")
+			problem_ = new MDTLZ4(dec_num_, obj_num_);
 		else if (problem_name == "uf1")
 			problem_ = new UF1(dec_num_, obj_num_);
 		else if (problem_name == "uf2")
@@ -163,7 +171,10 @@ namespace emoc {
 		else if (problem_name == "wfg1")
 			problem_ = new WFG1(dec_num_, obj_num_);
 		else if (problem_name == "wfg2")
+		{
 			problem_ = new WFG2(dec_num_, obj_num_);
+			std::cout << "Im here!\n";
+		}
 		else if (problem_name == "wfg3")
 			problem_ = new WFG3(dec_num_, obj_num_);
 		else if (problem_name == "wfg4")

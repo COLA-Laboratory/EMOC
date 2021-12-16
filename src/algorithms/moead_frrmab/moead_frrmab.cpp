@@ -104,11 +104,11 @@ namespace emoc {
 				UpdateUtility();
 			}
 		}
-		std::cout << "evaluation:" << g_GlobalSettings->current_evaluation_ << "\n";
+		//std::cout << "evaluation:" << g_GlobalSettings->current_evaluation_ << "\n";
 
 		for (int i = 0; i < 4; ++i)
 		{
-			printf("op%d: %d\n", i, num[i]);
+			//printf("op%d: %d\n", i, num[i]);
 		}
 	}
 

@@ -2,66 +2,18 @@
 #include <vector>
 #include <mutex>
 #include <unordered_map>
+#include <mutex>
 
 #include "core/file.h"
 #include "core/global.h"
 
 namespace emoc {
-
-	struct EMOCExperimentTask
-	{
-		EMOCParameters para;	// We let each task own a copy of parameter to prevent some potential bugs.
-		int run_index;			// refer to which run in current parameter needed runs
-		int parameter_index;	// refer to which parameter in received parameter vectors
-	};
-
-	// for (multi-thread or multi-run) epxeriment result
-	struct EMOCMultiThreadResult
-	{
-		std::vector<double> runtime_history;
-		std::vector<bool> is_runtime_record;
-		std::vector<double> igd_history;
-		std::vector<bool> is_igd_record;
-		std::vector<double> hv_history;
-		std::vector<bool> is_hv_record;
-
-		EMOCMultiThreadResult()
-		{
-
-		}
-
-		EMOCMultiThreadResult(int run_num)
-		{
-			runtime_history.resize(run_num, 0.0);
-			is_runtime_record.resize(run_num, false);
-			igd_history.resize(run_num, 0.0);
-			is_igd_record.resize(run_num, false);
-			hv_history.resize(run_num, 0.0);
-			is_hv_record.resize(run_num, false);
-		}
-	};
-
-	// for (single thread or single run) test result
-	struct EMOCSingleThreadResult
-	{
-		std::string description;
-		EMOCParameters para;		// for parameter information accesses easily
-		double last_igd;
-		double last_hv;
-		double last_spread;
-		double last_spacing;
-		double runtime;
-		double pop_num;
-		int max_iteration;
-
-		std::unordered_map<int, double> igd_history;
-		std::unordered_map<int, double> hv_history;
-		std::unordered_map<int, double> spacing_history;
-		std::unordered_map<int, double> spread_history;
-
-		EMOCSingleThreadResult() {}
-	};
 	
+	struct EMOCExperimentTask;
+	struct EMOCSingleThreadResult;
+	struct EMOCMultiThreadResult;
+
+
 	class EMOCManager
 	{
 	public:
@@ -109,6 +61,11 @@ namespace emoc {
 		void EMOCMultiThreadRun();
 		void ExperimentWorker(std::vector<EMOCExperimentTask> tasks, int thread_id);
 
+		void UpdateExpStatTest();
+		void UpdateExpResult(EMOCMultiThreadResult &res, int new_res_index, int parameter_index);
+		void UpdateExpMetricStat(std::vector<double>& indicator_history, std::vector<bool>& is_indicator_record,
+			double& mean, double& std, double& median, double& iqr);
+
 	private:
 		// for release EMOCManager instance
 		class Garbo 
@@ -151,4 +108,71 @@ namespace emoc {
 		std::vector<Global*> g_GlobalSettingsArray;
 	};
 
+
+	struct EMOCExperimentTask
+	{
+		EMOCParameters para;	// We let each task own a copy of parameter to prevent some potential bugs.
+		int run_index;			// refer to which run in current parameter needed runs
+		int parameter_index;	// refer to which parameter in received parameter vectors
+	};
+
+	// for (multi-thread or multi-run) epxeriment result
+	struct EMOCMultiThreadResult
+	{
+		// runtime results
+		std::vector<double> runtime_history;
+		std::vector<bool> is_runtime_record;
+		double runtime_mean = 0.0, runtime_std = 0.0, runtime_median = 0.0, runtime_iqr = 0.0;
+		int runtime_ranksum_res = 0;
+
+		// igd results
+		std::vector<double> igd_history;
+		std::vector<bool> is_igd_record;
+		double igd_mean = 0.0, igd_std = 0.0, igd_median = 0.0, igd_iqr = 0.0;
+		int igd_ranksum_res = 0;
+
+		// hv results
+		std::vector<double> hv_history;
+		std::vector<bool> is_hv_record;
+		double hv_mean = 0.0, hv_std = 0.0, hv_median = 0.0, hv_iqr = 0.0;
+		int hv_ranksum_res = 0;
+
+		int valid_res_count = 0;
+
+		EMOCMultiThreadResult()
+		{
+
+		}
+
+		EMOCMultiThreadResult(int run_num)
+		{
+			runtime_history.resize(run_num, 0.0);
+			is_runtime_record.resize(run_num, false);
+			igd_history.resize(run_num, 0.0);
+			is_igd_record.resize(run_num, false);
+			hv_history.resize(run_num, 0.0);
+			is_hv_record.resize(run_num, false);
+		}
+	};
+
+	// for (single thread or single run) test result
+	struct EMOCSingleThreadResult
+	{
+		std::string description;
+		EMOCParameters para;		// for parameter information accesses easily
+		double last_igd;
+		double last_hv;
+		double last_spread;
+		double last_spacing;
+		double runtime;
+		double pop_num;
+		int max_iteration;
+
+		std::unordered_map<int, double> igd_history;
+		std::unordered_map<int, double> hv_history;
+		std::unordered_map<int, double> spacing_history;
+		std::unordered_map<int, double> spread_history;
+
+		EMOCSingleThreadResult() {}
+	};
 }

@@ -1,19 +1,12 @@
 #include "problem/wfg.h"
 
+#include <iostream>
 #include <cmath>
 #include <cstdlib>
 
 #include "core/global.h"
 
 namespace emoc {
-
-	int Degenerate;
-	double *wfg_temp;
-	double *temp;
-	double *wfg_w;
-	int wfg_K; // position parameter
-	int decision_num;
-	int objective_num;
 
 	int next_int(char *st, int st_len, int pos)
 	{
@@ -38,22 +31,30 @@ namespace emoc {
 		return re;
 	}
 
-	void WFG_ini()
+	void WFG::WFG_ini()
 	{
-		wfg_K = 18;
-		wfg_w = (double *)malloc(sizeof(double) * decision_num + objective_num);
-		temp = (double *)malloc(sizeof(double) * objective_num);
-		wfg_temp = (double *)malloc(sizeof(double) * (decision_num + objective_num));
+		wfg_K = 2;
+		wfg_w = (double *)malloc(sizeof(double) * (decision_num + objective_num));
+		for (int i = 0; i < (decision_num + objective_num); i++)
+			wfg_w[i] = 0.0;
+		
+		temp = (double*)malloc(sizeof(double) * objective_num);
+		for (int i = 0; i < (objective_num); i++)
+			temp[i] = 0.0;
+
+		wfg_temp = (double*)malloc(sizeof(double) * (decision_num + objective_num));
+		for (int i = 0; i < (decision_num + objective_num); i++)
+			wfg_temp[i] = 0.0;
 	}
 
-	void WFG_free()
+	void WFG::WFG_free()
 	{
 		free(wfg_temp);
 		free(temp);
 		free(wfg_w);
 	}
 
-	void WFG_normalise(double *z, int z_size, double *result)
+	void WFG::WFG_normalise(double *z, int z_size, double *result)
 	{
 		int i;
 		double bound;
@@ -65,7 +66,7 @@ namespace emoc {
 		}
 	}
 
-	void calculate_x(double *x, double *result, int size)
+	void WFG::calculate_x(double *x, double *result, int size)
 	{
 		int i;
 		double val = x[size - 1];
@@ -80,7 +81,7 @@ namespace emoc {
 			result[i] = (x[i] - 0.5) * val + 0.5;
 	}
 
-	void calculate_f(double D, double x, double *h, int size, double *result)
+	void WFG::calculate_f(double D, double x, double *h, int size, double *result)
 	{
 		int i;
 		int S = 0;
@@ -97,7 +98,7 @@ namespace emoc {
 	 * Shape Function:
 	 * The following functions define the shape of the PF.
 	 * */
-	double linear(double *x, int M, int m)
+	double WFG::linear(double *x, int M, int m)
 	{
 		int i;
 		double result = 1.0;
@@ -114,7 +115,7 @@ namespace emoc {
 		return result;
 	}
 
-	double convex(double *x, int x_size, int m)
+	double WFG::convex(double *x, int x_size, int m)
 	{
 		int i;
 		double result = 1.0;
@@ -131,7 +132,7 @@ namespace emoc {
 		return result;
 	}
 
-	double concave(double *x, int x_size, int m)
+	double WFG::concave(double *x, int x_size, int m)
 	{
 		int i;
 		double result = 1.0;
@@ -148,7 +149,7 @@ namespace emoc {
 		return result;
 	}
 
-	double mixed(double *x, int A, double alpha)
+	double WFG::mixed(double *x, int A, double alpha)
 	{
 		double tmp = 2.0 * A * PI;
 		double result = pow(1.0 - x[0] - cos(tmp * x[0] + PI / 2.0) / tmp, alpha);
@@ -159,7 +160,7 @@ namespace emoc {
 		return result;
 	}
 
-	double disc(double *x, int A, double alpha, double beta)
+	double WFG::disc(double *x, int A, double alpha, double beta)
 	{
 		double tmp1 = A * pow(x[0], beta) * PI;
 		double result = 1.0 - pow(x[0], alpha) * pow(cos(tmp1), 2.0);
@@ -173,7 +174,7 @@ namespace emoc {
 	 * Transform Fuction:
 	 * The following functions defines the functions that control the landscape of the search space.
 	 * */
-	double b_poly(double y, double alpha)
+	double WFG::b_poly(double y, double alpha)
 	{
 		double result = pow(y, alpha);
 
@@ -183,14 +184,14 @@ namespace emoc {
 		return result;
 	}
 
-	double min(double a, double b)
+	double WFG::min(double a, double b)
 	{
 		if (a > b) return b;
 
 		return a;
 	}
 
-	double b_flat(double y, double A, double B, double C)
+	double WFG::b_flat(double y, double A, double B, double C)
 	{
 		double tmp1 = min(0.0, floor(y - B)) * A * (B - y) / B;
 		double tmp2 = min(0.0, floor(C - y)) * (1.0 - A) * (y - C) / (1.0 - C);
@@ -202,7 +203,7 @@ namespace emoc {
 		return result;
 	}
 
-	double b_param(double y, double u, double A, double B, double C)
+	double WFG::b_param(double y, double u, double A, double B, double C)
 	{
 		double v = A - (1.0 - 2.0 * u) * fabs(floor(0.5 - u) + A);
 		double result = pow(y, B + (C - B) * v);
@@ -213,7 +214,7 @@ namespace emoc {
 		return result;
 	}
 
-	double s_linear(double y, double A)
+	double WFG::s_linear(double y, double A)
 	{
 		double result = fabs(y - A) / fabs(floor(A - y) + A);
 
@@ -223,7 +224,7 @@ namespace emoc {
 		return result;
 	}
 
-	double s_decept(double y, double A, double B, double C)
+	double WFG::s_decept(double y, double A, double B, double C)
 	{
 		double tmp1 = floor(y - A + B) * (1.0 - C + (A - B) / B) / (A - B);
 		double tmp2 = floor(A + B - y) * (1.0 - C + (1.0 - A - B) / B) / (1.0 - A - B);
@@ -235,7 +236,7 @@ namespace emoc {
 		return result;
 	}
 
-	double s_multi(double y, int A, double B, double C)
+	double WFG::s_multi(double y, int A, double B, double C)
 	{
 		double tmp1 = fabs(y - C) / (2.0 * (floor(C - y) + C));
 		double tmp2 = (4.0 * A + 2.0) * PI * (0.5 - tmp1);
@@ -247,7 +248,7 @@ namespace emoc {
 		return  result;
 	}
 
-	double r_sum(double *y, int y_size, double *w, int w_size)
+	double WFG::r_sum(double *y, int y_size, double *w, int w_size)
 	{
 		int i;
 		double result;
@@ -267,7 +268,7 @@ namespace emoc {
 		return result;
 	}
 
-	double r_nonsep(double *y, int y_size, const int A)
+	double WFG::r_nonsep(double *y, int y_size, const int A)
 	{
 		int i, j;
 		double result;
@@ -294,7 +295,7 @@ namespace emoc {
 	 * Transform Functions Set:
 	 * This defines the tranform function used by different WFG instances.
 	 * */
-	int WFG1_t1(double *y, int y_size, int k, double *result)
+	int WFG::WFG1_t1(double *y, int y_size, int k, double *result)
 	{
 		int i;
 		for (i = 0; i < k; i++)
@@ -306,7 +307,7 @@ namespace emoc {
 		return y_size;
 	}
 
-	int WFG1_t2(double *y, int y_size, int k, double *result)
+	int WFG::WFG1_t2(double *y, int y_size, int k, double *result)
 	{
 		int i;
 
@@ -319,7 +320,7 @@ namespace emoc {
 		return y_size;
 	}
 
-	int WFG1_t3(double* y, int y_size, double *result)
+	int WFG::WFG1_t3(double* y, int y_size, double *result)
 	{
 		int i;
 
@@ -329,7 +330,7 @@ namespace emoc {
 		return y_size;
 	}
 
-	int WFG1_t4(double *y, int y_size, int k, int M, double *result)
+	int WFG::WFG1_t4(double *y, int y_size, int k, int M, double *result)
 	{
 		int i;
 		int head, tail;
@@ -351,7 +352,7 @@ namespace emoc {
 		return M;
 	}
 
-	int WFG2_t2(double *y, int y_size, int k, double *result)
+	int WFG::WFG2_t2(double *y, int y_size, int k, double *result)
 	{
 		int i;
 		const int l = y_size - k;
@@ -370,7 +371,7 @@ namespace emoc {
 		return k + l / 2 + 1;
 	}
 
-	int WFG2_t3(double *y, int y_size, int k, int M, double *result)
+	int WFG::WFG2_t3(double *y, int y_size, int k, int M, double *result)
 	{
 		int i;
 
@@ -389,7 +390,7 @@ namespace emoc {
 		return M;
 	}
 
-	int WFG4_t1(double *y, int y_size, double * result)
+	int WFG::WFG4_t1(double *y, int y_size, double * result)
 	{
 		int i;
 
@@ -400,7 +401,7 @@ namespace emoc {
 	}
 
 
-	int WFG5_t1(double *y, int y_size, double *result)
+	int WFG::WFG5_t1(double *y, int y_size, double *result)
 	{
 		int i;
 
@@ -410,7 +411,7 @@ namespace emoc {
 		return y_size;
 	}
 
-	int WFG6_t2(double *y, int y_size, int k, const int M, double *result)
+	int WFG::WFG6_t2(double *y, int y_size, int k, const int M, double *result)
 	{
 		int i;
 
@@ -427,7 +428,7 @@ namespace emoc {
 		return M;
 	}
 
-	int WFG7_t1(double *y, int y_size, int k, double *result)
+	int WFG::WFG7_t1(double *y, int y_size, int k, double *result)
 	{
 		int i;
 		double u;
@@ -447,7 +448,7 @@ namespace emoc {
 		return y_size;
 	}
 
-	int WFG8_t1(double *y, int y_size, int k, double *result)
+	int WFG::WFG8_t1(double *y, int y_size, int k, double *result)
 	{
 		int i;
 		double u;
@@ -467,7 +468,7 @@ namespace emoc {
 		return y_size;
 	}
 
-	int WFG9_t1(double *y, int y_size, double *result)
+	int WFG::WFG9_t1(double *y, int y_size, double *result)
 	{
 		int i;
 		double u;
@@ -485,7 +486,7 @@ namespace emoc {
 		return y_size;
 	}
 
-	int WFG9_t2(double *y, int y_size, int k, double *result)
+	int WFG::WFG9_t2(double *y, int y_size, int k, double *result)
 	{
 		int i;
 
@@ -498,7 +499,7 @@ namespace emoc {
 		return y_size;
 	}
 
-	void WFG1_shape(double *y, int size, double *result)
+	void WFG::WFG1_shape(double *y, int size, double *result)
 	{
 		int i;
 
@@ -512,7 +513,7 @@ namespace emoc {
 		calculate_f(1.0, temp[size - 1], result, size, result);
 	}
 
-	void WFG2_shape(double *y, int size, double *result)
+	void WFG::WFG2_shape(double *y, int size, double *result)
 	{
 		int i;
 
@@ -526,7 +527,7 @@ namespace emoc {
 		calculate_f(1.0, temp[size - 1], result, size, result);
 	}
 
-	void WFG3_shape(double *y, int y_size, double *result)
+	void WFG::WFG3_shape(double *y, int y_size, double *result)
 	{
 		int i;
 
@@ -538,7 +539,7 @@ namespace emoc {
 		calculate_f(1.0, temp[y_size - 1], result, y_size, result);
 	}
 
-	void WFG4_shape(double *y, int y_size, double *result)
+	void WFG::WFG4_shape(double *y, int y_size, double *result)
 	{
 		int i;
 
@@ -551,7 +552,7 @@ namespace emoc {
 
 	
 
-	WFG1::WFG1(int dec_num, int obj_num) : Problem(dec_num, obj_num)
+	WFG1::WFG1(int dec_num, int obj_num) : WFG(dec_num, obj_num)
 	{
 		decision_num = dec_num;
 		objective_num = obj_num;
@@ -576,18 +577,16 @@ namespace emoc {
 		Degenerate = 0;
 
 		WFG_ini();
-
 		size = dec_num_;
 		size = WFG1_t1(xreal, size, wfg_K, wfg_temp);
 		size = WFG1_t2(wfg_temp, size, wfg_K, wfg_temp);
 		size = WFG1_t3(wfg_temp, size, wfg_temp);
 		size = WFG1_t4(wfg_temp, size, wfg_K, obj_num_, wfg_temp);
 		WFG1_shape(wfg_temp, size, obj);
-
 		WFG_free();
 	}
 
-	WFG2::WFG2(int dec_num, int obj_num) : Problem(dec_num, obj_num)
+	WFG2::WFG2(int dec_num, int obj_num) : WFG(dec_num, obj_num)
 	{
 		decision_num = dec_num;
 		objective_num = obj_num;
@@ -619,10 +618,11 @@ namespace emoc {
 		size = WFG2_t3(wfg_temp, size, wfg_K, obj_num_, wfg_temp);
 		WFG2_shape(wfg_temp, size, obj);
 
+		//std::cout << obj[0] << " " << obj[1] << " \n";
 		WFG_free();
 	}
 
-	WFG3::WFG3(int dec_num, int obj_num) : Problem(dec_num, obj_num)
+	WFG3::WFG3(int dec_num, int obj_num) : WFG(dec_num, obj_num)
 	{
 		decision_num = dec_num;
 		objective_num = obj_num;
@@ -644,7 +644,7 @@ namespace emoc {
 		double *xreal = ind->dec_;
 		double *obj = ind->obj_;
 
-		Degenerate = 0;
+		Degenerate = 1;
 
 		WFG_ini();
 
@@ -657,7 +657,7 @@ namespace emoc {
 		WFG_free();
 	}
 
-	WFG4::WFG4(int dec_num, int obj_num) : Problem(dec_num, obj_num)
+	WFG4::WFG4(int dec_num, int obj_num) : WFG(dec_num, obj_num)
 	{
 		decision_num = dec_num;
 		objective_num = obj_num;
@@ -691,7 +691,7 @@ namespace emoc {
 		WFG_free();
 	}
 
-	WFG5::WFG5(int dec_num, int obj_num) : Problem(dec_num, obj_num)
+	WFG5::WFG5(int dec_num, int obj_num) : WFG(dec_num, obj_num)
 	{
 		decision_num = dec_num;
 		objective_num = obj_num;
@@ -725,7 +725,7 @@ namespace emoc {
 		WFG_free();
 	}
 
-	WFG6::WFG6(int dec_num, int obj_num) : Problem(dec_num, obj_num)
+	WFG6::WFG6(int dec_num, int obj_num) : WFG(dec_num, obj_num)
 	{
 		decision_num = dec_num;
 		objective_num = obj_num;
@@ -759,7 +759,7 @@ namespace emoc {
 		WFG_free();
 	}
 
-	WFG7::WFG7(int dec_num, int obj_num) : Problem(dec_num, obj_num)
+	WFG7::WFG7(int dec_num, int obj_num) : WFG(dec_num, obj_num)
 	{
 		decision_num = dec_num;
 		objective_num = obj_num;
@@ -794,7 +794,7 @@ namespace emoc {
 		WFG_free();
 	}
 
-	WFG8::WFG8(int dec_num, int obj_num) : Problem(dec_num, obj_num)
+	WFG8::WFG8(int dec_num, int obj_num) : WFG(dec_num, obj_num)
 	{
 		decision_num = dec_num;
 		objective_num = obj_num;
@@ -829,7 +829,7 @@ namespace emoc {
 		WFG_free();
 	}
 
-	WFG9::WFG9(int dec_num, int obj_num) : Problem(dec_num, obj_num)
+	WFG9::WFG9(int dec_num, int obj_num) : WFG(dec_num, obj_num)
 	{
 		decision_num = dec_num;
 		objective_num = obj_num;

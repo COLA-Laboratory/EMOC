@@ -125,6 +125,10 @@ namespace emoc {
 		dtlz_names.push_back("DTLZ5");
 		dtlz_names.push_back("DTLZ6");
 		dtlz_names.push_back("DTLZ7");
+		dtlz_names.push_back("MDTLZ1");
+		dtlz_names.push_back("MDTLZ2");
+		dtlz_names.push_back("MDTLZ3");
+		dtlz_names.push_back("MDTLZ4");
 	}
 
 	void InitZDTList(std::vector<char*>& zdt_names)
@@ -150,11 +154,25 @@ namespace emoc {
 		uf_names.push_back("UF10");
 	}
 
+	void InitWFGList(std::vector<char*>& wfg_names)
+	{
+		wfg_names.push_back("WFG1");
+		wfg_names.push_back("WFG2");
+		wfg_names.push_back("WFG3");
+		wfg_names.push_back("WFG4");
+		wfg_names.push_back("WFG5");
+		wfg_names.push_back("WFG6");
+		wfg_names.push_back("WFG7");
+		wfg_names.push_back("WFG8");
+		wfg_names.push_back("WFG9");
+	}
+
 	void InitProblemCategoryList(std::vector<char*>& problem_category)
 	{
 		problem_category.push_back("DTLZ Series");
 		problem_category.push_back("ZDT Series");
 		problem_category.push_back("UF Series");
+		problem_category.push_back("WFG Series");
 	}
 
 	void InitDisplayList(std::vector<char*>& display_names)
@@ -162,6 +180,14 @@ namespace emoc {
 		display_names.push_back("Runtime");
 		display_names.push_back("IGD");
 		display_names.push_back("HV");
+	}
+
+	void InitFormatList(std::vector<char*>& format_names)
+	{
+		format_names.push_back("Mean");
+		format_names.push_back("Mean(STD)");
+		format_names.push_back("Median");
+		format_names.push_back("Median(IQR)");
 	}
 
 	void InitPlotMetricList(std::vector<char*>& plot_metric_names)
@@ -208,6 +234,7 @@ namespace emoc {
 		InitDTLZList(dtlz_names);
 		InitZDTList(zdt_names);
 		InitUFList(uf_names);
+		InitWFGList(wfg_names);
 	}
 
 	CategorizedProblemList::~CategorizedProblemList()

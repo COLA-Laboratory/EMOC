@@ -202,10 +202,12 @@ namespace emoc {
 		//ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
 		//IM_ASSERT(font != NULL);
 
-		io.Fonts->AddFontFromFileTTF("./resource/fonts/DroidSans.ttf", 22.0f);
+		font_normal = io.Fonts->AddFontFromFileTTF("./resource/fonts/DroidSans.ttf", 22.0f);
 		static const ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
 		ImFontConfig icons_config; icons_config.MergeMode = true; icons_config.PixelSnapH = true;
 		io.Fonts->AddFontFromFileTTF(FONT_ICON_FILE_NAME_FAS, 17.0f, &icons_config, icons_ranges);
+		icons_config.MergeMode = false;
+		font_bold = io.Fonts->AddFontFromFileTTF("./resource/fonts/DroidSans-bold.ttf", 22.0f);
 	}
 
 	UIPanelManager::~UIPanelManager()

@@ -31,10 +31,12 @@ namespace emoc {
 		algorithm_index(0),
 		problem_index(0),
 		display_index(0),
+		format_index(0),
 		current_algorithm_names(nullptr),
 		current_problem_names(nullptr)
 	{
 		InitDisplayList(display_names);
+		InitFormatList(format_names);
 	}
 
 	ExperimentPanel::~ExperimentPanel()
@@ -126,8 +128,8 @@ namespace emoc {
 				// add some default problem settings
 				Ns.push_back(100);
 				Ms.push_back(2);
-				Ds.push_back(30);
-				Evaluations.push_back(25000);
+				Ds.push_back(8);
+				Evaluations.push_back(30000);
 			}
 			ImGui::Dummy(ImVec2(0.0f, 20.0f));
 
@@ -136,11 +138,16 @@ namespace emoc {
 			float max_text_width = ImGui::CalcTextSize("Number of runs").x;
 			float remain_width = window_width - max_text_width;
 			float input_pos = max_text_width + 0.28f * remain_width;
-			float height_pos = (window_height * 0.902f - TEXT_BASE_HEIGHT * 3.0f);
+			float height_pos = (window_height * 0.902f - TEXT_BASE_HEIGHT * 4.0f);
 			height_pos = height_pos > current_posY ? height_pos : current_posY + 10.0f;
 
 			ImGui::SetCursorPosY(height_pos);
 			ImGui::PushItemWidth(0.71f * remain_width);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Thread Num");
+			ImGui::SameLine(); ImGui::SetCursorPosX(input_pos);
+			ImGui::InputInt("##ThreadNum", &thread_num, 0);
+
 			ImGui::AlignTextToFramePadding();
 			ImGui::Text("Number of Runs");
 			ImGui::SameLine(); ImGui::SetCursorPosX(input_pos);
@@ -154,7 +161,6 @@ namespace emoc {
 			ImGui::SameLine(); ImGui::SetCursorPosX(input_pos);
 			ImGui::InputInt("##SaveInterval", &save_interval, 0);
 			ImGui::PopItemWidth();
-
 
 			// set start button position
 			current_posY = ImGui::GetCursorPosY();
@@ -178,7 +184,10 @@ namespace emoc {
 				start = clock();
 				std::vector<int> parameter_indexes;
 				for (int i = 0; i < table_problems.size(); i++)
+				{
 					parameter_indexes.push_back(i * table_algorithms.size());
+					std::cout << table_problems[i] << "\n";
+				}
 				table.UpdateExperimentTable(table_algorithms, table_problems, table_Ms,
 					table_Ds, table_Ns, table_Evaluations, parameter_indexes);
 				table.PrintTable();
@@ -303,95 +312,41 @@ namespace emoc {
 			const float TEXT_BASE_WIDTH = ImGui::CalcTextSize("A").x;
 			const float TEXT_BASE_HEIGHT = ImGui::GetTextLineHeightWithSpacing();
 			static ImGuiTableFlags flags = ImGuiTableFlags_ScrollY | ImGuiTableFlags_RowBg | ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable;
-
+			
+			// table display options
 			std::vector<std::string> columns;
 			TextCenter("Result Info Display");
 			ImGui::Dummy(ImVec2(0.0f, 5.0f));
+			static bool is_displayM = true; ImGui::Checkbox("M##Experiment", &is_displayM); ImGui::SameLine();
+			static bool is_displayD = true; ImGui::Checkbox("D##Experiment", &is_displayD); ImGui::SameLine();
 			static bool is_displayN = false; ImGui::Checkbox("N##Experiment", &is_displayN); ImGui::SameLine();
-			static bool is_displayM = false; ImGui::Checkbox("M##Experiment", &is_displayM); ImGui::SameLine();
-			static bool is_displayD = false; ImGui::Checkbox("D##Experiment", &is_displayD); ImGui::SameLine();
 			static bool is_displayEvaluation = false; ImGui::Checkbox("Evaluation##Experiment", &is_displayEvaluation); ImGui::SameLine();
-			ImGui::SetNextItemWidth(ImGui::CalcTextSize("Runtimexxxxx").x);
-			ImGui::Combo("Display Metric##DisplayExperiment", &display_index, display_names.data(), display_names.size());
-
+			ImGui::SetNextItemWidth(ImGui::CalcTextSize("Runtimexxxx").x);
+			ImGui::Combo("Indicator##DisplayExperiment", &display_index, display_names.data(), display_names.size()); ImGui::SameLine();
+			ImGui::SetNextItemWidth(ImGui::CalcTextSize("Median(IQR)xxxx").x);
+			ImGui::Combo("Format##DisplayFormatExperiment", &format_index, format_names.data(), format_names.size());
 
 			// set this frame's columns
-			if (is_displayN) columns.push_back("N");
 			if (is_displayM) columns.push_back("M");
 			if (is_displayD) columns.push_back("D");
+			if (is_displayN) columns.push_back("N");
 			if (is_displayEvaluation) columns.push_back("Evaluation");
 
-			/*
-			// When using ScrollX or ScrollY we need to specify a size for our table container!
-			// Otherwise by default the table will fit all available space, like a BeginChild() call.
-			ImVec2 outer_size = ImVec2(0.0f, ImGui::GetContentRegionAvail().y - 45.0f);
-			int column_count = table_algorithms.size() + columns.size() + 1;
-			if (ImGui::BeginTable("ResultTable", column_count, flags, outer_size))
-			{
-				ImGui::TableSetupScrollFreeze(0, 1); // Make top row always visible
+			table.Render(is_displayM, is_displayD, is_displayN, is_displayEvaluation, display_names[display_index],format_names[format_index]);
+			
+			//ImGui::SetCursorPosX(ImGui::GetWindowSize().x - 260.0f);
+			//if (!is_finish) ImGui::BeginDisabled();
+			//if (ImGui::Button("Open Plot Window", ImVec2(250.0f, 40.0f)))
+			//{
+			//	// Open a new ImGui window for experiment module plotting analysis
+			//}
+			//if (!is_finish) ImGui::EndDisabled();
 
-				// Instead of calling TableHeadersRow() we'll submit custom headers ourselves
-				ImGui::TableNextRow(ImGuiTableRowFlags_Headers);
-
-				// first column is an empty header
-				ImGui::TableHeader("    ");
-				for (int c = 0; c < columns.size(); c++)
-				{
-					ImGui::TableSetColumnIndex(c + 1);
-					const char* column_name = columns[c].c_str();
-					ImGui::TableHeader(column_name);
-				}
-				for (int c = 0; c < table_algorithms.size(); c++)
-				{
-					ImGui::TableSetColumnIndex(c + columns.size() + 1);
-					const char* column_name = table_algorithms[c].c_str();
-					ImGui::TableHeader(column_name);
-				}
-
-				int rows = table_problems.size();
-				for (int row = 0; row < rows; row++)
-				{
-					ImGui::TableNextRow();
-					//const EMOCSingleThreadResult& res = EMOCManager::Instance()->GetSingleThreadResult(row);
-					for (int c = 0; c < column_count; c++)
-					{
-						ImGui::TableSetColumnIndex(c);
-						if (c == 0)
-						{
-							ImU32 cell_bg_color = ImGui::GetColorU32(ImVec4(0.18f, 0.18f, 0.32f, 1.00f));
-							ImGui::Text(table_problems[row].c_str());
-							ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, cell_bg_color);
-						}
-						else if (c > 0 && c < columns.size() + 1)
-						{
-							int col_index = c - 1;
-							DisplayTableProblemProperty(columns[col_index], row);
-						}
-						else
-						{
-							// update table's data when data is ready
-							if (EMOCManager::Instance()->GetMultiThreadDataState())
-							{
-								int paramter_index = row * table_algorithms.size() + c - columns.size() - 1; // the -1 is counting for the first empty column header
-								EMOCMultiThreadResult res = EMOCManager::Instance()->GetMultiThreadResult(paramter_index);
-								DisplayTableResult(res, display_names[display_index]);
-							}
-						}
-					}
-				}
-
-				ImGui::EndTable();
-			}
-			*/
-
-			table.Render(is_displayM, is_displayD, is_displayN, is_displayEvaluation, display_names[display_index]);
-			ImGui::SetCursorPosX(ImGui::GetWindowSize().x - 260.0f);
-			if (!is_finish) ImGui::BeginDisabled();
-			if (ImGui::Button("Open Plot Window", ImVec2(250.0f, 40.0f)))
-			{
-				// Open a new ImGui window for experiment module plotting analysis
-			}
-			if (!is_finish) ImGui::EndDisabled();
+			//if (ImGui::Button("PrintMetricTest", ImVec2(250.0f, 40.0f)))
+			//{
+			//	// Open a new ImGui window for experiment module plotting analysis
+			//	table.PrintMetric(display_names[display_index]);
+			//}
 
 			ImGui::End();
 		}
@@ -443,7 +398,7 @@ namespace emoc {
 		{
 			DisplayMovePopup(index, operation_button_pos, true, is_delete);
 			//DisplayMovePopup(index, true, is_delete);
-			ImGui::Text("Test!\n");
+			//ImGui::Text("Test!\n");
 			if(!is_delete)
 				DisplayAlgorithmParameters(algorithm);
 		}
@@ -606,6 +561,8 @@ namespace emoc {
 			current_problem_names = &problem_list.dtlz_names;
 		else if (category == "UF Series")
 			current_problem_names = &problem_list.uf_names;
+		else if (category == "WFG Series")
+			current_problem_names = &problem_list.wfg_names;
 		else
 			std::cerr << "Experiment Module ERROR: Problem Category " << category << " Doesn't Exists!\n";
 	}

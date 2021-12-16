@@ -56,6 +56,7 @@ namespace emoc {
 			is_multithread_result_ready_ = true;
 		}
 
+
 		for (int i = 0; i < experiment_tasks.size(); i++)
 		{
 			std::cout <<  "----------TASK PARAMETER " <<i <<" ---------\n";
@@ -139,7 +140,7 @@ namespace emoc {
 			// collect results
 			int obj_num = g_GlobalSettingsArray[thread_id]->obj_num_;
 			double igd = CalculateIGD(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num, problem_name);
-			double hv = CalculateHV(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num);
+			double hv = CalculateHV(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num, problem_name);
 
 			EMOCSingleThreadResult result;
 			int count = (int)single_thread_result_historty_.size();
@@ -191,15 +192,7 @@ namespace emoc {
 			emoc_thread_tasks[task_count % para_.thread_num].push_back(t);
 			task_count++;
 		}
-
-		//// multithread running
-		//{
-		//	std::lock_guard<std::mutex> locker1(EMOCLock::experiment_finish_mutex);
-		//	std::lock_guard<std::mutex> locker2(EMOCLock::experiment_pause_mutex);
-		//	EMOCManager::Instance()->SetExperimentFinish(false);
-		//	EMOCManager::Instance()->SetExperimentPause(false);
-		//}
-
+                       
 		std::vector<std::thread> experiment_threads;
 		for (int i = 0; i < para_.thread_num; i++)
 			experiment_threads.push_back(std::thread(&EMOCManager::ExperimentWorker, EMOCManager::Instance(), emoc_thread_tasks[i], i));
@@ -207,10 +200,6 @@ namespace emoc {
 		for (int i = 0; i < experiment_threads.size(); i++)
 			experiment_threads[i].join();
 
-		//{
-		//	std::lock_guard<std::mutex> locker1(EMOCLock::experiment_finish_mutex);
-		//	EMOCManager::Instance()->SetExperimentFinish(true);
-		//}
 	}
 
 	void EMOCManager::ExperimentWorker(std::vector<EMOCExperimentTask> tasks, int thread_id)
@@ -239,6 +228,7 @@ namespace emoc {
 
 			std::string problem = g_GlobalSettingsArray[thread_id]->problem_name_;
 			double igd = CalculateIGD(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num, problem);
+			//double hv = CalculateHV(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num, problem);
 			double runtime = g_GlobalSettingsArray[thread_id]->algorithm_->GetRuntime();
 
 			// In experiment module, we record the result when it is really finished
@@ -248,6 +238,18 @@ namespace emoc {
 				multi_thread_result_history_[parameter_index].is_runtime_record[run_index] = true;
 				multi_thread_result_history_[parameter_index].igd_history[run_index] = igd;
 				multi_thread_result_history_[parameter_index].is_igd_record[run_index] = true;
+				//multi_thread_result_history_[parameter_index].hv_history[run_index] = hv;
+				//multi_thread_result_history_[parameter_index].is_hv_record[run_index] = true;
+
+				// update counter, mean, std, etc...
+				UpdateExpResult(multi_thread_result_history_[parameter_index], run_index, parameter_index);
+
+				{
+					// TODO: Update statistic test result when necessary
+					std::lock_guard<std::mutex> locker(EMOCLock::mutex_pool[parameter_index % EMOCLock::mutex_pool.size()]);
+					int range_index = parameter_index / UIPanelManager::Instance()->GetExpAlgorithmNum();
+					int range_start = range_index * UIPanelManager::Instance()->GetExpAlgorithmNum(), range_end = (range_index + 1) * UIPanelManager::Instance()->GetExpAlgorithmNum();
+				}
 			}
 
 			std::string print_problem = problem + "_" + std::to_string(obj_num) + "_" + std::to_string(dec_num);
@@ -256,6 +258,77 @@ namespace emoc {
 			delete g_GlobalSettingsArray[thread_id];
 		}
 
+	}
+
+	void EMOCManager::UpdateExpResult(EMOCMultiThreadResult& res, int new_res_index, int parameter_index)
+	{
+		std::lock_guard<std::mutex> locker(EMOCLock::mutex_pool[parameter_index % EMOCLock::mutex_pool.size()]);
+		res.valid_res_count++;
+
+		UpdateExpMetricStat(res.igd_history, res.is_igd_record, res.igd_mean, res.igd_std, res.igd_median, res.igd_iqr);
+		//UpdateExpMetricStat(res.hv_history, res.is_hv_record, res.hv_mean, res.hv_std, res.hv_median, res.hv_iqr);
+		UpdateExpMetricStat(res.runtime_history, res.is_runtime_record, res.runtime_mean, res.runtime_std, res.runtime_median, res.runtime_iqr);
+	}
+
+	void EMOCManager::UpdateExpMetricStat(std::vector<double>& indicator_history, std::vector<bool>& is_indicator_record,
+		double& mean, double& std, double& median, double& iqr)
+	{
+		mean = 0.0, std = 0.0;
+		int count = 0;
+		for (int c = 0; c < indicator_history.size(); c++)
+		{
+			if (is_indicator_record[c])
+			{
+				mean += indicator_history[c];
+				count++;
+			}
+		}
+		mean = mean / count;
+		for (int c = 0; c < indicator_history.size(); c++)
+		{
+			if (is_indicator_record[c])
+				std += (indicator_history[c] - mean) * (indicator_history[c] - mean);
+		}
+		std = std / count; std = std::sqrt(std);
+
+
+		std::vector<double> temp_ind;
+		for (int c = 0; c < indicator_history.size(); c++)
+			if (is_indicator_record[c])
+				temp_ind.push_back(indicator_history[c]);
+		std::sort(temp_ind.begin(), temp_ind.end());
+		
+		// early return when the size of result is not enough
+		if (temp_ind.size() == 1)
+		{
+			median = temp_ind[0];
+			iqr = 0.0;
+			return;
+		}
+
+		// calculate median
+		if (temp_ind.size() % 2)
+			median = temp_ind[temp_ind.size() / 2];
+		else
+			median = (temp_ind[temp_ind.size() / 2] + temp_ind[temp_ind.size() / 2 - 1])/ 2.0;
+
+		// calculate iqr
+		double Q1 = 0, Q3 = 0;
+		int Q1_remain = temp_ind.size() * 25 % 100;
+		int Q1_index = temp_ind.size() * 25 / 100;		// be careful with the start index is 0 which is different from the calculation in WiKi
+		if (Q1_remain == 0)
+			Q1 = (temp_ind[Q1_index] + temp_ind[Q1_index - 1]) / 2.0;
+		else
+			Q1 = temp_ind[Q1_index];
+
+		int Q3_remain = temp_ind.size() * 75 % 100;
+		int Q3_index = temp_ind.size() * 75 / 100;		// be careful with the start index is 0 which is different from the calculation in WiKi
+		if (Q3_remain == 0)
+			Q3 = (temp_ind[Q3_index] + temp_ind[Q3_index - 1]) / 2.0;
+		else
+			Q3 = temp_ind[Q3_index];
+			
+		iqr = Q3 - Q1;
 	}
 
 	EMOCManager::EMOCManager() :

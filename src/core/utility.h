@@ -35,4 +35,7 @@ namespace emoc {
 	//s
 
 	void display_pop(FILE* gp, Individual** pop, int pop_num, int obj_num, int gen);
+
+	// load function
+	double** LoadPFData(int& pf_size, int obj_num, std::string problem_name);
 }

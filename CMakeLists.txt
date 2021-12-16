@@ -43,6 +43,13 @@ set(HEADERS
 		vendor/imgui/imstb_textedit.h
 		vendor/imgui/imstb_truetype.h
         vendor/IconsFontAwesome5/IconsFontAwesome5.h
+        vendor/alglib/src/alglibinternal.h
+        vendor/alglib/src/alglibmisc.h
+        vendor/alglib/src/ap.h
+        vendor/alglib/src/linalg.h
+        vendor/alglib/src/specialfunctions.h
+        vendor/alglib/src/statistics.h
+        vendor/alglib/src/stdafx.h
         src/core/file.h
         src/core/global.h
         src/core/individual.h
@@ -104,6 +111,12 @@ set(SRC
 		vendor/imgui/imgui_draw.cpp
 		vendor/imgui/imgui_tables.cpp
 		vendor/imgui/imgui_widgets.cpp
+        vendor/alglib/src/alglibinternal.cpp
+        vendor/alglib/src/alglibmisc.cpp
+        vendor/alglib/src/ap.cpp
+        vendor/alglib/src/linalg.cpp
+        vendor/alglib/src/specialfunctions.cpp
+        vendor/alglib/src/statistics.cpp
         src/core/file.cpp
         src/core/global.cpp
         src/core/individual.cpp

@@ -12,15 +12,21 @@ namespace emoc{
 		ExperimentTable();
 		~ExperimentTable();
 
-		void Render(bool is_displayM, bool is_displayD, bool is_displayN, bool is_displayEvaluation, const std::string& display_para);
+		void Render(bool is_displayM, bool is_displayD, bool is_displayN, bool is_displayEvaluation, 
+			const std::string& display_para, const std::string& format);
 
 		void UpdateExperimentTable(const std::vector<std::string>& algorithms, const std::vector<std::string>& problems,
 			const std::vector<int>& Ms, const std::vector<int>& Ds, const std::vector<int>& Ns, const std::vector<int>& Evaluations, const std::vector<int>& parameter_indexes);
 		void PrintTable();
+		void PrintMetric(std::string metric_name);
 
 	private:
 		void DisplayTableProblemProperty(const std::string& col_name, int row, int row_height);	
-		void DisplayTableResult(int row, int row_height, int col_in_algorithms, const std::string& para);
+		void DisplayTableResult(int row, int row_height, int col_in_algorithms, const std::string& para, const std::string& format);
+		void SetTableContent(char* display, const std::string& format, double mean, double std, double median, double iqr);
+		bool CheckIsBest(const std::string& para, const std::string& format, int parameter_index);
+		void GetComparedMetric(const std::string& para, const std::string& format, int parameter_index, double& metric1, double& metric2);
+		void GetComparedMetric(const std::string& format, double mean, double std, double median, double iqr, double& metric1, double& metric2);
 
 	public:
 		struct ProblemTableProperty
@@ -42,11 +48,10 @@ namespace emoc{
 			std::vector<int> parameter_indexes; // each element of this array is similar to ProblemTableProperty's parameter_index
 		};
 
-		
-
-		std::unordered_map<std::string, std::vector<ProblemTableProperty>> problem_names;
+		std::unordered_map<std::string, std::vector<ProblemTableProperty>> problem_map;
 		std::vector<std::string> algorithm_names;
 		
+		// real table order in UI display 
 		std::vector<TableRowProperty> rows;
 	};
 

@@ -40,12 +40,13 @@ namespace emoc {
 
 	public:
 		// UI data for experiment module's list and combo
-		int algorithm_index, problem_index, display_index;	// index need to be reset when switching the panel
+		int algorithm_index, problem_index, display_index, format_index;	// index need to be reset when switching the panel
 		CategorizedAlgorithmList algorithm_list;
 		CategorizedProblemList problem_list;
 		std::vector<char*> *current_algorithm_names;
 		std::vector<char*> *current_problem_names;
 		std::vector<char*> display_names;
+		std::vector<char*> format_names;
 
 		// UI data for experiment module
 		std::vector<std::string> selected_algorithms;
@@ -56,7 +57,7 @@ namespace emoc {
 		std::vector<int> Ms;
 		std::vector<int> Evaluations;
 		int run_num = 30;
-		int thread_num = 8;
+		int thread_num = 1;
 		int save_interval = 1000000;
 		std::vector<EMOCParameters> experiment_tasks;
 

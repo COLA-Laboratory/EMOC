@@ -36,7 +36,7 @@ namespace emoc {
 		{
 		}
 
-		~EMOCParameters() 
+		~EMOCParameters()
 		{
 		}
 	};

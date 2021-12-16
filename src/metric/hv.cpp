@@ -1,11 +1,14 @@
 #include "metric/hv.h"
 
+#include <iostream>
+
+#include "core/utility.h"
 #include "core/global.h"
 #include "wfg/iwfg.h"
 
 namespace emoc {
 
-	double CalculateHV(Individual **pop, int pop_num, int obj_num)
+	double CalculateHV(Individual **pop, int pop_num, int obj_num, std::string problem_name)
 	{
 		int num_same = 0;
 
@@ -29,19 +32,24 @@ namespace emoc {
 		for (int i = 0; i < obj_num; ++i)
 			ref[i] = 1.0;
 
+		int pf_size = 0;
+		double** pfdata = nullptr;
+		pfdata = LoadPFData(pf_size, obj_num, problem_name);
+
+		// get normalized bound from pf data
 		for (int i = 0; i < obj_num; ++i)
 		{
 			double temp_min = EMOC_INF, temp_max = -EMOC_INF;
-			for (int j = 0; j < pop_num; ++j)
+			for (int j = 0; j < pf_size; ++j)
 			{
-				if (temp_min > pop[j]->obj_[i])
+				if (temp_min > pfdata[j][i])
 				{
-					temp_min = pop[j]->obj_[i];
+					temp_min = pfdata[j][i];
 				}
 
-				if (temp_max < pop[j]->obj_[i])
+				if (temp_max < pfdata[j][i])
 				{
-					temp_max = pop[j]->obj_[i];
+					temp_max = pfdata[j][i];
 				}
 			}
 			obj_min[i] = temp_min;
@@ -63,14 +71,18 @@ namespace emoc {
 		{
 			for (int j = 0; j < obj_num; j++)
 			{
-				double normalized_value = pop[i]->obj_[j] / (obj_max[j] - obj_min[j]);
+				double normalized_value = (pop[i]->obj_[j] - obj_min[j])/ (obj_max[j] - obj_min[j]) * 1.1;
 				ps.points[i].objectives[j] = ref[j] > normalized_value ?
 					(ref[j] - normalized_value) : 0;
+
 			}
 		}
 
 		double hv_value = i_hv(ps);
 
+		for (int i = 0; i < pf_size; ++i)
+			delete[] pfdata[i];
+		delete[] pfdata;
 
 		for (int i = 0; i < 3; i++)
 		{
