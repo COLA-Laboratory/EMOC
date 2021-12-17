@@ -3,7 +3,9 @@
 #include <map>
 #include <algorithm>
 #include <iostream>
+#include <fstream>
 
+#include "core/file.h"
 #include "core/emoc_manager.h"
 #include "imgui.h"
 #include "ui/ui_utility.h"
@@ -41,6 +43,11 @@ namespace emoc{
 	void ExperimentTable::Render(bool is_displayM, bool is_displayD, bool is_displayN, bool is_displayEvaluation, 
 		const std::string &display_para, const std::string& format, const std::string& hypothesis)
 	{
+		// update current table state
+		isM = is_displayM; isD = is_displayD; isN = is_displayN; isEvaluation = is_displayEvaluation;
+		para_name = display_para; format_name = format; hypothesis_name = hypothesis;
+
+		// set ImGui table flag
 		static ImGuiTableFlags flags = ImGuiTableFlags_ScrollY | ImGuiTableFlags_RowBg | ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable;
 		const float TEXT_BASE_WIDTH = ImGui::CalcTextSize("A").x;
 		const float TEXT_BASE_HEIGHT = ImGui::GetTextLineHeightWithSpacing();
@@ -115,7 +122,16 @@ namespace emoc{
 
 	}
 
-	void ExperimentTable::UpdateExperimentTable(const std::vector<std::string>& algorithms, const std::vector<std::string>& problems, const std::vector<int>& Ms, 
+	bool ExperimentTable::Save()
+	{
+		CreateDirectTable();
+		bool res1 = SaveToCSV();
+		bool res2 = SaveToLatex();
+
+		return res1 && res2;
+	}
+
+	void ExperimentTable::UpdateExperimentTable(const std::vector<std::string>& algorithms, const std::vector<std::string>& problems, const std::vector<int>& Ms,
 		const std::vector<int>& Ds, const std::vector<int>& Ns, const std::vector<int>& Evaluations, const std::vector<int>& parameter_indexes)
 	{
 		// clear existed datas
@@ -284,6 +300,7 @@ namespace emoc{
 		}
 	}
 
+
 	void ExperimentTable::DisplayTableProblemProperty(const std::string& col_name, int row, int row_height)
 	{
 		if (col_name == "M")
@@ -322,6 +339,7 @@ namespace emoc{
 
 			// set display table content according to the metric and result stored in EMOCMultiThreadResult
 			char display[256];
+			char final_display[256];
 			if (para == "Runtime")
 			{
 				hypothesis_symbol = GetHypothesisSymbol(res.runtime_mean_ranksum, res.runtime_median_ranksum, res.runtime_mean_signrank, res.runtime_median_signrank, hypothesis, format);
@@ -345,8 +363,8 @@ namespace emoc{
 			if (is_best) ImGui::PushFont(UIPanelManager::Instance()->font_bold);
 			if (res.valid_res_count > 0)
 			{
-				sprintf(display, "%s%c", display, hypothesis_symbol);
-				ImGui::Text(display);
+				sprintf(final_display, "%s%c", display, hypothesis_symbol);
+				ImGui::Text(final_display);
 			}
 			else
 				ImGui::Text(" ");
@@ -473,6 +491,270 @@ namespace emoc{
 
 			if (hypothesis == "Sign Rank Test")
 				if (median_signrank != -2)  res = symbol[median_signrank + 1];
+		}
+
+		return res;
+	}
+
+	bool ExperimentTable::CreateDirectTable()
+	{
+		bool res = true;
+
+		// set extra columns according to current table's state
+		std::vector<std::string> columns;
+		if (isM) columns.push_back("M");
+		if (isD) columns.push_back("D");
+		if (isN) columns.push_back("N");
+		if (isEvaluation) columns.push_back("Evaluation");
+
+		// initialize direct table
+		int column_num = algorithm_names.size() + columns.size() + 1;
+		direct_table.clear();
+
+		// first row
+		direct_table.push_back(std::vector<std::string>(column_num, ""));
+		direct_table[0][0] = " ";
+		for (int i = 0; i < columns.size(); i++)
+			direct_table[0][i + 1] = columns[i];
+		
+		for (int i = 0; i < algorithm_names.size(); i++)
+			direct_table[0][i + columns.size() + 1] = algorithm_names[i];
+
+		// other rows
+		int current_row = 1;
+		for (int r = 0; r < rows.size(); r++)
+		{
+			int t = rows[r].Ds.size();
+			for(int j = 0;j < t;j++)
+				direct_table.push_back(std::vector<std::string>(column_num, ""));
+
+
+			for (int c = 0; c < column_num; c++)
+			{
+				if (c == 0)
+				{
+					for (int j = 0; j < t; j++)
+						direct_table[current_row + j][c] = rows[r].problem_name;
+				}
+				else if (c > 0 && c < columns.size() + 1)
+				{
+					for (int j = 0; j < t; j++)
+					{
+						int col_index = c - 1;
+						std::string col_name = columns[c - 1];
+
+						if (col_name == "M")
+							direct_table[current_row + j][c] = std::to_string(rows[r].M);
+						else if (col_name == "D")
+							direct_table[current_row + j][c] = std::to_string(rows[r].Ds[j]);
+						else if (col_name == "N")
+							direct_table[current_row + j][c] = std::to_string(rows[r].Ns[j]);
+						else if (col_name == "Evaluation")
+							direct_table[current_row + j][c] = std::to_string(rows[r].Evaluations[j]);
+					}
+				}
+				else
+				{
+					for (int j = 0; j < t; j++)
+					{
+						int col_in_algorithms = c - columns.size() - 1;
+
+						int parameter_index = rows[r].parameter_indexes[j] + col_in_algorithms;
+						EMOCMultiThreadResult res = EMOCManager::Instance()->GetMultiThreadResult(parameter_index);
+
+						double mean = 0.0, std = 0.0, median = 0.0, iqr = 0.0;
+						char hypothesis_symbol = ' ';
+
+						// set display table content according to the metric and result stored in EMOCMultiThreadResult
+						char display[256];
+						char final_display[256];
+						if (para_name == "Runtime")
+						{
+							hypothesis_symbol = GetHypothesisSymbol(res.runtime_mean_ranksum, res.runtime_median_ranksum, res.runtime_mean_signrank, res.runtime_median_signrank, hypothesis_name, format_name);
+							SetTableContent(display, format_name, res.runtime_mean, res.runtime_std, res.runtime_median, res.runtime_iqr);
+						}
+						else if (para_name == "IGD")
+						{
+							hypothesis_symbol = GetHypothesisSymbol(res.igd_mean_ranksum, res.igd_median_ranksum, res.igd_mean_signrank, res.igd_median_signrank, hypothesis_name, format_name);
+							SetTableContent(display, format_name, res.igd_mean, res.igd_std, res.igd_median, res.igd_iqr);
+						}
+						else if (para_name == "HV")
+						{
+							hypothesis_symbol = GetHypothesisSymbol(res.hv_mean_ranksum, res.hv_median_ranksum, res.hv_mean_signrank, res.hv_median_signrank, hypothesis_name, format_name);
+							SetTableContent(display, format_name, res.hv_mean, res.hv_std, res.hv_median, res.hv_iqr);
+						}
+
+						// The comparision is simple, so we put the logic in ui rendering loop. 
+						bool is_best = CheckIsBest(para_name, format_name, parameter_index);
+						sprintf(final_display, "%s%c", display, hypothesis_symbol);
+						if (is_best) sprintf(final_display, "b%s%c", display,hypothesis_symbol);
+
+						direct_table[current_row + j][c] = final_display;
+					}
+				}
+			}
+
+			current_row += t;
+		}
+
+		return res;
+	}
+
+	bool ExperimentTable::SaveToCSV()
+	{
+		bool res = true;
+		char dir[256];
+		char filepath[256];
+		sprintf(dir, "./output/table/");
+		sprintf(filepath, "%snew.csv", dir);
+		CreateDirectory(dir);
+		std::ofstream  data_file(filepath);
+		if (!data_file)
+		{
+			std::cerr << "Can not open" << filepath << "!\n";
+			return false;
+		}
+		else
+		{
+			for (int i = 0; i < direct_table.size(); i++)
+			{
+				for (int j = 0; j < direct_table[0].size(); j++)
+				{
+					if (direct_table[i][j][0] == 'b')
+						data_file << direct_table[i][j].substr(1)<<",";
+					else
+						data_file << direct_table[i][j] << ",";
+
+				}
+				data_file << "\n";
+			}
+		}
+		return res;
+	}
+
+	bool ExperimentTable::SaveToLatex()
+	{
+		bool res = true;
+		char dir[256];
+		char filepath[256];
+		sprintf(dir, "./output/table/");
+		sprintf(filepath, "%snew.tex", dir);
+		CreateDirectory(dir);
+
+		std::ofstream  data_file(filepath);
+		if (!data_file)
+		{
+			std::cerr << "Can not open" << filepath << "!\n";
+			return false;
+		}
+		else
+		{
+			int row_num = direct_table.size();
+			int col_num = direct_table[0].size();
+
+			int extra_col = 0;
+			if (isM) extra_col++;
+			if (isD) extra_col++;
+			if (isN) extra_col++;
+			if (isEvaluation) extra_col++;
+
+			// create latex code
+			data_file << "\\documentclass[journal]{IEEEtran}\n";
+			data_file << "\\usepackage[table]{xcolor}\n";
+			data_file << "\\usepackage{multirow,hhline}\n";
+			data_file << "\\begin{document}\n";
+			data_file << "\\begin{table*}[]\n";
+			data_file << "\\centering\n";
+			data_file << "\\caption{EMOC Result Table}\n";
+			data_file << "\\begin{tabular}{";
+
+			for (int i = 0; i < col_num - 1; i++) data_file << "c|";
+			data_file << "c}\n";
+			data_file << "\\hline\n";
+
+			// first header row
+			for (int j = 0; j < col_num - 1; j++)
+				data_file << direct_table[0][j] << "  &";
+			data_file << direct_table[0][col_num - 1] << "\\" << "\\" << "\\hline\\hline\n";
+
+			// following rows
+			char problem[256];
+			char data[256];
+			int current_row = 1;
+			for (int r = 0; r < rows.size(); r++)
+			{
+				int multi_row = rows[r].Ds.size();
+
+				for (int j = 0; j < multi_row; j++)
+				{
+					// problem names
+					if (multi_row > 1)
+					{
+						sprintf(problem, "\\multirow{%d}{*}{%s}", multi_row, direct_table[current_row + j][0].c_str());
+					}
+					else sprintf(problem, "%s", direct_table[current_row + j][0].c_str());
+					if (j == 0) data_file << problem;
+					data_file << "  &";
+
+					// count for extra columns, e.g. M,D,N,Evaluation
+					for (int c = 1; c < extra_col + 1; c++)
+					{
+						if (direct_table[0][c] == "M")
+						{
+							if (multi_row > 1) sprintf(data, "\\multirow{%d}{*}{%s}", multi_row, direct_table[current_row + j][c].c_str());
+							else sprintf(data, "%s", direct_table[current_row + j][c].c_str());
+							if (j == 0) data_file << data;
+						}
+						else
+						{
+							sprintf(data, "%s", direct_table[current_row + j][c].c_str());
+							data_file << data;
+						}
+						data_file << "  &";
+					}
+
+					// metric data
+					for (int c = extra_col + 1; c < col_num; c++)
+					{
+						// if is best
+						if(direct_table[current_row+j][c][0] == 'b')
+							sprintf(data, "\\cellcolor[gray]{0.8}\\textbf{%s} ", direct_table[current_row + j][c].substr(1).c_str());
+						else
+							sprintf(data, "%s", direct_table[current_row + j][c].c_str());
+
+						data_file << data;
+						if(c != col_num - 1) data_file << "  &";
+					}
+
+					// table format things
+					data_file << "\\" << "\\";
+					if (multi_row > 1 && j != multi_row - 1)
+					{
+						data_file << "\\hhline{~|";
+						if (isM)
+						{
+							data_file << "~|";
+							for (int k = 0; k < col_num - 3; k++) data_file << "-|";
+							data_file << "-}\n";
+						}
+						else
+						{
+							for (int k = 0; k < col_num - 2; k++) data_file << "-|";
+							data_file << "-}\n";
+						}
+					}
+					else
+						data_file << "\\hline\n";
+				}
+
+				
+
+				current_row += multi_row;
+			}
+
+			data_file << "\\end{tabular}\n";
+			data_file << "\\end{table*}\n";
+			data_file << "\\end{document}";
 		}
 
 		return res;

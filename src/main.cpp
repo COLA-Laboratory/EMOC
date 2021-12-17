@@ -25,6 +25,7 @@ int main(int argc, char* argv[])
 	double p1, p2, p3;
 	alglib::mannwhitneyutest(t1, testarray1.size(), t2, testarray2.size(), p1, p2, p3);
 	std::cout << p1 << "\n";
+	std::cout << "b" << "\n";
 
 
 	double test = -1.0;

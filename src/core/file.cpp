@@ -359,12 +359,6 @@ namespace emoc {
 				{
 					int ret = mkdir(tmpDirPath, S_IRWXU | S_IRWXG | S_IRWXO);
 #endif
-
-					//if (ret == -1)
-					//{
-					//	std::cerr << "CREATE SAVE DIRECTORY FAIL!\n";
-					//	return 0;
-					//}
 				}
 			}
 		}

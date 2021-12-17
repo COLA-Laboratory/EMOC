@@ -330,9 +330,37 @@ namespace emoc {
 			ImGui::Combo("Format##DisplayFormatExperiment", &format_index, format_names.data(), format_names.size()); ImGui::SameLine();
 			ImGui::SetNextItemWidth(ImGui::CalcTextSize("Rank Sum Testxxxx").x);
 			ImGui::Combo("Test##HypothesisExperiment", &hypothesis_index, hypothesis_names.data(), hypothesis_names.size()); ImGui::SameLine();
+			
+			// table save event
 			ImGui::SetCursorPosX(ImGui::GetWindowSize().x-60.0f);
 			static char save_button[256] = ICON_FA_SAVE "##ExperimentSave";
-			ImGui::Button(save_button,ImVec2(50.0f, 0.0f));
+			static bool is_save_success = true;
+			if (ImGui::Button(save_button, ImVec2(50.0f, 0.0f)))
+			{
+				is_save_success = table.Save();
+				ImGui::OpenPopup("Save Result##Experiment");
+			}
+
+			// Always center this window when appearing
+			ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+			ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+			char popup_text[256];
+			if (ImGui::BeginPopupModal("Save Result##Experiment", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+			{
+
+				if (is_save_success)
+					sprintf(popup_text, "The table content has been successfully saved to \noutput\/table\/new.tex and output\/table\/new.csv!\n\n");
+				else if (!is_save_success)
+					sprintf(popup_text, "Output\/table\/new.csv or output\/table\/new.tex\ncannot be opened!\n\n");
+
+				ImGui::Text("%s", popup_text);
+				ImGui::Separator();
+
+				float width = ImGui::GetWindowSize().x;
+				ImGui::SetCursorPosX((width - 150) / 2.0f);
+				if (ImGui::Button("OK", ImVec2(150, 0))) { ImGui::CloseCurrentPopup(); }
+				ImGui::EndPopup();
+			}
 
 			// set this frame's columns
 			if (is_displayM) columns.push_back("M");

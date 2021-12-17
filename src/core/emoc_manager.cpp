@@ -327,7 +327,7 @@ namespace emoc {
 		alglib::real_1d_array a;
 		a.setlength(array1.size());
 		for (int i = 0; i < array1.size();i++)
-			a[i] = array1[i] - array2[2];
+			a[i] = array1[i] - array2[i];
 
 		double p1, p2, p3;
 		alglib::wilcoxonsignedranktest(a, array1.size(), 0, p1, p2, p3);
