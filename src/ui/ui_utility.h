@@ -27,6 +27,7 @@ namespace emoc{
 
 	void InitDisplayList(std::vector<char*>& display_names);
 	void InitFormatList(std::vector<char*>& format_names);
+	void InitHypothesisList(std::vector<char*>& hypothesis_names);
 	void InitPlotMetricList(std::vector<char*>& plot_metric_names);
 
 	// the splitter function is just for test now, it maybe remove in further commits

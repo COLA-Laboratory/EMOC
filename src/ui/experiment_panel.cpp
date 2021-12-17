@@ -32,11 +32,13 @@ namespace emoc {
 		problem_index(0),
 		display_index(0),
 		format_index(0),
+		hypothesis_index(0),
 		current_algorithm_names(nullptr),
 		current_problem_names(nullptr)
 	{
 		InitDisplayList(display_names);
 		InitFormatList(format_names);
+		InitHypothesisList(hypothesis_names);
 	}
 
 	ExperimentPanel::~ExperimentPanel()
@@ -78,6 +80,7 @@ namespace emoc {
 		// for testing
 		clock_t start, end;
 
+		ImGui::ShowDemoWindow();
 
 		// Experiment Module Algorithm and Problem Selection Window
 		{
@@ -324,7 +327,12 @@ namespace emoc {
 			ImGui::SetNextItemWidth(ImGui::CalcTextSize("Runtimexxxx").x);
 			ImGui::Combo("Indicator##DisplayExperiment", &display_index, display_names.data(), display_names.size()); ImGui::SameLine();
 			ImGui::SetNextItemWidth(ImGui::CalcTextSize("Median(IQR)xxxx").x);
-			ImGui::Combo("Format##DisplayFormatExperiment", &format_index, format_names.data(), format_names.size());
+			ImGui::Combo("Format##DisplayFormatExperiment", &format_index, format_names.data(), format_names.size()); ImGui::SameLine();
+			ImGui::SetNextItemWidth(ImGui::CalcTextSize("Rank Sum Testxxxx").x);
+			ImGui::Combo("Test##HypothesisExperiment", &hypothesis_index, hypothesis_names.data(), hypothesis_names.size()); ImGui::SameLine();
+			ImGui::SetCursorPosX(ImGui::GetWindowSize().x-60.0f);
+			static char save_button[256] = ICON_FA_SAVE "##ExperimentSave";
+			ImGui::Button(save_button,ImVec2(50.0f, 0.0f));
 
 			// set this frame's columns
 			if (is_displayM) columns.push_back("M");
@@ -332,7 +340,8 @@ namespace emoc {
 			if (is_displayN) columns.push_back("N");
 			if (is_displayEvaluation) columns.push_back("Evaluation");
 
-			table.Render(is_displayM, is_displayD, is_displayN, is_displayEvaluation, display_names[display_index],format_names[format_index]);
+			table.Render(is_displayM, is_displayD, is_displayN, is_displayEvaluation,
+				display_names[display_index],format_names[format_index], hypothesis_names[hypothesis_index]);
 			
 			//ImGui::SetCursorPosX(ImGui::GetWindowSize().x - 260.0f);
 			//if (!is_finish) ImGui::BeginDisabled();

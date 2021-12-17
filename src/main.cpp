@@ -17,8 +17,8 @@ using emoc::EMOCApplication;
 
 int main(int argc, char* argv[])
 {
-	std::vector<double> testarray1 = { 1,2,3,4,5,6 };
-	std::vector<double> testarray2 = { 3,4,3,4,1,6 };
+	std::vector<double> testarray1 = { 0.00665973 ,0.00775907, 0.0105039 ,0.0136247 ,0.00649665 ,0.0115674 ,0.00465236 ,0.0071315 ,0.00578957 ,0.0102293 ,0.0108844 ,0.00884142 ,0.00812817 ,0.0215179 ,0.0114513 };
+	std::vector<double> testarray2 = { 2.09561, 8.17319 ,0.00494026 ,0.0114405 ,0.357844 ,000420253 ,0.696275 ,7.54302 ,0.00444581 ,2.52816 ,0.238478 ,3.08217 ,2.15439 ,0.00441019 ,0.00436881 };
 	alglib::real_1d_array t1, t2;
 	t1.setcontent(testarray1.size(), testarray1.data());
 	t2.setcontent(testarray2.size(), testarray2.data());

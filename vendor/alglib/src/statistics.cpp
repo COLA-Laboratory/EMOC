@@ -14948,7 +14948,7 @@ void mannwhitneyutest(/* Real    */ ae_vector* x,
 	*lefttail = boundval(ae_maxreal(mp, 1.0E-4, _state), 0.0001, 0.2500, _state);
     *righttail = boundval(ae_maxreal(p, 1.0E-4, _state), 0.0001, 0.2500, _state);
     //*lefttail = ae_maxreal(mp, 1.0E-4, _state);
-    //*lefttail = ae_maxreal(p, 1.0E-4, _state);
+    //*righttail = ae_maxreal(p, 1.0E-4, _state);
     *bothtails = 2*ae_minreal(*lefttail, *righttail, _state);
     ae_frame_leave(_state);
 }

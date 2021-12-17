@@ -8,6 +8,7 @@
 #include "metric/hv.h"
 #include "random/random.h"
 #include "ui/uipanel_manager.h"
+#include "alglib/src/statistics.h"
 
 namespace emoc {
 
@@ -244,12 +245,8 @@ namespace emoc {
 				// update counter, mean, std, etc...
 				UpdateExpResult(multi_thread_result_history_[parameter_index], run_index, parameter_index);
 
-				{
-					// TODO: Update statistic test result when necessary
-					std::lock_guard<std::mutex> locker(EMOCLock::mutex_pool[parameter_index % EMOCLock::mutex_pool.size()]);
-					int range_index = parameter_index / UIPanelManager::Instance()->GetExpAlgorithmNum();
-					int range_start = range_index * UIPanelManager::Instance()->GetExpAlgorithmNum(), range_end = (range_index + 1) * UIPanelManager::Instance()->GetExpAlgorithmNum();
-				}
+				// update hypothesis test data
+				UpdateExpStatTest(parameter_index);
 			}
 
 			std::string print_problem = problem + "_" + std::to_string(obj_num) + "_" + std::to_string(dec_num);
@@ -258,6 +255,90 @@ namespace emoc {
 			delete g_GlobalSettingsArray[thread_id];
 		}
 
+	}
+
+	void EMOCManager::UpdateExpStatTest(int parameter_index)
+	{
+		std::lock_guard<std::mutex> locker(EMOCLock::mutex_pool[parameter_index % EMOCLock::mutex_pool.size()]);
+		int range_index = parameter_index / UIPanelManager::Instance()->GetExpAlgorithmNum();
+		int range_start = range_index * UIPanelManager::Instance()->GetExpAlgorithmNum(), range_end = (range_index + 1) * UIPanelManager::Instance()->GetExpAlgorithmNum();
+		
+		bool is_ready = true;
+		for (int i = range_start; i < range_end; i++)
+			if (multi_thread_result_history_[i].valid_res_count < multi_thread_result_history_[i].runtime_history.size())
+				is_ready = false;
+
+		// Only do statistic test the when datas in the same row are ready. 
+		if (!is_ready) return;
+
+		// Take the last column algorithm to be the compared object as default.
+		int compared_parameter_index = range_end - 1;
+		EMOCMultiThreadResult& compared_res = multi_thread_result_history_[compared_parameter_index];
+		for (int i = range_start; i < range_end - 1; i++)
+		{
+			EMOCMultiThreadResult& res = multi_thread_result_history_[i];
+
+			bool is_diff_ranksum = RankSumTest(res.runtime_history, compared_res.runtime_history);
+			bool is_diff_signrank = SignRankTest(res.runtime_history, compared_res.runtime_history);
+			if (res.runtime_mean_ranksum == -2) res.runtime_mean_ranksum = is_diff_ranksum ? (res.runtime_mean < compared_res.runtime_mean ? 1 : -1) : 0;
+			if (res.runtime_median_ranksum == -2)res.runtime_median_ranksum = is_diff_ranksum ? (res.runtime_median < compared_res.runtime_median ? 1 : -1) : 0;
+			if (res.runtime_mean_signrank == -2) res.runtime_mean_signrank = is_diff_signrank ? (res.runtime_mean< compared_res.runtime_mean ? 1 : -1) : 0;
+			if (res.runtime_median_signrank == -2)res.runtime_median_signrank = is_diff_signrank ? (res.runtime_median < compared_res.runtime_median ? 1 : -1) : 0;
+
+			is_diff_ranksum = RankSumTest(res.igd_history, compared_res.igd_history);
+			is_diff_signrank = SignRankTest(res.igd_history, compared_res.igd_history);
+			if (res.igd_mean_ranksum == -2) res.igd_mean_ranksum = is_diff_ranksum ? (res.igd_mean < compared_res.igd_mean ? 1 : -1) : 0;
+			if (res.igd_median_ranksum == -2)res.igd_median_ranksum = is_diff_ranksum ? (res.igd_median < compared_res.igd_median ? 1 : -1) : 0;
+			if (res.igd_mean_signrank == -2) res.igd_mean_signrank = is_diff_signrank ? (res.igd_mean < compared_res.igd_mean ? 1 : -1) : 0;
+			if (res.igd_median_signrank == -2)res.igd_median_signrank = is_diff_signrank ? (res.igd_median < compared_res.igd_median ? 1 : -1) : 0;
+
+			is_diff_ranksum = RankSumTest(res.hv_history, compared_res.hv_history);
+			is_diff_signrank = SignRankTest(res.hv_history, compared_res.hv_history);
+			if (res.hv_mean_ranksum == -2) res.hv_mean_ranksum = is_diff_ranksum ? (res.hv_mean < compared_res.hv_mean ? 1 : -1) : 0;
+			if (res.hv_median_ranksum == -2)res.hv_median_ranksum = is_diff_ranksum ? (res.hv_median < compared_res.hv_median ? 1 : -1) : 0;
+			if (res.hv_mean_signrank == -2) res.hv_mean_signrank = is_diff_signrank ? (res.hv_mean < compared_res.hv_mean ? 1 : -1) : 0;
+			if (res.hv_median_signrank == -2)res.hv_median_signrank = is_diff_signrank ? (res.hv_median < compared_res.hv_median ? 1 : -1) : 0;
+
+		}
+	}
+
+	int EMOCManager::RankSumTest(const std::vector<double>& array1, const std::vector<double>& array2)
+	{
+		int res = 0;
+
+		alglib::real_1d_array a1, a2;
+		a1.setcontent(array1.size(), array1.data());
+		a2.setcontent(array2.size(), array2.data());
+		double p1, p2, p3;
+		alglib::mannwhitneyutest(a1, array1.size(), a2, array2.size(), p1, p2, p3);
+
+		if (p1 > 0.05)
+			res = 0;
+		else
+			res = 1;
+
+		return res;
+	}
+
+	int EMOCManager::SignRankTest(const std::vector<double>& array1, const std::vector<double>& array2)
+	{
+		int res = 0;
+
+		alglib::real_1d_array a;
+		a.setlength(array1.size());
+		for (int i = 0; i < array1.size();i++)
+			a[i] = array1[i] - array2[2];
+
+		double p1, p2, p3;
+		alglib::wilcoxonsignedranktest(a, array1.size(), 0, p1, p2, p3);
+
+
+		if (p1 > 0.05)
+			res = 0;
+		else
+			res = -1;
+
+		return res;
 	}
 
 	void EMOCManager::UpdateExpResult(EMOCMultiThreadResult& res, int new_res_index, int parameter_index)

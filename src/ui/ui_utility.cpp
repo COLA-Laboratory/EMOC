@@ -190,6 +190,13 @@ namespace emoc {
 		format_names.push_back("Median(IQR)");
 	}
 
+	void InitHypothesisList(std::vector<char*>& hypothesis_names)
+	{
+		hypothesis_names.push_back("Rank Sum Test");
+		hypothesis_names.push_back("Sign Rank Test");
+
+	}
+
 	void InitPlotMetricList(std::vector<char*>& plot_metric_names)
 	{
 		plot_metric_names.push_back("IGD");

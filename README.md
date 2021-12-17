@@ -122,7 +122,7 @@ there is an example of config file in the corresponding directory.
 - [x] 画图文件存储的优化，和本身种群的Track不要重复。另外都画图用脚本，不要有的是指令，有的是命令，保持统一
 - [x] 科学计数法显示，以及MEDIAN,IQR等等
 - [x] 最佳结果标bold（添加额外字体）
-- [ ] 实验模块的统计分析功能
+- [x] 实验模块的假设检验统计测试
 - [ ] 实验结果table的导出功能
 - [ ] 参数合法性检验，以及对应的警告
 - [ ] 命令行调用设计

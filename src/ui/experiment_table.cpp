@@ -39,7 +39,7 @@ namespace emoc{
 
 	// ImVec4(0.33f, 0.33f, 0.35f, 1.00f);
 	void ExperimentTable::Render(bool is_displayM, bool is_displayD, bool is_displayN, bool is_displayEvaluation, 
-		const std::string &display_para, const std::string& format)
+		const std::string &display_para, const std::string& format, const std::string& hypothesis)
 	{
 		static ImGuiTableFlags flags = ImGuiTableFlags_ScrollY | ImGuiTableFlags_RowBg | ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable;
 		const float TEXT_BASE_WIDTH = ImGui::CalcTextSize("A").x;
@@ -104,7 +104,7 @@ namespace emoc{
 						if (EMOCManager::Instance()->GetMultiThreadDataState())
 						{
 							int col_in_algorithms = c - columns.size() - 1; // the -1 is counting for the first empty column header
-							DisplayTableResult(row, rows[row].Ds.size(), col_in_algorithms, display_para, format);
+							DisplayTableResult(row, rows[row].Ds.size(), col_in_algorithms, display_para, format, hypothesis);
 						}
 					}
 				}
@@ -310,29 +310,44 @@ namespace emoc{
 
 	}
 
-	void ExperimentTable::DisplayTableResult(int row, int row_height, int col_in_algorithms, const std::string& para, const std::string& format)
+	void ExperimentTable::DisplayTableResult(int row, int row_height, int col_in_algorithms, const std::string& para, const std::string& format, const std::string &hypothesis)
 	{
 		for(int i = 0;i < row_height;i++)
 		{ 
 			int parameter_index = rows[row].parameter_indexes[i] + col_in_algorithms;
 			EMOCMultiThreadResult res = EMOCManager::Instance()->GetMultiThreadResult(parameter_index);
+			//std::cout <<i<<": " <<res.igd_mean_ranksum << "\n";
 			double mean = 0.0, std = 0.0, median = 0.0, iqr = 0.0;
+			char hypothesis_symbol = ' ';
 
 			// set display table content according to the metric and result stored in EMOCMultiThreadResult
 			char display[256];
 			if (para == "Runtime")
+			{
+				hypothesis_symbol = GetHypothesisSymbol(res.runtime_mean_ranksum, res.runtime_median_ranksum, res.runtime_mean_signrank, res.runtime_median_signrank, hypothesis, format);
 				SetTableContent(display, format, res.runtime_mean, res.runtime_std, res.runtime_median, res.runtime_iqr);
+			}
 			else if (para == "IGD")
+			{
+				hypothesis_symbol = GetHypothesisSymbol(res.igd_mean_ranksum, res.igd_median_ranksum, res.igd_mean_signrank, res.igd_median_signrank, hypothesis, format);
 				SetTableContent(display, format, res.igd_mean, res.igd_std, res.igd_median, res.igd_iqr);
+				//std::cout << hypothesis_symbol << "\n";
+			}
 			else if (para == "HV")
+			{
+				hypothesis_symbol = GetHypothesisSymbol(res.hv_mean_ranksum, res.hv_median_ranksum, res.hv_mean_signrank, res.hv_median_signrank, hypothesis, format);
 				SetTableContent(display, format, res.hv_mean, res.hv_std, res.hv_median, res.hv_iqr);
+			}
 
 			// The comparision is simple, so we put the logic in ui rendering loop. 
 			bool is_best = CheckIsBest(para, format, parameter_index); 
 
 			if (is_best) ImGui::PushFont(UIPanelManager::Instance()->font_bold);
 			if (res.valid_res_count > 0)
+			{
+				sprintf(display, "%s%c", display, hypothesis_symbol);
 				ImGui::Text(display);
+			}
 			else
 				ImGui::Text(" ");
 			if (is_best) ImGui::PopFont();
@@ -430,6 +445,37 @@ namespace emoc{
 			metric1 = median;
 			metric2 = iqr;
 		}
+	}
+
+	char ExperimentTable::GetHypothesisSymbol(int mean_ranksum, int median_ranksum, int mean_signrank, int median_signrank,
+		const std::string& hypothesis, const std::string& format)
+	{
+		char symbol[3] = { '-', '=', '+' };
+		char res = ' ';
+
+
+		//if (hypothesis == "Rank Sum Test")
+		//	std::cout << "wuhu!\n";
+
+		if (format == "Mean" || format == "Mean(STD)")
+		{
+			if (hypothesis == "Rank Sum Test")
+				if (mean_ranksum != -2) res = symbol[mean_ranksum + 1];
+
+			if (hypothesis == "Sign Rank Test")
+				if (mean_signrank != -2)  res = symbol[mean_signrank + 1];
+			
+		}
+		else if (format == "Median" || format == "Median(IQR)")
+		{
+			if (hypothesis == "Rank Sum Test")
+				if (median_ranksum != -2) res = symbol[median_ranksum + 1];
+
+			if (hypothesis == "Sign Rank Test")
+				if (median_signrank != -2)  res = symbol[median_signrank + 1];
+		}
+
+		return res;
 	}
 
 }
