@@ -57,8 +57,8 @@ namespace emoc {
 		std::vector<int> Ds;
 		std::vector<int> Ms;
 		std::vector<int> Evaluations;
-		int run_num = 30;
-		int thread_num = 1;
+		int run_num = 20;
+		int thread_num = 8;
 		int save_interval = 1000000;
 		std::vector<EMOCParameters> experiment_tasks;
 

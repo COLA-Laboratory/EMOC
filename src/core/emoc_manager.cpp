@@ -257,6 +257,7 @@ namespace emoc {
 
 	}
 
+	int count = 0;
 	void EMOCManager::UpdateExpStatTest(int parameter_index)
 	{
 		std::lock_guard<std::mutex> locker(EMOCLock::mutex_pool[parameter_index % EMOCLock::mutex_pool.size()]);
@@ -276,6 +277,7 @@ namespace emoc {
 		EMOCMultiThreadResult& compared_res = multi_thread_result_history_[compared_parameter_index];
 		for (int i = range_start; i < range_end - 1; i++)
 		{
+			count = 0;
 			EMOCMultiThreadResult& res = multi_thread_result_history_[i];
 
 			bool is_diff_ranksum = RankSumTest(res.runtime_history, compared_res.runtime_history);
@@ -284,6 +286,7 @@ namespace emoc {
 			if (res.runtime_median_ranksum == -2)res.runtime_median_ranksum = is_diff_ranksum ? (res.runtime_median < compared_res.runtime_median ? 1 : -1) : 0;
 			if (res.runtime_mean_signrank == -2) res.runtime_mean_signrank = is_diff_signrank ? (res.runtime_mean< compared_res.runtime_mean ? 1 : -1) : 0;
 			if (res.runtime_median_signrank == -2)res.runtime_median_signrank = is_diff_signrank ? (res.runtime_median < compared_res.runtime_median ? 1 : -1) : 0;
+			count++;
 
 			is_diff_ranksum = RankSumTest(res.igd_history, compared_res.igd_history);
 			is_diff_signrank = SignRankTest(res.igd_history, compared_res.igd_history);
@@ -291,6 +294,7 @@ namespace emoc {
 			if (res.igd_median_ranksum == -2)res.igd_median_ranksum = is_diff_ranksum ? (res.igd_median < compared_res.igd_median ? 1 : -1) : 0;
 			if (res.igd_mean_signrank == -2) res.igd_mean_signrank = is_diff_signrank ? (res.igd_mean < compared_res.igd_mean ? 1 : -1) : 0;
 			if (res.igd_median_signrank == -2)res.igd_median_signrank = is_diff_signrank ? (res.igd_median < compared_res.igd_median ? 1 : -1) : 0;
+			count++;
 
 			is_diff_ranksum = RankSumTest(res.hv_history, compared_res.hv_history);
 			is_diff_signrank = SignRankTest(res.hv_history, compared_res.hv_history);
@@ -298,8 +302,15 @@ namespace emoc {
 			if (res.hv_median_ranksum == -2)res.hv_median_ranksum = is_diff_ranksum ? (res.hv_median < compared_res.hv_median ? 1 : -1) : 0;
 			if (res.hv_mean_signrank == -2) res.hv_mean_signrank = is_diff_signrank ? (res.hv_mean < compared_res.hv_mean ? 1 : -1) : 0;
 			if (res.hv_median_signrank == -2)res.hv_median_signrank = is_diff_signrank ? (res.hv_median < compared_res.hv_median ? 1 : -1) : 0;
+			count++;
 
+			for (int j = 0; j < res.igd_history.size(); j++)
+				std::cout << res.igd_history[j] << ",";
+			std::cout << "\n";
 		}
+		for (int j = 0; j < compared_res.igd_history.size(); j++)
+			std::cout << compared_res.igd_history[j] << ",";
+		std::cout << "\n";
 	}
 
 	int EMOCManager::RankSumTest(const std::vector<double>& array1, const std::vector<double>& array2)
@@ -311,6 +322,8 @@ namespace emoc {
 		a2.setcontent(array2.size(), array2.data());
 		double p1, p2, p3;
 		alglib::mannwhitneyutest(a1, array1.size(), a2, array2.size(), p1, p2, p3);
+
+		if (count == 1) std::cout << p1 << " " << p2 << " " << p3 << "\n";
 
 		if (p1 > 0.05)
 			res = 0;

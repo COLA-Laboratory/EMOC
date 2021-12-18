@@ -170,6 +170,7 @@ namespace emoc {
 			height_pos = window_height * 0.902f > current_posY ? window_height * 0.902f : current_posY + 10.0f;
 			ImGui::SetCursorPos(ImVec2(0.025f * window_width, height_pos));
 
+			static std::string description = "";
 			// When algorithm is running, we diable 'Start' button.
 			if (!is_finish) ImGui::BeginDisabled();
 			if (ImGui::Button("Start##Experiment", ImVec2(window_width * 0.95f, window_height * 0.08f)))
@@ -198,20 +199,47 @@ namespace emoc {
 				std::cout << "Consturct Table Time: " << (double)(end - start) / CLOCKS_PER_SEC << "s\n";
 
 				ConstructTasks();
-				if (experiment_tasks.size() > 0)
-				{
-					{
-						std::lock_guard<std::mutex> locker(EMOCLock::multithread_data_mutex);
-						EMOCManager::Instance()->SetMultiThreadDataState(false);
-					}
+				bool is_valid1 = CheckExpSettings(thread_num, run_num, save_interval, description);
+				bool is_valid2 = true;
+				for (int i = 0; i < table_problems.size(); i++)
+					is_valid2 &= CheckProblemParameters(table_problems[i], table_Ds[i], table_Ms[i], table_Ns[i], table_Evaluations[i], description);
 
-					std::thread algorithm_thread(&EMOCManager::ExperimentModuleRun, EMOCManager::Instance(), experiment_tasks, thread_num);
-					algorithm_thread.detach();
+				// start to run when the parameter is valid
+				if (is_valid1 && is_valid2)
+				{
+					if (experiment_tasks.size() > 0)
+					{
+						{
+							std::lock_guard<std::mutex> locker(EMOCLock::multithread_data_mutex);
+							EMOCManager::Instance()->SetMultiThreadDataState(false);
+						}
+
+						std::thread algorithm_thread(&EMOCManager::ExperimentModuleRun, EMOCManager::Instance(), experiment_tasks, thread_num);
+						algorithm_thread.detach();
+					}
+				}
+				else
+				{
+					ImGui::OpenPopup("Parameter Checking##Test");
 				}
 
 			}
 			if (!is_finish) ImGui::EndDisabled();
 
+			// parameter checking popup
+			ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+			ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+			ImGui::SetNextWindowSize(ImVec2(350.0f, 0.0f));
+			if (ImGui::BeginPopupModal("Parameter Checking##Test", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+			{
+				ImGui::TextWrapped("%s", description.c_str());
+				ImGui::Separator();
+
+				float width = ImGui::GetWindowSize().x;
+				ImGui::SetCursorPosX((width - 150) / 2.0f);
+				if (ImGui::Button("OK", ImVec2(150, 0))) { ImGui::CloseCurrentPopup(); }
+				ImGui::EndPopup();
+			}
 
 
 			ImGui::End();
@@ -344,16 +372,17 @@ namespace emoc {
 			// Always center this window when appearing
 			ImVec2 center = ImGui::GetMainViewport()->GetCenter();
 			ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+			ImGui::SetNextWindowSize(ImVec2(400.0f, 0.0f));
 			char popup_text[256];
 			if (ImGui::BeginPopupModal("Save Result##Experiment", NULL, ImGuiWindowFlags_AlwaysAutoResize))
 			{
 
 				if (is_save_success)
-					sprintf(popup_text, "The table content has been successfully saved to \noutput\/table\/new.tex and output\/table\/new.csv!\n\n");
+					sprintf(popup_text, "Save Success!\nThe table content has been saved to output\/table\/new.tex and output\/table\/new.csv!\n\n");
 				else if (!is_save_success)
-					sprintf(popup_text, "Output\/table\/new.csv or output\/table\/new.tex\ncannot be opened!\n\n");
+					sprintf(popup_text, "Save Failure!\nOutput\/table\/new.csv or output\/table\/new.tex cannot be opened!\n\n");
 
-				ImGui::Text("%s", popup_text);
+				ImGui::TextWrapped("%s", popup_text);
 				ImGui::Separator();
 
 				float width = ImGui::GetWindowSize().x;

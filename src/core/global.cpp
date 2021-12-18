@@ -171,10 +171,7 @@ namespace emoc {
 		else if (problem_name == "wfg1")
 			problem_ = new WFG1(dec_num_, obj_num_);
 		else if (problem_name == "wfg2")
-		{
 			problem_ = new WFG2(dec_num_, obj_num_);
-			std::cout << "Im here!\n";
-		}
 		else if (problem_name == "wfg3")
 			problem_ = new WFG3(dec_num_, obj_num_);
 		else if (problem_name == "wfg4")

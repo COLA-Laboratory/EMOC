@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <iostream>
+#include <thread>
 
 #include "imgui.h"
 #include "imgui_internal.h"
@@ -208,6 +209,165 @@ namespace emoc {
 		// TODO... according the algorithm name to display different parameter settings
 		//if(algorithm == "MOEAD")
 		//else if()
+	}
+
+	bool CheckProblemParameters(const std::string& problem, int D, int M, int N, int Evaluation, std::string& description)
+	{
+		bool res = true;
+		if (D < 0)
+		{
+			description = "The D parameter cannot be negative integer!\n\n";
+			res = false;
+		}
+		if (M < 0)
+		{
+			description = "The M parameter cannot be negative integer!\n\n";
+			res = false;
+		}
+		if (N < 0)
+		{
+			description = "The N parameter cannot be negative integer!\n\n";
+			res = false;
+		}
+		if (Evaluation < 0)
+		{
+			description = "The Evaluation parameter cannot be negative integer!\n\n";
+			res = false;
+		}
+
+		std::string problem_name(problem);
+		for (auto& c : problem_name)
+		{
+			if (c >= '0' && c <= '9') continue;
+			c = tolower(c);
+		}
+
+		//std::cout << problem_name << std::endl;
+		if (problem_name.substr(0,3) == "zdt")
+		{
+			if (M != 2)
+			{
+				description = "The M parameter of " + problem + " must be 2!\n\n";
+				res = false;
+			}
+
+			if (D < 2)
+			{
+				description = "The D parameter of " + problem + " must greater than 1!\n\n";
+				res = false;
+			}
+		}
+		else if (problem_name.substr(0, 4) == "dtlz"|| problem_name.substr(0, 5) == "mdtlz")
+		{
+			if (M <= 1)
+			{
+				description = "The M parameter of " + problem + " must greater than 1!\n\n";
+				res = false;
+			}
+
+			if (D < M - 1)
+			{
+				description = "The D parameter of " + problem + " must greater than M - 2!\n\n";
+				res = false;
+			}
+		}
+		else if (problem_name.substr(0, 2) == "uf")
+		{
+			if (problem_name[2]>= '1' && problem_name[2] <= '7')
+			{
+				if (M != 2)
+				{
+					description = "The M parameter of " + problem + " must be 2!\n\n";
+					res = false;
+				}
+				
+				if (D < 3)
+				{
+					description = "The D parameter of " + problem + " must greater than 2!\n\n";
+					res = false;
+				}
+			}
+			else if (problem_name[2] >= '8' && problem_name[2] <= '10')
+			{
+				if (M != 3)
+				{
+					description = "The M parameter of " + problem + " must be 3!\n\n";
+					res = false;
+				}
+
+				if (D < 5)
+				{
+					description = "The D parameter of " + problem + " must greater than 4!\n\n";
+					res = false;
+				}
+			}
+		}
+		else if (problem.substr(0, 3) == "wfg")
+		{
+			// TODO ... wfg needs extra parameter which is not implemented now.
+		}
+
+
+
+
+		return res;
+	}
+
+	bool CheckTestPlotSettings(int size_x, int size_y, int offset_x, int offset_y, std::string& description)
+	{
+		bool res = true;
+		if (size_x < 0)
+		{
+			description = "The width of plot window cannot be negative integer!\n\n";
+			res = false;
+		}
+		if (size_y < 0)
+		{
+			description = "The height of plot window cannot be negative integer!\n\n";
+			res = false;
+		}
+		if (offset_x < 0)
+		{
+			description = "The horizontal offset of plot window cannot be negative integer!\n\n";
+			res = false;
+		}
+		if (offset_y < 0)
+		{
+			description = "The vertical offset of plot window cannot be negative integer!\n\n";
+			res = false;
+		}
+		return res;
+	}
+
+	bool CheckExpSettings(int thread_num, int runs_num, int save_interval, std::string& description)
+	{
+		bool res = true;
+		int max_threadnum = std::thread::hardware_concurrency();
+
+		if (thread_num < 0)
+		{
+			description = "The number of thread cannot be negative integer!\n\n";
+			res = false;
+		}
+		else if (thread_num > max_threadnum)
+		{
+			description = "We recommend the number of thread should not beyond your cpu cores:"+ std::to_string(max_threadnum)+"!\n\n";
+			res = false;
+		}
+
+		if (runs_num < 0)
+		{
+			description = "The number of runs cannot be negative integer!\n\n";
+			res = false;
+		}
+
+		if (save_interval < 0)
+		{
+			description = "The interval of population save cannot be negative integer!\n\n";
+			res = false;
+		}
+
+		return res;
 	}
 
 	bool Splitter(bool split_vertically, float thickness, float* size1, float* size2, float min_size1, float min_size2, float splitter_long_axis_size)

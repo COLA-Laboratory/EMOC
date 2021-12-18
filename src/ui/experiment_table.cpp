@@ -629,6 +629,8 @@ namespace emoc{
 				data_file << "\n";
 			}
 		}
+
+		data_file.close();
 		return res;
 	}
 
@@ -757,6 +759,7 @@ namespace emoc{
 			data_file << "\\end{document}";
 		}
 
+		data_file.close();
 		return res;
 	}
 

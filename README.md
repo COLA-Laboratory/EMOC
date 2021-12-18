@@ -102,7 +102,7 @@ there is an example of config file in the corresponding directory.
 **整体方面：**
 
 - [x] Code Review 对整体代码做一个回顾，是否可以改进，局部结构是否可以改善，细节部分代码是否可以更加简洁。
-- [ ] 算法的准确性及其效率的review，从老的算法包移植过来的算法不不知道是否正确。
+- [x] 算法的准确性及其效率的review，从老的算法包移植过来的算法不不知道是否正确。
 - [ ] Indicator的计算，PF可否用公式计算，不用文件读写，以及新的indicator的添加，接口上的real_pop_num问题。
 - [ ] Linux的移植
 - [ ] ...
@@ -123,8 +123,8 @@ there is an example of config file in the corresponding directory.
 - [x] 科学计数法显示，以及MEDIAN,IQR等等
 - [x] 最佳结果标bold（添加额外字体）
 - [x] 实验模块的假设检验统计测试
-- [ ] 实验结果table的导出功能
-- [ ] 参数合法性检验，以及对应的警告
+- [x] 实验结果table的导出功能
+- [x] 参数合法性检验，以及对应的警告
 - [ ] 命令行调用设计
 - [ ] python调用接口的重新设计
 - [x] hv的计算，好了但没完全好

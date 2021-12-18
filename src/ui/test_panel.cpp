@@ -230,6 +230,7 @@ namespace emoc {
 			ImGui::SetCursorPos(ImVec2(0.025f * window_width, height_pos));
 
 			// When algorithm is running, we diable 'Start' button.
+			static std::string description = "";
 			if (!is_finish) ImGui::BeginDisabled();
 			if (ImGui::Button("Start##Test", ImVec2(window_width * 0.95f, window_height * 0.1f)))
 			{
@@ -264,11 +265,37 @@ namespace emoc {
 				para.runs_num = 1;
 				para.is_open_multithread = false;
 
-				EMOCManager::Instance()->SetTaskParameters(para);
-				std::thread algorithm_thread(&EMOCManager::Run, EMOCManager::Instance());
-				algorithm_thread.detach();
+				bool is_valid1 = CheckProblemParameters(para.problem_name, D, M, N, Evaluation, description);
+				bool is_valid2 = CheckTestPlotSettings(plot_size[0], plot_size[1], plot_position[0], plot_position[1], description);
+
+				// start to run when the parameter is valid
+				if (is_valid1 && is_valid2)
+				{
+					EMOCManager::Instance()->SetTaskParameters(para);
+					std::thread algorithm_thread(&EMOCManager::Run, EMOCManager::Instance());
+					algorithm_thread.detach();
+				}
+				else
+				{
+					ImGui::OpenPopup("Parameter Checking##Test");
+				}
 			}
 			if (!is_finish) ImGui::EndDisabled();
+
+			// parameter checking popup
+			ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+			ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+			ImGui::SetNextWindowSize(ImVec2(350.0f, 0.0f));
+			if (ImGui::BeginPopupModal("Parameter Checking##Test", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+			{
+				ImGui::TextWrapped("%s", description.c_str());
+				ImGui::Separator();
+
+				float width = ImGui::GetWindowSize().x;
+				ImGui::SetCursorPosX((width - 150) / 2.0f);
+				if (ImGui::Button("OK", ImVec2(150, 0))) { ImGui::CloseCurrentPopup(); }
+				ImGui::EndPopup();
+			}
 
 			ImGui::End();
 		}

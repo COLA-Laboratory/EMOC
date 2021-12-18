@@ -2,6 +2,7 @@
 
 #include "core/file.h"
 
+#include <cerrno>
 #include <cstdio>
 #include <cstdlib>
 #include <cctype>
@@ -86,8 +87,9 @@ namespace emoc {
 		
 		if(fpt == nullptr)
 		{
-			std::cout <<filename<< " doesn't exist." << std::endl;
+			std::cout <<"Can not open "<< filename << " !." << std::endl;
 			std::cout << "Press enter to exit" << std::endl;
+			std::cout << strerror(errno) << "\n";
 			std::cin.get();
 			exit(-1);
 		}
@@ -100,6 +102,7 @@ namespace emoc {
 			fprintf(fpt, "\n");
 		}
 
+		fflush(fpt);
 		fclose(fpt);
 	}
 

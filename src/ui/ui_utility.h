@@ -34,7 +34,12 @@ namespace emoc{
 	bool Splitter(bool split_vertically, float thickness, float* size1, float* size2, float min_size1, float min_size2, float splitter_long_axis_size = -1.0f);
 	
 	// display algorithm's parameters
-	void DisplayAlgorithmParameters(const std::string& algorithm);				
+	void DisplayAlgorithmParameters(const std::string& algorithm);	
+
+	// parameter validity check
+	bool CheckProblemParameters(const std::string& problem, int D, int M, int N, int Evaluation, std::string &description);
+	bool CheckTestPlotSettings(int size_x, int size_y, int offset_x, int offset_y, std::string& description);
+	bool CheckExpSettings(int thread_num, int runs_num, int save_interval, std::string& description);
 
 	struct CategorizedAlgorithmList
 	{

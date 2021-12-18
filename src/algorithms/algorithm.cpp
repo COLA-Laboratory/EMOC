@@ -180,7 +180,9 @@ namespace emoc {
 		else
 		{
 			std::cerr << "Error!!! in display_pop(...)" << std::endl;
-			exit(-1);
+			fclose(script_file);
+			return;
+			//exit(-1);
 		}
 
 		// write plot cmd script file
