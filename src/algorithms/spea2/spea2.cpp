@@ -216,7 +216,7 @@ namespace emoc {
 			//std::cout << sort_index[0] << "\n";
 		}
 		end = clock();
-		printf("EnvironmentalSelection time: %fs\n", (double)(end - start) / CLOCKS_PER_SEC);
+		//printf("EnvironmentalSelection time: %fs\n", (double)(end - start) / CLOCKS_PER_SEC);
 
 		for (int i = 0; i < candidate_num; ++i)
 			delete[] temp[i];

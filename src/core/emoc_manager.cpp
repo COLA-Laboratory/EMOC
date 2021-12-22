@@ -98,7 +98,8 @@ namespace emoc {
 		// EMOC experiment task running
 		std::vector<std::thread> experiment_threads;
 		for (int i = 0; i < thread_num; i++)
-			experiment_threads.push_back(std::thread(&EMOCManager::ExperimentWorker, EMOCManager::Instance(), emoc_thread_tasks[i], i));
+			if(!emoc_thread_tasks[i].empty())
+				experiment_threads.push_back(std::thread(&EMOCManager::ExperimentWorker, EMOCManager::Instance(), emoc_thread_tasks[i], i));
 
 		for (int i = 0; i < experiment_threads.size(); i++)
 			experiment_threads[i].join();
@@ -120,9 +121,7 @@ namespace emoc {
 		int dec_num = para_.decision_num;
 		int obj_num = para_.objective_num;
 		int max_eval = para_.max_evaluation;
-
-		// In default test module, we record population each generation for the convinience of plotting.
-		int output_interval = is_gui_ ? 1 : para_.output_interval;
+		int output_interval = para_.output_interval;
 
 		for (int run = 0; run < para_.runs_num; ++run)
 		{
@@ -157,8 +156,8 @@ namespace emoc {
 			single_thread_result_historty_.push_back(result);
 			if(is_gui_) UIPanelManager::Instance()->AddAvailSingleThreadResult(single_thread_result_historty_[count].description);
 
-			printf("run %d time: %fs  igd: %f\n", run, (double)(end - start) / CLOCKS_PER_SEC, igd);
-			printf("run %d time: %fs \n", run, result.runtime);
+			//printf("run %d time: %fs  igd: %f\n", run, (double)(end - start) / CLOCKS_PER_SEC, igd);
+			printf("run %d time: %fs   igd: %f \n", run, result.runtime, igd);
 
 			// release the memory per run
 			delete g_GlobalSettingsArray[thread_id];
@@ -170,15 +169,6 @@ namespace emoc {
 		// initialize experiment result
 		multi_thread_result_history_.clear();
 		multi_thread_result_history_.push_back(EMOCMultiThreadResult(para_.runs_num));
-
-		std::cout << "-------------------------------------\n";
-		std::cout << para_.algorithm_name << "\n";
-		std::cout << para_.problem_name << "\n";
-		std::cout << para_.population_num << "\n";
-		std::cout << para_.decision_num << "\n";
-		std::cout << para_.objective_num << "\n";
-		std::cout << para_.max_evaluation << "\n";
-		std::cout << "-------------------------------------\n\n";
 		
 		if (para_.thread_num <= 0) para_.thread_num = 8;
 		std::vector<std::vector<EMOCExperimentTask>> emoc_thread_tasks(para_.thread_num);
@@ -193,13 +183,28 @@ namespace emoc {
 			emoc_thread_tasks[task_count % para_.thread_num].push_back(t);
 			task_count++;
 		}
-                       
+        
+		// update EMOC experiment module state (it is also necessary for none gui mode)
+		{
+			std::lock_guard<std::mutex> locker1(EMOCLock::experiment_finish_mutex);
+			std::lock_guard<std::mutex> locker2(EMOCLock::experiment_pause_mutex);
+			EMOCManager::Instance()->SetExperimentFinish(false);
+			EMOCManager::Instance()->SetExperimentPause(false);
+		}
+
 		std::vector<std::thread> experiment_threads;
 		for (int i = 0; i < para_.thread_num; i++)
-			experiment_threads.push_back(std::thread(&EMOCManager::ExperimentWorker, EMOCManager::Instance(), emoc_thread_tasks[i], i));
+			if(!emoc_thread_tasks[i].empty())
+				experiment_threads.push_back(std::thread(&EMOCManager::ExperimentWorker, EMOCManager::Instance(), emoc_thread_tasks[i], i));
 
 		for (int i = 0; i < experiment_threads.size(); i++)
-			experiment_threads[i].join();
+				experiment_threads[i].join();
+
+		// update EMOC experiment module state (it is also necessary for none gui mode)
+		{
+			std::lock_guard<std::mutex> locker1(EMOCLock::experiment_finish_mutex);
+			EMOCManager::Instance()->SetExperimentFinish(true);
+		}
 
 	}
 
@@ -242,11 +247,15 @@ namespace emoc {
 				//multi_thread_result_history_[parameter_index].hv_history[run_index] = hv;
 				//multi_thread_result_history_[parameter_index].is_hv_record[run_index] = true;
 
-				// update counter, mean, std, etc...
-				UpdateExpResult(multi_thread_result_history_[parameter_index], run_index, parameter_index);
+				// update statistic result only in gui mode
+				if (EMOCManager::Instance()->GetIsGUI())
+				{
+					// update counter, mean, std, etc...
+					UpdateExpResult(multi_thread_result_history_[parameter_index], run_index, parameter_index);
 
-				// update hypothesis test data
-				UpdateExpStatTest(parameter_index);
+					// update hypothesis test data
+					UpdateExpStatTest(parameter_index);
+				}
 			}
 
 			std::string print_problem = problem + "_" + std::to_string(obj_num) + "_" + std::to_string(dec_num);
@@ -257,7 +266,6 @@ namespace emoc {
 
 	}
 
-	int count = 0;
 	void EMOCManager::UpdateExpStatTest(int parameter_index)
 	{
 		std::lock_guard<std::mutex> locker(EMOCLock::mutex_pool[parameter_index % EMOCLock::mutex_pool.size()]);
@@ -277,7 +285,6 @@ namespace emoc {
 		EMOCMultiThreadResult& compared_res = multi_thread_result_history_[compared_parameter_index];
 		for (int i = range_start; i < range_end - 1; i++)
 		{
-			count = 0;
 			EMOCMultiThreadResult& res = multi_thread_result_history_[i];
 
 			bool is_diff_ranksum = RankSumTest(res.runtime_history, compared_res.runtime_history);
@@ -286,7 +293,6 @@ namespace emoc {
 			if (res.runtime_median_ranksum == -2)res.runtime_median_ranksum = is_diff_ranksum ? (res.runtime_median < compared_res.runtime_median ? 1 : -1) : 0;
 			if (res.runtime_mean_signrank == -2) res.runtime_mean_signrank = is_diff_signrank ? (res.runtime_mean< compared_res.runtime_mean ? 1 : -1) : 0;
 			if (res.runtime_median_signrank == -2)res.runtime_median_signrank = is_diff_signrank ? (res.runtime_median < compared_res.runtime_median ? 1 : -1) : 0;
-			count++;
 
 			is_diff_ranksum = RankSumTest(res.igd_history, compared_res.igd_history);
 			is_diff_signrank = SignRankTest(res.igd_history, compared_res.igd_history);
@@ -294,7 +300,6 @@ namespace emoc {
 			if (res.igd_median_ranksum == -2)res.igd_median_ranksum = is_diff_ranksum ? (res.igd_median < compared_res.igd_median ? 1 : -1) : 0;
 			if (res.igd_mean_signrank == -2) res.igd_mean_signrank = is_diff_signrank ? (res.igd_mean < compared_res.igd_mean ? 1 : -1) : 0;
 			if (res.igd_median_signrank == -2)res.igd_median_signrank = is_diff_signrank ? (res.igd_median < compared_res.igd_median ? 1 : -1) : 0;
-			count++;
 
 			is_diff_ranksum = RankSumTest(res.hv_history, compared_res.hv_history);
 			is_diff_signrank = SignRankTest(res.hv_history, compared_res.hv_history);
@@ -302,15 +307,14 @@ namespace emoc {
 			if (res.hv_median_ranksum == -2)res.hv_median_ranksum = is_diff_ranksum ? (res.hv_median < compared_res.hv_median ? 1 : -1) : 0;
 			if (res.hv_mean_signrank == -2) res.hv_mean_signrank = is_diff_signrank ? (res.hv_mean < compared_res.hv_mean ? 1 : -1) : 0;
 			if (res.hv_median_signrank == -2)res.hv_median_signrank = is_diff_signrank ? (res.hv_median < compared_res.hv_median ? 1 : -1) : 0;
-			count++;
 
-			for (int j = 0; j < res.igd_history.size(); j++)
-				std::cout << res.igd_history[j] << ",";
-			std::cout << "\n";
+			//for (int j = 0; j < res.igd_history.size(); j++)
+			//	std::cout << res.igd_history[j] << ",";
+			//std::cout << "\n";
 		}
-		for (int j = 0; j < compared_res.igd_history.size(); j++)
-			std::cout << compared_res.igd_history[j] << ",";
-		std::cout << "\n";
+		//for (int j = 0; j < compared_res.igd_history.size(); j++)
+		//	std::cout << compared_res.igd_history[j] << ",";
+		//std::cout << "\n";
 	}
 
 	int EMOCManager::RankSumTest(const std::vector<double>& array1, const std::vector<double>& array2)
@@ -323,7 +327,7 @@ namespace emoc {
 		double p1, p2, p3;
 		alglib::mannwhitneyutest(a1, array1.size(), a2, array2.size(), p1, p2, p3);
 
-		if (count == 1) std::cout << p1 << " " << p2 << " " << p3 << "\n";
+		//if (count == 1) std::cout << p1 << " " << p2 << " " << p3 << "\n";
 
 		if (p1 > 0.05)
 			res = 0;

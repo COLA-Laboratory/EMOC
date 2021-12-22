@@ -19,7 +19,10 @@
 #include <cstring>
 #endif
 
+#include "emoc_app.h"
+#include "ui/ui_utility.h"
 #include "core/emoc_manager.h"
+#include "cxxopts/cxxopts.hpp"
 
 namespace emoc {
 
@@ -264,7 +267,9 @@ namespace emoc {
 		fclose(config);
 	}
 
-	void FormalizeStr(char *buff)
+
+
+	void FormalizeStr(char* buff)
 	{
 		int i = 0, j = 0, len = 0;
 
@@ -295,52 +300,85 @@ namespace emoc {
 		}
 	}
 
-	void ParseParamerters(int argc, char *argv[], EMOCParameters *para)
+	void EMOCParamerterParse(int argc, char* argv[], EMOCParameters& para, bool& is_gui)
 	{
-		
-		// defalut value
-		para->algorithm_name = "MOEAD";
-		para->problem_name = "WFG2";
-		para->is_plot = false;
-		para->population_num = 100;
-		para->decision_num = 10;
-		para->objective_num = 2;
-		para->max_evaluation = 25000;
-		para->output_interval = 1000000;	// no output except the first and last gerneration
-		para->runs_num = 1;
-		para->is_open_multithread = 0;
-		para->thread_num = 8;
-
-		// parse parameter from command line
-		if (argc == 1)
-			return;
-
-		if (argc % 2 == 0)
+		try
 		{
-			std::cout << "The number of the parameter name is not matching the number of value." << std::endl;
-			std::cout << "The parameters should be set like '-parameter_name value', e.g. '-algorithm nsga2'." << std::endl;
-			std::cout << "Press enter to exit" << std::endl;
-			std::cin.get();
-			exit(-1);
+			cxxopts::Options options(argv[0], "-----Evolutionary Multiobjective Optimization Implementation in C++11-----\n"
+				"EMOC can be excute with/without gui by \"-g or --gui\".\nIt is worth noting that when use the gui mode the other parameters will be invalid.\n");
+			options
+				.set_width(80)
+				.allow_unrecognised_options()
+				.add_options()
+				("h,help", "Print help")
+				("g,gui", "Whether use gui mode", cxxopts::value<bool>()->default_value("false")->implicit_value("true"))
+				("a,algorithm", "Algorithm name", cxxopts::value<std::string>()->default_value("MOEAD"))
+				("p,problem", "Problem name", cxxopts::value<std::string>()->default_value("ZDT3"))
+				("n,pop", "Population size", cxxopts::value<int>()->default_value("100"))
+				("m,obj", "Problem's objective dimension", cxxopts::value<int>()->default_value("2"))
+				("d,dec", "Problem's decision variable dimension", cxxopts::value<int>()->default_value("30"))
+				("e,evaluation", "Evaluation number for each run", cxxopts::value<int>()->default_value("25000"))
+				("i,interval", "Population save interval", cxxopts::value<int>()->default_value("1000000"))
+				("r,run", "The number of runs", cxxopts::value<int>()->default_value("1"))
+				("multithread", "Whether open multi-thread mode", cxxopts::value<bool>()->default_value("false"))
+				("t,thread", "Thread number in multi-thread mode", cxxopts::value<int>()->default_value("4"));
+
+
+
+			auto result = options.parse(argc, argv);
+
+			if (result.count("help"))
+			{
+				std::cout << options.help() << std::endl;
+				exit(0);
+			}
+
+			is_gui = result["gui"].as<bool>();
+			para.algorithm_name = result["algorithm"].as<std::string>();
+			para.problem_name = result["problem"].as<std::string>();
+			para.population_num = result["pop"].as<int>();
+			para.decision_num = result["dec"].as<int>();
+			para.objective_num = result["obj"].as<int>();
+			para.max_evaluation = result["evaluation"].as<int>();
+			para.output_interval = result["interval"].as<int>();
+			para.runs_num = result["run"].as<int>();
+			para.is_open_multithread = result["multithread"].as<bool>();
+			para.thread_num = result["thread"].as<int>();
 		}
-		else
+		catch (const cxxopts::OptionException& e)
 		{
-			char *first_parameter_name = argv[1] + 1;
+			std::cout << "error parsing options: " << e.what() << std::endl;
+			exit(1);
+		}
 
-			// read from file
-			if (!strcmp(first_parameter_name, "file"))
+		if (!is_gui)
+		{
+			std::string description;
+			// parameter validity check
+			bool is_valid = CheckEMOCParameter(para, description);
+			
+			if (!is_valid)
 			{
-				ReadParametersFromFile(argv[2], para);
+				std::cout << "EMOC WRONG PARAMETER ERROR:\n";
+				std::cout << description;
+				std::cout << "EMOC EXIT";
+				exit(1);
 			}
-			else
-			{
-				for (int i = 0; i < argc / 2; ++i)
-				{
-					char *parameter_name = argv[2 * i + 1];
-					char *value = argv[2 * i + 2];
-					SetParameter(parameter_name, value, para);
-				}
-			}
+
+			// print EMOC Task
+			std::cout << "------------EMOC Task------------\n"
+				<< "Algorithm:       " << para.algorithm_name << "\n"
+				<< "Problem:         " << para.problem_name << "\n"
+				<< "Population:      " << para.population_num << "\n"
+				<< "Objective:       " << para.objective_num << "\n"
+				<< "Decision:        " << para.decision_num << "\n"
+				<< "Evaluation:      " << para.max_evaluation << "\n"
+				<< "Save Interval:   " << para.output_interval << "\n"
+				<< "Runs:            " << para.runs_num << "\n"
+				<< "Multi-thread:    " << para.is_open_multithread << "\n";
+			if (para.is_open_multithread)
+				std::cout << "Thread Number:   " << para.thread_num << "\n";
+			std::cout << "---------------------------------\n\n";
 		}
 	}
 
@@ -367,5 +405,88 @@ namespace emoc {
 		}
 		return 1;
 	}
-	
+
+	bool CheckEMOCParameter(const EMOCParameters& para, std::string& description)
+	{
+		bool res = true;
+		std::string algorithm = para.algorithm_name;
+		std::string problem = para.problem_name;
+		int N = para.population_num;
+		int D = para.decision_num;
+		int M = para.objective_num;
+		int evaluation = para.max_evaluation;
+		int save_interval = para.output_interval;
+		int runs_num = para.runs_num;
+		bool is_multithread = para.is_open_multithread;
+		int thread_num = para.thread_num;
+		int max_threadnum = std::thread::hardware_concurrency();
+
+		// basic checking
+		if (thread_num < 0)
+		{
+			description = "The number of thread cannot be negative integer!\n\n";
+			res = false;
+		}
+		else if (thread_num > max_threadnum)
+		{
+			description = "We recommend the number of thread should not beyond your cpu cores:" + std::to_string(max_threadnum) + "!\n\n";
+			res = false;
+		}
+		if (runs_num < 0)
+		{
+			description = "The number of runs cannot be negative integer!\n\n";
+			res = false;
+		}
+		if (save_interval < 0)
+		{
+			description = "The interval of population save cannot be negative integer!\n\n";
+			res = false;
+		}
+		
+		bool is_valid1 = EMOCAlgorithmCheck(algorithm, description);
+		bool is_valid2 = EMOCProblemCheck(problem, M, D, N, evaluation, description);
+
+		return res && is_valid1 && is_valid2;
+	}
+
+	bool EMOCAlgorithmCheck(const std::string& algorithm, std::string& description)
+	{
+		bool res = true;
+		std::string algorithm_name(algorithm);
+		for (auto& c : algorithm_name)
+		{
+			if (c >= '0' && c <= '9') continue;
+			c = toupper(c);
+		}
+
+		if (IMPLEMENT_ALGORITHM.find(algorithm_name) == IMPLEMENT_ALGORITHM.end())
+		{
+			res = false;
+			description = "Algorithm " + algorithm + " is not implemented in EMOC yet, please refer to the document.\n\n";
+		}
+
+		return res;
+	}
+
+	bool EMOCProblemCheck(const std::string& problem, int M, int D, int N, int Evaluation, std::string& description)
+	{
+		bool res = true;
+		std::string problem_name(problem);
+		for (auto& c : problem_name)
+		{
+			if (c >= '0' && c <= '9') continue;
+			c = toupper(c);
+		}
+
+		if (IMPLEMENT_PROBLEM.find(problem_name) == IMPLEMENT_PROBLEM.end())
+		{
+			res = false;
+			description = "Problem " + problem + " is not implemented in EMOC yet, please refer to the document.\n\n";
+		}
+
+		bool is_valid = CheckProblemParameters(problem, D, M, N, Evaluation, description);
+
+		return res && is_valid;
+	}
+
 }

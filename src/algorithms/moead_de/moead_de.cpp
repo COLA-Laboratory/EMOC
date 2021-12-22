@@ -77,7 +77,6 @@ namespace emoc {
 		g_GlobalSettings->InitializePopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_);
 		EvaluatePop(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_);
 
-
 		// generate weight vectors
 		lambda_ = UniformPoint(g_GlobalSettings->population_num_, &weight_num_, g_GlobalSettings->obj_num_);
 		real_popnum_ = weight_num_;

@@ -33,7 +33,7 @@ namespace emoc {
 
 	void WFG::WFG_ini()
 	{
-		wfg_K = 2;
+		wfg_K = 10;
 		wfg_w = (double *)malloc(sizeof(double) * (decision_num + objective_num));
 		for (int i = 0; i < (decision_num + objective_num); i++)
 			wfg_w[i] = 0.0;

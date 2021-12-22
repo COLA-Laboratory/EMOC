@@ -188,15 +188,13 @@ namespace emoc {
 				start = clock();
 				std::vector<int> parameter_indexes;
 				for (int i = 0; i < table_problems.size(); i++)
-				{
 					parameter_indexes.push_back(i * table_algorithms.size());
-					std::cout << table_problems[i] << "\n";
-				}
+				
 				table.UpdateExperimentTable(table_algorithms, table_problems, table_Ms,
 					table_Ds, table_Ns, table_Evaluations, parameter_indexes);
-				table.PrintTable();
+				//table.PrintTable();
 				end = clock();
-				std::cout << "Consturct Table Time: " << (double)(end - start) / CLOCKS_PER_SEC << "s\n";
+				//std::cout << "Consturct Table Time: " << (double)(end - start) / CLOCKS_PER_SEC << "s\n";
 
 				ConstructTasks();
 				bool is_valid1 = CheckExpSettings(thread_num, run_num, save_interval, description);

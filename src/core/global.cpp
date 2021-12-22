@@ -190,9 +190,7 @@ namespace emoc {
 		{
 			// TODO: move these parameter checking things into some specified function 
 			std::cout <<problem_name<< " The problem name is wrong, please check it again" << std::endl;
-			std::cout << "Press enter to exit" << std::endl;
-			std::cin.get();
-			exit(-1);
+			exit(1);
 		}
 	}
 
@@ -234,9 +232,7 @@ namespace emoc {
 		{
 			// TODO: move these parameter checking things into some specified function 
 			std::cout << "The algorithm name is wrong, please check it again" << std::endl;			
-			std::cout << "Press enter to exit" << std::endl;
-			std::cin.get();
-			exit(-1);
+			exit(1);
 		}
 	}
 

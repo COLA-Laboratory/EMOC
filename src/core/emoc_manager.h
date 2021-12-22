@@ -4,15 +4,45 @@
 #include <unordered_map>
 #include <mutex>
 
-#include "core/file.h"
 #include "core/global.h"
 
 namespace emoc {
-	
+
+	struct EMOCParameters
+	{
+		std::string algorithm_name;
+		std::string problem_name;
+		bool is_plot;
+		int population_num;
+		int decision_num;
+		int objective_num;
+		int max_evaluation;
+		int output_interval;
+		int runs_num;
+		int is_open_multithread;
+		int thread_num;
+
+		EMOCParameters() :
+			algorithm_name("NSGA2"),
+			problem_name("ZDT1"),
+			is_plot(false),
+			population_num(100),
+			decision_num(30),
+			objective_num(2),
+			max_evaluation(25000),
+			output_interval(EMOC_INF),
+			runs_num(1),
+			is_open_multithread(false),
+			thread_num(0)
+		{
+		}
+
+		~EMOCParameters(){}
+	};
+
 	struct EMOCExperimentTask;
 	struct EMOCSingleThreadResult;
 	struct EMOCMultiThreadResult;
-
 
 	class EMOCManager
 	{
@@ -109,6 +139,8 @@ namespace emoc {
 		// reserved Global arrays
 		std::vector<Global*> g_GlobalSettingsArray;
 	};
+
+
 
 
 	struct EMOCExperimentTask

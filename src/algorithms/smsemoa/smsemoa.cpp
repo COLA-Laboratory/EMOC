@@ -24,8 +24,26 @@ namespace emoc {
 	SMSEMOA::~SMSEMOA()
 	{
 		// free memory for iwfg algorithm
+		int max_depth = i_maxn - 2;
+		if (max_depth > 0)
+		{
+			for (int i = 0; i < max_depth; i++)
+			{
+				for (int j = 0; j < i_maxm; j++)
+					free(i_fs[i].points[j].objectives);
+				free(i_fs[i].points);
+			}
+			free(i_fs);
+		}
+
+
+		int max_stacksize = MIN(i_maxn - 2, i_slicingDepth(i_maxn)) + 1;
 		for (int i = 0; i < g_GlobalSettings->population_num_ + 1; i++)
+		{
+			for (int j = 1; j < max_stacksize; j++)
+				free(stacks[i][j].front.points);
 			free(stacks[i]);
+		}
 
 		free(partial);
 		free(heap);
@@ -83,7 +101,7 @@ namespace emoc {
 		i_maxm = g_GlobalSettings->population_num_ + 1;
 		int max_depth = i_maxn - 2;
 		if(max_depth > 0)
-			i_fs		= (FRONT*)malloc(sizeof(FRONT) * max_depth);
+		i_fs		= (FRONT*)malloc(sizeof(FRONT) * max_depth);
 		partial		= (double*)malloc(sizeof(double) * i_maxm);
 		heap		= (int*)malloc(sizeof(int) * i_maxm);
 		stacksize	= (int*)malloc(sizeof(int) * i_maxm);
@@ -138,21 +156,21 @@ namespace emoc {
 
 	int SMSEMOA::FindMinVolumeIndex(Individual **pop, int pop_num)
 	{
-		FILECONTENTS f;
+		FILECONTENTS *f = (FILECONTENTS *)malloc(sizeof(FILECONTENTS));
 		double *min = NULL;
 		int i = 0, j = 0, num_same = 0;
 
 		min = (double *)malloc(sizeof(double) * (g_GlobalSettings->obj_num_ + 2));
 		i_n = g_GlobalSettings->obj_num_;
-		iwfg_read_data(&f, pop, nadir_point_, pop_num, g_GlobalSettings->obj_num_);
+		iwfg_read_data(f, pop, nadir_point_, pop_num, g_GlobalSettings->obj_num_);
 
 		if (g_GlobalSettings->obj_num_ == 2)
 		{
-			i_ihv2(f.fronts[0], min);
+			i_ihv2(f->fronts[0], min);
 		}
 		else
 		{
-			i_ihv(f.fronts[0], min);
+			i_ihv(f->fronts[0], min);
 		}
 
 		// find the ind with minimal hv contribution
@@ -169,7 +187,15 @@ namespace emoc {
 		}
 
 		free(min);
-		return j;
+
+		// read the data
+		for (i = 0; i < pop_num; i++)
+			free(f->fronts[0].points[i].objectives);
+		free(f->fronts[0].points);
+		free(f->fronts);
+		free(f);
+
+		return j== pop_num? j - 1: j;
 	}
 
 	void SMSEMOA::EnvironmentalSelection(Individual **parent_pop, Individual *offspring)

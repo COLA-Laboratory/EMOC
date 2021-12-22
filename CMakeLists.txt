@@ -50,6 +50,7 @@ set(HEADERS
         vendor/alglib/src/specialfunctions.h
         vendor/alglib/src/statistics.h
         vendor/alglib/src/stdafx.h
+        vendor/cxxopts/cxxopts.hpp
         src/core/file.h
         src/core/global.h
         src/core/individual.h

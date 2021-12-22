@@ -27,7 +27,7 @@ namespace emoc {
 			FEs_[i] = 1.0;
 			FEs_success_[i] = 0.0;
 			P_[i] = 0.25;
-			NS_[i] = 30 * (i + 1);
+			NS_[i] = 24 * (i + 1);
 		}
 		LP_ = 50;
 	}
@@ -119,12 +119,10 @@ namespace emoc {
 		real_popnum_ = weight_num_;
 		
 		// check the population size
-		if (weight_num_ <= 120)
+		if (weight_num_ < 97)
 		{
-			std::cout << "The population size should more than 120, or you need to change the NS parameters for algorithm" << std::endl;
-			std::cout << "Press enter to exit" << std::endl;
-			std::cin.get();
-			exit(-1);
+			std::cout << "In ENSMOEAD, the population size should more than 97, or you need to change the NS parameters for algorithm.\n" << std::endl;
+			exit(1);
 		}
 		replace_num_ = (weight_num_ / 100) ? (weight_num_ / 100) : 2;
 

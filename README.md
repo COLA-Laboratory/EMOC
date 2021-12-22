@@ -125,7 +125,8 @@ there is an example of config file in the corresponding directory.
 - [x] 实验模块的假设检验统计测试
 - [x] 实验结果table的导出功能
 - [x] 参数合法性检验，以及对应的警告
-- [ ] 命令行调用设计
+- [ ] 统计测试的比较算法问题
+- [x] 命令行调用设计 cxxopt还不错可以用一下
 - [ ] python调用接口的重新设计
 - [x] hv的计算，好了但没完全好
 - [ ] 函数和问题的注册，可能要用到反射？之后再看，现在先搞米哈游的作业

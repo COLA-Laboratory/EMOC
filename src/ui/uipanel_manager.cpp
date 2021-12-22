@@ -3,7 +3,6 @@
 #include <iostream>
 #include <thread>
 
-#include "core/file.h"
 #include "core/emoc_manager.h"
 #include "ui/ui_utility.h"
 #include "ui/imgui_impl_glfw.h"
@@ -114,7 +113,7 @@ namespace emoc {
 		title_("EMOC"),
 		glsl_version_("#version 130"),
 		window_(nullptr),
-		panel_state_(UIPanel::ExperimentPanel)
+		panel_state_(UIPanel::TestPanel)
 	{
 	}
 

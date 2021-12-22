@@ -25,27 +25,37 @@ namespace emoc {
 	}
 
 	// TODO: Init() can receive more parameters from cmd line or any other kind of customized settings.
-	void EMOCApplication::Init()
+	void EMOCApplication::Init(bool is_gui, const EMOCParameters& para)
 	{
-		plot_manager_ = PlotManager::Instance();
+		if (is_gui)
+		{
+			plot_manager_ = PlotManager::Instance();
+			ui_manager_ = UIPanelManager::Instance();
+			ui_manager_->Init(1600, 900, "EMOC");
+		}
+
 		emoc_manager_ = EMOCManager::Instance();
-		ui_manager_ = UIPanelManager::Instance();
-
-		ui_manager_->Init(1600, 900, "EMOC"); 
-
-		// default use gui mode
-		emoc_manager_->SetIsGUI(true);
+		emoc_manager_->SetIsGUI(is_gui);
+		emoc_manager_->SetTaskParameters(para);
+		if (para.is_open_multithread) emoc_manager_->SetIsExperiment(true); // For population store, we need set it to experiment mode. 
 	}
 
 	void EMOCApplication::Run()
 	{
-		while (ui_manager_->IsTerminate())
+		if (emoc_manager_->GetIsGUI())  // gui mode
 		{
-			// rendering
-			ui_manager_->RenderPanel();
+			while (ui_manager_->IsTerminate())
+			{
+				// rendering
+				ui_manager_->RenderPanel();
 
-			// poll events
-			ui_manager_->Update();
+				// swap buffers and poll events
+				ui_manager_->Update();
+			}
+		}
+		else							// none gui mode
+		{
+			emoc_manager_->Run();
 		}
 	}
 

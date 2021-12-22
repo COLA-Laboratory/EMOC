@@ -302,13 +302,24 @@ namespace emoc {
 				}
 			}
 		}
-		else if (problem.substr(0, 3) == "wfg")
+		else if (problem_name.substr(0, 3) == "wfg")
 		{
 			// TODO ... wfg needs extra parameter which is not implemented now.
+			int defualt_WFGK = 10;
+
+			if (M > defualt_WFGK + 1)
+			{
+				description = "The M parameter of " + problem + " must less than K + 2! (K is a parameter of WFG problem, which is 10 as defualt in EMOC. You can change it in wfg.cpp file.)\n\n";
+				res = false;
+			}
+
+			if (D < defualt_WFGK)
+			{
+				std::cout << "here!\n";
+				description = "The D parameter of " + problem + " must greater than K! (K is a parameter of WFG problem, which is 10 as defualt in EMOC. You can change it in wfg.cpp file.)\n\n";
+				res = false;
+			}
 		}
-
-
-
 
 		return res;
 	}

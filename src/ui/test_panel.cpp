@@ -248,6 +248,7 @@ namespace emoc {
 					<< "obj dim: " << M << "\n"
 					<< "dec dim: " << D << "\n"
 					<< "evaluation number: " << Evaluation << "\n";
+				std::cout << "---------------------------------------\n";
 
 				current_evaluation = 0;
 				max_evaluation = Evaluation;
@@ -261,7 +262,7 @@ namespace emoc {
 				para.decision_num = D;
 				para.population_num = N;
 				para.max_evaluation = Evaluation;
-				para.output_interval = 100000;			// TODO: change this to 1, and modify the plot code use this output pop
+				para.output_interval = 1;			// We store population of each iteration for plotting
 				para.runs_num = 1;
 				para.is_open_multithread = false;
 

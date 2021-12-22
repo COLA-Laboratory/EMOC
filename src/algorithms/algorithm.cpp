@@ -198,12 +198,12 @@ namespace emoc {
 		if (g_GlobalSettings->iteration_num_ == 0)
 			PlotManager::Instance()->RefreshPipe();
 
-		start_ = clock();
+		//start_ = clock();
 		plot_manager->Send(real_cmd);
-		end_ = clock();
+		//end_ = clock();
 		//std::cout << (double)end_ << " " << (double)start_ << "\n";
-		testTime += (double)(end_ - start_) / CLOCKS_PER_SEC;
-		std::cout << (double)(end_ - start_) / CLOCKS_PER_SEC << " total draw time:" << testTime << "\n";
+		//testTime += (double)(end_ - start_) / CLOCKS_PER_SEC;
+		//std::cout << (double)(end_ - start_) / CLOCKS_PER_SEC << " total draw time:" << testTime << "\n";
 
 		double waiting_time = 15.0 * real_popnum_ / 100.0;
 		waiting_time = waiting_time > 27.5 ? waiting_time : 27.5;
