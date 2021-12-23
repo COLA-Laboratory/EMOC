@@ -174,7 +174,7 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 	add_custom_command(TARGET EMOC POST_BUILD COMMAND copy ..\\build\\Release\\EMOC.exe ..\\EMOC.exe)
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     target_link_libraries(EMOC GL pthread)
-    target_link_libraries(EMOC glfw3 ${CMAKE_DL_LIBS} X11)
+    target_link_libraries(EMOC glfw3 dl X11)
 	
 	add_custom_command(TARGET EMOC POST_BUILD COMMAND mv ./EMOC ../EMOC)
 endif()

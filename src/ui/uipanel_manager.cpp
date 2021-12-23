@@ -94,6 +94,17 @@ namespace emoc {
 		glfwPollEvents();
 	}
 
+	void UIPanelManager::CleanUp()
+	{
+		// cleanup
+		ImGui_ImplOpenGL3_Shutdown();
+		ImGui_ImplGlfw_Shutdown();
+		ImGui::DestroyContext();
+
+		glfwDestroyWindow(window_);
+		glfwTerminate();
+	}
+
 	void UIPanelManager::AddAvailSingleThreadResult(std::string res)
 	{
 		// push back new available run's description string
@@ -211,13 +222,8 @@ namespace emoc {
 
 	UIPanelManager::~UIPanelManager()
 	{
-		// cleanup
-		ImGui_ImplOpenGL3_Shutdown();
-		ImGui_ImplGlfw_Shutdown();
-		ImGui::DestroyContext();
 
-		glfwDestroyWindow(window_);
-		glfwTerminate();
+
 	}
 
 	void UIPanelManager::EmbraceTheClassic()

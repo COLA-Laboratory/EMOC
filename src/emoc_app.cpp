@@ -52,6 +52,8 @@ namespace emoc {
 				// swap buffers and poll events
 				ui_manager_->Update();
 			}
+			ui_manager_->CleanUp();
+			
 		}
 		else							// none gui mode
 		{

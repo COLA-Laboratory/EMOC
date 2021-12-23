@@ -48,6 +48,7 @@ int main(int argc, char* argv[])
 	//}
 	
 	// parse command line input
+	
 	bool is_gui = false;
 	EMOCParameters para;
 	emoc::EMOCParamerterParse(argc, argv, para, is_gui);
@@ -59,6 +60,7 @@ int main(int argc, char* argv[])
 	emoc_app.Init(is_gui, para);
 	emoc_app.Run();
 
+	
 
 	// multithread test
 	//emoc::EMOCParameters parameter;

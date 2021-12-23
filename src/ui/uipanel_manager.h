@@ -33,6 +33,7 @@ namespace emoc {
 		void Init(int width, int height, const std::string& title);
 		void RenderPanel();
 		void Update();
+		void CleanUp();
 
 		// getter
 		inline int GetExpAlgorithmNum() { return experiment_panel_.table_algorithms.size(); }
