@@ -68,6 +68,7 @@ namespace emoc {
 		bool is_terminate = g_GlobalSettings->current_evaluation_ >= g_GlobalSettings->max_evaluation_;
 		if (g_GlobalSettings->iteration_num_ % g_GlobalSettings->output_interval_ == 0 || is_terminate)
 			TrackPopulation(g_GlobalSettings->iteration_num_);
+		
 		if (is_plot)
 			PlotPopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->iteration_num_);
 
@@ -143,7 +144,13 @@ namespace emoc {
 		char script_file_name[256];
 		sprintf(data_file_name, "./output/test_module/run%d/pop_%d.txt", current_run, gen);
 		sprintf(script_file_name, "./plotfile/%d.gnu", gen);
+		CreateDirectory(script_file_name);
 		script_file = fopen(script_file_name, "w");
+		if(!script_file)
+		{
+			std::cout<<"Can not create the plot script file: "<<script_file_name<<"\n";
+			exit(1);
+		}
 
 		int obj_num = g_GlobalSettings->obj_num_;
 
@@ -189,7 +196,6 @@ namespace emoc {
 		fprintf(script_file, "%s", plot_cmd);
 		fflush(script_file);
 		fclose(script_file);
-
 		char real_cmd[128];
 
 		sprintf(real_cmd, "load '%s'\n", script_file_name);

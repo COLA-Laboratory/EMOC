@@ -206,7 +206,7 @@ namespace emoc {
 		ImFontConfig icons_config; icons_config.MergeMode = true; icons_config.PixelSnapH = true;
 		io.Fonts->AddFontFromFileTTF(FONT_ICON_FILE_NAME_FAS, 17.0f, &icons_config, icons_ranges);
 		icons_config.MergeMode = false;
-		font_bold = io.Fonts->AddFontFromFileTTF("./resource/fonts/DroidSans.ttf", 22.0f);
+		font_bold = io.Fonts->AddFontFromFileTTF("./resource/fonts/DroidSans_Bold.ttf", 22.0f);
 	}
 
 	UIPanelManager::~UIPanelManager()
