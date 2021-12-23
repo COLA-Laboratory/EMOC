@@ -33,6 +33,7 @@ namespace emoc {
 		display_index(0),
 		format_index(0),
 		hypothesis_index(0),
+		compared_index(0),
 		current_algorithm_names(nullptr),
 		current_problem_names(nullptr)
 	{
@@ -351,12 +352,14 @@ namespace emoc {
 			static bool is_displayN = false; ImGui::Checkbox("N##Experiment", &is_displayN); ImGui::SameLine();
 			static bool is_displayEvaluation = false; ImGui::Checkbox("Evaluation##Experiment", &is_displayEvaluation); ImGui::SameLine();
 			ImGui::SetNextItemWidth(ImGui::CalcTextSize("Runtimexxxx").x);
-			ImGui::Combo("Indicator##DisplayExperiment", &display_index, display_names.data(), display_names.size()); ImGui::SameLine();
+			ImGui::Combo("Metric##DisplayExperiment", &display_index, display_names.data(), display_names.size()); ImGui::SameLine();
 			ImGui::SetNextItemWidth(ImGui::CalcTextSize("Median(IQR)xxxx").x);
 			ImGui::Combo("Format##DisplayFormatExperiment", &format_index, format_names.data(), format_names.size()); ImGui::SameLine();
-			ImGui::SetNextItemWidth(ImGui::CalcTextSize("Rank Sum Testxxxx").x);
+			ImGui::SetNextItemWidth(ImGui::CalcTextSize("RankSumTestxxxx").x);
 			ImGui::Combo("Test##HypothesisExperiment", &hypothesis_index, hypothesis_names.data(), hypothesis_names.size()); ImGui::SameLine();
-			
+			ImGui::SetNextItemWidth(ImGui::CalcTextSize("Defaultxxxx").x);
+			ImGui::Combo("Comp##ComparedExperiment", &compared_index, compared_names.data(), compared_names.size()); ImGui::SameLine();
+
 			// table save event
 			ImGui::SetCursorPosX(ImGui::GetWindowSize().x-60.0f);
 			static char save_button[256] = ICON_FA_SAVE "##ExperimentSave";
@@ -374,7 +377,6 @@ namespace emoc {
 			char popup_text[256];
 			if (ImGui::BeginPopupModal("Save Result##Experiment", NULL, ImGuiWindowFlags_AlwaysAutoResize))
 			{
-
 				if (is_save_success)
 					sprintf(popup_text, "Save Success!\nThe table content has been saved to output\/table\/new.tex and output\/table\/new.csv!\n\n");
 				else if (!is_save_success)
@@ -396,7 +398,7 @@ namespace emoc {
 			if (is_displayEvaluation) columns.push_back("Evaluation");
 
 			table.Render(is_displayM, is_displayD, is_displayN, is_displayEvaluation,
-				display_names[display_index],format_names[format_index], hypothesis_names[hypothesis_index]);
+				display_names[display_index],format_names[format_index], hypothesis_names[hypothesis_index], compared_names[compared_index]);
 			
 			//ImGui::SetCursorPosX(ImGui::GetWindowSize().x - 260.0f);
 			//if (!is_finish) ImGui::BeginDisabled();

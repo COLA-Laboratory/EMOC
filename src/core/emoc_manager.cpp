@@ -7,6 +7,7 @@
 #include "metric/igd.h"
 #include "metric/hv.h"
 #include "random/random.h"
+#include "ui/ui_utility.h"
 #include "ui/uipanel_manager.h"
 #include "alglib/src/statistics.h"
 
@@ -282,40 +283,134 @@ namespace emoc {
 
 		// Take the last column algorithm to be the compared object as default.
 		int compared_parameter_index = range_end - 1;
-		EMOCMultiThreadResult& compared_res = multi_thread_result_history_[compared_parameter_index];
-		for (int i = range_start; i < range_end - 1; i++)
+		EMOCMultiThreadResult& default_compared_res = multi_thread_result_history_[compared_parameter_index];
+		int igdmean_best_index = GetBestParameterIndex(range_start, range_end, "IGD", "Mean");
+		int igdmedian_best_index = GetBestParameterIndex(range_start, range_end, "IGD", "Median");
+		int runtimemean_best_index = GetBestParameterIndex(range_start, range_end, "Runtime", "Mean");
+		int runtimemedian_best_index = GetBestParameterIndex(range_start, range_end, "Runtime", "Median");
+		int hvmean_best_index = GetBestParameterIndex(range_start, range_end, "HV", "Mean");
+		int hvmedian_best_index = GetBestParameterIndex(range_start, range_end, "HV", "Median");
+		for (int i = range_start; i < range_end; i++)
 		{
 			EMOCMultiThreadResult& res = multi_thread_result_history_[i];
 
+			// default comparision
+			if (i != range_end - 1)
+			{
+				StatisticTestAccordingMetric(res, default_compared_res, "Runtime", "Default");
+				StatisticTestAccordingMetric(res, default_compared_res, "IGD", "Default");
+				StatisticTestAccordingMetric(res, default_compared_res, "HV", "Default");
+			}
+
+			// mean best comparision
+			if (i != runtimemean_best_index)
+			{
+				EMOCMultiThreadResult& meanbest_compared_res = multi_thread_result_history_[runtimemean_best_index];
+				StatisticTestAccordingMetric(res, meanbest_compared_res, "Runtime", "Mean");
+			}
+			if (i != igdmean_best_index)
+			{
+				EMOCMultiThreadResult& meanbest_compared_res = multi_thread_result_history_[igdmean_best_index];
+				StatisticTestAccordingMetric(res, meanbest_compared_res, "IGD", "Mean");
+			}
+			if (i != hvmean_best_index)
+			{
+				EMOCMultiThreadResult& meanbest_compared_res = multi_thread_result_history_[hvmean_best_index];
+				StatisticTestAccordingMetric(res, meanbest_compared_res, "HV", "Mean");
+			}
+
+			// median best comparision
+			if (i != runtimemedian_best_index)
+			{
+				EMOCMultiThreadResult& medianbest_compared_res = multi_thread_result_history_[runtimemedian_best_index];
+				StatisticTestAccordingMetric(res, medianbest_compared_res, "Runtime", "Median");
+			}
+			if (i != igdmedian_best_index)
+			{
+				EMOCMultiThreadResult& medianbest_compared_res = multi_thread_result_history_[igdmedian_best_index];
+				StatisticTestAccordingMetric(res, medianbest_compared_res, "IGD", "Median");
+			}
+			if (i != hvmedian_best_index)
+			{
+				EMOCMultiThreadResult& medianbest_compared_res = multi_thread_result_history_[hvmedian_best_index];
+				StatisticTestAccordingMetric(res, medianbest_compared_res, "HV", "Median");
+			}
+		}
+	}
+
+	void EMOCManager::StatisticTestAccordingMetric(EMOCMultiThreadResult& res, EMOCMultiThreadResult& compared_res, const std::string& metric, const std::string& format)
+	{
+		int index = 2;
+		if (format == "Mean") index = 0;
+		else if (format == "Median") index = 1;
+
+		if (metric == "Runtime")
+		{
 			bool is_diff_ranksum = RankSumTest(res.runtime_history, compared_res.runtime_history);
 			bool is_diff_signrank = SignRankTest(res.runtime_history, compared_res.runtime_history);
-			if (res.runtime_mean_ranksum == -2) res.runtime_mean_ranksum = is_diff_ranksum ? (res.runtime_mean < compared_res.runtime_mean ? 1 : -1) : 0;
-			if (res.runtime_median_ranksum == -2)res.runtime_median_ranksum = is_diff_ranksum ? (res.runtime_median < compared_res.runtime_median ? 1 : -1) : 0;
-			if (res.runtime_mean_signrank == -2) res.runtime_mean_signrank = is_diff_signrank ? (res.runtime_mean< compared_res.runtime_mean ? 1 : -1) : 0;
-			if (res.runtime_median_signrank == -2)res.runtime_median_signrank = is_diff_signrank ? (res.runtime_median < compared_res.runtime_median ? 1 : -1) : 0;
-
-			is_diff_ranksum = RankSumTest(res.igd_history, compared_res.igd_history);
-			is_diff_signrank = SignRankTest(res.igd_history, compared_res.igd_history);
-			if (res.igd_mean_ranksum == -2) res.igd_mean_ranksum = is_diff_ranksum ? (res.igd_mean < compared_res.igd_mean ? 1 : -1) : 0;
-			if (res.igd_median_ranksum == -2)res.igd_median_ranksum = is_diff_ranksum ? (res.igd_median < compared_res.igd_median ? 1 : -1) : 0;
-			if (res.igd_mean_signrank == -2) res.igd_mean_signrank = is_diff_signrank ? (res.igd_mean < compared_res.igd_mean ? 1 : -1) : 0;
-			if (res.igd_median_signrank == -2)res.igd_median_signrank = is_diff_signrank ? (res.igd_median < compared_res.igd_median ? 1 : -1) : 0;
-
-			is_diff_ranksum = RankSumTest(res.hv_history, compared_res.hv_history);
-			is_diff_signrank = SignRankTest(res.hv_history, compared_res.hv_history);
-			if (res.hv_mean_ranksum == -2) res.hv_mean_ranksum = is_diff_ranksum ? (res.hv_mean < compared_res.hv_mean ? 1 : -1) : 0;
-			if (res.hv_median_ranksum == -2)res.hv_median_ranksum = is_diff_ranksum ? (res.hv_median < compared_res.hv_median ? 1 : -1) : 0;
-			if (res.hv_mean_signrank == -2) res.hv_mean_signrank = is_diff_signrank ? (res.hv_mean < compared_res.hv_mean ? 1 : -1) : 0;
-			if (res.hv_median_signrank == -2)res.hv_median_signrank = is_diff_signrank ? (res.hv_median < compared_res.hv_median ? 1 : -1) : 0;
-
-			//for (int j = 0; j < res.igd_history.size(); j++)
-			//	std::cout << res.igd_history[j] << ",";
-			//std::cout << "\n";
+			if (res.runtime_mean_ranksum[index] == -2) res.runtime_mean_ranksum[index] = is_diff_ranksum ? (res.runtime_mean < compared_res.runtime_mean ? 1 : -1) : 0;
+			if (res.runtime_median_ranksum[index] == -2)res.runtime_median_ranksum[index] = is_diff_ranksum ? (res.runtime_median < compared_res.runtime_median ? 1 : -1) : 0;
+			if (res.runtime_mean_signrank[index] == -2) res.runtime_mean_signrank[index] = is_diff_signrank ? (res.runtime_mean < compared_res.runtime_mean ? 1 : -1) : 0;
+			if (res.runtime_median_signrank[index] == -2)res.runtime_median_signrank[index] = is_diff_signrank ? (res.runtime_median < compared_res.runtime_median ? 1 : -1) : 0;
 		}
-		//for (int j = 0; j < compared_res.igd_history.size(); j++)
-		//	std::cout << compared_res.igd_history[j] << ",";
-		//std::cout << "\n";
+		else if (metric == "IGD")
+		{
+			bool is_diff_ranksum = RankSumTest(res.igd_history, compared_res.igd_history);
+			bool is_diff_signrank = SignRankTest(res.igd_history, compared_res.igd_history);
+			if (res.igd_mean_ranksum[index] == -2) res.igd_mean_ranksum[index] = is_diff_ranksum ? (res.igd_mean < compared_res.igd_mean ? 1 : -1) : 0;
+			if (res.igd_median_ranksum[index] == -2)res.igd_median_ranksum[index] = is_diff_ranksum ? (res.igd_median < compared_res.igd_median ? 1 : -1) : 0;
+			if (res.igd_mean_signrank[index] == -2) res.igd_mean_signrank[index] = is_diff_signrank ? (res.igd_mean < compared_res.igd_mean ? 1 : -1) : 0;
+			if (res.igd_median_signrank[index] == -2)res.igd_median_signrank[index] = is_diff_signrank ? (res.igd_median < compared_res.igd_median ? 1 : -1) : 0;
+		}
+		else if (metric == "HV")
+		{
+			bool is_diff_ranksum = RankSumTest(res.hv_history, compared_res.hv_history);
+			bool is_diff_signrank = SignRankTest(res.hv_history, compared_res.hv_history);
+			if (res.hv_mean_ranksum[index] == -2) res.hv_mean_ranksum[index] = is_diff_ranksum ? (res.hv_mean < compared_res.hv_mean ? 1 : -1) : 0;
+			if (res.hv_median_ranksum[index] == -2)res.hv_median_ranksum[index] = is_diff_ranksum ? (res.hv_median < compared_res.hv_median ? 1 : -1) : 0;
+			if (res.hv_mean_signrank[index] == -2) res.hv_mean_signrank[index] = is_diff_signrank ? (res.hv_mean < compared_res.hv_mean ? 1 : -1) : 0;
+			if (res.hv_median_signrank[index] == -2)res.hv_median_signrank[index] = is_diff_signrank ? (res.hv_median < compared_res.hv_median ? 1 : -1) : 0;
+		}
+		else
+		{
+			// TODO... add other metrics
+		}
+
 	}
+
+
+	int EMOCManager::GetBestParameterIndex(int start, int end, const std::string& metric, const std::string& format)
+	{
+		int res = start;
+		double best_value1 = 0.0f;
+		double best_value2 = 0.0f;
+		
+
+		GetComparedMetric(metric, format, start, best_value1, best_value2);
+		for (int i = start + 1; i < end; i++)
+		{
+			double current_value1, current_value2;
+			GetComparedMetric(metric, format, i, current_value1, current_value2);
+			if (best_value1 > current_value1)
+			{
+				res = i;
+				best_value1 = current_value1;
+				best_value2 = current_value2;
+			}
+			else if (std::fabs(best_value1 - current_value1) < EMOC_EPS)
+			{
+				if (best_value2 > current_value2)
+				{
+					res = i;
+					best_value1 = current_value1;
+					best_value2 = current_value2;
+				}
+			}
+		}
+
+		return res;
+	}
+
 
 	int EMOCManager::RankSumTest(const std::vector<double>& array1, const std::vector<double>& array2)
 	{

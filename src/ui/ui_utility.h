@@ -41,6 +41,10 @@ namespace emoc{
 	bool CheckTestPlotSettings(int size_x, int size_y, int offset_x, int offset_y, std::string& description);
 	bool CheckExpSettings(int thread_num, int runs_num, int save_interval, std::string& description);
 
+	// get metric utilities
+	void GetComparedMetric(const std::string& para, const std::string& format, int parameter_index, double& metric1, double& metric2);
+	void GetComparedMetric(const std::string& format, double mean, double std, double median, double iqr, double& metric1, double& metric2);
+
 	struct CategorizedAlgorithmList
 	{
 		CategorizedAlgorithmList();

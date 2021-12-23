@@ -5,6 +5,7 @@
 #include <iostream>
 #include <thread>
 
+#include "core/emoc_manager.h"
 #include "imgui.h"
 #include "imgui_internal.h"
 
@@ -193,8 +194,8 @@ namespace emoc {
 
 	void InitHypothesisList(std::vector<char*>& hypothesis_names)
 	{
-		hypothesis_names.push_back("Rank Sum Test");
-		hypothesis_names.push_back("Sign Rank Test");
+		hypothesis_names.push_back("RankSumTest");
+		hypothesis_names.push_back("SignRankTest");
 
 	}
 
@@ -379,6 +380,48 @@ namespace emoc {
 		}
 
 		return res;
+	}
+
+	void GetComparedMetric(const std::string& para, const std::string& format, int parameter_index, double& metric1, double& metric2)
+	{
+		EMOCMultiThreadResult res = EMOCManager::Instance()->GetMultiThreadResult(parameter_index);
+		if (res.valid_res_count == 0)
+		{
+			metric1 = EMOC_INF;
+			metric2 = EMOC_INF;
+			return;
+		}
+
+		if (para == "IGD")
+		{
+			GetComparedMetric(format, res.igd_mean, res.igd_std, res.igd_median, res.igd_iqr, metric1, metric2);
+		}
+		else if (para == "Runtime")
+		{
+			GetComparedMetric(format, res.runtime_mean, res.runtime_std, res.runtime_median, res.runtime_iqr, metric1, metric2);
+		}
+		else if (para == "HV")
+		{
+			GetComparedMetric(format, res.hv_mean, res.hv_std, res.hv_median, res.hv_iqr, metric1, metric2);
+		}
+		else
+		{
+			// TODO
+		}
+	}
+
+	void GetComparedMetric(const std::string& format, double mean, double std, double median, double iqr, double& metric1, double& metric2)
+	{
+		if (format == "Mean" || format == "Mean(STD)")
+		{
+			metric1 = mean;
+			metric2 = std;
+		}
+		else if (format == "Median" || format == "Median(IQR)")
+		{
+			metric1 = median;
+			metric2 = iqr;
+		}
 	}
 
 	bool Splitter(bool split_vertically, float thickness, float* size1, float* size2, float min_size1, float min_size2, float splitter_long_axis_size)

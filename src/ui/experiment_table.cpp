@@ -41,11 +41,11 @@ namespace emoc{
 
 	// ImVec4(0.33f, 0.33f, 0.35f, 1.00f);
 	void ExperimentTable::Render(bool is_displayM, bool is_displayD, bool is_displayN, bool is_displayEvaluation, 
-		const std::string &display_para, const std::string& format, const std::string& hypothesis)
+		const std::string &display_para, const std::string& format, const std::string& hypothesis, const std::string& comp)
 	{
 		// update current table state
 		isM = is_displayM; isD = is_displayD; isN = is_displayN; isEvaluation = is_displayEvaluation;
-		para_name = display_para; format_name = format; hypothesis_name = hypothesis;
+		para_name = display_para; format_name = format; hypothesis_name = hypothesis; comp_name = comp;
 
 		// set ImGui table flag
 		static ImGuiTableFlags flags = ImGuiTableFlags_ScrollY | ImGuiTableFlags_RowBg | ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable;
@@ -333,27 +333,32 @@ namespace emoc{
 		{ 
 			int parameter_index = rows[row].parameter_indexes[i] + col_in_algorithms;
 			EMOCMultiThreadResult res = EMOCManager::Instance()->GetMultiThreadResult(parameter_index);
-			//std::cout <<i<<": " <<res.igd_mean_ranksum << "\n";
 			double mean = 0.0, std = 0.0, median = 0.0, iqr = 0.0;
 			char hypothesis_symbol = ' ';
+
+			// calculate correct comparision result index
+			int comp_index = 2;
+			if (comp_name == "Default") comp_index = 2;
+			else if (comp_name == "Best" && (format == "Median" || format == "Median(IQR)")) comp_index = 1;
+			else if (comp_name == "Best" && (format == "Mean" || format == "Mean(STD)")) comp_index = 0;
 
 			// set display table content according to the metric and result stored in EMOCMultiThreadResult
 			char display[256];
 			char final_display[256];
 			if (para == "Runtime")
 			{
-				hypothesis_symbol = GetHypothesisSymbol(res.runtime_mean_ranksum, res.runtime_median_ranksum, res.runtime_mean_signrank, res.runtime_median_signrank, hypothesis, format);
+				hypothesis_symbol = GetHypothesisSymbol(res.runtime_mean_ranksum[comp_index], res.runtime_median_ranksum[comp_index], res.runtime_mean_signrank[comp_index], res.runtime_median_signrank[comp_index], hypothesis, format);
 				SetTableContent(display, format, res.runtime_mean, res.runtime_std, res.runtime_median, res.runtime_iqr);
 			}
 			else if (para == "IGD")
 			{
-				hypothesis_symbol = GetHypothesisSymbol(res.igd_mean_ranksum, res.igd_median_ranksum, res.igd_mean_signrank, res.igd_median_signrank, hypothesis, format);
+				hypothesis_symbol = GetHypothesisSymbol(res.igd_mean_ranksum[comp_index], res.igd_median_ranksum[comp_index], res.igd_mean_signrank[comp_index], res.igd_median_signrank[comp_index], hypothesis, format);
 				SetTableContent(display, format, res.igd_mean, res.igd_std, res.igd_median, res.igd_iqr);
 				//std::cout << hypothesis_symbol << "\n";
 			}
 			else if (para == "HV")
 			{
-				hypothesis_symbol = GetHypothesisSymbol(res.hv_mean_ranksum, res.hv_median_ranksum, res.hv_mean_signrank, res.hv_median_signrank, hypothesis, format);
+				hypothesis_symbol = GetHypothesisSymbol(res.hv_mean_ranksum[comp_index], res.hv_median_ranksum[comp_index], res.hv_mean_signrank[comp_index], res.hv_median_signrank[comp_index], hypothesis, format);
 				SetTableContent(display, format, res.hv_mean, res.hv_std, res.hv_median, res.hv_iqr);
 			}
 
@@ -423,48 +428,6 @@ namespace emoc{
 		return best_index == parameter_index;
 	}
 
-	void ExperimentTable::GetComparedMetric(const std::string& para, const std::string& format, int parameter_index, double& metric1, double& metric2)
-	{
-		EMOCMultiThreadResult res = EMOCManager::Instance()->GetMultiThreadResult(parameter_index);
-		if (res.valid_res_count == 0)
-		{
-			metric1 = EMOC_INF;
-			metric2 = EMOC_INF;
-			return;
-		}
-
-		if(para == "IGD")
-		{ 
-			GetComparedMetric(format, res.igd_mean, res.igd_std, res.igd_median, res.igd_iqr, metric1, metric2);
-		}
-		else if(para == "Runtime")
-		{
-			GetComparedMetric(format, res.runtime_mean, res.runtime_std, res.runtime_median, res.runtime_iqr, metric1, metric2);
-		}
-		else if(para == "HV")
-		{
-			GetComparedMetric(format, res.hv_mean, res.hv_std, res.hv_median, res.hv_iqr, metric1, metric2);
-		}
-		else
-		{
-			// TODO
-		}
-	}
-
-	void ExperimentTable::GetComparedMetric(const std::string& format, double mean, double std, double median, double iqr, double& metric1, double& metric2)
-	{
-		if (format == "Mean" || format == "Mean(STD)")
-		{
-			metric1 = mean;
-			metric2 = std;
-		}
-		else if (format == "Median" || format == "Median(IQR)")
-		{
-			metric1 = median;
-			metric2 = iqr;
-		}
-	}
-
 	char ExperimentTable::GetHypothesisSymbol(int mean_ranksum, int median_ranksum, int mean_signrank, int median_signrank,
 		const std::string& hypothesis, const std::string& format)
 	{
@@ -477,19 +440,19 @@ namespace emoc{
 
 		if (format == "Mean" || format == "Mean(STD)")
 		{
-			if (hypothesis == "Rank Sum Test")
+			if (hypothesis == "RankSumTest")
 				if (mean_ranksum != -2) res = symbol[mean_ranksum + 1];
 
-			if (hypothesis == "Sign Rank Test")
+			if (hypothesis == "SignRankTest")
 				if (mean_signrank != -2)  res = symbol[mean_signrank + 1];
 			
 		}
 		else if (format == "Median" || format == "Median(IQR)")
 		{
-			if (hypothesis == "Rank Sum Test")
+			if (hypothesis == "RankSumTest")
 				if (median_ranksum != -2) res = symbol[median_ranksum + 1];
 
-			if (hypothesis == "Sign Rank Test")
+			if (hypothesis == "SignRankTest")
 				if (median_signrank != -2)  res = symbol[median_signrank + 1];
 		}
 
@@ -565,22 +528,28 @@ namespace emoc{
 						double mean = 0.0, std = 0.0, median = 0.0, iqr = 0.0;
 						char hypothesis_symbol = ' ';
 
+						// calculate correct comparision result index
+						int comp_index = 2;
+						if (comp_name == "Default") comp_index = 2;
+						else if (comp_name == "Best" && (format_name == "Median" || format_name == "Median(IQR)")) comp_index = 1;
+						else if (comp_name == "Best" && (format_name == "Mean" || format_name == "Mean(Std)")) comp_index = 0;
+
 						// set display table content according to the metric and result stored in EMOCMultiThreadResult
 						char display[256];
 						char final_display[256];
 						if (para_name == "Runtime")
 						{
-							hypothesis_symbol = GetHypothesisSymbol(res.runtime_mean_ranksum, res.runtime_median_ranksum, res.runtime_mean_signrank, res.runtime_median_signrank, hypothesis_name, format_name);
+							hypothesis_symbol = GetHypothesisSymbol(res.runtime_mean_ranksum[comp_index], res.runtime_median_ranksum[comp_index], res.runtime_mean_signrank[comp_index], res.runtime_median_signrank[comp_index], hypothesis_name, format_name);
 							SetTableContent(display, format_name, res.runtime_mean, res.runtime_std, res.runtime_median, res.runtime_iqr);
 						}
 						else if (para_name == "IGD")
 						{
-							hypothesis_symbol = GetHypothesisSymbol(res.igd_mean_ranksum, res.igd_median_ranksum, res.igd_mean_signrank, res.igd_median_signrank, hypothesis_name, format_name);
+							hypothesis_symbol = GetHypothesisSymbol(res.igd_mean_ranksum[comp_index], res.igd_median_ranksum[comp_index], res.igd_mean_signrank[comp_index], res.igd_median_signrank[comp_index], hypothesis_name, format_name);
 							SetTableContent(display, format_name, res.igd_mean, res.igd_std, res.igd_median, res.igd_iqr);
 						}
 						else if (para_name == "HV")
 						{
-							hypothesis_symbol = GetHypothesisSymbol(res.hv_mean_ranksum, res.hv_median_ranksum, res.hv_mean_signrank, res.hv_median_signrank, hypothesis_name, format_name);
+							hypothesis_symbol = GetHypothesisSymbol(res.hv_mean_ranksum[comp_index], res.hv_median_ranksum[comp_index], res.hv_mean_signrank[comp_index], res.hv_median_signrank[comp_index], hypothesis_name, format_name);
 							SetTableContent(display, format_name, res.hv_mean, res.hv_std, res.hv_median, res.hv_iqr);
 						}
 

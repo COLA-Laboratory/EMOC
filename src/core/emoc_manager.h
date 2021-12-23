@@ -91,9 +91,13 @@ namespace emoc {
 		void EMOCMultiThreadRun();
 		void ExperimentWorker(std::vector<EMOCExperimentTask> tasks, int thread_id);
 
-		void UpdateExpStatTest(int parameter_index);
+		// get best index according to para and format
+		int GetBestParameterIndex(int start, int end, const std::string &metric, const std::string& format);
+		void StatisticTestAccordingMetric(EMOCMultiThreadResult& res, EMOCMultiThreadResult& compared_res, const std::string& metric, const std::string& format);
+
 		int RankSumTest(const std::vector<double>& array1, const std::vector<double>& array2);
 		int SignRankTest(const std::vector<double>& array1, const std::vector<double>& array2);
+		void UpdateExpStatTest(int parameter_index);
 		void UpdateExpResult(EMOCMultiThreadResult &res, int new_res_index, int parameter_index);
 		void UpdateExpMetricStat(std::vector<double>& indicator_history, std::vector<bool>& is_indicator_record,
 			double& mean, double& std, double& median, double& iqr);
@@ -157,22 +161,22 @@ namespace emoc {
 		std::vector<double> runtime_history;
 		std::vector<bool> is_runtime_record;
 		double runtime_mean = 0.0, runtime_std = 0.0, runtime_median = 0.0, runtime_iqr = 0.0;
-		int runtime_mean_ranksum = -2, runtime_mean_signrank = -2;
-		int runtime_median_ranksum = -2, runtime_median_signrank = -2;
+		int runtime_mean_ranksum[3]= { -2, -2, -2 }, runtime_mean_signrank[3] = { -2, -2, -2 };			// 0:mean best compared result 1:median best compared result 2:last column compared result
+		int runtime_median_ranksum[3] = { -2, -2 , -2 }, runtime_median_signrank[3] = { -2, -2, -2 };
 
 		// igd results
 		std::vector<double> igd_history;
 		std::vector<bool> is_igd_record;
 		double igd_mean = 0.0, igd_std = 0.0, igd_median = 0.0, igd_iqr = 0.0;
-		int igd_mean_ranksum = -2, igd_mean_signrank = -2;
-		int igd_median_ranksum = -2, igd_median_signrank = -2;
+		int igd_mean_ranksum[3] = { -2, -2, -2 }, igd_mean_signrank[3] = { -2, -2, -2 };
+		int igd_median_ranksum[3] = { -2, -2, -2 }, igd_median_signrank[3] = { -2, -2, -2 };
 
 		// hv results
 		std::vector<double> hv_history;
 		std::vector<bool> is_hv_record;
 		double hv_mean = 0.0, hv_std = 0.0, hv_median = 0.0, hv_iqr = 0.0;
-		int hv_mean_ranksum = -2,	hv_mean_signrank = -2;
-		int hv_median_ranksum = -2, hv_median_signrank = -2;
+		int hv_mean_ranksum[3] = { -2, -2, -2 },	hv_mean_signrank[3] = { -2, -2, -2 };
+		int hv_median_ranksum[3] = { -2, -2, -2 }, hv_median_signrank[3] = { -2, -2, -2 };
 
 		int valid_res_count = 0;
 

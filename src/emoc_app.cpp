@@ -31,7 +31,7 @@ namespace emoc {
 		{
 			plot_manager_ = PlotManager::Instance();
 			ui_manager_ = UIPanelManager::Instance();
-			ui_manager_->Init(1600, 900, "EMOC");
+			ui_manager_->Init(1700, 900, "EMOC");
 		}
 
 		emoc_manager_ = EMOCManager::Instance();
