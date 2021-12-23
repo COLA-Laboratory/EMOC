@@ -8,7 +8,7 @@
 #include <cctype>
 #include <iostream>
 #include <fstream>
-
+#include <thread>
 
 #if defined(_WIN32)
 #include <direct.h>
@@ -17,6 +17,12 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <cstring>
+#include <unistd.h>
+#elif
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <cstring>
+#include <unistd.h>
 #endif
 
 #include "emoc_app.h"
@@ -361,7 +367,7 @@ namespace emoc {
 			{
 				std::cout << "EMOC WRONG PARAMETER ERROR:\n";
 				std::cout << description;
-				std::cout << "EMOC EXIT";
+				std::cout << "EMOC EXIT\n";
 				exit(1);
 			}
 

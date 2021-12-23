@@ -54,7 +54,7 @@ int main(int argc, char* argv[])
 
 	// start to run
 	EMOCApplication emoc_app;
-	is_gui = true; 
+	// is_gui = true; 
 	//para.is_open_multithread = true;
 	emoc_app.Init(is_gui, para);
 	emoc_app.Run();

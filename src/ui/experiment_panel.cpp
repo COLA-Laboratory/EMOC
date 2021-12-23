@@ -1,5 +1,6 @@
 #include "ui/experiment_panel.h"
 
+#include <cmath>
 #include <iostream>
 #include <thread>
 

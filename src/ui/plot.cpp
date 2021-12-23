@@ -1,9 +1,20 @@
 #include "ui/plot.h"
 
+#include <cstdio>
 #include <iostream>
 
 #include "emoc_app.h"
 
+#if defined(_WIN32) // windows
+#define POPEN _popen
+#define PCLOSE _pclose
+#elif defined(__linux) || defined(linux) // linux
+#define POPEN popen
+#define PCLOSE pclose
+#elif // macos?
+#define POPEN popen
+#define PCLOSE pclose
+#endif
 
 namespace emoc {
 
@@ -46,7 +57,7 @@ namespace emoc {
 		// only open pipe when window is closed
 		if (is_window_close_)
 		{
-			gp_ = _popen("gnuplot", "w");
+			gp_ = POPEN("gnuplot", "w");
 			if (!gp_)
 			{
 				std::cout << "<Error> Could not open a pipe to gnuplot, check the definition of GNUPLOT_COMMAND" << std::endl;
@@ -63,7 +74,7 @@ namespace emoc {
 		{
 			if (gp_ != nullptr)
 			{
-				_pclose(gp_);
+				PCLOSE(gp_);
 				gp_ = nullptr;
 			}
 			is_window_close_ = true;

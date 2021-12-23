@@ -1,5 +1,6 @@
 #include "ui/experiment_table.h"
 
+#include <cmath>
 #include <map>
 #include <algorithm>
 #include <iostream>

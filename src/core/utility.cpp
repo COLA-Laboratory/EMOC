@@ -3,7 +3,6 @@
 #include <fstream>
 #include <iostream>
 #include <cmath>
-#include <windows.h>
 
 #include "emoc_app.h"
 #include "ui/plot.h"

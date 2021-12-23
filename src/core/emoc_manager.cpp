@@ -1,7 +1,9 @@
 #include "core/emoc_manager.h"
 
 #include <ctime>
+#include <algorithm>
 #include <iostream>
+#include <thread>
 
 #include "emoc_app.h"
 #include "metric/igd.h"

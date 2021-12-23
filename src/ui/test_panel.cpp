@@ -1,6 +1,7 @@
 #include "ui/test_panel.h"
 
 #include <iostream>
+#include <thread>
 
 #include "emoc_app.h"
 #include "core/file.h"

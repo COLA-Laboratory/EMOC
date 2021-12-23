@@ -160,7 +160,6 @@ set(SRC
         src/metric/igd.cpp
         src/metric/spacing.cpp
         src/emoc_app.cpp
-        src/main_backup.cpp
         src/main.cpp
         )
 		
@@ -174,7 +173,8 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 	# add_custom_command(TARGET EMOC POST_BUILD COMMAND copy ..\\bin\\pthreadVC2.dll ..\\pthreadVC2.dll)
 	add_custom_command(TARGET EMOC POST_BUILD COMMAND copy ..\\build\\Release\\EMOC.exe ..\\EMOC.exe)
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    target_link_libraries(EMOC pthread)
+    target_link_libraries(EMOC GL pthread)
+    target_link_libraries(EMOC glfw3 ${CMAKE_DL_LIBS} X11)
 	
 	add_custom_command(TARGET EMOC POST_BUILD COMMAND mv ./EMOC ../EMOC)
 endif()
