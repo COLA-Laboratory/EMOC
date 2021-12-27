@@ -1,5 +1,6 @@
 #include "algorithms/smsemoa/smsemoa.h"
 
+#include <cstring>
 #include <cmath>
 #include <vector>
 

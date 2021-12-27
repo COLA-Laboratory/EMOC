@@ -1,5 +1,6 @@
 #include "metric/hv.h"
 
+#include <cmath>
 #include <iostream>
 #include <algorithm>
 #include <functional>
