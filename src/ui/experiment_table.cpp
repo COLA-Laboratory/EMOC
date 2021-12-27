@@ -407,21 +407,35 @@ namespace emoc{
 		int best_index = range_start;
 		double best_metric1 = 0.0, best_metric2 = 0.0;
 		GetComparedMetric(para, format, range_start, best_metric1, best_metric2);
+		bool is_min_better = true;
+		if (para == "HV") is_min_better = false;
+
 		for (int i = range_start + 1; i < range_end; i++)
 		{
 			double metric1 = 0.0, metric2 = 0.0;
 			GetComparedMetric(para, format, i, metric1, metric2);
-			if (best_metric1 > metric1)
+			if ((is_min_better && best_metric1 > metric1) || (!is_min_better && best_metric1 < metric1))
 			{
 				best_index = i;
 				best_metric1 = metric1;
 			}
 			else if (std::fabs(best_metric1 - metric1) <= EMOC_EPS)
 			{
-				if (best_metric2 > metric2)
+				if (format == "Median" || format == "Median(IQR)")
 				{
-					best_index = i;
-					best_metric2 = metric2;
+					if ((is_min_better && best_metric2 > metric2) || (!is_min_better && best_metric2 < metric2))
+					{
+						best_index = i;
+						best_metric2 = metric2;
+					}
+				}
+				else if (format == "Mean" || format == "Mean(STD)")	 // standard deviation is still the smaller the better
+				{
+					if (best_metric2 > metric2)
+					{
+						best_index = i;
+						best_metric2 = metric2;
+					}
 				}
 			}
 		}

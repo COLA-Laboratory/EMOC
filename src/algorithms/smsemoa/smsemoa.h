@@ -2,6 +2,7 @@
 #include "algorithms/algorithm.h"
 #include "core/individual.h"
 #include "problem/problem.h"
+#include "metric/hv.h"
 
 namespace emoc {
 
@@ -21,6 +22,8 @@ namespace emoc {
 
 	private:
 		double *nadir_point_;
+		HVCalculator hv_calculator_;
+
 	};
 
 }

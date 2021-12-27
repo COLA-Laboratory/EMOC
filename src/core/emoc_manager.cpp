@@ -126,6 +126,10 @@ namespace emoc {
 		int max_eval = para_.max_evaluation;
 		int output_interval = para_.output_interval;
 
+
+		HVCalculator hv_calculator;
+		hv_calculator.Init(obj_num, population_num);
+
 		for (int run = 0; run < para_.runs_num; ++run)
 		{
 			// For default test module, we only use one thread, so always thread id 0.
@@ -143,7 +147,7 @@ namespace emoc {
 			// collect results
 			int obj_num = g_GlobalSettingsArray[thread_id]->obj_num_;
 			double igd = CalculateIGD(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num, problem_name);
-			double hv = CalculateHV(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num, problem_name);
+			double hv = hv_calculator.Calculate(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num, problem_name);
 
 			EMOCSingleThreadResult result;
 			int count = (int)single_thread_result_historty_.size();
@@ -165,6 +169,8 @@ namespace emoc {
 			// release the memory per run
 			delete g_GlobalSettingsArray[thread_id];
 		}
+
+		hv_calculator.CleanUp();
 	}
 
 	void EMOCManager::EMOCMultiThreadRun()
@@ -229,6 +235,10 @@ namespace emoc {
 			int parameter_index = tasks[i].parameter_index;
 			int run_index = tasks[i].run_index;
 
+			HVCalculator hv_calculator;
+			hv_calculator.Init(obj_num, population_num);
+
+
 			// algorithm main entity
 			g_GlobalSettingsArray[thread_id] = new emoc::Global(algorithm_name, problem_name, population_num, dec_num, obj_num, max_eval, thread_id, output_interval, run_index);
 			g_GlobalSettingsArray[thread_id]->Init();
@@ -237,7 +247,7 @@ namespace emoc {
 
 			std::string problem = g_GlobalSettingsArray[thread_id]->problem_name_;
 			double igd = CalculateIGD(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num, problem);
-			//double hv = CalculateHV(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num, problem);
+			double hv = hv_calculator.Calculate(g_GlobalSettingsArray[thread_id]->parent_population_.data(), g_GlobalSettingsArray[thread_id]->population_num_, obj_num, problem);
 			double runtime = g_GlobalSettingsArray[thread_id]->algorithm_->GetRuntime();
 
 			// In experiment module, we record the result when it is really finished
@@ -247,8 +257,8 @@ namespace emoc {
 				multi_thread_result_history_[parameter_index].is_runtime_record[run_index] = true;
 				multi_thread_result_history_[parameter_index].igd_history[run_index] = igd;
 				multi_thread_result_history_[parameter_index].is_igd_record[run_index] = true;
-				//multi_thread_result_history_[parameter_index].hv_history[run_index] = hv;
-				//multi_thread_result_history_[parameter_index].is_hv_record[run_index] = true;
+				multi_thread_result_history_[parameter_index].hv_history[run_index] = hv;
+				multi_thread_result_history_[parameter_index].is_hv_record[run_index] = true;
 
 				// update statistic result only in gui mode
 				if (EMOCManager::Instance()->GetIsGUI())
@@ -265,6 +275,7 @@ namespace emoc {
 			printf("current thread id : %d, parameter: %d runs: %d, runtime: %f igd:%f algorithm:%s, problem:%s\n", 
 				thread_id, parameter_index, run_index, runtime, igd, algorithm_name, print_problem.c_str());
 			delete g_GlobalSettingsArray[thread_id];
+			hv_calculator.CleanUp();
 		}
 
 	}
@@ -366,12 +377,13 @@ namespace emoc {
 		}
 		else if (metric == "HV")
 		{
+			// note that hv is the bigger the better
 			bool is_diff_ranksum = RankSumTest(res.hv_history, compared_res.hv_history);
 			bool is_diff_signrank = SignRankTest(res.hv_history, compared_res.hv_history);
-			if (res.hv_mean_ranksum[index] == -2) res.hv_mean_ranksum[index] = is_diff_ranksum ? (res.hv_mean < compared_res.hv_mean ? 1 : -1) : 0;
-			if (res.hv_median_ranksum[index] == -2)res.hv_median_ranksum[index] = is_diff_ranksum ? (res.hv_median < compared_res.hv_median ? 1 : -1) : 0;
-			if (res.hv_mean_signrank[index] == -2) res.hv_mean_signrank[index] = is_diff_signrank ? (res.hv_mean < compared_res.hv_mean ? 1 : -1) : 0;
-			if (res.hv_median_signrank[index] == -2)res.hv_median_signrank[index] = is_diff_signrank ? (res.hv_median < compared_res.hv_median ? 1 : -1) : 0;
+			if (res.hv_mean_ranksum[index] == -2) res.hv_mean_ranksum[index] = is_diff_ranksum ? (res.hv_mean > compared_res.hv_mean ? 1 : -1) : 0;
+			if (res.hv_median_ranksum[index] == -2)res.hv_median_ranksum[index] = is_diff_ranksum ? (res.hv_median > compared_res.hv_median ? 1 : -1) : 0;
+			if (res.hv_mean_signrank[index] == -2) res.hv_mean_signrank[index] = is_diff_signrank ? (res.hv_mean > compared_res.hv_mean ? 1 : -1) : 0;
+			if (res.hv_median_signrank[index] == -2)res.hv_median_signrank[index] = is_diff_signrank ? (res.hv_median > compared_res.hv_median ? 1 : -1) : 0;
 		}
 		else
 		{
@@ -386,14 +398,16 @@ namespace emoc {
 		int res = start;
 		double best_value1 = 0.0f;
 		double best_value2 = 0.0f;
-		
-
+	
 		GetComparedMetric(metric, format, start, best_value1, best_value2);
+
+		bool is_min_better = true;
+		if (metric == "HV") is_min_better = false;
 		for (int i = start + 1; i < end; i++)
 		{
 			double current_value1, current_value2;
 			GetComparedMetric(metric, format, i, current_value1, current_value2);
-			if (best_value1 > current_value1)
+			if ((is_min_better && best_value1 > current_value1) || (!is_min_better && best_value1 < current_value1))
 			{
 				res = i;
 				best_value1 = current_value1;
@@ -401,11 +415,23 @@ namespace emoc {
 			}
 			else if (std::fabs(best_value1 - current_value1) < EMOC_EPS)
 			{
-				if (best_value2 > current_value2)
+				if (format == "Median")
 				{
-					res = i;
-					best_value1 = current_value1;
-					best_value2 = current_value2;
+					if ((is_min_better && best_value2 > current_value2) || (!is_min_better && best_value2 < current_value2))
+					{
+						res = i;
+						best_value1 = current_value1;
+						best_value2 = current_value2;
+					}
+				}
+				else if (format == "Mean")  // standard deviation is still the smaller the better
+				{
+					if (best_value2 > current_value2)
+					{
+						res = i;
+						best_value1 = current_value1;
+						best_value2 = current_value2;
+					}
 				}
 			}
 		}
@@ -461,7 +487,7 @@ namespace emoc {
 		res.valid_res_count++;
 
 		UpdateExpMetricStat(res.igd_history, res.is_igd_record, res.igd_mean, res.igd_std, res.igd_median, res.igd_iqr);
-		//UpdateExpMetricStat(res.hv_history, res.is_hv_record, res.hv_mean, res.hv_std, res.hv_median, res.hv_iqr);
+		UpdateExpMetricStat(res.hv_history, res.is_hv_record, res.hv_mean, res.hv_std, res.hv_median, res.hv_iqr);
 		UpdateExpMetricStat(res.runtime_history, res.is_runtime_record, res.runtime_mean, res.runtime_std, res.runtime_median, res.runtime_iqr);
 	}
 

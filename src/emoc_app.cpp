@@ -53,7 +53,6 @@ namespace emoc {
 				ui_manager_->Update();
 			}
 			ui_manager_->CleanUp();
-			
 		}
 		else							// none gui mode
 		{

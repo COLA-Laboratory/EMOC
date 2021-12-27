@@ -121,7 +121,7 @@ namespace emoc {
 		// check the population size
 		if (weight_num_ < 97)
 		{
-			std::cout << "In ENSMOEAD, the population size should more than 97, or you need to change the NS parameters for algorithm.\n" << std::endl;
+			std::cout << "In ENSMOEAD, the population size should be more than 97, or you need to change the NS parameters for algorithm.\n" << std::endl;
 			exit(1);
 		}
 		replace_num_ = (weight_num_ / 100) ? (weight_num_ / 100) : 2;

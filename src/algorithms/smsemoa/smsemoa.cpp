@@ -9,8 +9,6 @@
 #include "operator/mutation.h"
 #include "operator/sbx.h"
 #include "random/random.h"
-#include "wfg/iwfg.h"
-#include "metric/hv.h"
 
 namespace emoc {
 
@@ -23,44 +21,7 @@ namespace emoc {
 
 	SMSEMOA::~SMSEMOA()
 	{
-		// free memory for iwfg algorithm
-		int max_depth = i_maxn - 2;
-		if (max_depth > 0)
-		{
-			for (int i = 0; i < max_depth; i++)
-			{
-				for (int j = 0; j < i_maxm; j++)
-					free(i_fs[i].points[j].objectives);
-				free(i_fs[i].points);
-			}
-			free(i_fs);
-		}
-
-
-		int max_stacksize = MIN(i_maxn - 2, i_slicingDepth(i_maxn)) + 1;
-		for (int i = 0; i < g_GlobalSettings->population_num_ + 1; i++)
-		{
-			for (int j = 1; j < max_stacksize; j++)
-				free(stacks[i][j].front.points);
-			free(stacks[i]);
-		}
-
-		free(partial);
-		free(heap);
-		free(stacksize);
-		free(stacks);
-
-		for (int i = 0; i < g_GlobalSettings->obj_num_; i++)
-			free(fsorted[i].points);
-		free(fsorted);
-		for (int i = 0; i < MAX(g_GlobalSettings->obj_num_, g_GlobalSettings->population_num_ + 1); i++)
-			free(torder[i]);
-		for (int i = 0; i <  g_GlobalSettings->population_num_ + 1; i++)
-			free(tcompare[i]);
-
-		free(torder);
-		free(tcompare);
-
+		hv_calculator_.CleanUp();
 		delete[] nadir_point_;
 	}
 
@@ -93,46 +54,11 @@ namespace emoc {
 		g_GlobalSettings->InitializePopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_);
 		EvaluatePop(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_);
 
+		// initialize hv calculator
+		hv_calculator_.Init(g_GlobalSettings->obj_num_, g_GlobalSettings->population_num_);
+
 		// initialize nadir point
 		UpdateNadirpoint(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_, nadir_point_, g_GlobalSettings->obj_num_);
-
-		// preparation for IWFG algorithm, which is used for calculating the individual Hypervolume contribution
-		i_maxn = g_GlobalSettings->obj_num_;
-		i_maxm = g_GlobalSettings->population_num_ + 1;
-		int max_depth = i_maxn - 2;
-		if(max_depth > 0)
-		i_fs		= (FRONT*)malloc(sizeof(FRONT) * max_depth);
-		partial		= (double*)malloc(sizeof(double) * i_maxm);
-		heap		= (int*)malloc(sizeof(int) * i_maxm);
-		stacksize	= (int*)malloc(sizeof(int) * i_maxm);
-		stacks		= (SLICE**)malloc(sizeof(SLICE*) * i_maxm);
-		fsorted		= (FRONT*)malloc(sizeof(FRONT) * i_maxn);
-		torder		= (int**)malloc(sizeof(int *) * MAX(i_maxm, i_maxn));
-		tcompare	= (int**)malloc(sizeof(int *) * i_maxm);
-		int max_stacksize = MIN(i_maxn - 2, i_slicingDepth(i_maxn)) + 1;
-
-		if (max_depth > 0)
-		{
-			for (int i = 0; i < max_depth; i++) {
-				i_fs[i].points = (POINT*)malloc(sizeof(POINT) * i_maxm);
-				for (int j = 0; j < i_maxm; j++) {
-					i_fs[i].points[j].objectives = (OBJECTIVE*)malloc(sizeof(OBJECTIVE) * (i_maxn - i - 1));
-				}
-			}
-		}
-
-		for (int i = 0; i < i_maxm; i++)
-		{
-			stacks[i] = (SLICE*)malloc(sizeof(SLICE) * max_stacksize);
-			for (int j = 1; j < max_stacksize; j++)
-				stacks[i][j].front.points = (POINT*)malloc(sizeof(POINT) * i_maxm);
-		}
-		for (int i = 0; i < i_maxn; i++)
-			fsorted[i].points = (POINT*)malloc(sizeof(POINT) * i_maxm);
-		for (int i = 0; i < MAX(i_maxn, i_maxm); i++)
-			torder[i] = (int*)malloc(sizeof(int) * i_maxn);
-		for (int i = 0; i < i_maxm; i++)
-			tcompare[i] = (int*)malloc(sizeof(int) * i_maxn);
 	}
 
 	void SMSEMOA::Crossover(Individual **parent_pop, Individual *offspring)
@@ -161,16 +87,15 @@ namespace emoc {
 		int i = 0, j = 0, num_same = 0;
 
 		min = (double *)malloc(sizeof(double) * (g_GlobalSettings->obj_num_ + 2));
-		i_n = g_GlobalSettings->obj_num_;
-		iwfg_read_data(f, pop, nadir_point_, pop_num, g_GlobalSettings->obj_num_);
+		hv_calculator_.ReadData(f, pop, nadir_point_, pop_num, g_GlobalSettings->obj_num_);
 
 		if (g_GlobalSettings->obj_num_ == 2)
 		{
-			i_ihv2(f->fronts[0], min);
+			hv_calculator_.MinExclusiveHV2(f->fronts[0], min);
 		}
 		else
 		{
-			i_ihv(f->fronts[0], min);
+			hv_calculator_.MinExclusiveHV(f->fronts[0],  min);
 		}
 
 		// find the ind with minimal hv contribution
@@ -188,14 +113,14 @@ namespace emoc {
 
 		free(min);
 
-		// read the data
+		// free the data
 		for (i = 0; i < pop_num; i++)
 			free(f->fronts[0].points[i].objectives);
 		free(f->fronts[0].points);
 		free(f->fronts);
 		free(f);
 
-		return j== pop_num? j - 1: j;
+		return j == pop_num? j - 1: j;
 	}
 
 	void SMSEMOA::EnvironmentalSelection(Individual **parent_pop, Individual *offspring)

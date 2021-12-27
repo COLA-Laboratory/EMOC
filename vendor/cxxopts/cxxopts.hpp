@@ -1925,7 +1925,7 @@ namespace cxxopts
         result += " --" + toLocalString(l);
       }
 
-      auto arg = !o.arg_help.empty() ? toLocalString(o.arg_help) : "arg";
+      auto arg = !o.arg_help.empty() ? toLocalString(o.arg_help) : "";
 
       if (!o.is_boolean)
       {

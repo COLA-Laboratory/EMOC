@@ -242,7 +242,7 @@ namespace emoc {
 
 				EMOCManager::Instance()->SetIsExperiment(false);
 
-				std::cout << "-----------TEST MODULE TASK------------\n";
+				std::cout << "\n-----------TEST MODULE TASK------------\n";
 				std::cout << (*current_algorithm_names)[algorithm_index] << "\n"
 					<< (*current_problem_names)[problem_index] << "\n"
 					<< "population number: " << N << "\n"
