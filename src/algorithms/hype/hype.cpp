@@ -40,9 +40,9 @@ namespace emoc {
 			MutationPop(g_GlobalSettings->offspring_population_.data(), 2 * g_GlobalSettings->population_num_ / 2, g_GlobalSettings);
 			EvaluatePop(g_GlobalSettings->offspring_population_.data(), 2 * g_GlobalSettings->population_num_ / 2);
 
-			// update nadir and ideal point
+			// update ideal point and nadir point
 			UpdateIdealpoint(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_, ideal_point_, g_GlobalSettings->obj_num_);
-			UpdateNadirpoint(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_, nadir_point_, g_GlobalSettings->obj_num_);
+			for (int i = 0; i < g_GlobalSettings->population_num_; i++) UpdateNadirpoint(g_GlobalSettings->parent_population_[i], nadir_point_, g_GlobalSettings->obj_num_);
 
 			// select for next generation
 			MergePopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_, g_GlobalSettings->offspring_population_.data(),
@@ -60,6 +60,10 @@ namespace emoc {
 		// initialize ideal and nadir point
 		UpdateIdealpoint(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_, ideal_point_, g_GlobalSettings->obj_num_);
 		UpdateNadirpoint(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_, nadir_point_, g_GlobalSettings->obj_num_);
+		for (int i = 0; i < g_GlobalSettings->obj_num_; i++)
+		{
+			nadir_point_[i] *= 1.2;
+		}
 	}
 
 	void HypE::Crossover(Individual **parent_pop, Individual **offspring_pop)
@@ -380,7 +384,8 @@ namespace emoc {
 
 				if (fitness_info[0].index != temp_number - 1)
 				{
-					CopyIndividual(temp_pop[fitness_info[0].index], temp_pop[temp_number - 1]);
+					//CopyIndividual(temp_pop[fitness_info[0].index], temp_pop[temp_number - 1]);
+					SwapIndividual(temp_pop[fitness_info[0].index], temp_pop[temp_number - 1]);
 				}
 
 				temp_number--;

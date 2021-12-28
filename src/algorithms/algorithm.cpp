@@ -1,6 +1,8 @@
 #include "algorithms/algorithm.h"
 
+
 #include <cstring>
+#include <utility>
 #include <thread>
 #include <chrono>
 #include <iostream>
@@ -123,6 +125,26 @@ namespace emoc {
 		// copy individual decision and objective datas
 		memcpy(ind_dest->dec_, ind_src->dec_, sizeof(double) * g_GlobalSettings->dec_num_);
 		memcpy(ind_dest->obj_, ind_src->obj_, sizeof(double) * g_GlobalSettings->obj_num_);
+	}
+
+	void Algorithm::SwapIndividual(Individual* ind1, Individual* ind2)
+	{
+		std::swap(ind1->fitness_, ind2->fitness_);
+		std::swap(ind1->rank_, ind2->rank_);
+
+		for (int i = 0; i < g_GlobalSettings->dec_num_; i++)
+		{
+			double t = ind1->dec_[i];
+			ind1->dec_[i] = ind2->dec_[i];
+			ind2->dec_[i] = t;
+		}
+
+		for (int i = 0; i < g_GlobalSettings->obj_num_; i++)
+		{
+			double t = ind1->obj_[i];
+			ind1->obj_[i] = ind2->obj_[i];
+			ind2->obj_[i] = t;
+		}
 	}
 
 	void Algorithm::TrackPopulation(int generation)

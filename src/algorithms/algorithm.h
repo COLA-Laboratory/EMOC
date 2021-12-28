@@ -28,8 +28,9 @@ namespace emoc {
 		void EvaluateInd(Individual *ind);
 
 		// copy population pop_src1 and population pop_src2 to population pop_dest
-		int MergePopulation(Individual **pop_src1, int pop_num1, Individual **pop_src2, int pop_num2, Individual **pop_dest);
-		void CopyIndividual(Individual *ind_src, Individual *ind_dest);
+		int MergePopulation(Individual** pop_src1, int pop_num1, Individual** pop_src2, int pop_num2, Individual** pop_dest);
+		void CopyIndividual(Individual* ind_src, Individual* ind_dest);
+		void SwapIndividual(Individual* ind1, Individual* ind2);
 
 		void TrackPopulation(int generation);
 		void PlotPopulation(Individual** pop, int gen);
