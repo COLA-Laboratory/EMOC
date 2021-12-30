@@ -4,9 +4,12 @@ project(EMOC)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
-set(CMAKE_BUILD_TYPE Release)
-#set(CMAKE_CONFIGURATION_TYPES "Release")
-# set(CMAKE_BUILD_TYPE "Debug")
+if("${CMAKE_BUILD_TYPE}" STREQUAL "")
+    set(CMAKE_BUILD_TYPE "Release")    			# make no difference in windows for Visual Studio
+endif()
+set(CMAKE_CONFIGURATION_TYPES "Release;Debug")	# this is for Visual Studio
+message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
+message(STATUS "Configuration Type: ${CMAKE_CONFIGURATION_TYPES}")
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -Ot")	
@@ -20,16 +23,8 @@ set(INCLUDEDIR
     ./vendor/imgui
     ./vendor/glfw/include
     ./vendor/IconsFontAwesome5
-    # ./vendor/pthread/prebuilt/include
-    # for my matplot test
-    # F:\Anaconda\include
-    # F:\Anaconda\Lib\site-packages\numpy\core\include
-)
-set(LIBDIR
-    ./vendor/glfw/libs
 )
 	
-link_directories(${LIBDIR})
 include_directories(${INCLUDEDIR})
 
 set(HEADERS
@@ -98,12 +93,6 @@ set(HEADERS
         src/metric/spacing.h
         src/emoc_app.h
         )
-
-# if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-# 	set(HEADERS ${HEADERS} 
-# 		vendor/pthread/prebuilt/include/pthread.h)
-# endif()
-		
 		
 set(SRC
 		vendor/random/random.cpp
@@ -167,17 +156,23 @@ set(SRC
 		
 add_executable(EMOC ${HEADERS} ${SRC})
 
+add_subdirectory(vendor/glfw)
+
+target_link_directories(${PROJECT_NAME}
+	PRIVATE build/vendor/glfw/src/Debug
+	PRIVATE build/vendor/glfw/src/Release
+	PRIVATE build/vendor/glfw/src
+)
+
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     target_link_libraries(EMOC glfw3.lib opengl32.lib)
-	set_directory_properties(PROPERTIES VS_STARTUP_PROJECT EMOC)
+	# set_directory_properties(PROPERTIES VS_STARTUP_PROJECT EMOC)
 	set_target_properties(EMOC PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
 	source_group(TREE "${CMAKE_SOURCE_DIR}" FILES ${HEADERS} ${SRC})
-	# add_custom_command(TARGET EMOC POST_BUILD COMMAND copy ..\\bin\\pthreadVC2.dll ..\\pthreadVC2.dll)
 	add_custom_command(TARGET EMOC POST_BUILD COMMAND copy ..\\build\\Release\\EMOC.exe ..\\EMOC.exe)
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     target_link_libraries(EMOC GL pthread)
     target_link_libraries(EMOC glfw3 dl X11)
-	
 	add_custom_command(TARGET EMOC POST_BUILD COMMAND mv ./EMOC ../EMOC)
 endif()
 
