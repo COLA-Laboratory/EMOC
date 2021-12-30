@@ -414,6 +414,7 @@ namespace emoc{
 		{
 			double metric1 = 0.0, metric2 = 0.0;
 			GetComparedMetric(para, format, i, metric1, metric2);
+
 			if ((is_min_better && best_metric1 > metric1) || (!is_min_better && best_metric1 < metric1))
 			{
 				best_index = i;

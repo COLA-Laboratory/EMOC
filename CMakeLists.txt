@@ -85,6 +85,7 @@ set(HEADERS
         src/algorithms/moead_frrmab/moead_frrmab.h
         src/algorithms/moead_gra/moead_gra.h
         src/algorithms/moead_ira/moead_ira.h
+        src/algorithms/moead_dyts/moead_dyts.h
         src/algorithms/nsga2/nsga2.h
         src/algorithms/smsemoa/smsemoa.h
         src/algorithms/spea2/spea2.h
@@ -149,6 +150,7 @@ set(SRC
         src/algorithms/moead_frrmab/moead_frrmab.cpp
         src/algorithms/moead_gra/moead_gra.cpp
         src/algorithms/moead_ira/moead_ira.cpp
+        src/algorithms/moead_dyts/moead_dyts.cpp
         src/algorithms/nsga2/nsga2.cpp
         src/algorithms/smsemoa/smsemoa.cpp
         src/algorithms/spea2/spea2.cpp
