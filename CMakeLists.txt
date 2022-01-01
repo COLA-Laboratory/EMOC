@@ -4,9 +4,7 @@ project(EMOC)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
-if("${CMAKE_BUILD_TYPE}" STREQUAL "")
-    set(CMAKE_BUILD_TYPE "Release")    			# make no difference in windows for Visual Studio
-endif()
+set(CMAKE_BUILD_TYPE "Release")    			    # make no difference in windows for Visual Studio
 set(CMAKE_CONFIGURATION_TYPES "Release;Debug")	# this is for Visual Studio
 message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
 message(STATUS "Configuration Type: ${CMAKE_CONFIGURATION_TYPES}")
@@ -15,19 +13,15 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -Ot")	
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -w")
+    find_package(OpenGL REQUIRED)
+    find_package(X11 REQUIRED)
 endif()	
 
-set(INCLUDEDIR 
-    ./src
-    ./vendor
-    ./vendor/imgui
-    ./vendor/glfw/include
-    ./vendor/IconsFontAwesome5
-)
-	
-include_directories(${INCLUDEDIR})
 
-set(HEADERS
+
+# set headers
+file(GLOB_RECURSE HEADERS ./src/*.h)
+set(HEADERS ${HEADERS}
 		vendor/random/random.h
 		vendor/wfg/iwfg.h
 		vendor/glfw/include/GLFW/glfw3.h
@@ -46,55 +40,11 @@ set(HEADERS
         vendor/alglib/src/statistics.h
         vendor/alglib/src/stdafx.h
         vendor/cxxopts/cxxopts.hpp
-        src/core/file.h
-        src/core/global.h
-        src/core/individual.h
-        src/core/nd_sort.h
-        src/core/tournament_selection.h
-        src/core/uniform_point.h
-        src/core/utility.h
-        src/core/emoc_manager.h
-        src/ui/imgui_impl_glfw.h
-        src/ui/imgui_impl_opengl3.h
-        src/ui/imgui_impl_opengl3_loader.h
-        src/ui/plot.h
-        src/ui/uipanel_manager.h
-        src/ui/ui_utility.h
-        src/ui/test_panel.h
-        src/ui/experiment_panel.h
-        src/ui/experiment_table.h
-        src/problem/problem.h
-        src/problem/problem_head_collect.h
-        src/problem/dtlz.h
-        src/problem/uf.h
-        src/problem/wfg.h
-        src/problem/zdt.h
-        src/algorithms/algorithm.h
-        src/algorithms/algorithm_head_collect.h
-        src/algorithms/ens_moead/ens_moead.h
-        src/algorithms/hype/hype.h
-        src/algorithms/ibea/ibea.h
-        src/algorithms/moead/moead.h
-        src/algorithms/moead_de/moead_de.h
-        src/algorithms/moead_dra/moead_dra.h
-        src/algorithms/moead_frrmab/moead_frrmab.h
-        src/algorithms/moead_gra/moead_gra.h
-        src/algorithms/moead_ira/moead_ira.h
-        src/algorithms/moead_dyts/moead_dyts.h
-        src/algorithms/nsga2/nsga2.h
-        src/algorithms/smsemoa/smsemoa.h
-        src/algorithms/spea2/spea2.h
-        src/operator/de.h 
-        src/operator/mutation.h
-        src/operator/sbx.h
-        src/metric/gd.h
-        src/metric/hv.h
-        src/metric/igd.h
-        src/metric/spacing.h
-        src/emoc_app.h
-        )
-		
-set(SRC
+)      
+
+# set srcs	
+file(GLOB_RECURSE SRC ./src/*.cpp)	
+set(SRC ${SRC}
 		vendor/random/random.cpp
 		vendor/wfg/iwfg.cpp
 		vendor/imgui/imgui.cpp
@@ -107,62 +57,31 @@ set(SRC
         vendor/alglib/src/ap.cpp
         vendor/alglib/src/linalg.cpp
         vendor/alglib/src/specialfunctions.cpp
-        vendor/alglib/src/statistics.cpp
-        src/core/file.cpp
-        src/core/global.cpp
-        src/core/individual.cpp
-        src/core/nd_sort.cpp
-        src/core/tournament_selection.cpp
-        src/core/uniform_point.cpp
-        src/core/utility.cpp
-        src/core/emoc_manager.cpp
-        src/ui/imgui_impl_glfw.cpp
-        src/ui/imgui_impl_opengl3.cpp
-        src/ui/plot.cpp
-        src/ui/uipanel_manager.cpp
-        src/ui/ui_utility.cpp 
-        src/ui/test_panel.cpp
-        src/ui/experiment_panel.cpp
-        src/ui/experiment_table.cpp
-        src/problem/problem.cpp
-        src/problem/dtlz.cpp
-        src/problem/uf.cpp
-        src/problem/wfg.cpp
-        src/problem/zdt.cpp
-        src/algorithms/algorithm.cpp
-        src/algorithms/ens_moead/ens_moead.cpp
-        src/algorithms/hype/hype.cpp
-        src/algorithms/ibea/ibea.cpp
-        src/algorithms/moead/moead.cpp
-        src/algorithms/moead_de/moead_de.cpp
-        src/algorithms/moead_dra/moead_dra.cpp
-        src/algorithms/moead_frrmab/moead_frrmab.cpp
-        src/algorithms/moead_gra/moead_gra.cpp
-        src/algorithms/moead_ira/moead_ira.cpp
-        src/algorithms/moead_dyts/moead_dyts.cpp
-        src/algorithms/nsga2/nsga2.cpp
-        src/algorithms/smsemoa/smsemoa.cpp
-        src/algorithms/spea2/spea2.cpp
-        src/operator/de.cpp 
-        src/operator/mutation.cpp
-        src/operator/sbx.cpp
-        src/metric/gd.cpp
-        src/metric/hv.cpp
-        src/metric/igd.cpp
-        src/metric/spacing.cpp
-        src/emoc_app.cpp
-        src/main.cpp
-        )
+        vendor/alglib/src/statistics.cpp  
+)
 		
 add_executable(EMOC ${HEADERS} ${SRC})
 
+# add glfw source code
 add_subdirectory(vendor/glfw)
 
-target_link_directories(${PROJECT_NAME}
-	PRIVATE build/vendor/glfw/src/Debug
-	PRIVATE build/vendor/glfw/src/Release
-	PRIVATE build/vendor/glfw/src
+# set include dir and link dir
+set(INCLUDE_DIR 
+    ./src
+    ./vendor
+    ./vendor/imgui
+    ./vendor/glfw/include
+    ./vendor/IconsFontAwesome5
 )
+
+set(LINK_DIR 
+    ./build/vendor/glfw/src/Debug
+    ./build/vendor/glfw/src/Release
+    ./build/vendor/glfw/src
+)
+
+target_include_directories(${PROJECT_NAME} PUBLIC ${INCLUDE_DIR})
+target_link_directories(${PROJECT_NAME} PUBLIC ${LINK_DIR})
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     target_link_libraries(EMOC glfw3.lib opengl32.lib)
