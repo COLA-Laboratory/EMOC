@@ -166,7 +166,6 @@ target_link_directories(${PROJECT_NAME}
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     target_link_libraries(EMOC glfw3.lib opengl32.lib)
-	# set_directory_properties(PROPERTIES VS_STARTUP_PROJECT EMOC)
 	set_target_properties(EMOC PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
 	source_group(TREE "${CMAKE_SOURCE_DIR}" FILES ${HEADERS} ${SRC})
 	add_custom_command(TARGET EMOC POST_BUILD COMMAND copy ..\\build\\Release\\EMOC.exe ..\\EMOC.exe)
@@ -174,4 +173,5 @@ elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     target_link_libraries(EMOC glfw3 dl X11 GL pthread) 
 	add_custom_command(TARGET EMOC POST_BUILD COMMAND mv ./EMOC ../EMOC)
 endif()
+
 
