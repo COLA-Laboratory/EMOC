@@ -18,15 +18,6 @@ using emoc::EMOCParameters;
 
 int main(int argc, char* argv[])
 {
-
-
-
-	//std::cout << sizeof(POINT) << "\n ";
-	//for (int i = 0; i < 20; i++)
-	//	std::cout << points + i << "\n";
-	
-
-
 	// parse command line input
 	bool is_gui = false;
 	EMOCParameters para;
@@ -34,7 +25,7 @@ int main(int argc, char* argv[])
 
 	// start to run
 	EMOCApplication emoc_app;
-	is_gui = true;
+	//is_gui = true; // for debug
 	emoc_app.Init(is_gui, para);
 	emoc_app.Run();
 

@@ -23,7 +23,6 @@ endif()
 file(GLOB_RECURSE HEADERS ./src/*.h)
 set(HEADERS ${HEADERS}
 		vendor/random/random.h
-		vendor/wfg/iwfg.h
 		vendor/glfw/include/GLFW/glfw3.h
 		vendor/imgui/imconfig.h
 		vendor/imgui/imgui.h
@@ -46,7 +45,6 @@ set(HEADERS ${HEADERS}
 file(GLOB_RECURSE SRC ./src/*.cpp)	
 set(SRC ${SRC}
 		vendor/random/random.cpp
-		vendor/wfg/iwfg.cpp
 		vendor/imgui/imgui.cpp
 		vendor/imgui/imgui_demo.cpp
 		vendor/imgui/imgui_draw.cpp
