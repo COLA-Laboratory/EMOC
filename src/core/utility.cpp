@@ -388,7 +388,16 @@ namespace emoc {
 	}
 
 
-	static double rgama(double a) 
+	double CauchyRandom(double location, double scale)
+	{
+		double u, y;
+		u = randomperc();
+		y = location + scale * tan(PI * (u - 0.5));
+
+		return y;
+	}
+
+	static double rgama(double a)
 	{
 		if (a < 1)
 		{

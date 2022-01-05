@@ -40,7 +40,8 @@ namespace emoc {
 	double** LoadPFData(int& pf_size, int obj_num, std::string problem_name);
 
 	// distribution sampling
+	double CauchyRandom(double location, double scale);
 	double BetaRandom(double a, double b);
-	extern double GaussianRandom(double mean, double stdev);
+	double GaussianRandom(double mean, double stdev);
 
 }

@@ -5,7 +5,7 @@
 
 namespace emoc {
 
-	class MOEADDYTS : public Algorithm
+	class MOEADCDE : public Algorithm
 	{
 	public:
 		typedef struct
@@ -14,33 +14,37 @@ namespace emoc {
 			double distance;
 		}DistanceInfo;  // store euclidian distance to the index-th weight vector
 
+		typedef struct
+		{
+			int op;
+			double fir;
+		}FitnessInfo;
+
 		typedef enum
 		{
 			NEIGHBOUR,
 			GLOBAL
 		}NeighbourType;
 
-		MOEADDYTS(int thread_id);
-		virtual ~MOEADDYTS();
+		MOEADCDE(int thread_id);
+		virtual ~MOEADCDE();
 
 		void Run();
 
 	private:
 		void Initialization();
-		void SetNeighbours();
-		void Crossover(int operator_index, Individual** parent_pop, int current_index, Individual* offspring);
+		void SetNeighbours(); 
+		double GenerateFFactor();
+		void Crossover(int operator_index, double F, Individual** parent_pop, int current_index, Individual* offspring1, Individual* offspring2);
 
 		void UpdateUtility();
 		void SelectCurrentSubproblem();
 		void CalculateFitness(Individual** pop, int pop_num, double* fitness);
 		void CreditAssignment();
 		int SelectOperator();
-		void UpdateBetaDis(int op, double reward);
 
 		// use offspring to update the neighbour of current_index-th individual with specified aggregation function and return fir
 		double UpdateSubproblem(Individual* offspring, int current_index);
-
-		
 
 	private:
 		// MOEAD basic parameters
@@ -60,11 +64,13 @@ namespace emoc {
 		double* utility_;				   // utility for each subproblem
 		double* delta_;					   // difference between new and old individuals' fitness
 
-		// MOEADDYTS parameters
+		// MOEADCDE parameters
 		int operator_num_;				   // the number of operator
-		double* alpha_;					   // beta distribution parameter
-		double* beta_;					   // beta distribution parameter
-		double C;						   // beta distritbution update threshold
-
+		int sliding_window_size_;
+		FitnessInfo* sliding_window_;
+		double* frr_;					   // frr array for each operator
+		double C;						   // the exploration parameter in UCB
+		int F_success_count_ = 0;
+		double F_old_, *F_success_set_;
 	};
 }

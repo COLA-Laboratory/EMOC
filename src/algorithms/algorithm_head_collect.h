@@ -12,3 +12,4 @@
 #include "algorithms/moead_gra/moead_gra.h"
 #include "algorithms/moead_ira/moead_ira.h"
 #include "algorithms/moead_dyts/moead_dyts.h"
+#include "algorithms/moead_cde/moead_cde.h"

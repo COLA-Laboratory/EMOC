@@ -230,6 +230,8 @@ namespace emoc {
 			algorithm_ = new MOEADIRA(thread_id_);
 		else if (algorithm_name == "moeaddyts")
 			algorithm_ = new MOEADDYTS(thread_id_);
+		else if (algorithm_name == "moeadcde")
+			algorithm_ = new MOEADCDE(thread_id_);
 		else
 		{
 			// TODO: move these parameter checking things into some specified function 
