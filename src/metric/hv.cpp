@@ -7,7 +7,6 @@
 
 #include "core/utility.h"
 #include "core/global.h"
-#include "wfg/iwfg.h"
 
 namespace emoc {
 

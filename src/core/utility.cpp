@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cmath>
 
+#include "random/random.h"
 #include "emoc_app.h"
 #include "ui/plot.h"
 
@@ -157,7 +158,7 @@ namespace emoc {
 		}
 	}
 
-	double CalWeightedSum(Individual *ind, double *weight_vector, double *ideal_point, int obj_num)
+	double CalWeightedSum(Individual* ind, double* weight_vector, double* ideal_point, int obj_num)
 	{
 		double fitness = 0;
 		for (int i = 0; i < obj_num; i++)
@@ -386,4 +387,103 @@ namespace emoc {
 		return pf_data;
 	}
 
+
+	static double rgama(double a) 
+	{
+		if (a < 1)
+		{
+			double temp = randomperc();
+			return rgama(1.0 + a) * pow(temp, 1.0 / a);
+		}
+		else
+		{
+			double d, c, x, v, u;
+			d = a - 1. / 3.;
+			c = 1. / sqrt(9. * d);
+			for (;;) {
+				do {
+					x = GaussianRandom(0.0, 1.0);
+					v = 1. + c * x;
+				} while (v <= 0.);
+				v = v * v * v;
+				u = randomperc();
+				if (u < 1. - 0.0331 * (x * x) * (x * x)) {
+					return (d * v);
+				}
+				if (log(u) < 0.5 * x * x + d * (1. - v + log(v))) {
+					return (d * v);
+				}
+			}
+		}
+	}
+
+	double BetaRandom(double a, double b)
+	{
+		double x1, x2;
+		if ((a <= 1.0) && (b <= 1.0))
+		{
+			double U, V, X, Y;
+			while (1)
+			{
+				U = randomperc();
+				V = randomperc();
+				X = pow(U, 1.0 / a);
+				Y = pow(V, 1.0 / b);
+				if ((X + Y) <= 1.0)
+				{
+					if ((X + Y) > 0)
+					{
+						return X / (X + Y);
+
+					}
+					else
+					{
+						double logX = log(U) / a;
+						double logY = log(V) / b;
+						double logM = logX > logY ? logX : logY;
+						logX -= logM;
+						logY -= logM;
+						return exp(logX - log(exp(logX) + exp(logY)));
+					}
+				}
+			}
+		}
+		else
+		{
+			x1 = rgama(a);
+			x2 = rgama(b);
+			return x1 / (x1 + x2);
+		}
+	}
+
+	double GaussianRandom(double mean, double stdev)
+	{
+
+		static double nextNextGaussian;
+		static int haveNextNextGaussian = 0;
+		double r;
+
+		if (haveNextNextGaussian)
+		{
+			haveNextNextGaussian = 0;
+			r = nextNextGaussian;
+		}
+		else
+		{
+			double v1, v2, s, m;
+
+			do {
+				v1 = rndreal(-1.0, 1.0);
+				v2 = rndreal(-1.0, 1.0);
+				s = v1 * v1 + v2 * v2;
+			} while (s >= 1 || s == 0);
+
+			m = sqrt(-2 * log(s) / s);
+			nextNextGaussian = v2 * m;
+			haveNextNextGaussian = 1;
+			r = v1 * m;
+		}
+
+		return stdev * r + mean;
+	}
 }

@@ -53,6 +53,7 @@ namespace emoc {
 		algorithm_names.push_back("MOEADFRRMAB");
 		algorithm_names.push_back("MOEADGRA");
 		algorithm_names.push_back("MOEADIRA");
+		algorithm_names.push_back("MOEADDYTS");
 		algorithm_names.push_back("ENSMOEAD");
 		algorithm_names.push_back("NSGA2");
 		algorithm_names.push_back("SPEA2");
@@ -70,6 +71,7 @@ namespace emoc {
 		decomposition_algorithm_names.push_back("MOEADGRA");
 		decomposition_algorithm_names.push_back("MOEADIRA");
 		decomposition_algorithm_names.push_back("ENSMOEAD");
+		decomposition_algorithm_names.push_back("MOEADDYTS");
 	}
 
 	void InitDominanceAlgorithmList(std::vector<char*>& dominance_algorithm_names)

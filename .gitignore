@@ -5,6 +5,7 @@ build/
 TEMPTEST/
 BUILDBACKUP/
 plotfile/
+output/
 
 # Files 
 *.user

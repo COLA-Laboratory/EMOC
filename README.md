@@ -104,7 +104,7 @@ there is an example of config file in the corresponding directory.
 - [x] Code Review 对整体代码做一个回顾，是否可以改进，局部结构是否可以改善，细节部分代码是否可以更加简洁。
 - [x] 算法的准确性及其效率的review，从老的算法包移植过来的算法不不知道是否正确。
 - [ ] Indicator的计算，PF可否用公式计算，不用文件读写，以及新的indicator的添加，接口上的real_pop_num问题。
-- [ ] Linux的移植
+- [x] Linux的移植
 - [ ] ...
 
 **功能方面：**
@@ -146,6 +146,41 @@ there is an example of config file in the corresponding directory.
 - [x] Popup之后点击delete button后数组越界。Fixed：如果删除了，在当前帧不再继续显示
 - [x] 单线程运行结果在table中显示不正确。 Fixed：用**引用**返回时会因为vector扩容出现内存泄露
 - [ ] ...
+- [ ] 
+
+**算法添加：**
+
+- [ ] NSGA3
+- [ ] SPEA_SDK
+- [ ] SPEA_R
+- [ ] PICEA_G
+- [ ] TWO_ARCH2
+- [ ] ONEBYONE
+- [ ] VaEA
+- [ ] EFR_PR
+- [ ] KnEA
+- [ ] BORG
+- [ ] tDEA
+- [ ] MTS
+- [ ] RVEA
+- [ ] MOEADPAS
+- [ ] MOEADSTM
+- [ ] MOEADD
+- [ ] MOEADM2M
+- [ ] MOEADAWA
+- [ ] MaOEAIT
+- [ ] MaOEA_IGD
+- [ ] RVEA
+
+**问题添加：**
+
+- [ ] 
+
+**指标添加：**
+
+- [ ] 
+
+
 
 
 

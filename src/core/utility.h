@@ -27,15 +27,20 @@ namespace emoc {
 	void UpdateIdealpoint(Individual **pop, int pop_num, double *ideal_point, int obj_num);
 	void UpdateNadirpoint(Individual **pop, int pop_num, double *nadir_point, int obj_num);
 
+
 	// aggregation functions
 	double CalWeightedSum(Individual *ind, double *weight_vector, double *ideal_point, int obj_num);
 	double CalInverseChebycheff(Individual *ind, double *weight_vector, double *ideal_point, int obj_num);
 	double CalPBI(Individual *ind, double *weight_vector, double *ideal_point, int obj_num, double theta = 0.0 );
 
-	//s
 
 	void display_pop(FILE* gp, Individual** pop, int pop_num, int obj_num, int gen);
 
 	// load function
 	double** LoadPFData(int& pf_size, int obj_num, std::string problem_name);
+
+	// distribution sampling
+	double BetaRandom(double a, double b);
+	extern double GaussianRandom(double mean, double stdev);
+
 }

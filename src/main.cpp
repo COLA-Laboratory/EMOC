@@ -1,20 +1,13 @@
 #include <iostream>
 
-#include "emoc_app.h"
-#include "core/emoc_manager.h"
-#include "ui/plot.h"
-#include "ui/uipanel_manager.h"
 #include "core/file.h"
-#include "cxxopts/cxxopts.hpp"
-#include "wfg/iwfg.h"
-
+#include "emoc_app.h"
 
 using emoc::EMOCManager;
 using emoc::PlotManager;
 using emoc::UIPanelManager;
 using emoc::EMOCApplication;
 using emoc::EMOCParameters;
-
 
 int main(int argc, char* argv[])
 {
@@ -25,7 +18,7 @@ int main(int argc, char* argv[])
 
 	// start to run
 	EMOCApplication emoc_app;
-	//is_gui = true; // for debug
+	is_gui = true; // for debug
 	emoc_app.Init(is_gui, para);
 	emoc_app.Run();
 

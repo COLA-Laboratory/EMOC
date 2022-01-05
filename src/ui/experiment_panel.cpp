@@ -133,8 +133,8 @@ namespace emoc {
 				// add some default problem settings
 				Ns.push_back(100);
 				Ms.push_back(2);
-				Ds.push_back(8);
-				Evaluations.push_back(30000);
+				Ds.push_back(38);
+				Evaluations.push_back(25000);
 			}
 			ImGui::Dummy(ImVec2(0.0f, 20.0f));
 

@@ -39,7 +39,7 @@ namespace emoc {
 	};
 
 	const std::unordered_set<std::string> IMPLEMENT_ALGORITHM ={
-		"MOEAD", "MOEADDE", "MOEADDRA", "MOEADFRRMAB", "MOEADGRA", "MOEADIRA", "ENSMOEAD",
+		"MOEAD", "MOEADDE", "MOEADDRA", "MOEADFRRMAB", "MOEADGRA", "MOEADIRA", "ENSMOEAD", "MOEADDYTS",
 		"NSGA2", "SPEA2",
 		"IBEA", "SMSEMOA", "HYPE"
 	};
