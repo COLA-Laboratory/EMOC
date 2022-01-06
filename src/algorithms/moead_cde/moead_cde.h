@@ -70,6 +70,7 @@ namespace emoc {
 		FitnessInfo* sliding_window_;
 		double* frr_;					   // frr array for each operator
 		double C;						   // the exploration parameter in UCB
+
 		int F_success_count_ = 0;
 		double F_old_, *F_success_set_;
 	};

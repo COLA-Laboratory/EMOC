@@ -4,6 +4,7 @@
 #include <iostream>
 #include <algorithm>
 
+#include "core/macro.h"
 #include "core/global.h"
 #include "core/utility.h"
 #include "core/uniform_point.h"

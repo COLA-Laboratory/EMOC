@@ -186,6 +186,24 @@ namespace emoc {
 			problem_ = new WFG8(dec_num_, obj_num_);
 		else if (problem_name == "wfg9")
 			problem_ = new WFG9(dec_num_, obj_num_);
+		else if (problem_name == "lsmop1")
+			problem_ = new LSMOP1(dec_num_, obj_num_);
+		else if (problem_name == "lsmop2")
+			problem_ = new LSMOP2(dec_num_, obj_num_);
+		else if (problem_name == "lsmop3")
+			problem_ = new LSMOP3(dec_num_, obj_num_);
+		else if (problem_name == "lsmop4")
+			problem_ = new LSMOP4(dec_num_, obj_num_);
+		else if (problem_name == "lsmop5")
+			problem_ = new LSMOP5(dec_num_, obj_num_);
+		else if (problem_name == "lsmop6")
+			problem_ = new LSMOP6(dec_num_, obj_num_);
+		else if (problem_name == "lsmop7")
+			problem_ = new LSMOP7(dec_num_, obj_num_);
+		else if (problem_name == "lsmop8")
+			problem_ = new LSMOP8(dec_num_, obj_num_);
+		else if (problem_name == "lsmop9")
+			problem_ = new LSMOP9(dec_num_, obj_num_);
 		else
 		{
 			// TODO: move these parameter checking things into some specified function 

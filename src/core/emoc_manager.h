@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <mutex>
 
+#include "core/macro.h"
 #include "core/global.h"
 
 namespace emoc {

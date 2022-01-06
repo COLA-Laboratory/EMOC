@@ -173,12 +173,27 @@ namespace emoc {
 		wfg_names.push_back("WFG9");
 	}
 
+	void InitLSMOPList(std::vector<char*>& lsmop_names)
+	{
+		lsmop_names.push_back("LSMOP1");
+		lsmop_names.push_back("LSMOP2");
+		lsmop_names.push_back("LSMOP3");
+		lsmop_names.push_back("LSMOP4");
+		lsmop_names.push_back("LSMOP5");
+		lsmop_names.push_back("LSMOP6");
+		lsmop_names.push_back("LSMOP7");
+		lsmop_names.push_back("LSMOP8");
+		lsmop_names.push_back("LSMOP9");
+	}
+
 	void InitProblemCategoryList(std::vector<char*>& problem_category)
 	{
 		problem_category.push_back("DTLZ Series");
 		problem_category.push_back("ZDT Series");
 		problem_category.push_back("UF Series");
 		problem_category.push_back("WFG Series");
+		problem_category.push_back("LSMOP Series");
+		//problem_category.push_back("BT Series");
 	}
 
 	void InitDisplayList(std::vector<char*>& display_names)
@@ -460,6 +475,7 @@ namespace emoc {
 		InitZDTList(zdt_names);
 		InitUFList(uf_names);
 		InitWFGList(wfg_names);
+		InitLSMOPList(lsmop_names);
 	}
 
 	CategorizedProblemList::~CategorizedProblemList()

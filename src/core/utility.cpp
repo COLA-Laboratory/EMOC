@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cmath>
 
+#include "core/macro.h"
 #include "random/random.h"
 #include "emoc_app.h"
 #include "ui/plot.h"

@@ -133,8 +133,8 @@ namespace emoc {
 				// add some default problem settings
 				Ns.push_back(100);
 				Ms.push_back(2);
-				Ds.push_back(38);
-				Evaluations.push_back(25000);
+				Ds.push_back(200);
+				Evaluations.push_back(200000);
 			}
 			ImGui::Dummy(ImVec2(0.0f, 20.0f));
 
@@ -630,6 +630,8 @@ namespace emoc {
 			current_problem_names = &problem_list.uf_names;
 		else if (category == "WFG Series")
 			current_problem_names = &problem_list.wfg_names;
+		else if (category == "LSMOP Series")
+			current_problem_names = &problem_list.lsmop_names;
 		else
 			std::cerr << "Experiment Module ERROR: Problem Category " << category << " Doesn't Exists!\n";
 	}

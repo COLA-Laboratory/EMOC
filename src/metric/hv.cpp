@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <functional>
 
+#include "core/macro.h"
 #include "core/utility.h"
 #include "core/global.h"
 

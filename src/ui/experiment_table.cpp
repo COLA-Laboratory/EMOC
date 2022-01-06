@@ -6,9 +6,10 @@
 #include <iostream>
 #include <fstream>
 
+#include "imgui.h"
+#include "core/macro.h"
 #include "core/file.h"
 #include "core/emoc_manager.h"
-#include "imgui.h"
 #include "ui/ui_utility.h"
 #include "ui/uipanel_manager.h"
 

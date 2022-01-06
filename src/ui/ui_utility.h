@@ -23,6 +23,7 @@ namespace emoc{
 	void InitZDTList(std::vector<char*>& zdt_names);
 	void InitUFList(std::vector<char*>& uf_names);
 	void InitWFGList(std::vector<char*>& wfg_names);
+	void InitLSMOPList(std::vector<char*>& lsmop_names);
 	void InitProblemCategoryList(std::vector<char*>& problem_category);
 
 	void InitDisplayList(std::vector<char*>& display_names);
@@ -69,8 +70,9 @@ namespace emoc{
 		std::vector<char*> zdt_names;
 		std::vector<char*> uf_names;
 		std::vector<char*> wfg_names;
+		std::vector<char*> lsmop_names;
 
-		int category_index = 0;
+		int category_index = 4;
 		//int problem_index = 0;		// need to reset when category changed every time
 	};
 

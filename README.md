@@ -170,7 +170,8 @@ there is an example of config file in the corresponding directory.
 - [ ] MOEADAWA
 - [ ] MaOEAIT
 - [ ] MaOEA_IGD
-- [ ] RVEA
+- [x] MOEADCDE
+- [x] MOEADDYTS
 
 **问题添加：**
 

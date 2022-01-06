@@ -4,6 +4,7 @@
 #include <cmath>
 #include <cstdlib>
 
+#include "core/macro.h"
 #include "core/global.h"
 
 namespace emoc {

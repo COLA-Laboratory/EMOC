@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <vector>
 
+#include "core/macro.h"
 #include "core/global.h"
 #include "core/utility.h"
 #include "core/tournament_selection.h"

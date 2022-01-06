@@ -9,6 +9,7 @@ using emoc::UIPanelManager;
 using emoc::EMOCApplication;
 using emoc::EMOCParameters;
 
+
 int main(int argc, char* argv[])
 {
 	// parse command line input

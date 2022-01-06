@@ -5,13 +5,12 @@
 #include <fstream>
 #include <iostream>
 
+#include "core/macro.h"
 #include "core/global.h"
 #include "core/utility.h"
 
 
 namespace emoc {
-
-
 
 	double CalculateGD(Individual **pop, int pop_num, int obj_num, std::string &problem_name)
 	{

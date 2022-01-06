@@ -27,6 +27,7 @@
 
 #include "emoc_app.h"
 #include "ui/ui_utility.h"
+#include "core/macro.h"
 #include "core/emoc_manager.h"
 #include "cxxopts/cxxopts.hpp"
 
