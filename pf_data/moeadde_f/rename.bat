@@ -1,0 +1,9 @@
+ren F1.2D.pf moeadde_f1.2D.pf
+ren F2.2D.pf moeadde_f2.2D.pf
+ren F3.2D.pf moeadde_f3.2D.pf
+ren F4.2D.pf moeadde_f4.2D.pf
+ren F5.2D.pf moeadde_f5.2D.pf
+ren F6.3D.pf moeadde_f6.3D.pf
+ren F7.2D.pf moeadde_f7.2D.pf
+ren F8.2D.pf moeadde_f8.2D.pf
+ren F9.2D.pf moeadde_f9.2D.pf

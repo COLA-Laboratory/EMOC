@@ -35,7 +35,7 @@ namespace emoc {
 	void TestPanel::Render()
 	{		
 		// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-		static bool show_demo_window = true;
+		static bool show_demo_window = false;
 		if (show_demo_window)
 			ImGui::ShowDemoWindow(&show_demo_window);
 
@@ -71,74 +71,6 @@ namespace emoc {
 
 		if (is_plot_window_open)
 			DisplayPlotWindow();
-
-		
-
-		
-
-		{
-			static char text[1024 * 16] = " ";
-			//std::cout << "text size:" << IM_ARRAYSIZE(text) << "text str lenght" << strlen(text) << "\n";
-
-			const char* displayInfo[] = { "Runtime", "IGD", "HV", "Spacing" };
-			static float f = 0.0f;
-			static int counter = 0;
-
-			ImGui::Begin("Result##Test");                          // Create a window called "Hello, world!" and append into it.
-
-
-
-			ImGui::Text("Result Information:");
-
-			static int displayIndex = 0; // If the selection isn't within 0..count, Combo won't display a preview
-
-			//ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 100.0f);
-			ImGui::Spacing();
-			ImGui::Combo("##Display", &displayIndex, displayInfo, IM_ARRAYSIZE(displayInfo));
-			if (EMOCManager::Instance()->GetSingleThreadResultSize() > 0)
-			{
-				EMOCSingleThreadResult result = EMOCManager::Instance()->GetSingleThreadResult(EMOCManager::Instance()->GetSingleThreadResultSize() - 1);
-
-				std::string algorithm = result.para.algorithm_name;
-				std::string problem = result.para.problem_name;
-				int M = result.para.objective_num;
-				int D = result.para.decision_num;
-				int N = result.para.population_num;
-				int max_evaluation = result.para.max_evaluation;
-				double runtime = result.runtime;
-				double igd = result.last_igd;
-				double hv = result.last_hv;
-
-				static std::string extra_info;
-				if (displayIndex == 0) extra_info = "Runtime: " + std::to_string(runtime) + "s";
-				else if (displayIndex == 1) extra_info = "IGD: " + std::to_string(igd);
-				else if (displayIndex == 2) extra_info = "HV: " + std::to_string(hv);
-
-				sprintf(text,
-					"Algorithm: %s\n\n"
-					"Problem: %s\n"
-					"M: %d\n"
-					"D: %d\n"
-					"N: %d\n"
-					"Evaluation: %d\n\n"
-					"%s"
-					, algorithm.c_str(), problem.c_str(), M, D, N, max_evaluation, extra_info.c_str());
-			}
-
-			static ImGuiInputTextFlags flags = ImGuiInputTextFlags_ReadOnly;
-			//ImGui::CheckboxFlags("ImGuiInputTextFlags_ReadOnly", &flags, ImGuiInputTextFlags_ReadOnly);
-			//ImGui::CheckboxFlags("ImGuiInputTextFlags_AllowTabInput", &flags, ImGuiInputTextFlags_AllowTabInput);
-			//ImGui::CheckboxFlags("ImGuiInputTextFlags_CtrlEnterForNewLine", &flags, ImGuiInputTextFlags_CtrlEnterForNewLine);
-			ImGui::InputTextMultiline("##source", text, IM_ARRAYSIZE(text), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 10), flags);
-
-
-			ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-			ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-			ImGui::End();
-		}
-
 	}
 
 	void TestPanel::DisplayParameterWindow(bool is_finish, bool is_pause)
@@ -854,6 +786,8 @@ namespace emoc {
 			current_problem_names = &problem_list.zdt_names;
 		else if (category == "DTLZ Series")
 			current_problem_names = &problem_list.dtlz_names;
+		else if (category == "MOEADDE_F Series")
+			current_problem_names = &problem_list.moeadde_f_names;
 		else if (category == "UF Series")
 			current_problem_names = &problem_list.uf_names;
 		else if (category == "WFG Series")

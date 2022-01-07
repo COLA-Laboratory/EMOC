@@ -626,6 +626,8 @@ namespace emoc {
 			current_problem_names = &problem_list.zdt_names;
 		else if (category == "DTLZ Series")
 			current_problem_names = &problem_list.dtlz_names;
+		else if (category == "MOEADDE_F Series")
+			current_problem_names = &problem_list.moeadde_f_names;
 		else if (category == "UF Series")
 			current_problem_names = &problem_list.uf_names;
 		else if (category == "WFG Series")

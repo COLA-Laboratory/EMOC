@@ -148,6 +148,24 @@ namespace emoc {
 			problem_ = new MDTLZ3(dec_num_, obj_num_);
 		else if (problem_name == "mdtlz4")
 			problem_ = new MDTLZ4(dec_num_, obj_num_);
+		else if (problem_name == "moeadde_f1")
+			problem_ = new MOEADDE_F1(dec_num_, obj_num_);
+		else if (problem_name == "moeadde_f2")
+			problem_ = new MOEADDE_F2(dec_num_, obj_num_);
+		else if (problem_name == "moeadde_f3")
+			problem_ = new MOEADDE_F3(dec_num_, obj_num_);
+		else if (problem_name == "moeadde_f4")
+			problem_ = new MOEADDE_F4(dec_num_, obj_num_);
+		else if (problem_name == "moeadde_f5")
+			problem_ = new MOEADDE_F5(dec_num_, obj_num_);
+		else if (problem_name == "moeadde_f6")
+			problem_ = new MOEADDE_F6(dec_num_, obj_num_);
+		else if (problem_name == "moeadde_f7")
+			problem_ = new MOEADDE_F7(dec_num_, obj_num_);
+		else if (problem_name == "moeadde_f8")
+			problem_ = new MOEADDE_F8(dec_num_, obj_num_);
+		else if (problem_name == "moeadde_f9")
+			problem_ = new MOEADDE_F9(dec_num_, obj_num_);
 		else if (problem_name == "uf1")
 			problem_ = new UF1(dec_num_, obj_num_);
 		else if (problem_name == "uf2")

@@ -147,6 +147,19 @@ namespace emoc {
 		zdt_names.push_back("ZDT6");
 	}
 
+	void InitMOEADDE_FList(std::vector<char*>& moeadde_f_names)
+	{
+		moeadde_f_names.push_back("MOEADDE_F1");
+		moeadde_f_names.push_back("MOEADDE_F2");
+		moeadde_f_names.push_back("MOEADDE_F3");
+		moeadde_f_names.push_back("MOEADDE_F4");
+		moeadde_f_names.push_back("MOEADDE_F5");
+		moeadde_f_names.push_back("MOEADDE_F6");
+		moeadde_f_names.push_back("MOEADDE_F7");
+		moeadde_f_names.push_back("MOEADDE_F8");
+		moeadde_f_names.push_back("MOEADDE_F9");
+	}
+
 	void InitUFList(std::vector<char*>& uf_names)
 	{
 		uf_names.push_back("UF1");
@@ -191,10 +204,10 @@ namespace emoc {
 	{
 		problem_category.push_back("DTLZ Series");
 		problem_category.push_back("ZDT Series");
+		problem_category.push_back("MOEADDE_F Series");
 		problem_category.push_back("UF Series");
 		problem_category.push_back("WFG Series");
 		problem_category.push_back("LSMOP Series");
-		//problem_category.push_back("BT Series");
 	}
 
 	void InitDisplayList(std::vector<char*>& display_names)
@@ -291,6 +304,39 @@ namespace emoc {
 				description = "The D parameter of " + problem + " must greater than M - 2!\n\n";
 				res = false;
 			}
+		}
+		else if (problem_name.size() >= 9 && problem_name.substr(0, 9) == "moeadde_f")
+		{
+			// TODO: check the parameter of moeadde_f 
+			
+			//if (problem_name[2] >= '1' && problem_name[2] <= '7')
+			//{
+			//	if (M != 2)
+			//	{
+			//		description = "The M parameter of " + problem + " must be 2!\n\n";
+			//		res = false;
+			//	}
+
+			//	if (D < 3)
+			//	{
+			//		description = "The D parameter of " + problem + " must greater than 2!\n\n";
+			//		res = false;
+			//	}
+			//}
+			//else if (problem_name[2] >= '8' && problem_name[2] <= '10')
+			//{
+			//	if (M != 3)
+			//	{
+			//		description = "The M parameter of " + problem + " must be 3!\n\n";
+			//		res = false;
+			//	}
+
+			//	if (D < 5)
+			//	{
+			//		description = "The D parameter of " + problem + " must greater than 4!\n\n";
+			//		res = false;
+			//	}
+			//}
 		}
 		else if (problem_name.substr(0, 2) == "uf")
 		{
@@ -474,6 +520,7 @@ namespace emoc {
 		InitProblemCategoryList(problem_category);
 		InitDTLZList(dtlz_names);
 		InitZDTList(zdt_names);
+		InitMOEADDE_FList(moeadde_f_names);
 		InitUFList(uf_names);
 		InitWFGList(wfg_names);
 		InitLSMOPList(lsmop_names);

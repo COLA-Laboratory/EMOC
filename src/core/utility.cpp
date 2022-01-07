@@ -338,8 +338,6 @@ namespace emoc {
 		// reset pf_size
 		pf_size = 0;
 
-
-
 		// get problem name without number
 		int pos = -1;
 		for (auto c : problem_name)
@@ -352,13 +350,13 @@ namespace emoc {
 		std::string temp_problemname = problem_name.substr(0, pos);
 		for (auto& c : temp_problemname)
 		{
-			if (c >= '0' && c <= '9') continue;
+			if ((c >= '0' && c <= '9') || c == '_') continue;
 			c = tolower(c);
 		}
 
 		for (auto& c : problem_name)
 		{
-			if (c >= '0' && c <= '9') continue;
+			if ((c >= '0' && c <= '9') || c == '_') continue;
 			c = tolower(c);
 		}
 
@@ -367,7 +365,6 @@ namespace emoc {
 		char pf_filename[255] = { 0 };
 		sprintf(pf_filename, "pf_data/%s/%s.%dD.pf", temp_problemname.c_str(), problem_name.c_str(), obj_num);
 		std::fstream pf_file(pf_filename);
-
 
 		if (!pf_file)
 		{
