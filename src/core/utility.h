@@ -21,6 +21,7 @@ namespace emoc {
 	double CalculateNorm(double *vector, int dimension);
 	double CalEuclidianDistance(const double* a, const double* b, int dimension);
 	double CalPerpendicularDistance(double *a, double *weight, int dimension);
+	double CalPerpendicularDistanceNormalization(double* a, double* weight, int dimension, double* ideal, double* nadir);
 
 	void UpdateIdealpoint(Individual *ind, double *ideal_point, int obj_num);
 	void UpdateNadirpoint(Individual *ind, double *nadir_point, int obj_num);

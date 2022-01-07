@@ -65,6 +65,19 @@ namespace emoc {
 		return d2;
 	}
 
+	double CalPerpendicularDistanceNormalization(double* a, double* weight, int dimension, double* ideal, double* nadir)
+	{
+		double *new_a = new double[dimension];
+		for (int i = 0; i < dimension; i++)
+			new_a[i] = (a[i] - ideal[i]) / (nadir[i] - ideal[i]);
+		
+		double sin = CalculateSin(a, weight, dimension);
+		double d2 = CalculateNorm(a, dimension);
+		d2 = d2 * sin;
+		delete[] new_a;
+		return d2;
+	}
+
 	int Combination(int n, int k)
 	{
 		if (n < k)
