@@ -166,6 +166,24 @@ namespace emoc {
 			problem_ = new MOEADDE_F8(dec_num_, obj_num_);
 		else if (problem_name == "moeadde_f9")
 			problem_ = new MOEADDE_F9(dec_num_, obj_num_);
+		else if (problem_name == "immoea_f1")
+			problem_ = new IMMOEA_F1(dec_num_, obj_num_);
+		else if (problem_name == "immoea_f2")
+			problem_ = new IMMOEA_F2(dec_num_, obj_num_);
+		else if (problem_name == "immoea_f3")
+			problem_ = new IMMOEA_F3(dec_num_, obj_num_);
+		else if (problem_name == "immoea_f4")
+			problem_ = new IMMOEA_F4(dec_num_, obj_num_);
+		else if (problem_name == "immoea_f5")
+			problem_ = new IMMOEA_F5(dec_num_, obj_num_);
+		else if (problem_name == "immoea_f6")
+			problem_ = new IMMOEA_F6(dec_num_, obj_num_);
+		else if (problem_name == "immoea_f7")
+			problem_ = new IMMOEA_F7(dec_num_, obj_num_);
+		else if (problem_name == "immoea_f8")
+			problem_ = new IMMOEA_F8(dec_num_, obj_num_);
+		else if (problem_name == "immoea_f9")
+			problem_ = new IMMOEA_F9(dec_num_, obj_num_);
 		else if (problem_name == "uf1")
 			problem_ = new UF1(dec_num_, obj_num_);
 		else if (problem_name == "uf2")
@@ -222,6 +240,24 @@ namespace emoc {
 			problem_ = new LSMOP8(dec_num_, obj_num_);
 		else if (problem_name == "lsmop9")
 			problem_ = new LSMOP9(dec_num_, obj_num_);
+		else if (problem_name == "bt1")
+			problem_ = new BT1(dec_num_, obj_num_);
+		else if (problem_name == "bt2")
+			problem_ = new BT2(dec_num_, obj_num_);
+		else if (problem_name == "bt3")
+			problem_ = new BT3(dec_num_, obj_num_);
+		else if (problem_name == "bt4")
+			problem_ = new BT4(dec_num_, obj_num_);
+		else if (problem_name == "bt5")
+			problem_ = new BT5(dec_num_, obj_num_);
+		else if (problem_name == "bt6")
+			problem_ = new BT6(dec_num_, obj_num_);
+		else if (problem_name == "bt7")
+			problem_ = new BT7(dec_num_, obj_num_);
+		else if (problem_name == "bt8")
+			problem_ = new BT8(dec_num_, obj_num_);
+		else if (problem_name == "bt9")
+			problem_ = new BT9(dec_num_, obj_num_);
 		else
 		{
 			// TODO: move these parameter checking things into some specified function 

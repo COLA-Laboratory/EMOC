@@ -786,14 +786,18 @@ namespace emoc {
 			current_problem_names = &problem_list.zdt_names;
 		else if (category == "DTLZ Series")
 			current_problem_names = &problem_list.dtlz_names;
-		else if (category == "MOEADDE_F Series")
-			current_problem_names = &problem_list.moeadde_f_names;
 		else if (category == "UF Series")
 			current_problem_names = &problem_list.uf_names;
 		else if (category == "WFG Series")
 			current_problem_names = &problem_list.wfg_names;
 		else if (category == "LSMOP Series")
 			current_problem_names = &problem_list.lsmop_names;
+		else if (category == "BT Series")
+			current_problem_names = &problem_list.bt_names;
+		else if (category == "MOEADDE_F Series")
+			current_problem_names = &problem_list.moeadde_f_names;
+		else if (category == "IMMOEA_F Series")
+			current_problem_names = &problem_list.immoea_f_names;
 		else
 			std::cerr << "Test Module ERROR: Problem Category " << category << " Doesn't Exists!\n";
 	}

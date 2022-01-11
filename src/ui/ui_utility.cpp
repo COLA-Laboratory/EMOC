@@ -160,6 +160,19 @@ namespace emoc {
 		moeadde_f_names.push_back("MOEADDE_F9");
 	}
 
+	void InitIMMOEA_FList(std::vector<char*>& immoea_f_names)
+	{
+		immoea_f_names.push_back("IMMOEA_F1");
+		immoea_f_names.push_back("IMMOEA_F2");
+		immoea_f_names.push_back("IMMOEA_F3");
+		immoea_f_names.push_back("IMMOEA_F4");
+		immoea_f_names.push_back("IMMOEA_F5");
+		immoea_f_names.push_back("IMMOEA_F6");
+		immoea_f_names.push_back("IMMOEA_F7");
+		immoea_f_names.push_back("IMMOEA_F8");
+		immoea_f_names.push_back("IMMOEA_F9");
+	}
+
 	void InitUFList(std::vector<char*>& uf_names)
 	{
 		uf_names.push_back("UF1");
@@ -200,14 +213,29 @@ namespace emoc {
 		lsmop_names.push_back("LSMOP9");
 	}
 
+	void InitBTList(std::vector<char*>& bt_names)
+	{
+		bt_names.push_back("BT1");
+		bt_names.push_back("BT2");
+		bt_names.push_back("BT3");
+		bt_names.push_back("BT4");
+		bt_names.push_back("BT5");
+		bt_names.push_back("BT6");
+		bt_names.push_back("BT7");
+		bt_names.push_back("BT8");
+		bt_names.push_back("BT9");
+	}
+
 	void InitProblemCategoryList(std::vector<char*>& problem_category)
 	{
 		problem_category.push_back("DTLZ Series");
 		problem_category.push_back("ZDT Series");
-		problem_category.push_back("MOEADDE_F Series");
 		problem_category.push_back("UF Series");
 		problem_category.push_back("WFG Series");
 		problem_category.push_back("LSMOP Series");
+		problem_category.push_back("BT Series");
+		problem_category.push_back("MOEADDE_F Series");
+		problem_category.push_back("IMMOEA_F Series");
 	}
 
 	void InitDisplayList(std::vector<char*>& display_names)
@@ -248,24 +276,24 @@ namespace emoc {
 	bool CheckProblemParameters(const std::string& problem, int D, int M, int N, int Evaluation, std::string& description)
 	{
 		bool res = true;
-		if (D < 0)
+		if (D <= 0)
 		{
-			description = "The D parameter cannot be negative integer!\n\n";
+			description = "The D parameter should be greater than 0!\n\n";
 			res = false;
 		}
-		if (M < 0)
+		if (M <= 0)
 		{
-			description = "The M parameter cannot be negative integer!\n\n";
+			description = "The M parameter should be greater than 0!\n\n";
 			res = false;
 		}
-		if (N < 0)
+		if (N <= 0)
 		{
-			description = "The N parameter cannot be negative integer!\n\n";
+			description = "The N parameter should be greater than 0!\n\n";
 			res = false;
 		}
-		if (Evaluation < 0)
+		if (Evaluation <= 0)
 		{
-			description = "The Evaluation parameter cannot be negative integer!\n\n";
+			description = "The Evaluation parameter should be greater than 0!\n\n";
 			res = false;
 		}
 
@@ -277,7 +305,7 @@ namespace emoc {
 		}
 
 		//std::cout << problem_name << std::endl;
-		if (problem_name.substr(0,3) == "zdt")
+		if (problem_name.size() >= 3 && problem_name.substr(0,3) == "zdt")
 		{
 			if (M != 2)
 			{
@@ -291,7 +319,7 @@ namespace emoc {
 				res = false;
 			}
 		}
-		else if (problem_name.substr(0, 4) == "dtlz"|| problem_name.substr(0, 5) == "mdtlz")
+		else if ((problem_name.size() >= 4 && problem_name.substr(0, 4) == "dtlz")|| (problem_name.size() >= 5 && problem_name.substr(0, 5) == "mdtlz"))
 		{
 			if (M <= 1)
 			{
@@ -305,40 +333,7 @@ namespace emoc {
 				res = false;
 			}
 		}
-		else if (problem_name.size() >= 9 && problem_name.substr(0, 9) == "moeadde_f")
-		{
-			// TODO: check the parameter of moeadde_f 
-			
-			//if (problem_name[2] >= '1' && problem_name[2] <= '7')
-			//{
-			//	if (M != 2)
-			//	{
-			//		description = "The M parameter of " + problem + " must be 2!\n\n";
-			//		res = false;
-			//	}
-
-			//	if (D < 3)
-			//	{
-			//		description = "The D parameter of " + problem + " must greater than 2!\n\n";
-			//		res = false;
-			//	}
-			//}
-			//else if (problem_name[2] >= '8' && problem_name[2] <= '10')
-			//{
-			//	if (M != 3)
-			//	{
-			//		description = "The M parameter of " + problem + " must be 3!\n\n";
-			//		res = false;
-			//	}
-
-			//	if (D < 5)
-			//	{
-			//		description = "The D parameter of " + problem + " must greater than 4!\n\n";
-			//		res = false;
-			//	}
-			//}
-		}
-		else if (problem_name.substr(0, 2) == "uf")
+		else if (problem_name.size() >= 2 && problem_name.substr(0, 2) == "uf")
 		{
 			if (problem_name[2]>= '1' && problem_name[2] <= '7')
 			{
@@ -369,7 +364,7 @@ namespace emoc {
 				}
 			}
 		}
-		else if (problem_name.substr(0, 3) == "wfg")
+		else if (problem_name.size() >= 3 && problem_name.substr(0, 3) == "wfg")
 		{
 			// TODO ... wfg needs extra parameter which is not implemented now.
 			int defualt_WFGK = 10;
@@ -386,6 +381,67 @@ namespace emoc {
 				description = "The D parameter of " + problem + " must greater than K! (K is a parameter of WFG problem, which is 10 as defualt in EMOC. You can change it in wfg.cpp file.)\n\n";
 				res = false;
 			}
+		}
+		else if (problem_name.size() >= 9 && problem_name.substr(0, 9) == "moeadde_f")
+		{
+			if (problem_name[9] == '6')
+			{
+				if (M != 3)
+				{
+					description = "The M parameter of " + problem + " must be 3!\n\n";
+					res = false;
+				}
+
+				if (D < 5)
+				{
+					description = "The D parameter of " + problem + " must greater than 4!\n\n";
+					res = false;
+				}
+			}
+			else
+			{
+				if (M != 2)
+				{
+					description = "The M parameter of " + problem + " must be 2!\n\n";
+					res = false;
+				}
+
+				if (D < 3)
+				{
+					description = "The D parameter of " + problem + " must greater than 2!\n\n";
+					res = false;
+				}
+			}
+		}
+		else if (problem_name.size() >= 2 && problem_name.substr(0, 2) == "bt")
+		{
+			if (problem_name[2] >= '1' && problem_name[2] <= '8')
+			{
+				if (M != 2)
+				{
+					description = "The M parameter of " + problem + " must be 2!\n\n";
+					res = false;
+				}
+			}
+			else if (problem_name[2] == '9')
+			{
+				if (M != 3)
+				{
+					description = "The M parameter of " + problem + " must be 3!\n\n";
+					res = false;
+				}
+
+				if (D <= 1)
+				{
+					description = "The D parameter of " + problem + " must greater than 1!\n\n";
+					res = false;
+				}
+			}
+		}
+		else if (problem_name.size() >= 8 && problem_name.substr(0, 9) == "immoea_f")
+		{
+
+		
 		}
 
 		return res;
@@ -515,15 +571,18 @@ namespace emoc {
 
 	}
 
+
 	CategorizedProblemList::CategorizedProblemList()
 	{
 		InitProblemCategoryList(problem_category);
 		InitDTLZList(dtlz_names);
 		InitZDTList(zdt_names);
-		InitMOEADDE_FList(moeadde_f_names);
 		InitUFList(uf_names);
 		InitWFGList(wfg_names);
 		InitLSMOPList(lsmop_names);
+		InitBTList(bt_names);
+		InitMOEADDE_FList(moeadde_f_names);
+		InitIMMOEA_FList(immoea_f_names);
 	}
 
 	CategorizedProblemList::~CategorizedProblemList()

@@ -5,5 +5,5 @@
 #include "problem/wfg.h"
 #include "problem/lsmop.h"
 #include "problem/bt.h"
-#include "problem/imf.h"
 #include "problem/moeadde_f.h"
+#include "problem/immoea_f.h"

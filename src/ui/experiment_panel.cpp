@@ -131,10 +131,10 @@ namespace emoc {
 				selected_problems.push_back((*current_problem_names)[problem_index]);
 
 				// add some default problem settings
-				Ns.push_back(600);
+				Ns.push_back(100);
 				Ms.push_back(2);
 				Ds.push_back(30);
-				Evaluations.push_back(300000);
+				Evaluations.push_back(1000000);
 			}
 			ImGui::Dummy(ImVec2(0.0f, 20.0f));
 
@@ -626,14 +626,18 @@ namespace emoc {
 			current_problem_names = &problem_list.zdt_names;
 		else if (category == "DTLZ Series")
 			current_problem_names = &problem_list.dtlz_names;
-		else if (category == "MOEADDE_F Series")
-			current_problem_names = &problem_list.moeadde_f_names;
 		else if (category == "UF Series")
 			current_problem_names = &problem_list.uf_names;
 		else if (category == "WFG Series")
 			current_problem_names = &problem_list.wfg_names;
 		else if (category == "LSMOP Series")
 			current_problem_names = &problem_list.lsmop_names;
+		else if (category == "BT Series")
+			current_problem_names = &problem_list.bt_names;
+		else if (category == "MOEADDE_F Series")
+			current_problem_names = &problem_list.moeadde_f_names;
+		else if (category == "IMMOEA_F Series")
+			current_problem_names = &problem_list.immoea_f_names;
 		else
 			std::cerr << "Experiment Module ERROR: Problem Category " << category << " Doesn't Exists!\n";
 	}
