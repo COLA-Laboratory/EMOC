@@ -43,6 +43,7 @@ namespace emoc {
 
 	struct EMOCExperimentTask;
 	struct EMOCSingleThreadResult;
+	struct MetricHistory;
 	struct EMOCMultiThreadResult;
 
 	class EMOCManager
@@ -88,16 +89,20 @@ namespace emoc {
 		EMOCManager(const EMOCManager &);
 		EMOCManager& operator=(const EMOCManager &);
 
+		// emoc run functions
 		void EMOCSingleThreadRun();
 		void EMOCMultiThreadRun();
 		void ExperimentWorker(std::vector<EMOCExperimentTask> tasks, int thread_id);
 
 		// get best index according to para and format
 		int GetBestParameterIndex(int start, int end, const std::string &metric, const std::string& format);
-		void StatisticTestAccordingMetric(EMOCMultiThreadResult& res, EMOCMultiThreadResult& compared_res, const std::string& metric, const std::string& format);
 
+		// statistic tests
 		int RankSumTest(const std::vector<double>& array1, const std::vector<double>& array2);
 		int SignRankTest(const std::vector<double>& array1, const std::vector<double>& array2);
+		void StatisticTestAccordingMetric(EMOCMultiThreadResult& res, EMOCMultiThreadResult& compared_res, const std::string& metric, const std::string& format);
+
+		// experiment module result update functions
 		void UpdateExpStatTest(int parameter_index);
 		void UpdateExpResult(EMOCMultiThreadResult &res, int new_res_index, int parameter_index);
 		void UpdateExpMetricStat(std::vector<double>& indicator_history, std::vector<bool>& is_indicator_record,
@@ -155,29 +160,25 @@ namespace emoc {
 		int parameter_index;	// refer to which parameter in received parameter vectors
 	};
 
+	struct  MetricHistory
+	{
+		std::vector<double> metric_history;
+		std::vector<bool> is_record;
+		double metric_mean = 0.0, metric_std = 0.0, metric_median = 0.0, metric_iqr = 0.0;		
+		int metric_mean_ranksum[3] = { -2, -2, -2 }, metric_mean_signrank[3] = { -2, -2, -2 };			// 0:mean best compared result 1:median best compared result 2:last column compared result
+		int metric_median_ranksum[3] = { -2, -2 , -2 }, metric_median_signrank[3] = { -2, -2, -2 };
+	};
+
 	// for (multi-thread or multi-run) epxeriment result
 	struct EMOCMultiThreadResult
 	{
-		// runtime results
-		std::vector<double> runtime_history;
-		std::vector<bool> is_runtime_record;
-		double runtime_mean = 0.0, runtime_std = 0.0, runtime_median = 0.0, runtime_iqr = 0.0;
-		int runtime_mean_ranksum[3]= { -2, -2, -2 }, runtime_mean_signrank[3] = { -2, -2, -2 };			// 0:mean best compared result 1:median best compared result 2:last column compared result
-		int runtime_median_ranksum[3] = { -2, -2 , -2 }, runtime_median_signrank[3] = { -2, -2, -2 };
 
-		// igd results
-		std::vector<double> igd_history;
-		std::vector<bool> is_igd_record;
-		double igd_mean = 0.0, igd_std = 0.0, igd_median = 0.0, igd_iqr = 0.0;
-		int igd_mean_ranksum[3] = { -2, -2, -2 }, igd_mean_signrank[3] = { -2, -2, -2 };
-		int igd_median_ranksum[3] = { -2, -2, -2 }, igd_median_signrank[3] = { -2, -2, -2 };
-
-		// hv results
-		std::vector<double> hv_history;
-		std::vector<bool> is_hv_record;
-		double hv_mean = 0.0, hv_std = 0.0, hv_median = 0.0, hv_iqr = 0.0;
-		int hv_mean_ranksum[3] = { -2, -2, -2 },	hv_mean_signrank[3] = { -2, -2, -2 };
-		int hv_median_ranksum[3] = { -2, -2, -2 }, hv_median_signrank[3] = { -2, -2, -2 };
+		// metric results
+		MetricHistory runtime;
+		MetricHistory igd;
+		MetricHistory hv;
+		MetricHistory gd;
+		MetricHistory spacing;
 
 		int valid_res_count = 0;
 
@@ -188,13 +189,39 @@ namespace emoc {
 
 		EMOCMultiThreadResult(int run_num)
 		{
-			runtime_history.resize(run_num, 0.0);
-			is_runtime_record.resize(run_num, false);
-			igd_history.resize(run_num, 0.0);
-			is_igd_record.resize(run_num, false);
-			hv_history.resize(run_num, 0.0);
-			is_hv_record.resize(run_num, false);
+			runtime.metric_history.resize(run_num, 0.0);
+			runtime.is_record.resize(run_num, false);
+			igd.metric_history.resize(run_num, 0.0);
+			igd.is_record.resize(run_num, false);
+			hv.metric_history.resize(run_num, 0.0);
+			hv.is_record.resize(run_num, false);
+			gd.metric_history.resize(run_num, 0.0);
+			gd.is_record.resize(run_num, false);
+			spacing.metric_history.resize(run_num, 0.0);
+			spacing.is_record.resize(run_num, false);
 		}
+
+
+		//// runtime results
+		//std::vector<double> runtime_history;
+		//std::vector<bool> is_runtime_record;
+		//double runtime_mean = 0.0, runtime_std = 0.0, runtime_median = 0.0, runtime_iqr = 0.0;
+		//int runtime_mean_ranksum[3]= { -2, -2, -2 }, runtime_mean_signrank[3] = { -2, -2, -2 };			// 0:mean best compared result 1:median best compared result 2:last column compared result
+		//int runtime_median_ranksum[3] = { -2, -2 , -2 }, runtime_median_signrank[3] = { -2, -2, -2 };
+
+		//// igd results
+		//std::vector<double> igd_history;
+		//std::vector<bool> is_igd_record;
+		//double igd_mean = 0.0, igd_std = 0.0, igd_median = 0.0, igd_iqr = 0.0;
+		//int igd_mean_ranksum[3] = { -2, -2, -2 }, igd_mean_signrank[3] = { -2, -2, -2 };
+		//int igd_median_ranksum[3] = { -2, -2, -2 }, igd_median_signrank[3] = { -2, -2, -2 };
+
+		//// hv results
+		//std::vector<double> hv_history;
+		//std::vector<bool> is_hv_record;
+		//double hv_mean = 0.0, hv_std = 0.0, hv_median = 0.0, hv_iqr = 0.0;
+		//int hv_mean_ranksum[3] = { -2, -2, -2 },	hv_mean_signrank[3] = { -2, -2, -2 };
+		//int hv_median_ranksum[3] = { -2, -2, -2 }, hv_median_signrank[3] = { -2, -2, -2 };
 	};
 
 	// for (single thread or single run) test result
@@ -204,7 +231,7 @@ namespace emoc {
 		EMOCParameters para;		// for parameter information accesses easily
 		double last_igd;
 		double last_hv;
-		double last_spread;
+		double last_gd;
 		double last_spacing;
 		double runtime;
 		double pop_num;

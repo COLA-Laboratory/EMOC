@@ -268,13 +268,13 @@ namespace emoc{
 					std::vector<bool> indicator_record;
 					if (metric_name == "IGD")
 					{
-						indicator_history = res.igd_history;
-						indicator_record = res.is_igd_record;
+						indicator_history = res.igd.metric_history;
+						indicator_record = res.igd.is_record;
 					}
 					else if (metric_name == "HV")
 					{
-						indicator_history = res.hv_history;
-						indicator_record = res.is_hv_record;
+						indicator_history = res.hv.metric_history;
+						indicator_record = res.hv.is_record;
 					}
 
 					for (int c = 0; c < indicator_history.size(); c++)
@@ -349,19 +349,33 @@ namespace emoc{
 			char final_display[256];
 			if (para == "Runtime")
 			{
-				hypothesis_symbol = GetHypothesisSymbol(res.runtime_mean_ranksum[comp_index], res.runtime_median_ranksum[comp_index], res.runtime_mean_signrank[comp_index], res.runtime_median_signrank[comp_index], hypothesis, format);
-				SetTableContent(display, format, res.runtime_mean, res.runtime_std, res.runtime_median, res.runtime_iqr);
+				hypothesis_symbol = GetHypothesisSymbol(res.runtime.metric_mean_ranksum[comp_index], res.runtime.metric_median_ranksum[comp_index], res.runtime.metric_mean_signrank[comp_index], res.runtime.metric_median_signrank[comp_index], hypothesis, format);
+				SetTableContent(display, format, res.runtime.metric_mean, res.runtime.metric_std, res.runtime.metric_median, res.runtime.metric_iqr);
 			}
 			else if (para == "IGD")
 			{
-				hypothesis_symbol = GetHypothesisSymbol(res.igd_mean_ranksum[comp_index], res.igd_median_ranksum[comp_index], res.igd_mean_signrank[comp_index], res.igd_median_signrank[comp_index], hypothesis, format);
-				SetTableContent(display, format, res.igd_mean, res.igd_std, res.igd_median, res.igd_iqr);
+				hypothesis_symbol = GetHypothesisSymbol(res.igd.metric_mean_ranksum[comp_index], res.igd.metric_median_ranksum[comp_index], res.igd.metric_mean_signrank[comp_index], res.igd.metric_median_signrank[comp_index], hypothesis, format);
+				SetTableContent(display, format, res.igd.metric_mean, res.igd.metric_std, res.igd.metric_median, res.igd.metric_iqr);
 				//std::cout << hypothesis_symbol << "\n";
 			}
 			else if (para == "HV")
 			{
-				hypothesis_symbol = GetHypothesisSymbol(res.hv_mean_ranksum[comp_index], res.hv_median_ranksum[comp_index], res.hv_mean_signrank[comp_index], res.hv_median_signrank[comp_index], hypothesis, format);
-				SetTableContent(display, format, res.hv_mean, res.hv_std, res.hv_median, res.hv_iqr);
+				hypothesis_symbol = GetHypothesisSymbol(res.hv.metric_mean_ranksum[comp_index], res.hv.metric_median_ranksum[comp_index], res.hv.metric_mean_signrank[comp_index], res.hv.metric_median_signrank[comp_index], hypothesis, format);
+				SetTableContent(display, format, res.hv.metric_mean, res.hv.metric_std, res.hv.metric_median, res.hv.metric_iqr);
+			}
+			else if (para == "GD")
+			{
+				hypothesis_symbol = GetHypothesisSymbol(res.gd.metric_mean_ranksum[comp_index], res.gd.metric_median_ranksum[comp_index], res.gd.metric_mean_signrank[comp_index], res.gd.metric_median_signrank[comp_index], hypothesis, format);
+				SetTableContent(display, format, res.gd.metric_mean, res.gd.metric_std, res.gd.metric_median, res.gd.metric_iqr);
+			}
+			else if (para == "Spacing")
+			{
+				hypothesis_symbol = GetHypothesisSymbol(res.spacing.metric_mean_ranksum[comp_index], res.spacing.metric_median_ranksum[comp_index], res.spacing.metric_mean_signrank[comp_index], res.spacing.metric_median_signrank[comp_index], hypothesis, format);
+				SetTableContent(display, format, res.spacing.metric_mean, res.spacing.metric_std, res.spacing.metric_median, res.spacing.metric_iqr);
+			}
+			else
+			{
+				// TODO: ADD MORE METRICS
 			}
 
 			// The comparision is simple, so we put the logic in ui rendering loop. 
@@ -556,18 +570,32 @@ namespace emoc{
 						char final_display[256];
 						if (para_name == "Runtime")
 						{
-							hypothesis_symbol = GetHypothesisSymbol(res.runtime_mean_ranksum[comp_index], res.runtime_median_ranksum[comp_index], res.runtime_mean_signrank[comp_index], res.runtime_median_signrank[comp_index], hypothesis_name, format_name);
-							SetTableContent(display, format_name, res.runtime_mean, res.runtime_std, res.runtime_median, res.runtime_iqr);
+							hypothesis_symbol = GetHypothesisSymbol(res.runtime.metric_mean_ranksum[comp_index], res.runtime.metric_median_ranksum[comp_index], res.runtime.metric_mean_signrank[comp_index], res.runtime.metric_median_signrank[comp_index], hypothesis_name, format_name);
+							SetTableContent(display, format_name, res.runtime.metric_mean, res.runtime.metric_std, res.runtime.metric_median, res.runtime.metric_iqr);
 						}
 						else if (para_name == "IGD")
 						{
-							hypothesis_symbol = GetHypothesisSymbol(res.igd_mean_ranksum[comp_index], res.igd_median_ranksum[comp_index], res.igd_mean_signrank[comp_index], res.igd_median_signrank[comp_index], hypothesis_name, format_name);
-							SetTableContent(display, format_name, res.igd_mean, res.igd_std, res.igd_median, res.igd_iqr);
+							hypothesis_symbol = GetHypothesisSymbol(res.igd.metric_mean_ranksum[comp_index], res.igd.metric_median_ranksum[comp_index], res.igd.metric_mean_signrank[comp_index], res.igd.metric_median_signrank[comp_index], hypothesis_name, format_name);
+							SetTableContent(display, format_name, res.igd.metric_mean, res.igd.metric_std, res.igd.metric_median, res.igd.metric_iqr);
 						}
 						else if (para_name == "HV")
 						{
-							hypothesis_symbol = GetHypothesisSymbol(res.hv_mean_ranksum[comp_index], res.hv_median_ranksum[comp_index], res.hv_mean_signrank[comp_index], res.hv_median_signrank[comp_index], hypothesis_name, format_name);
-							SetTableContent(display, format_name, res.hv_mean, res.hv_std, res.hv_median, res.hv_iqr);
+							hypothesis_symbol = GetHypothesisSymbol(res.hv.metric_mean_ranksum[comp_index], res.hv.metric_median_ranksum[comp_index], res.hv.metric_mean_signrank[comp_index], res.hv.metric_median_signrank[comp_index], hypothesis_name, format_name);
+							SetTableContent(display, format_name, res.hv.metric_mean, res.hv.metric_std, res.hv.metric_median, res.hv.metric_iqr);
+						}
+						else if (para_name == "GD")
+						{
+							hypothesis_symbol = GetHypothesisSymbol(res.gd.metric_mean_ranksum[comp_index], res.gd.metric_median_ranksum[comp_index], res.gd.metric_mean_signrank[comp_index], res.gd.metric_median_signrank[comp_index], hypothesis_name, format_name);
+							SetTableContent(display, format_name, res.gd.metric_mean, res.gd.metric_std, res.gd.metric_median, res.gd.metric_iqr);
+						}
+						else if (para_name == "Spacing")
+						{
+							hypothesis_symbol = GetHypothesisSymbol(res.spacing.metric_mean_ranksum[comp_index], res.spacing.metric_median_ranksum[comp_index], res.spacing.metric_mean_signrank[comp_index], res.spacing.metric_median_signrank[comp_index], hypothesis_name, format_name);
+							SetTableContent(display, format_name, res.spacing.metric_mean, res.spacing.metric_std, res.spacing.metric_median, res.spacing.metric_iqr);
+						}
+						else
+						{
+							// TODO: ADD MORE METRICS
 						}
 
 						// The comparision is simple, so we put the logic in ui rendering loop. 

@@ -25,7 +25,6 @@ namespace emoc {
 		void DisplayResultWindow(bool is_finish, bool is_pause);
 
 		// display functions according current settings		
-		void DisplayTableResult(const EMOCMultiThreadResult& res, const std::string& para);	// display table content according to selected display parameter 
 		void DisplayTableProblemProperty(const std::string& col_name, int row);	
 		void DisplaySelectedAlgorithm(int index);								// algorithm display in experiment module's parameter window 
 		void DisplaySelectedProblem(int index, int item_width, int item_pos);	// problem display in experiment module's parameter window

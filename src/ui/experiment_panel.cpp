@@ -134,7 +134,7 @@ namespace emoc {
 				Ns.push_back(100);
 				Ms.push_back(2);
 				Ds.push_back(30);
-				Evaluations.push_back(1000000);
+				Evaluations.push_back(100000);
 			}
 			ImGui::Dummy(ImVec2(0.0f, 20.0f));
 
@@ -417,27 +417,6 @@ namespace emoc {
 
 			ImGui::End();
 		}
-	}
-
-	void ExperimentPanel::DisplayTableResult(const EMOCMultiThreadResult& res, const std::string& para)
-	{
-		double display = 0.0;
-		bool is_valid = false;
-		if (para == "Runtime")
-		{
-			display = CalculateDisplayIndicator(res.runtime_history, res.is_runtime_record, is_valid);
-		}
-		else if (para == "IGD")
-		{
-			display = CalculateDisplayIndicator(res.igd_history, res.is_igd_record, is_valid);
-		}
-		else if (para == "HV")
-		{
-			display = CalculateDisplayIndicator(res.hv_history, res.is_hv_record, is_valid);
-		}
-
-		if(is_valid) ImGui::Text(std::to_string(display).c_str());
-		
 	}
 
 	void ExperimentPanel::DisplayTableProblemProperty(const std::string& col_name, int row)

@@ -493,6 +493,10 @@ namespace emoc {
 			ImGui::Text(std::to_string(res.last_igd).c_str());
 		else if (col_name == "HV")
 			ImGui::Text(std::to_string(res.last_hv).c_str());
+		else if (col_name == "GD")
+			ImGui::Text(std::to_string(res.last_gd).c_str());
+		else if (col_name == "Spacing")
+			ImGui::Text(std::to_string(res.last_spacing).c_str());
 
 	}
 

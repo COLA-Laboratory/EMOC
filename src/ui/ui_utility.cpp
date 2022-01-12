@@ -65,6 +65,9 @@ namespace emoc {
 
 	void InitDecompositionAlgorithmList(std::vector<char*>& decomposition_algorithm_names)
 	{
+		decomposition_algorithm_names.push_back("MOEADDYTS");
+		decomposition_algorithm_names.push_back("MOEADSWTS");
+		decomposition_algorithm_names.push_back("MOEADDTS");
 		decomposition_algorithm_names.push_back("MOEAD");
 		decomposition_algorithm_names.push_back("MOEADDE");
 		decomposition_algorithm_names.push_back("MOEADDRA");
@@ -72,7 +75,6 @@ namespace emoc {
 		decomposition_algorithm_names.push_back("MOEADGRA");
 		decomposition_algorithm_names.push_back("MOEADIRA");
 		decomposition_algorithm_names.push_back("ENSMOEAD");
-		decomposition_algorithm_names.push_back("MOEADDYTS");
 		decomposition_algorithm_names.push_back("MOEADCDE");
 		decomposition_algorithm_names.push_back("MOEADSTM");
 	}
@@ -243,6 +245,8 @@ namespace emoc {
 		display_names.push_back("Runtime");
 		display_names.push_back("IGD");
 		display_names.push_back("HV");
+		display_names.push_back("GD");
+		display_names.push_back("Spacing");
 	}
 
 	void InitFormatList(std::vector<char*>& format_names)
@@ -516,19 +520,27 @@ namespace emoc {
 
 		if (para == "IGD")
 		{
-			GetComparedMetric(format, res.igd_mean, res.igd_std, res.igd_median, res.igd_iqr, metric1, metric2);
+			GetComparedMetric(format, res.igd.metric_mean, res.igd.metric_std, res.igd.metric_median, res.igd.metric_iqr, metric1, metric2);
 		}
 		else if (para == "Runtime")
 		{
-			GetComparedMetric(format, res.runtime_mean, res.runtime_std, res.runtime_median, res.runtime_iqr, metric1, metric2);
+			GetComparedMetric(format, res.runtime.metric_mean, res.runtime.metric_std, res.runtime.metric_median, res.runtime.metric_iqr, metric1, metric2);
 		}
 		else if (para == "HV")
 		{
-			GetComparedMetric(format, res.hv_mean, res.hv_std, res.hv_median, res.hv_iqr, metric1, metric2);
+			GetComparedMetric(format, res.hv.metric_mean, res.hv.metric_std, res.hv.metric_median, res.hv.metric_iqr, metric1, metric2);
+		}
+		else if(para == "GD")
+		{
+			GetComparedMetric(format, res.gd.metric_mean, res.gd.metric_std, res.gd.metric_median, res.gd.metric_iqr, metric1, metric2);
+		}
+		else if (para == "Spacing")
+		{
+			GetComparedMetric(format, res.spacing.metric_mean, res.spacing.metric_std, res.spacing.metric_median, res.spacing.metric_iqr, metric1, metric2);
 		}
 		else
 		{
-			// TODO
+			// TODO: add more metrics
 		}
 	}
 
