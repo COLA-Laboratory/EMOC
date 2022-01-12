@@ -67,6 +67,7 @@ namespace emoc {
 	{
 		decomposition_algorithm_names.push_back("MOEADDYTS");
 		decomposition_algorithm_names.push_back("MOEADSWTS");
+		decomposition_algorithm_names.push_back("MOEADCDTS");
 		decomposition_algorithm_names.push_back("MOEADDTS");
 		decomposition_algorithm_names.push_back("MOEAD");
 		decomposition_algorithm_names.push_back("MOEADDE");
@@ -173,6 +174,7 @@ namespace emoc {
 		immoea_f_names.push_back("IMMOEA_F7");
 		immoea_f_names.push_back("IMMOEA_F8");
 		immoea_f_names.push_back("IMMOEA_F9");
+		immoea_f_names.push_back("IMMOEA_F10");
 	}
 
 	void InitUFList(std::vector<char*>& uf_names)
@@ -339,7 +341,7 @@ namespace emoc {
 		}
 		else if (problem_name.size() >= 2 && problem_name.substr(0, 2) == "uf")
 		{
-			if (problem_name[2]>= '1' && problem_name[2] <= '7')
+			if (problem_name[2]>= '1' && problem_name[2] <= '7' && problem_name.size() == 3)
 			{
 				if (M != 2)
 				{
@@ -353,7 +355,7 @@ namespace emoc {
 					res = false;
 				}
 			}
-			else if (problem_name[2] >= '8' && problem_name[2] <= '10')
+			else
 			{
 				if (M != 3)
 				{
@@ -442,10 +444,40 @@ namespace emoc {
 				}
 			}
 		}
-		else if (problem_name.size() >= 8 && problem_name.substr(0, 9) == "immoea_f")
+		else if (problem_name.size() >= 8 && problem_name.substr(0, 8) == "immoea_f")
 		{
+			if (problem_name[8] >= '4' && problem_name[8] <= '8')
+			{
+				if (M != 3)
+				{
+					description = "The M parameter of " + problem + " must be 3!\n\n";
+					res = false;
+				}
 
-		
+				if (D <= 2)
+				{
+					description = "The D parameter of " + problem + " must greater than 2!\n\n";
+					res = false;
+				}
+			}
+			else
+			{
+				if (M != 2)
+				{
+					description = "The M parameter of " + problem + " must be 2!\n\n";
+					res = false;
+				}
+
+				if (D <= 1)
+				{
+					description = "The D parameter of " + problem + " must greater than 1!\n\n";
+					res = false;
+				}
+			}
+		}
+		else
+		{
+			// TODO: ADD MORE TEST PROBLEMS
 		}
 
 		return res;

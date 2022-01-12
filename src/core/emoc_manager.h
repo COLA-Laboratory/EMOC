@@ -162,8 +162,10 @@ namespace emoc {
 
 	struct  MetricHistory
 	{
+		// history metric for each run
 		std::vector<double> metric_history;
 		std::vector<bool> is_record;
+
 		double metric_mean = 0.0, metric_std = 0.0, metric_median = 0.0, metric_iqr = 0.0;		
 		int metric_mean_ranksum[3] = { -2, -2, -2 }, metric_mean_signrank[3] = { -2, -2, -2 };			// 0:mean best compared result 1:median best compared result 2:last column compared result
 		int metric_median_ranksum[3] = { -2, -2 , -2 }, metric_median_signrank[3] = { -2, -2, -2 };
@@ -237,6 +239,7 @@ namespace emoc {
 		double pop_num;
 		int max_iteration;
 
+		// history metric for each generation
 		std::unordered_map<int, double> igd_history;
 		std::unordered_map<int, double> hv_history;
 		std::unordered_map<int, double> spacing_history;

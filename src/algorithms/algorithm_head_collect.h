@@ -13,6 +13,7 @@
 #include "algorithms/moead_ira/moead_ira.h"
 #include "algorithms/moead_dyts/moead_dyts.h"
 #include "algorithms/moead_swts/moead_swts.h"
+#include "algorithms/moead_cdts/moead_cdts.h"
 #include "algorithms/moead_dts/moead_dts.h"
 #include "algorithms/moead_cde/moead_cde.h"
 #include "algorithms/moead_stm/moead_stm.h"

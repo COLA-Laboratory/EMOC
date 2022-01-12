@@ -184,6 +184,8 @@ namespace emoc {
 			problem_ = new IMMOEA_F8(dec_num_, obj_num_);
 		else if (problem_name == "immoea_f9")
 			problem_ = new IMMOEA_F9(dec_num_, obj_num_);
+		else if (problem_name == "immoea_f10")
+			problem_ = new IMMOEA_F10(dec_num_, obj_num_);
 		else if (problem_name == "uf1")
 			problem_ = new UF1(dec_num_, obj_num_);
 		else if (problem_name == "uf2")
@@ -304,6 +306,8 @@ namespace emoc {
 			algorithm_ = new MOEADDYTS(thread_id_);
 		else if (algorithm_name == "moeadswts")
 			algorithm_ = new MOEADSWTS(thread_id_);
+		else if (algorithm_name == "moeadcdts")
+			algorithm_ = new MOEADCDTS(thread_id_);
 		else if (algorithm_name == "moeaddts")
 			algorithm_ = new MOEADDTS(thread_id_);
 		else if (algorithm_name == "moeadcde")
