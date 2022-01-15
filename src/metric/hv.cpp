@@ -118,7 +118,7 @@ namespace emoc {
 		 double* obj_max = (double*)malloc(sizeof(double) * obj_num);
 
 		 for (int i = 0; i < obj_num; ++i)
-			 ref[i] = 1.0;
+			 ref[i] = 1.2;
 
 		 int pf_size = 0;
 		 double** pfdata = nullptr;
