@@ -25,11 +25,13 @@ namespace emoc {
 
 	void UpdateIdealpoint(Individual *ind, double *ideal_point, int obj_num);
 	void UpdateNadirpoint(Individual *ind, double *nadir_point, int obj_num);
-	void UpdateIdealpoint(Individual **pop, int pop_num, double *ideal_point, int obj_num);
-	void UpdateNadirpoint(Individual **pop, int pop_num, double *nadir_point, int obj_num);
+	void UpdateIdealpoint(Individual** pop, int pop_num, double* ideal_point, int obj_num);
+	void UpdateNadirpoint(Individual** pop, int pop_num, double* nadir_point, int obj_num);
+	void UpdateNadirpointWithRank(Individual** pop, int pop_num, double* nadir_point, int obj_num, int rank);
 
 
 	// aggregation functions
+	double CalWeightedLpScalarizing(Individual* ind, double* weight_vector, double* ideal_point, double *nadir_point, int obj_num, int p = -1);
 	double CalWeightedSum(Individual *ind, double *weight_vector, double *ideal_point, int obj_num);
 	double CalInverseChebycheff(Individual *ind, double *weight_vector, double *ideal_point, int obj_num);
 	double CalPBI(Individual *ind, double *weight_vector, double *ideal_point, int obj_num, double theta = 0.0 );

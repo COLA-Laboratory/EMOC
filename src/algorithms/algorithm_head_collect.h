@@ -18,3 +18,5 @@
 #include "algorithms/moead_cde/moead_cde.h"
 #include "algorithms/moead_stm/moead_stm.h"
 #include "algorithms/rvea/rvea.h"
+#include "algorithms/moead_pas/moead_pas.h"
+#include "algorithms/moead_m2m/moead_m2m.h"

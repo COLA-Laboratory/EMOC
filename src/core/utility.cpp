@@ -172,6 +172,64 @@ namespace emoc {
 		}
 	}
 
+	void UpdateNadirpointWithRank(Individual** pop, int pop_num, double* nadir_point, int obj_num, int rank)
+	{
+		for (int i = 0; i < obj_num; ++i)
+			nadir_point[i] = -EMOC_INF;
+
+		for (int i = 0; i < pop_num; i++)
+		{
+			if (pop[i]->rank_ == rank)
+			{
+				for (int j = 0; j < obj_num; j++)
+				{
+					if (pop[i]->obj_[j] > nadir_point[j])
+						nadir_point[j] = pop[i]->obj_[j];
+				}
+			}
+		}
+	}
+
+	double CalWeightedLpScalarizing(Individual* ind, double* weight_vector, double* ideal_point, double* nadir_point, int obj_num, int p /*= -1*/)
+	{
+		double fitness = 0, max = -1.0e+20, sum = 0.0;
+
+		if (p == -1)
+		{
+			for (int i = 0; i < obj_num; ++i)
+			{
+				double diff = fabs(ind->obj_[i] - ideal_point[i]) / (nadir_point[i] - ideal_point[i]);
+				if (weight_vector[i] < EMOC_EPS)
+					fitness = diff / 0.000001;
+				else
+					fitness = diff / weight_vector[i];
+
+				if (fitness > max)
+					max = fitness;
+			}
+
+			fitness = max;
+			ind->fitness_ = fitness;
+		}
+		else if (p > 0)
+		{
+			for (int i = 0; i < obj_num; ++i)
+			{
+				double diff = fabs(ind->obj_[i] - ideal_point[i]) / (nadir_point[i] - ideal_point[i]);
+				if (weight_vector[i] < EMOC_EPS)
+					sum  += pow (diff / 0.000001, (double)p);
+				else
+					sum += pow(diff / weight_vector[i], (double)p);
+			}
+
+			fitness = pow(sum, (1 / (double)p));
+			ind->fitness_ = fitness;
+		}
+
+
+		return fitness;
+	}
+
 	double CalWeightedSum(Individual* ind, double* weight_vector, double* ideal_point, int obj_num)
 	{
 		double fitness = 0;
