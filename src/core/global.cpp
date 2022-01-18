@@ -318,6 +318,8 @@ namespace emoc {
 			algorithm_ = new RVEA(thread_id_);
 		else if (algorithm_name == "moeadpas")
 			algorithm_ = new MOEADPAS(thread_id_);
+		else if (algorithm_name == "moeadm2m")
+			algorithm_ = new MOEADM2M(thread_id_);
 		else
 		{
 			// TODO: move these parameter checking things into some specified function 

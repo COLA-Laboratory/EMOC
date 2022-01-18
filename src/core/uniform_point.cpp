@@ -1,5 +1,7 @@
 #include "core/uniform_point.h"
 
+#include "core/macro.h"
+
 namespace emoc {
 
 	static void SetWeight(double *weight, double unit, double sum, int dim, int *column, double **lambda, int obj_num)
@@ -59,9 +61,13 @@ namespace emoc {
 		SetWeight(vec, gaps, 0, obj_num, &column, lambda,obj_num);
 
 		for (int i = 0; i < *weight_num; i++)
-			for (int j = 0; j < obj_num; j++) 
+		{
+			for (int j = 0; j < obj_num; j++)
+			{
 				lambda[i][j] = lambda[i][j] / gaps;
-			
+				if (lambda[i][j] < EMOC_EPS) lambda[i][j] = EMOC_EPS;
+			}
+		}
 		delete[] vec;
 		return lambda;
 	}
