@@ -802,6 +802,8 @@ namespace emoc {
 			current_problem_names = &problem_list.moeadde_f_names;
 		else if (category == "IMMOEA_F Series")
 			current_problem_names = &problem_list.immoea_f_names;
+		else if (category == "MOEADM2M_F Series")
+			current_problem_names = &problem_list.moeadm2m_f_names;
 		else
 			std::cerr << "Test Module ERROR: Problem Category " << category << " Doesn't Exists!\n";
 	}

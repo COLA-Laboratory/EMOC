@@ -68,7 +68,6 @@ namespace emoc {
 		K = weight_num_;
 		S = g_GlobalSettings->population_num_ / K;
 		real_popnum_ = S * K;
-		std::cout << K << "\n";
 		
 		// associate intialized population to different subproblem
 		std::vector<Individual*> pop_copy;

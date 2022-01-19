@@ -180,6 +180,17 @@ namespace emoc {
 		immoea_f_names.push_back("IMMOEA_F10");
 	}
 
+	void InitMOEADM2M_FList(std::vector<char*>& moeadm2m_f_names)
+	{
+		moeadm2m_f_names.push_back("MOEADM2M_F1");
+		moeadm2m_f_names.push_back("MOEADM2M_F2");
+		moeadm2m_f_names.push_back("MOEADM2M_F3");
+		moeadm2m_f_names.push_back("MOEADM2M_F4");
+		moeadm2m_f_names.push_back("MOEADM2M_F5");
+		moeadm2m_f_names.push_back("MOEADM2M_F6");
+		moeadm2m_f_names.push_back("MOEADM2M_F7");
+	}
+
 	void InitUFList(std::vector<char*>& uf_names)
 	{
 		uf_names.push_back("UF1");
@@ -243,6 +254,7 @@ namespace emoc {
 		problem_category.push_back("BT Series");
 		problem_category.push_back("MOEADDE_F Series");
 		problem_category.push_back("IMMOEA_F Series");
+		problem_category.push_back("MOEADM2M_F Series");
 	}
 
 	void InitDisplayList(std::vector<char*>& display_names)
@@ -478,6 +490,37 @@ namespace emoc {
 				}
 			}
 		}
+		else if (problem_name.size() >= 10 && problem_name.substr(0, 10) == "moeadm2m_f")
+		{
+			if (problem_name[10] >= '6' && problem_name[10] <= '7')
+			{
+				if (M != 3)
+				{
+					description = "The M parameter of " + problem + " must be 3!\n\n";
+					res = false;
+				}
+
+				if (D <= 1)
+				{
+					description = "The D parameter of " + problem + " must greater than 1!\n\n";
+					res = false;
+				}
+			}
+			else
+			{
+				if (M != 2)
+				{
+					description = "The M parameter of " + problem + " must be 2!\n\n";
+					res = false;
+				}
+
+				if (D <= 0)
+				{
+					description = "The D parameter of " + problem + " must greater than 0!\n\n";
+					res = false;
+				}
+			}
+		}
 		else
 		{
 			// TODO: ADD MORE TEST PROBLEMS
@@ -630,6 +673,7 @@ namespace emoc {
 		InitBTList(bt_names);
 		InitMOEADDE_FList(moeadde_f_names);
 		InitIMMOEA_FList(immoea_f_names);
+		InitMOEADM2M_FList(moeadm2m_f_names);
 	}
 
 	CategorizedProblemList::~CategorizedProblemList()

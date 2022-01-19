@@ -7,3 +7,4 @@
 #include "problem/bt.h"
 #include "problem/moeadde_f.h"
 #include "problem/immoea_f.h"
+#include "problem/moeadm2m_f.h"

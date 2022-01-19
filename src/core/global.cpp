@@ -186,6 +186,20 @@ namespace emoc {
 			problem_ = new IMMOEA_F9(dec_num_, obj_num_);
 		else if (problem_name == "immoea_f10")
 			problem_ = new IMMOEA_F10(dec_num_, obj_num_);
+		else if (problem_name == "moeadm2m_f1")
+			problem_ = new MOEADM2M_F1(dec_num_, obj_num_);
+		else if (problem_name == "moeadm2m_f2")
+			problem_ = new MOEADM2M_F2(dec_num_, obj_num_);
+		else if (problem_name == "moeadm2m_f3")
+			problem_ = new MOEADM2M_F3(dec_num_, obj_num_);
+		else if (problem_name == "moeadm2m_f4")
+			problem_ = new MOEADM2M_F4(dec_num_, obj_num_);
+		else if (problem_name == "moeadm2m_f5")
+			problem_ = new MOEADM2M_F5(dec_num_, obj_num_);
+		else if (problem_name == "moeadm2m_f6")
+			problem_ = new MOEADM2M_F6(dec_num_, obj_num_);
+		else if (problem_name == "moeadm2m_f7")
+			problem_ = new MOEADM2M_F7(dec_num_, obj_num_);
 		else if (problem_name == "uf1")
 			problem_ = new UF1(dec_num_, obj_num_);
 		else if (problem_name == "uf2")

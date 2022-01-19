@@ -28,6 +28,7 @@ namespace emoc{
 	void InitBTList(std::vector<char*>& bt_names);
 	void InitMOEADDE_FList(std::vector<char*>& moeadde_f_names);
 	void InitIMMOEA_FList(std::vector<char*>& immoea_f_names);
+	void InitMOEADM2M_FList(std::vector<char*>& moeadm2m_f_names);
 	void InitProblemCategoryList(std::vector<char*>& problem_category);
 
 	void InitDisplayList(std::vector<char*>& display_names);
@@ -78,6 +79,7 @@ namespace emoc{
 		std::vector<char*> lsmop_names;
 		std::vector<char*> bt_names;
 		std::vector<char*> immoea_f_names;
+		std::vector<char*> moeadm2m_f_names;
 
 		int category_index = 0;
 		//int problem_index = 0;		// need to reset when category changed every time

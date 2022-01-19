@@ -397,15 +397,16 @@ namespace emoc {
 		pf_size = 0;
 
 		// get problem name without number
-		int pos = -1;
-		for (auto c : problem_name)
+		int count = 0;
+		for (int i = problem_name.size() - 1;i >= 0;i--)
 		{
-			pos++;
-			if (c >= '0' && c <= '9')
+			if (problem_name[i] >= '0' && problem_name[i] <= '9')
+				count++;
+			else
 				break;
 		}
 
-		std::string temp_problemname = problem_name.substr(0, pos);
+		std::string temp_problemname = problem_name.substr(0, problem_name.size() - count);
 		for (auto& c : temp_problemname)
 		{
 			if ((c >= '0' && c <= '9') || c == '_') continue;
