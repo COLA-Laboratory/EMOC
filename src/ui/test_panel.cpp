@@ -17,6 +17,8 @@ namespace emoc {
 		algorithm_index(0),
 		problem_index(0),
 		display_index(0),
+		algorithm_category_index(0),
+		problem_category_index(0),
 		current_algorithm_names(nullptr),
 		current_problem_names(nullptr),
 		run_index(0),
@@ -25,6 +27,8 @@ namespace emoc {
 		// init basic display lists
 		InitDisplayList(display_names);
 		InitPlotMetricList(plot_metrics);
+		InitAlgorithmCategoryList(algorithm_category_list);
+		InitProblemCategoryList(problem_category_list);
 	}
 
 	TestPanel::~TestPanel()
@@ -73,6 +77,11 @@ namespace emoc {
 			DisplayPlotWindow();
 	}
 
+	//bool Combo(const char* label, int* current_item, const std::vector<std::string>& items,  int items_count, int height_in_items = -1)
+	//{
+	//	return ImGui::Combo(label, current_item, [](void* data, int idx, const char** out_text) { *out_text = ((const std::vector<std::string>*)data)[idx].c_str(); return true; }, (void*)&items, items_count, height_in_items);
+	//}
+
 	void TestPanel::DisplayParameterWindow(bool is_finish, bool is_pause)
 	{
 		// Test Module Parameter Setting Window
@@ -83,10 +92,15 @@ namespace emoc {
 			ImGui::Dummy(ImVec2(0.0f, 2.0f));
 			ImGui::Text("Catergory"); ImGui::SameLine(); ImGui::Dummy(ImVec2(10.0f, 0.0f)); ImGui::SameLine();
 			ImGui::SetNextItemWidth(-FLT_MIN);
-			bool is_value_changed = ImGui::Combo("##AlgorithmCategortyTestCombo", &algorithm_list.category_index, 
-				algorithm_list.algorithm_category.data(), algorithm_list.algorithm_category.size());
+
+			bool is_value_changed = ImGui::Combo("##AlgorithmCategortyTestCombo", &algorithm_category_index, ItemGet, 
+				reinterpret_cast<void*>(&algorithm_category_list), algorithm_category_list.size());
+			//bool is_value_changed = ImGui::Combo("##AlgorithmCategortyTestCombo", &algorithm_list.category_index, 
+			//	algorithm_list.algorithm_category.data(), algorithm_list.algorithm_category.size());
+
 			if (is_value_changed) algorithm_index = 0;
-			UpdateCurrentAlgorithmCombo();
+			//UpdateCurrentAlgorithmCombo();
+			SelectCurrentAlgorithmCombo(algorithm_category_list[algorithm_category_index], &current_algorithm_names);
 			ImGui::SetNextItemWidth(-FLT_MIN);
 			ImGui::Combo("##AlgorithmTestCombo", &algorithm_index, (*current_algorithm_names).data(), (*current_algorithm_names).size());
 			
@@ -98,10 +112,14 @@ namespace emoc {
 			ImGui::Dummy(ImVec2(0.0f, 2.0f));
 			ImGui::Text("Catergory"); ImGui::SameLine(); ImGui::Dummy(ImVec2(10.0f, 0.0f)); ImGui::SameLine();
 			ImGui::SetNextItemWidth(-FLT_MIN);
-			is_value_changed = ImGui::Combo("##ProblemCategortyTestCombo", &problem_list.category_index,
-				problem_list.problem_category.data(), problem_list.problem_category.size());
+			is_value_changed = ImGui::Combo("##ProblemCategortyTestCombo", &problem_category_index, ItemGet, 
+				reinterpret_cast<void*>(&problem_category_list), problem_category_list.size());
+			//is_value_changed = ImGui::Combo("##ProblemCategortyTestCombo", &problem_list.category_index,
+			//	problem_list.problem_category.data(), problem_list.problem_category.size());
+
 			if (is_value_changed) problem_index = 0;
-			UpdateCurrentProblemCombo();
+			//UpdateCurrentProblemCombo();
+			SelectCurrentProblemCombo(problem_category_list[problem_category_index], &current_problem_names);
 			ImGui::SetNextItemWidth(-FLT_MIN);
 			ImGui::Combo("##ProblemTestCombo", &problem_index, (*current_problem_names).data(), (*current_problem_names).size());
 
@@ -768,44 +786,6 @@ namespace emoc {
 			"unset key\n"
 			"plot '%s' w lp lc 3 lw 2 pt 2 ps 0.7\n"
 			,res.description.c_str(), metric_name.c_str(), data_file_name);
-	}
-
-	void TestPanel::UpdateCurrentAlgorithmCombo()
-	{
-		std::string category = algorithm_list.algorithm_category[algorithm_list.category_index];
-		if (category == "Docomposition Based")
-			current_algorithm_names = &algorithm_list.decomposition_algorithm_names;
-		else if (category == "Dominance Based")
-			current_algorithm_names = &algorithm_list.dominance_algorithm_names;
-		else if (category == "Indicator Based")
-			current_algorithm_names = &algorithm_list.indicator_algorithm_names;
-		else
-			std::cerr << "Test Module ERROR: Algorithm Category " << category << " Doesn't Exists!\n";
-	}
-
-	void TestPanel::UpdateCurrentProblemCombo()
-	{
-		std::string category = problem_list.problem_category[problem_list.category_index];
-		if (category == "ZDT Series")
-			current_problem_names = &problem_list.zdt_names;
-		else if (category == "DTLZ Series")
-			current_problem_names = &problem_list.dtlz_names;
-		else if (category == "UF Series")
-			current_problem_names = &problem_list.uf_names;
-		else if (category == "WFG Series")
-			current_problem_names = &problem_list.wfg_names;
-		else if (category == "LSMOP Series")
-			current_problem_names = &problem_list.lsmop_names;
-		else if (category == "BT Series")
-			current_problem_names = &problem_list.bt_names;
-		else if (category == "MOEADDE_F Series")
-			current_problem_names = &problem_list.moeadde_f_names;
-		else if (category == "IMMOEA_F Series")
-			current_problem_names = &problem_list.immoea_f_names;
-		else if (category == "MOEADM2M_F Series")
-			current_problem_names = &problem_list.moeadm2m_f_names;
-		else
-			std::cerr << "Test Module ERROR: Problem Category " << category << " Doesn't Exists!\n";
 	}
 
 }

@@ -11,6 +11,8 @@
 #include "ui/uipanel_manager.h"
 #include "alglib/src/statistics.h"
 #include "metric/metric_head_collect.h"
+#include "algorithms/algorithm_head_collect.h"
+#include "problem/problem_head_collect.h"
 
 namespace emoc {
 
@@ -32,6 +34,12 @@ namespace emoc {
 		return s_Instance;
 	}
 	
+	void EMOCManager::Init()
+	{
+		EMOCAlgorithmRegister();
+		EMOCProblemRegister();
+	}
+
 	// this Run() is for command line mode and test module in gui mode
 	void EMOCManager::Run()
 	{

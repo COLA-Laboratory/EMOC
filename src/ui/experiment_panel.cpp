@@ -35,12 +35,16 @@ namespace emoc {
 		format_index(0),
 		hypothesis_index(0),
 		compared_index(0),
+		problem_category_index(0),
+		algorithm_category_index(0),
 		current_algorithm_names(nullptr),
 		current_problem_names(nullptr)
 	{
 		InitDisplayList(display_names);
 		InitFormatList(format_names);
 		InitHypothesisList(hypothesis_names);
+		InitAlgorithmCategoryList(algorithm_category_list);
+		InitProblemCategoryList(problem_category_list);
 	}
 
 	ExperimentPanel::~ExperimentPanel()
@@ -100,10 +104,10 @@ namespace emoc {
 			ImGui::Dummy(ImVec2(0.0f, 2.0f));
 			ImGui::Text("Catergory"); ImGui::SameLine(); ImGui::Dummy(ImVec2(10.0f, 0.0f)); ImGui::SameLine();
 			ImGui::SetNextItemWidth(-FLT_MIN);
-			bool is_value_changed = ImGui::Combo("##AlgorithmCategortyExpCombo", &algorithm_list.category_index,
-				algorithm_list.algorithm_category.data(), algorithm_list.algorithm_category.size());
+			bool is_value_changed = ImGui::Combo("##AlgorithmCategortyExpCombo", &algorithm_category_index, ItemGet,
+				reinterpret_cast<void*>(&algorithm_category_list), algorithm_category_list.size());
 			if (is_value_changed) algorithm_index = 0;
-			UpdateCurrentAlgorithmList();
+			SelectCurrentAlgorithmCombo(algorithm_category_list[algorithm_category_index], &current_algorithm_names);
 			ImGui::SetNextItemWidth(-FLT_MIN);
 			is_value_changed = ImGui::ListBox("##AlgorithmExperimentListbox", &algorithm_index, (*current_algorithm_names).data(), (*current_algorithm_names).size(), list_height);
 			if (is_value_changed && selected_algorithm_map.count((*current_algorithm_names)[algorithm_index]) == 0)
@@ -120,10 +124,10 @@ namespace emoc {
 			ImGui::Dummy(ImVec2(0.0f, 2.0f));
 			ImGui::Text("Catergory"); ImGui::SameLine(); ImGui::Dummy(ImVec2(10.0f, 0.0f)); ImGui::SameLine();
 			ImGui::SetNextItemWidth(-FLT_MIN);
-			is_value_changed = ImGui::Combo("##ProblemCategortyExpCombo", &problem_list.category_index,
-				problem_list.problem_category.data(), problem_list.problem_category.size());
+			is_value_changed = ImGui::Combo("##ProblemCategortyExpCombo", &problem_category_index, ItemGet,
+				reinterpret_cast<void*>(&problem_category_list), problem_category_list.size());
 			if (is_value_changed) problem_index = 0;
-			UpdateCurrentProblemList();
+			SelectCurrentProblemCombo(problem_category_list[problem_category_index], &current_problem_names);
 			ImGui::SetNextItemWidth(-FLT_MIN);
 			is_value_changed = ImGui::ListBox("##ProblemExperimentListbox", &problem_index, (*current_problem_names).data(), (*current_problem_names).size(), list_height);
 			if (is_value_changed)
@@ -445,8 +449,8 @@ namespace emoc {
 			DisplayMovePopup(index, operation_button_pos, true, is_delete);
 			//DisplayMovePopup(index, true, is_delete);
 			//ImGui::Text("Test!\n");
-			if(!is_delete)
-				DisplayAlgorithmParameters(algorithm);
+			//if(!is_delete)
+			//	DisplayAlgorithmParameters(algorithm);
 		}
 		//if (!is_open) DisplayMovePopup(index, true, is_delete);
 		if (!is_open) DisplayMovePopup(index, operation_button_pos, true, is_delete);
@@ -585,43 +589,43 @@ namespace emoc {
 		}
 	}
 
-	void ExperimentPanel::UpdateCurrentAlgorithmList()
-	{
-		std::string category = algorithm_list.algorithm_category[algorithm_list.category_index];
-		if (category == "Docomposition Based")
-			current_algorithm_names = &algorithm_list.decomposition_algorithm_names;
-		else if (category == "Dominance Based")
-			current_algorithm_names = &algorithm_list.dominance_algorithm_names;
-		else if (category == "Indicator Based")
-			current_algorithm_names = &algorithm_list.indicator_algorithm_names;
-		else
-			std::cerr << "Experiment Module ERROR: Algorithm Category " << category << " Doesn't Exists!\n";
-	}
+	//void ExperimentPanel::UpdateCurrentAlgorithmList()
+	//{
+	//	std::string category = algorithm_list.algorithm_category[algorithm_list.category_index];
+	//	if (category == "Docomposition Based")
+	//		current_algorithm_names = &algorithm_list.decomposition_algorithm_names;
+	//	else if (category == "Dominance Based")
+	//		current_algorithm_names = &algorithm_list.dominance_algorithm_names;
+	//	else if (category == "Indicator Based")
+	//		current_algorithm_names = &algorithm_list.indicator_algorithm_names;
+	//	else
+	//		std::cerr << "Experiment Module ERROR: Algorithm Category " << category << " Doesn't Exists!\n";
+	//}
 
-	void ExperimentPanel::UpdateCurrentProblemList()
-	{
-		std::string category = problem_list.problem_category[problem_list.category_index];
-		if (category == "ZDT Series")
-			current_problem_names = &problem_list.zdt_names;
-		else if (category == "DTLZ Series")
-			current_problem_names = &problem_list.dtlz_names;
-		else if (category == "UF Series")
-			current_problem_names = &problem_list.uf_names;
-		else if (category == "WFG Series")
-			current_problem_names = &problem_list.wfg_names;
-		else if (category == "LSMOP Series")
-			current_problem_names = &problem_list.lsmop_names;
-		else if (category == "BT Series")
-			current_problem_names = &problem_list.bt_names;
-		else if (category == "MOEADDE_F Series")
-			current_problem_names = &problem_list.moeadde_f_names;
-		else if (category == "IMMOEA_F Series")
-			current_problem_names = &problem_list.immoea_f_names;
-		else if (category == "MOEADM2M_F Series")
-			current_problem_names = &problem_list.moeadm2m_f_names;
-		else
-			std::cerr << "Experiment Module ERROR: Problem Category " << category << " Doesn't Exists!\n";
-	}
+	//void ExperimentPanel::UpdateCurrentProblemList()
+	//{
+	//	std::string category = problem_list.problem_category[problem_list.category_index];
+	//	if (category == "ZDT Series")
+	//		current_problem_names = &problem_list.zdt_names;
+	//	else if (category == "DTLZ Series")
+	//		current_problem_names = &problem_list.dtlz_names;
+	//	else if (category == "UF Series")
+	//		current_problem_names = &problem_list.uf_names;
+	//	else if (category == "WFG Series")
+	//		current_problem_names = &problem_list.wfg_names;
+	//	else if (category == "LSMOP Series")
+	//		current_problem_names = &problem_list.lsmop_names;
+	//	else if (category == "BT Series")
+	//		current_problem_names = &problem_list.bt_names;
+	//	else if (category == "MOEADDE_F Series")
+	//		current_problem_names = &problem_list.moeadde_f_names;
+	//	else if (category == "IMMOEA_F Series")
+	//		current_problem_names = &problem_list.immoea_f_names;
+	//	else if (category == "MOEADM2M_F Series")
+	//		current_problem_names = &problem_list.moeadm2m_f_names;
+	//	else
+	//		std::cerr << "Experiment Module ERROR: Problem Category " << category << " Doesn't Exists!\n";
+	//}
 
 	void ExperimentPanel::ConstructTasks()
 	{

@@ -31,17 +31,14 @@ namespace emoc {
 		void DisplayMovePopup(int index, float button_pos, bool is_algorithm_popup, bool &is_delete);				// popups in experiment module's parameter window for moving or deleting selected algorithms and problems
 
 		//
-		void UpdateCurrentAlgorithmList();
-		void UpdateCurrentProblemList();
-		
-
 		void ConstructTasks();
 
 	public:
 		// UI data for experiment module's list and combo
 		int algorithm_index, problem_index, display_index, format_index, hypothesis_index, compared_index;	// index need to be reset when switching the panel
-		CategorizedAlgorithmList algorithm_list;
-		CategorizedProblemList problem_list;
+		int algorithm_category_index, problem_category_index;
+		std::vector<std::string> algorithm_category_list;
+		std::vector<std::string> problem_category_list;
 		std::vector<char*> *current_algorithm_names;
 		std::vector<char*> *current_problem_names;
 		std::vector<char*> display_names;

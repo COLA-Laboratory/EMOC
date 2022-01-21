@@ -4,6 +4,7 @@
 #include <vector>
 #include <iostream>
 #include <thread>
+#include <algorithm>
 
 #include "core/emoc_manager.h"
 #include "imgui.h"
@@ -44,217 +45,25 @@ namespace emoc {
 		}
 	}
 
-
-	void InitAlgorithmList(std::vector<char*> &algorithm_names)
+	void InitAlgorithmCategoryList(std::vector<std::string>& algorithm_category_list)
 	{
-		algorithm_names.push_back("MOEAD");
-		algorithm_names.push_back("MOEADDE");
-		algorithm_names.push_back("MOEADDRA");
-		algorithm_names.push_back("MOEADFRRMAB");
-		algorithm_names.push_back("MOEADGRA");
-		algorithm_names.push_back("MOEADIRA");
-		algorithm_names.push_back("MOEADDYTS");
-		algorithm_names.push_back("MOEADCDE");
-		algorithm_names.push_back("ENSMOEAD");
-		algorithm_names.push_back("NSGA2");
-		algorithm_names.push_back("SPEA2");
-		algorithm_names.push_back("IBEA");
-		algorithm_names.push_back("HYPE");
-		algorithm_names.push_back("SMSEMOA");
+		std::unordered_map<std::string, std::vector<char*>>& IMPLEMENTED_ALGORITHMS = EMOCManager::Instance()->GetImplementedAlgorithms();
+		for (const auto& n : IMPLEMENTED_ALGORITHMS)
+		{
+			algorithm_category_list.push_back(n.first);
+		}
+		std::sort(algorithm_category_list.begin(), algorithm_category_list.end());
 	}
 
-	void InitDecompositionAlgorithmList(std::vector<char*>& decomposition_algorithm_names)
+	void InitProblemCategoryList(std::vector<std::string>& problem_category_list)
 	{
-		decomposition_algorithm_names.push_back("MOEADDYTS");
-		decomposition_algorithm_names.push_back("MOEADSWTS");
-		decomposition_algorithm_names.push_back("MOEADCDTS");
-		decomposition_algorithm_names.push_back("MOEADDTS");
-		decomposition_algorithm_names.push_back("MOEAD");
-		decomposition_algorithm_names.push_back("MOEADDE");
-		decomposition_algorithm_names.push_back("MOEADDRA");
-		decomposition_algorithm_names.push_back("MOEADFRRMAB");
-		decomposition_algorithm_names.push_back("MOEADGRA");
-		decomposition_algorithm_names.push_back("MOEADIRA");
-		decomposition_algorithm_names.push_back("ENSMOEAD");
-		decomposition_algorithm_names.push_back("MOEADCDE");
-		decomposition_algorithm_names.push_back("MOEADSTM");
-		decomposition_algorithm_names.push_back("RVEA");
-		decomposition_algorithm_names.push_back("MOEADPAS");
-		decomposition_algorithm_names.push_back("MOEADM2M");
-	}
 
-	void InitDominanceAlgorithmList(std::vector<char*>& dominance_algorithm_names)
-	{
-		dominance_algorithm_names.push_back("NSGA2");
-		dominance_algorithm_names.push_back("SPEA2");
-	}
-
-	void InitIndicatorAlgorithmList(std::vector<char*>& indicator_algorithm_names)
-	{
-		indicator_algorithm_names.push_back("IBEA");
-		indicator_algorithm_names.push_back("HYPE");
-		indicator_algorithm_names.push_back("SMSEMOA");
-	}
-
-	void InitAlgorithmCategoryList(std::vector<char*>& algorithm_category)
-	{
-		algorithm_category.push_back("Docomposition Based");
-		algorithm_category.push_back("Dominance Based");
-		algorithm_category.push_back("Indicator Based");
-	}
-
-	void InitProlbemList(std::vector<char*>& problem_names)
-	{
-		problem_names.push_back("DTLZ1");
-		problem_names.push_back("DTLZ2");
-		problem_names.push_back("DTLZ3");
-		problem_names.push_back("DTLZ4");
-		problem_names.push_back("DTLZ5");
-		problem_names.push_back("DTLZ6");
-		problem_names.push_back("DTLZ7");
-		problem_names.push_back("UF1");
-		problem_names.push_back("UF2");
-		problem_names.push_back("UF3");
-		problem_names.push_back("UF4");
-		problem_names.push_back("UF5");
-		problem_names.push_back("UF6");
-		problem_names.push_back("UF7");
-		problem_names.push_back("UF8");
-		problem_names.push_back("UF9");
-		problem_names.push_back("UF10");
-		problem_names.push_back("ZDT1");
-		problem_names.push_back("ZDT2");
-		problem_names.push_back("ZDT3");
-		problem_names.push_back("ZDT4");
-		problem_names.push_back("ZDT6");
-	}
-
-	void InitDTLZList(std::vector<char*>& dtlz_names)
-	{
-		dtlz_names.push_back("DTLZ1");
-		dtlz_names.push_back("DTLZ2");
-		dtlz_names.push_back("DTLZ3");
-		dtlz_names.push_back("DTLZ4");
-		dtlz_names.push_back("DTLZ5");
-		dtlz_names.push_back("DTLZ6");
-		dtlz_names.push_back("DTLZ7");
-		dtlz_names.push_back("MDTLZ1");
-		dtlz_names.push_back("MDTLZ2");
-		dtlz_names.push_back("MDTLZ3");
-		dtlz_names.push_back("MDTLZ4");
-	}
-
-	void InitZDTList(std::vector<char*>& zdt_names)
-	{
-		zdt_names.push_back("ZDT1");
-		zdt_names.push_back("ZDT2");
-		zdt_names.push_back("ZDT3");
-		zdt_names.push_back("ZDT4");
-		zdt_names.push_back("ZDT6");
-	}
-
-	void InitMOEADDE_FList(std::vector<char*>& moeadde_f_names)
-	{
-		moeadde_f_names.push_back("MOEADDE_F1");
-		moeadde_f_names.push_back("MOEADDE_F2");
-		moeadde_f_names.push_back("MOEADDE_F3");
-		moeadde_f_names.push_back("MOEADDE_F4");
-		moeadde_f_names.push_back("MOEADDE_F5");
-		moeadde_f_names.push_back("MOEADDE_F6");
-		moeadde_f_names.push_back("MOEADDE_F7");
-		moeadde_f_names.push_back("MOEADDE_F8");
-		moeadde_f_names.push_back("MOEADDE_F9");
-	}
-
-	void InitIMMOEA_FList(std::vector<char*>& immoea_f_names)
-	{
-		immoea_f_names.push_back("IMMOEA_F1");
-		immoea_f_names.push_back("IMMOEA_F2");
-		immoea_f_names.push_back("IMMOEA_F3");
-		immoea_f_names.push_back("IMMOEA_F4");
-		immoea_f_names.push_back("IMMOEA_F5");
-		immoea_f_names.push_back("IMMOEA_F6");
-		immoea_f_names.push_back("IMMOEA_F7");
-		immoea_f_names.push_back("IMMOEA_F8");
-		immoea_f_names.push_back("IMMOEA_F9");
-		immoea_f_names.push_back("IMMOEA_F10");
-	}
-
-	void InitMOEADM2M_FList(std::vector<char*>& moeadm2m_f_names)
-	{
-		moeadm2m_f_names.push_back("MOEADM2M_F1");
-		moeadm2m_f_names.push_back("MOEADM2M_F2");
-		moeadm2m_f_names.push_back("MOEADM2M_F3");
-		moeadm2m_f_names.push_back("MOEADM2M_F4");
-		moeadm2m_f_names.push_back("MOEADM2M_F5");
-		moeadm2m_f_names.push_back("MOEADM2M_F6");
-		moeadm2m_f_names.push_back("MOEADM2M_F7");
-	}
-
-	void InitUFList(std::vector<char*>& uf_names)
-	{
-		uf_names.push_back("UF1");
-		uf_names.push_back("UF2");
-		uf_names.push_back("UF3");
-		uf_names.push_back("UF4");
-		uf_names.push_back("UF5");
-		uf_names.push_back("UF6");
-		uf_names.push_back("UF7");
-		uf_names.push_back("UF8");
-		uf_names.push_back("UF9");
-		uf_names.push_back("UF10");
-	}
-
-	void InitWFGList(std::vector<char*>& wfg_names)
-	{
-		wfg_names.push_back("WFG1");
-		wfg_names.push_back("WFG2");
-		wfg_names.push_back("WFG3");
-		wfg_names.push_back("WFG4");
-		wfg_names.push_back("WFG5");
-		wfg_names.push_back("WFG6");
-		wfg_names.push_back("WFG7");
-		wfg_names.push_back("WFG8");
-		wfg_names.push_back("WFG9");
-	}
-
-	void InitLSMOPList(std::vector<char*>& lsmop_names)
-	{
-		lsmop_names.push_back("LSMOP1");
-		lsmop_names.push_back("LSMOP2");
-		lsmop_names.push_back("LSMOP3");
-		lsmop_names.push_back("LSMOP4");
-		lsmop_names.push_back("LSMOP5");
-		lsmop_names.push_back("LSMOP6");
-		lsmop_names.push_back("LSMOP7");
-		lsmop_names.push_back("LSMOP8");
-		lsmop_names.push_back("LSMOP9");
-	}
-
-	void InitBTList(std::vector<char*>& bt_names)
-	{
-		bt_names.push_back("BT1");
-		bt_names.push_back("BT2");
-		bt_names.push_back("BT3");
-		bt_names.push_back("BT4");
-		bt_names.push_back("BT5");
-		bt_names.push_back("BT6");
-		bt_names.push_back("BT7");
-		bt_names.push_back("BT8");
-		bt_names.push_back("BT9");
-	}
-
-	void InitProblemCategoryList(std::vector<char*>& problem_category)
-	{
-		problem_category.push_back("DTLZ Series");
-		problem_category.push_back("ZDT Series");
-		problem_category.push_back("UF Series");
-		problem_category.push_back("WFG Series");
-		problem_category.push_back("LSMOP Series");
-		problem_category.push_back("BT Series");
-		problem_category.push_back("MOEADDE_F Series");
-		problem_category.push_back("IMMOEA_F Series");
-		problem_category.push_back("MOEADM2M_F Series");
+		std::unordered_map<std::string, std::vector<char*>>& IMPLEMENTED_PROBLEMS = EMOCManager::Instance()->GetImplementedProblems();
+		for (const auto& n : IMPLEMENTED_PROBLEMS)
+		{
+			problem_category_list.push_back(n.first);
+		}
+		std::sort(problem_category_list.begin(), problem_category_list.end());
 	}
 
 	void InitDisplayList(std::vector<char*>& display_names)
@@ -636,49 +445,23 @@ namespace emoc {
 		}
 	}
 
-	bool Splitter(bool split_vertically, float thickness, float* size1, float* size2, float min_size1, float min_size2, float splitter_long_axis_size)
+	bool ItemGet(void* vec, int idx, const char** out_text)
 	{
-		using namespace ImGui;
-		ImGuiContext& g = *GImGui;
-		ImGuiWindow* window = g.CurrentWindow;
-		ImGuiID id = window->GetID("##Splitter");
-		ImRect bb;
-		bb.Min = window->DC.CursorPos + (split_vertically ? ImVec2(*size1, 0.0f) : ImVec2(0.0f, *size1));
-		bb.Max = bb.Min + CalcItemSize(split_vertically ? ImVec2(thickness, splitter_long_axis_size) : ImVec2(splitter_long_axis_size, thickness), 0.0f, 0.0f);
-		return ImGui::SplitterBehavior(bb, id, split_vertically ? ImGuiAxis_X : ImGuiAxis_Y, size1, size2, min_size1, min_size2, 0.0f);
+		std::vector<std::string>* vector = reinterpret_cast<std::vector<std::string>*>(vec);
+		if (idx < 0 || idx >= vector->size())return false;
+		*out_text = vector->at(idx).c_str();
+		return true;
 	}
 
-	CategorizedAlgorithmList::CategorizedAlgorithmList()
+	void SelectCurrentAlgorithmCombo(const std::string& category, std::vector<char*>** current_algorithm_name)
 	{
-		InitAlgorithmCategoryList(algorithm_category);
-		InitDecompositionAlgorithmList(decomposition_algorithm_names);
-		InitDominanceAlgorithmList(dominance_algorithm_names);
-		InitIndicatorAlgorithmList(indicator_algorithm_names);
+		std::unordered_map<std::string, std::vector<char*>>& IMPLEMENTED_ALGORITHMS = EMOCManager::Instance()->GetImplementedAlgorithms();
+		*current_algorithm_name = &IMPLEMENTED_ALGORITHMS[category];
 	}
 
-	CategorizedAlgorithmList::~CategorizedAlgorithmList()
+	void SelectCurrentProblemCombo(const std::string& category, std::vector<char*>** current_problem_name)
 	{
-
+		std::unordered_map<std::string, std::vector<char*>>& IMPLEMENTED_PROBLEMS = EMOCManager::Instance()->GetImplementedProblems();
+		*current_problem_name = &IMPLEMENTED_PROBLEMS[category];
 	}
-
-
-	CategorizedProblemList::CategorizedProblemList()
-	{
-		InitProblemCategoryList(problem_category);
-		InitDTLZList(dtlz_names);
-		InitZDTList(zdt_names);
-		InitUFList(uf_names);
-		InitWFGList(wfg_names);
-		InitLSMOPList(lsmop_names);
-		InitBTList(bt_names);
-		InitMOEADDE_FList(moeadde_f_names);
-		InitIMMOEA_FList(immoea_f_names);
-		InitMOEADM2M_FList(moeadm2m_f_names);
-	}
-
-	CategorizedProblemList::~CategorizedProblemList()
-	{
-
-	}
-
 }

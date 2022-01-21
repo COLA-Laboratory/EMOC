@@ -330,8 +330,6 @@ namespace emoc {
 				("multithread", "Whether open multi-thread mode", cxxopts::value<bool>()->default_value("false"))
 				("t,thread", "Thread number in multi-thread mode", cxxopts::value<int>()->default_value("4"));
 
-
-
 			auto result = options.parse(argc, argv);
 
 			if (result.count("help"))
@@ -458,7 +456,7 @@ namespace emoc {
 
 	bool EMOCAlgorithmCheck(const std::string& algorithm, std::string& description)
 	{
-		bool res = true;
+		bool res = false;
 		std::string algorithm_name(algorithm);
 		for (auto& c : algorithm_name)
 		{
@@ -466,18 +464,29 @@ namespace emoc {
 			c = toupper(c);
 		}
 
-		if (IMPLEMENT_ALGORITHM.find(algorithm_name) == IMPLEMENT_ALGORITHM.end())
+		std::unordered_map<std::string, std::vector<char*>>& IMPLEMENTED_ALGORITHMS = EMOCManager::Instance()->GetImplementedAlgorithms();
+		for (const auto& e : IMPLEMENTED_ALGORITHMS)
 		{
-			res = false;
-			description = "Algorithm " + algorithm + " is not implemented in EMOC yet, please refer to the document.\n\n";
+			for (const auto& v : e.second)
+			{
+				if (algorithm_name == v)
+				{
+					res = true;
+					break;
+				}
+			}
+			if (res) break;
 		}
+
+		if (res == false)
+			description = "Algorithm " + algorithm + " is not implemented in EMOC yet, please refer to the document.\n\n";
 
 		return res;
 	}
 
 	bool EMOCProblemCheck(const std::string& problem, int M, int D, int N, int Evaluation, std::string& description)
 	{
-		bool res = true;
+		bool res = false;
 		std::string problem_name(problem);
 		for (auto& c : problem_name)
 		{
@@ -485,11 +494,23 @@ namespace emoc {
 			c = toupper(c);
 		}
 
-		if (IMPLEMENT_PROBLEM.find(problem_name) == IMPLEMENT_PROBLEM.end())
+		std::unordered_map<std::string, std::vector<char*>>& IMPLEMENTED_PROBLEMS = EMOCManager::Instance()->GetImplementedProblems();
+		for (const auto& e : IMPLEMENTED_PROBLEMS)
 		{
-			res = false;
-			description = "Problem " + problem + " is not implemented in EMOC yet, please refer to the document.\n\n";
+			for (const auto& v : e.second)
+			{
+				if (problem_name == v)
+				{
+					res = true;
+					break;
+				}
+			}
+
+			if (res) break;
 		}
+
+		if (res == false)
+			description = "Problem " + problem + " is not implemented in EMOC yet, please refer to the document.\n\n";
 
 		bool is_valid = CheckProblemParameters(problem, D, M, N, Evaluation, description);
 

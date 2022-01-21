@@ -4,43 +4,20 @@
 
 namespace emoc{
 
-	// text center help function
-	void TextCenter(std::string text);
-	void TextCenterInTableCell(std::string text, float height);
-
-	// tooltip help function
-	void HelpMarker(const char* desc);
-
 	// init function for algorithm names' lists
-	void InitAlgorithmList(std::vector<char*>& algorithm_names);
-	void InitDecompositionAlgorithmList(std::vector<char*>& decomposition_algorithm_names);
-	void InitDominanceAlgorithmList(std::vector<char*>& dominance_algorithm_names);
-	void InitIndicatorAlgorithmList(std::vector<char*>& indicator_algorithm_names);
-	void InitAlgorithmCategoryList(std::vector<char*>& algorithm_category);
-
+	void InitAlgorithmCategoryList(std::vector<std::string>& algorithm_category_list);
 	// init function for problem names' lists
-	void InitProlbemList(std::vector<char*>& problem_names);
-	void InitDTLZList(std::vector<char*>& dtlz_names);
-	void InitZDTList(std::vector<char*>& zdt_names);
-	void InitUFList(std::vector<char*>& uf_names);
-	void InitWFGList(std::vector<char*>& wfg_names);
-	void InitLSMOPList(std::vector<char*>& lsmop_names);
-	void InitBTList(std::vector<char*>& bt_names);
-	void InitMOEADDE_FList(std::vector<char*>& moeadde_f_names);
-	void InitIMMOEA_FList(std::vector<char*>& immoea_f_names);
-	void InitMOEADM2M_FList(std::vector<char*>& moeadm2m_f_names);
-	void InitProblemCategoryList(std::vector<char*>& problem_category);
-
+	void InitProblemCategoryList(std::vector<std::string>& problem_category_list);
+	// init function for some other lists
 	void InitDisplayList(std::vector<char*>& display_names);
 	void InitFormatList(std::vector<char*>& format_names);
 	void InitHypothesisList(std::vector<char*>& hypothesis_names);
 	void InitPlotMetricList(std::vector<char*>& plot_metric_names);
 
-	// the splitter function is just for test now, it maybe remove in further commits
-	bool Splitter(bool split_vertically, float thickness, float* size1, float* size2, float min_size1, float min_size2, float splitter_long_axis_size = -1.0f);
-	
-	// display algorithm's parameters
-	void DisplayAlgorithmParameters(const std::string& algorithm);	
+	// text center and tooltip help function
+	void TextCenter(std::string text);
+	void TextCenterInTableCell(std::string text, float height);
+	void HelpMarker(const char* desc);
 
 	// parameter validity check
 	bool CheckProblemParameters(const std::string& problem, int D, int M, int N, int Evaluation, std::string &description);
@@ -51,38 +28,12 @@ namespace emoc{
 	void GetComparedMetric(const std::string& para, const std::string& format, int parameter_index, double& metric1, double& metric2);
 	void GetComparedMetric(const std::string& format, double mean, double std, double median, double iqr, double& metric1, double& metric2);
 
-	struct CategorizedAlgorithmList
-	{
-		CategorizedAlgorithmList();
-		~CategorizedAlgorithmList();
+	// item get help function for imgui::combo
+	bool ItemGet(void* vec, int idx, const char** out_text);
 
-		std::vector<char*> algorithm_category;
-		std::vector<char*> decomposition_algorithm_names;
-		std::vector<char*> dominance_algorithm_names;
-		std::vector<char*> indicator_algorithm_names;
+	// change current algorithm list and problem list functions
+	void SelectCurrentAlgorithmCombo(const std::string& category, std::vector<char*>** current_algorithm_name);
+	void SelectCurrentProblemCombo(const std::string& category, std::vector<char*>** current_problem_name);
 
-		int category_index = 0;
-		//int algorithm_index = 0;	// need to reset when category changed every time
-	};
-
-	struct CategorizedProblemList
-	{
-		CategorizedProblemList();
-		~CategorizedProblemList();
-
-		std::vector<char*> problem_category;
-		std::vector<char*> dtlz_names;
-		std::vector<char*> zdt_names;
-		std::vector<char*> moeadde_f_names;
-		std::vector<char*> uf_names;
-		std::vector<char*> wfg_names;
-		std::vector<char*> lsmop_names;
-		std::vector<char*> bt_names;
-		std::vector<char*> immoea_f_names;
-		std::vector<char*> moeadm2m_f_names;
-
-		int category_index = 0;
-		//int problem_index = 0;		// need to reset when category changed every time
-	};
 
 }

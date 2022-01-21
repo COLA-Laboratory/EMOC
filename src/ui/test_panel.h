@@ -29,10 +29,6 @@ namespace emoc {
 		void DisplayMovePopup(int index, float button_pos, bool& is_delete);
 		void DisplayAccordingToColumn(const EMOCSingleThreadResult& res, const std::string& col_name, int row);	// column display in default test module's table 
 		
-		//
-		void UpdateCurrentAlgorithmCombo();
-		void UpdateCurrentProblemCombo();
-
 		// construct and send plot command (for plot window)
 		void ConstructAndSendPlotCMD();
 		void ConstructPopulationPlotCMD(char *cmd, int selected_run_intex);
@@ -40,9 +36,9 @@ namespace emoc {
 
 	public:
 		// data for test module parameter settings
-		int algorithm_index, problem_index, display_index;
-		CategorizedAlgorithmList algorithm_list;
-		CategorizedProblemList problem_list;
+		int algorithm_index, problem_index, display_index, algorithm_category_index, problem_category_index;
+		std::vector<std::string> algorithm_category_list;
+		std::vector<std::string> problem_category_list;
 		std::vector<char*> *current_algorithm_names;
 		std::vector<char*> *current_problem_names;
 		std::vector<char*> display_names;

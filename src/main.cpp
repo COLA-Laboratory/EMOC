@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "core/file.h"
+#include "core/emoc_manager.h"
 #include "emoc_app.h"
 
 using emoc::EMOCManager;
@@ -12,14 +13,27 @@ using emoc::EMOCParameters;
 
 int main(int argc, char* argv[])
 {
-	// parse command line input
+	// initialization for EMOC
+	EMOCManager::Instance()->Init();
+
+	//std::unordered_map<std::string, std::vector<char*>>& IMPLEMENTED_ALGORITHMS = EMOCManager::Instance()->GetImplementedAlgorithms();
+	//for (const auto& e : IMPLEMENTED_ALGORITHMS)
+	//{
+	//	std::cout << e.first << ":\n";
+	//	for (const auto& v : e.second)
+	//	{
+	//		std::cout << v << "\n";
+	//	}
+	//}
+
+	// parse parameters
 	bool is_gui = false;
 	EMOCParameters para;
 	emoc::EMOCParamerterParse(argc, argv, para, is_gui);
 
 	// start to run
 	EMOCApplication emoc_app;
-	is_gui = true; // for debug
+	//is_gui = true; // for debug
 	emoc_app.Init(is_gui, para);
 	emoc_app.Run();
 
