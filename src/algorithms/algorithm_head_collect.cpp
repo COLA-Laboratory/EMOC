@@ -68,6 +68,7 @@ namespace emoc {
 		// Dominance Based Algorithms
 		EMOC_ALGORITHM_REGISTER(Dominance Based, NSGA2);
 		EMOC_ALGORITHM_REGISTER(Dominance Based, SPEA2);
+		EMOC_ALGORITHM_REGISTER(Dominance Based, SPEA2SDE);
 
 		// Indicator Based Algorithms
 		EMOC_ALGORITHM_REGISTER(Indicator Based, IBEA);
