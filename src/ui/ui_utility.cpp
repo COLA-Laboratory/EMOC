@@ -73,6 +73,8 @@ namespace emoc {
 		display_names.push_back("HV");
 		display_names.push_back("GD");
 		display_names.push_back("Spacing");
+		display_names.push_back("IGDPlus");
+		display_names.push_back("GDPlus");
 	}
 
 	void InitFormatList(std::vector<char*>& format_names)
@@ -424,6 +426,14 @@ namespace emoc {
 		else if (para == "Spacing")
 		{
 			GetComparedMetric(format, res.spacing.metric_mean, res.spacing.metric_std, res.spacing.metric_median, res.spacing.metric_iqr, metric1, metric2);
+		}
+		else if (para == "IGDPlus")
+		{
+			GetComparedMetric(format, res.igdplus.metric_mean, res.igdplus.metric_std, res.igdplus.metric_median, res.igdplus.metric_iqr, metric1, metric2);
+		}
+		else if (para == "GDPlus")
+		{
+			GetComparedMetric(format, res.gdplus.metric_mean, res.gdplus.metric_std, res.gdplus.metric_median, res.gdplus.metric_iqr, metric1, metric2);
 		}
 		else
 		{

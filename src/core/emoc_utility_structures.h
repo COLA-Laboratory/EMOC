@@ -68,6 +68,8 @@ namespace emoc
 		MetricHistory hv;
 		MetricHistory gd;
 		MetricHistory spacing;
+		MetricHistory igdplus;
+		MetricHistory gdplus;
 
 		int valid_res_count = 0;
 
@@ -88,6 +90,10 @@ namespace emoc
 			gd.is_record.resize(run_num, false);
 			spacing.metric_history.resize(run_num, 0.0);
 			spacing.is_record.resize(run_num, false);
+			igdplus.metric_history.resize(run_num, 0.0);
+			igdplus.is_record.resize(run_num, false);
+			gdplus.metric_history.resize(run_num, 0.0);
+			gdplus.is_record.resize(run_num, false);
 		}
 
 	};
@@ -101,6 +107,8 @@ namespace emoc
 		double last_hv;
 		double last_gd;
 		double last_spacing;
+		double last_igdplus;
+		double last_gdplus;
 		double runtime;
 		double pop_num;
 		int max_iteration;
@@ -110,6 +118,8 @@ namespace emoc
 		std::unordered_map<int, double> hv_history;
 		std::unordered_map<int, double> spacing_history;
 		std::unordered_map<int, double> spread_history;
+		std::unordered_map<int, double> igdplus_history;
+		std::unordered_map<int, double> gdplus_history;
 
 		EMOCSingleThreadResult() {}
 	};

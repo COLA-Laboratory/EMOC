@@ -2,3 +2,5 @@
 #include "metric/gd.h"
 #include "metric/hv.h"
 #include "metric/spacing.h"
+#include "metric/igd_plus.h"
+#include "metric/gd_plus.h"
