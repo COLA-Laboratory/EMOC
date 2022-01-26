@@ -281,7 +281,7 @@ namespace emoc {
 		ind->obj_[obj_num_ - 1] = (1 + gx) * h;
 	}
 
-	MDTLZ1::MDTLZ1(int dec_num, int obj_num) :Problem(dec_num, obj_num)
+	MinusDTLZ1::MinusDTLZ1(int dec_num, int obj_num) :Problem(dec_num, obj_num)
 	{
 		for (int i = 0; i < dec_num; ++i)
 		{
@@ -290,12 +290,12 @@ namespace emoc {
 		}
 	}
 
-	MDTLZ1::~MDTLZ1()
+	MinusDTLZ1::~MinusDTLZ1()
 	{
 
 	}
 
-	void MDTLZ1::CalObj(Individual* ind)
+	void MinusDTLZ1::CalObj(Individual* ind)
 	{
 		double gx = 0.0;
 		int k = dec_num_ - obj_num_ + 1;
@@ -322,7 +322,7 @@ namespace emoc {
 			ind->obj_[i] = -1 * ind->obj_[i];
 	}
 
-	MDTLZ2::MDTLZ2(int dec_num, int obj_num) :Problem(dec_num, obj_num)
+	MinusDTLZ2::MinusDTLZ2(int dec_num, int obj_num) :Problem(dec_num, obj_num)
 	{
 		for (int i = 0; i < dec_num; ++i)
 		{
@@ -332,12 +332,12 @@ namespace emoc {
 
 	}
 
-	MDTLZ2::~MDTLZ2()
+	MinusDTLZ2::~MinusDTLZ2()
 	{
 
 	}
 
-	void MDTLZ2::CalObj(Individual* ind)
+	void MinusDTLZ2::CalObj(Individual* ind)
 	{
 		double gx = 0.0;
 		int k = dec_num_ - obj_num_ + 1;
@@ -363,7 +363,7 @@ namespace emoc {
 			ind->obj_[i] = -1 * ind->obj_[i];
 	}
 
-	MDTLZ3::MDTLZ3(int dec_num, int obj_num) :Problem(dec_num, obj_num)
+	MinusDTLZ3::MinusDTLZ3(int dec_num, int obj_num) :Problem(dec_num, obj_num)
 	{
 		for (int i = 0; i < dec_num; ++i)
 		{
@@ -372,12 +372,12 @@ namespace emoc {
 		}
 	}
 
-	MDTLZ3::~MDTLZ3()
+	MinusDTLZ3::~MinusDTLZ3()
 	{
 
 	}
 
-	void MDTLZ3::CalObj(Individual* ind)
+	void MinusDTLZ3::CalObj(Individual* ind)
 	{
 		double gx = 0.0;
 		int k = dec_num_ - obj_num_ + 1;
@@ -404,7 +404,7 @@ namespace emoc {
 			ind->obj_[i] = -1 * ind->obj_[i];
 	}
 
-	MDTLZ4::MDTLZ4(int dec_num, int obj_num) :Problem(dec_num, obj_num)
+	MinusDTLZ4::MinusDTLZ4(int dec_num, int obj_num) :Problem(dec_num, obj_num)
 	{
 		for (int i = 0; i < dec_num; ++i)
 		{
@@ -413,12 +413,12 @@ namespace emoc {
 		}
 	}
 
-	MDTLZ4::~MDTLZ4()
+	MinusDTLZ4::~MinusDTLZ4()
 	{
 
 	}
 
-	void MDTLZ4::CalObj(Individual* ind)
+	void MinusDTLZ4::CalObj(Individual* ind)
 	{
 		double gx = 0.0, alpha = 100.0;
 		int k = dec_num_ - obj_num_ + 1;
@@ -442,6 +442,186 @@ namespace emoc {
 
 		for (int i = 0; i < obj_num_; i++)
 			ind->obj_[i] = -1 * ind->obj_[i];
+	}
+
+	MDTLZ1::MDTLZ1(int dec_num, int obj_num) :Problem(dec_num, obj_num)
+	{
+		for (int i = 0; i < dec_num; ++i)
+		{
+			lower_bound_[i] = 0.0;
+			upper_bound_[i] = 1.0;
+		}
+	}
+
+	MDTLZ1::~MDTLZ1()
+	{
+
+	}
+
+	void MDTLZ1::CalObj(Individual* ind)
+	{
+		int k, size, index;
+		double h, g;
+		for (int i = 0; i < obj_num_; ++i)
+		{
+			//h(x_1)
+			h = 1.0;
+			for (int j = 0; j < obj_num_ - i - 1; ++j)
+			{
+				h *= ind->dec_[j];
+			}
+			if (i > 0)
+			{
+				h *= 1 - ind->dec_[obj_num_ - i - 1];
+			}
+			h = 0.5 * (1 - h);
+			//g(x_2)
+			k = i + 1;// [1,m]
+			g = 0.0;
+			size = (dec_num_ + 1 - k) / obj_num_;
+			for (int j = 1; j <= size; ++j)
+			{
+				index = j * obj_num_ - 1 + k;
+				g += pow(ind->dec_[index - 1] - 0.5, 2) - cos(20 * PI * (ind->dec_[index - 1] - 0.5));
+			}
+			g = 100 * (size + g);
+			ind->obj_[i] = h * (1 + g);
+		}
+	}
+
+	MDTLZ2::MDTLZ2(int dec_num, int obj_num) :Problem(dec_num, obj_num)
+	{
+		for (int i = 0; i < dec_num; ++i)
+		{
+			lower_bound_[i] = 0.0;
+			upper_bound_[i] = 1.0;
+		}
+	}
+
+	MDTLZ2::~MDTLZ2()
+	{
+
+	}
+
+	void MDTLZ2::CalObj(Individual* ind)
+	{
+		int k, size, index;
+		double h, g;
+		for (int i = 0; i < obj_num_; ++i)
+		{
+			//h(x_1)
+			h = 1.0;
+			for (int j = 0; j < obj_num_ - i - 1; ++j)
+			{
+				h *= cos(0.5 * PI * ind->dec_[j]);
+			}
+			if (i > 0)
+			{
+				h *= sin(0.5 * PI * ind->dec_[obj_num_ - i - 1]);
+			}
+			h = 1 - h;
+			//g(x_2)
+			k = i + 1;// [1,m]
+			g = 0.0;
+			size = (dec_num_ + 1 - k) / obj_num_;
+			for (int j = 1; j <= size; ++j)
+			{
+				index = j * obj_num_ - 1 + k;
+				g += pow(ind->dec_[index - 1] - 0.5, 2);
+			}
+			ind->obj_[i] = h * (1 + g);
+		}
+	}
+
+	MDTLZ3::MDTLZ3(int dec_num, int obj_num) :Problem(dec_num, obj_num)
+	{
+		for (int i = 0; i < dec_num; ++i)
+		{
+			lower_bound_[i] = 0.0;
+			upper_bound_[i] = 1.0;
+		}
+	}
+
+	MDTLZ3::~MDTLZ3()
+	{
+
+	}
+
+	void MDTLZ3::CalObj(Individual* ind)
+	{
+		int k, size, index;
+		double h, g;
+		for (int i = 0; i < obj_num_; ++i)
+		{
+			//h(x_1)
+			h = 1.0;
+			for (int j = 0; j < obj_num_ - i - 1; ++j)
+			{
+				h *= cos(0.5 * PI * ind->dec_[j]);
+			}
+			if (i > 0)
+			{
+				h *= sin(0.5 * PI * ind->dec_[obj_num_ - i - 1]);
+			}
+			h = 1 - h;
+			//g(x_2)
+			k = i + 1;// [1,m]
+			g = 0.0;
+			size = (dec_num_ + 1 - k) / obj_num_;
+			for (int j = 1; j <= size; ++j)
+			{
+				index = j * obj_num_ - 1 + k;
+				g += pow(ind->dec_[index - 1] - 0.5, 2) - cos(20 * PI * (ind->dec_[index - 1] - 0.5));
+			}
+			g = 100 * (size + g);
+			ind->obj_[i] = h * (1 + g);
+		}
+	}
+
+	MDTLZ4::MDTLZ4(int dec_num, int obj_num) :Problem(dec_num, obj_num)
+	{
+		for (int i = 0; i < dec_num; ++i)
+		{
+			lower_bound_[i] = 0.0;
+			upper_bound_[i] = 1.0;
+		}
+	}
+
+	MDTLZ4::~MDTLZ4()
+	{
+
+	}
+
+	void MDTLZ4::CalObj(Individual* ind)
+	{
+
+		int alpha = 100;
+		int k, size, index;
+		double h, g;
+		for (int i = 0; i < obj_num_; ++i)
+		{
+			//h(x_1)
+			h = 1.0;
+			for (int j = 0; j < obj_num_ - i - 1; ++j)
+			{
+				h *= cos(0.5 * PI * pow(ind->dec_[j], alpha));
+			}
+			if (i > 0)
+			{
+				h *= sin(0.5 * PI * pow(ind->dec_[obj_num_ - i - 1], alpha));
+			}
+			h = 1 - h;
+			//g(x_2)
+			k = i + 1;// [1,m]
+			g = 0.0;
+			size = (dec_num_ + 1 - k) / obj_num_;
+			for (int j = 1; j <= size; ++j)
+			{
+				index = j * obj_num_ - 1 + k;
+				g += pow(ind->dec_[index - 1] - 0.5, 2);
+			}
+			ind->obj_[i] = h * (1 + g);
+		}
 	}
 
 }

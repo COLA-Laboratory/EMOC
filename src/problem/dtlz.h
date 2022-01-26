@@ -73,6 +73,42 @@ namespace emoc {
 	};
 
 
+	class MinusDTLZ1 :public Problem
+	{
+	public:
+		MinusDTLZ1(int dec_num, int obj_num);
+		virtual ~MinusDTLZ1();
+
+		void CalObj(Individual* ind);
+	};
+
+	class MinusDTLZ2 :public Problem
+	{
+	public:
+		MinusDTLZ2(int dec_num, int obj_num);
+		virtual ~MinusDTLZ2();
+
+		void CalObj(Individual* ind);
+	};
+
+	class MinusDTLZ3 :public Problem
+	{
+	public:
+		MinusDTLZ3(int dec_num, int obj_num);
+		virtual ~MinusDTLZ3();
+
+		void CalObj(Individual* ind);
+	};
+
+	class MinusDTLZ4 :public Problem
+	{
+	public:
+		MinusDTLZ4(int dec_num, int obj_num);
+		virtual ~MinusDTLZ4();
+
+		void CalObj(Individual* ind);
+	};
+
 	class MDTLZ1 :public Problem
 	{
 	public:

@@ -140,6 +140,14 @@ namespace emoc {
 			problem_ = new DTLZ6(dec_num_, obj_num_);
 		else if (problem_name == "dtlz7")
 			problem_ = new DTLZ7(dec_num_, obj_num_);
+		else if (problem_name == "minusdtlz1")
+			problem_ = new MinusDTLZ1(dec_num_, obj_num_);
+		else if (problem_name == "minusdtlz2")
+			problem_ = new MinusDTLZ2(dec_num_, obj_num_);
+		else if (problem_name == "minusdtlz3")
+			problem_ = new MinusDTLZ3(dec_num_, obj_num_);
+		else if (problem_name == "minusdtlz4")
+			problem_ = new MinusDTLZ4(dec_num_, obj_num_);
 		else if (problem_name == "mdtlz1")
 			problem_ = new MDTLZ1(dec_num_, obj_num_);
 		else if (problem_name == "mdtlz2")
