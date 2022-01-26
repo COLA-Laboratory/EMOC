@@ -47,4 +47,7 @@ namespace emoc {
 	double BetaRandom(double a, double b);
 	double GaussianRandom(double mean, double stdev);
 
+	// Gauussian Elimination
+	double* GaussianElimination(double** A, double* b, double* x, int obj_num);
+
 }

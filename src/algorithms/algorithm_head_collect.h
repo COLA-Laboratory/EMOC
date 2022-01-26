@@ -21,6 +21,7 @@
 #include "algorithms/rvea/rvea.h"
 #include "algorithms/moead_pas/moead_pas.h"
 #include "algorithms/moead_m2m/moead_m2m.h"
+#include "algorithms/tdea/tdea.h"
 
 namespace emoc {
 

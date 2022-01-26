@@ -565,4 +565,53 @@ namespace emoc {
 
 		return stdev * r + mean;
 	}
+
+	double* GaussianElimination(double** A, double* b, double* x, int obj_num)
+	{
+		int i, j, p;
+		int N, max;
+		double alpha, sum, t;
+		double* temp;
+
+		N = obj_num;
+		for (p = 0; p < N; p++)
+		{
+			// find pivot row and swap
+			max = p;
+			for (i = p + 1; i < N; i++)
+				if (fabs(A[i][p]) > fabs(A[max][p]))
+					max = i;
+			temp = A[p];
+			A[p] = A[max];
+			A[max] = temp;
+			t = b[p];
+			b[p] = b[max];
+			b[max] = t;
+
+			// singular or nearly singular
+			if (fabs(A[p][p]) <= EMOC_EPS)
+				return nullptr;
+
+			// pivot within A and b
+			for (i = p + 1; i < N; i++)
+			{
+				alpha = A[i][p] / A[p][p];
+				b[i] -= alpha * b[p];
+				for (j = p; j < N; j++)
+					A[i][j] -= alpha * A[p][j];
+			}
+		}
+
+		// back substitution
+		for (i = N - 1; i >= 0; i--)
+		{
+			sum = 0.0;
+			for (j = i + 1; j < N; j++)
+				sum += A[i][j] * x[j];
+			x[i] = (b[i] - sum) / A[i][i];
+		}
+
+		return x;
+	}
+
 }
