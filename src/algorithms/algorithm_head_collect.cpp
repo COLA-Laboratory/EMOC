@@ -64,6 +64,7 @@ namespace emoc {
 		EMOC_ALGORITHM_REGISTER(Docomposition Based, RVEA);
 		EMOC_ALGORITHM_REGISTER(Docomposition Based, MOEADPAS);
 		EMOC_ALGORITHM_REGISTER(Docomposition Based, MOEADM2M);
+		EMOC_ALGORITHM_REGISTER(Docomposition Based, MOEADD);
 
 		// Dominance Based Algorithms
 		EMOC_ALGORITHM_REGISTER(Dominance Based, NSGA2);

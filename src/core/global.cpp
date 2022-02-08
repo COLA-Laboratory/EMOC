@@ -346,6 +346,8 @@ namespace emoc {
 			algorithm_ = new SPEA2SDE(thread_id_);
 		else if (algorithm_name == "tdea")
 			algorithm_ = new tDEA(thread_id_);
+		else if (algorithm_name == "moeadd")
+			algorithm_ = new MOEADD(thread_id_);
 		else
 		{
 			// TODO: move these parameter checking things into some specified function 
