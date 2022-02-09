@@ -3,6 +3,7 @@
 #include "core/file.h"
 #include "core/emoc_manager.h"
 #include "emoc_app.h"
+#include "core/uniform_point.h"
 
 using emoc::EMOCManager;
 using emoc::PlotManager;
@@ -13,6 +14,19 @@ using emoc::EMOCParameters;
 
 int main(int argc, char* argv[])
 {
+	//int num = 0;
+	//int obj_num = 10;
+	//double** lambda2 = emoc::UniformPoint(30, &num, obj_num);
+	//std::cout << num<< "\n";
+	//for (int i = 0; i < num; i++)
+	//{
+	//	for (int j = 0; j < obj_num; j++)
+	//	{
+	//		std::cout << lambda2[i][j] << " ";
+	//	}
+	//	std::cout << "\n";
+	//}
+
 	// initialization for EMOC
 	EMOCManager::Instance()->Init();
 
