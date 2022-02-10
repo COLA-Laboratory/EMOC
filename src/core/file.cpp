@@ -30,6 +30,8 @@
 #include "core/macro.h"
 #include "core/emoc_manager.h"
 #include "cxxopts/cxxopts.hpp"
+#include "algorithms/algorithm_factory.h"
+#include "problem/problem_factory.h"
 
 namespace emoc {
 
@@ -457,19 +459,13 @@ namespace emoc {
 	bool EMOCAlgorithmCheck(const std::string& algorithm, std::string& description)
 	{
 		bool res = false;
-		std::string algorithm_name(algorithm);
-		for (auto& c : algorithm_name)
-		{
-			if (c >= '0' && c <= '9') continue;
-			c = toupper(c);
-		}
 
-		std::unordered_map<std::string, std::vector<char*>>& IMPLEMENTED_ALGORITHMS = EMOCManager::Instance()->GetImplementedAlgorithms();
+		std::unordered_map<std::string, std::vector<char*>>& IMPLEMENTED_ALGORITHMS = AlgorithmFactory::Instance()->GetImplementedAlgorithmsName();
 		for (const auto& e : IMPLEMENTED_ALGORITHMS)
 		{
 			for (const auto& v : e.second)
 			{
-				if (algorithm_name == v)
+				if (algorithm == v)
 				{
 					res = true;
 					break;
@@ -487,19 +483,13 @@ namespace emoc {
 	bool EMOCProblemCheck(const std::string& problem, int M, int D, int N, int Evaluation, std::string& description)
 	{
 		bool res = false;
-		std::string problem_name(problem);
-		for (auto& c : problem_name)
-		{
-			if (c >= '0' && c <= '9') continue;
-			c = toupper(c);
-		}
 
-		std::unordered_map<std::string, std::vector<char*>>& IMPLEMENTED_PROBLEMS = EMOCManager::Instance()->GetImplementedProblems();
+		std::unordered_map<std::string, std::vector<char*>>& IMPLEMENTED_PROBLEMS = ProblemFactory::Instance()->GetImplementedProblemsName();
 		for (const auto& e : IMPLEMENTED_PROBLEMS)
 		{
 			for (const auto& v : e.second)
 			{
-				if (problem_name == v)
+				if (problem == v)
 				{
 					res = true;
 					break;

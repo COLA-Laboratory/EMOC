@@ -16,9 +16,10 @@
 
 namespace emoc {
 
-	EMOCManager::Garbo EMOCManager::garbo_;
 	EMOCManager* EMOCManager::s_Instance = nullptr;
 	std::mutex EMOCManager::singleton_mutex_;
+	EMOCManager::Garbo EMOCManager::garbo_;
+
 
 	emoc::EMOCManager* EMOCManager::Instance()
 	{
@@ -32,12 +33,6 @@ namespace emoc {
 		}
 
 		return s_Instance;
-	}
-	
-	void EMOCManager::Init()
-	{
-		EMOCAlgorithmRegister();
-		EMOCProblemRegister();
 	}
 
 	// this Run() is for command line mode and test module in gui mode

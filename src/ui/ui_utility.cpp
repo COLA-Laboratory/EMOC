@@ -9,6 +9,8 @@
 #include "core/emoc_manager.h"
 #include "imgui.h"
 #include "imgui_internal.h"
+#include "problem/problem_factory.h"
+#include "algorithms/algorithm_factory.h"
 
 namespace emoc {
 
@@ -47,7 +49,7 @@ namespace emoc {
 
 	void InitAlgorithmCategoryList(std::vector<std::string>& algorithm_category_list)
 	{
-		std::unordered_map<std::string, std::vector<char*>>& IMPLEMENTED_ALGORITHMS = EMOCManager::Instance()->GetImplementedAlgorithms();
+		std::unordered_map<std::string, std::vector<char*>>& IMPLEMENTED_ALGORITHMS = AlgorithmFactory::Instance()->GetImplementedAlgorithmsName();
 		for (const auto& n : IMPLEMENTED_ALGORITHMS)
 		{
 			algorithm_category_list.push_back(n.first);
@@ -57,8 +59,7 @@ namespace emoc {
 
 	void InitProblemCategoryList(std::vector<std::string>& problem_category_list)
 	{
-
-		std::unordered_map<std::string, std::vector<char*>>& IMPLEMENTED_PROBLEMS = EMOCManager::Instance()->GetImplementedProblems();
+		std::unordered_map<std::string, std::vector<char*>>& IMPLEMENTED_PROBLEMS = ProblemFactory::Instance()->GetImplementedProblemsName();
 		for (const auto& n : IMPLEMENTED_PROBLEMS)
 		{
 			problem_category_list.push_back(n.first);
@@ -465,13 +466,14 @@ namespace emoc {
 
 	void SelectCurrentAlgorithmCombo(const std::string& category, std::vector<char*>** current_algorithm_name)
 	{
-		std::unordered_map<std::string, std::vector<char*>>& IMPLEMENTED_ALGORITHMS = EMOCManager::Instance()->GetImplementedAlgorithms();
+
+		std::unordered_map<std::string, std::vector<char*>>& IMPLEMENTED_ALGORITHMS = AlgorithmFactory::Instance()->GetImplementedAlgorithmsName();
 		*current_algorithm_name = &IMPLEMENTED_ALGORITHMS[category];
 	}
 
 	void SelectCurrentProblemCombo(const std::string& category, std::vector<char*>** current_problem_name)
 	{
-		std::unordered_map<std::string, std::vector<char*>>& IMPLEMENTED_PROBLEMS = EMOCManager::Instance()->GetImplementedProblems();
+		std::unordered_map<std::string, std::vector<char*>>& IMPLEMENTED_PROBLEMS = ProblemFactory::Instance()->GetImplementedProblemsName();
 		*current_problem_name = &IMPLEMENTED_PROBLEMS[category];
 	}
 }

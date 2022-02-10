@@ -15,7 +15,6 @@ namespace emoc {
 	public:
 		static EMOCManager* Instance();
 		
-		void Init();
 		void Run();
 		void ExperimentModuleRun(std::vector<EMOCParameters> experiment_tasks, int thread_num);
 
@@ -29,8 +28,6 @@ namespace emoc {
 		inline bool GetExperimentFinish() { return is_experiment_finish_; }
 		inline bool GetMultiThreadDataState() { return is_multithread_result_ready_; }
 		inline const EMOCParameters& GetParameters() { return para_; }
-		inline std::unordered_map<std::string, std::vector<char*>>& GetImplementedAlgorithms() { return IMPLEMENTED_ALGORITHMS; }
-		inline std::unordered_map<std::string, std::vector<char*>>& GetImplementedProblems() { return IMPLEMENTED_PROBLEMS; }
 
 		// Simple Setters
 		inline void SetIsPlot(bool is_plot) { is_plot_ = is_plot; }
@@ -116,11 +113,7 @@ namespace emoc {
 		// reserved Global arrays
 		std::vector<Global*> g_GlobalSettingsArray;
 
-		// implemented algorithms and problems - we use c-style strings for the compatibility with Dear ImGUI
-		std::unordered_map<std::string, std::vector<char*>> IMPLEMENTED_ALGORITHMS;
-		std::unordered_map<std::string, std::vector<char*>> IMPLEMENTED_PROBLEMS;
 	};
-
 
 
 }

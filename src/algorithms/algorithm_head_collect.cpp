@@ -6,7 +6,7 @@
 
 #include "core/macro.h"
 #include "core/emoc_manager.h"
-
+#include "algorithms/algorithm_factory.h"
 
 //void InitDecompositionAlgorithmList(std::vector<char*>& decomposition_algorithm_names)
 //{
@@ -41,41 +41,39 @@
 //	indicator_algorithm_names.push_back("SMSEMOA");
 //}
 
+
+
+
 namespace emoc {
 
-	void EMOCAlgorithmRegister()
-	{
-		std::unordered_map<std::string, std::vector<char*>>& IMPLEMENTED_ALGORITHMS = EMOCManager::Instance()->GetImplementedAlgorithms();
+	// Docomposition Based Algorithms
+	EMOC_REGIST_ALGORITHM(Docomposition Based, MOEADDYTS);
+	EMOC_REGIST_ALGORITHM(Docomposition Based, MOEADSWTS);
+	EMOC_REGIST_ALGORITHM(Docomposition Based, MOEADCDTS);
+	EMOC_REGIST_ALGORITHM(Docomposition Based, MOEADDTS);
+	EMOC_REGIST_ALGORITHM(Docomposition Based, MOEAD);
+	EMOC_REGIST_ALGORITHM(Docomposition Based, MOEADDE);
+	EMOC_REGIST_ALGORITHM(Docomposition Based, MOEADDRA);
+	EMOC_REGIST_ALGORITHM(Docomposition Based, MOEADFRRMAB);
+	EMOC_REGIST_ALGORITHM(Docomposition Based, MOEADGRA);
+	EMOC_REGIST_ALGORITHM(Docomposition Based, MOEADIRA);
+	EMOC_REGIST_ALGORITHM(Docomposition Based, ENSMOEAD);
+	EMOC_REGIST_ALGORITHM(Docomposition Based, MOEADCDE);
+	EMOC_REGIST_ALGORITHM(Docomposition Based, MOEADSTM);
+	EMOC_REGIST_ALGORITHM(Docomposition Based, RVEA);
+	EMOC_REGIST_ALGORITHM(Docomposition Based, MOEADPAS);
+	EMOC_REGIST_ALGORITHM(Docomposition Based, MOEADM2M);
+	EMOC_REGIST_ALGORITHM(Docomposition Based, MOEADD);
 
-		// Docomposition Based Algorithms
-		EMOC_ALGORITHM_REGISTER(Docomposition Based, MOEADDYTS);
-		EMOC_ALGORITHM_REGISTER(Docomposition Based, MOEADSWTS);
-		EMOC_ALGORITHM_REGISTER(Docomposition Based, MOEADCDTS);
-		EMOC_ALGORITHM_REGISTER(Docomposition Based, MOEADDTS);
-		EMOC_ALGORITHM_REGISTER(Docomposition Based, MOEAD);
-		EMOC_ALGORITHM_REGISTER(Docomposition Based, MOEADDE);
-		EMOC_ALGORITHM_REGISTER(Docomposition Based, MOEADDRA);
-		EMOC_ALGORITHM_REGISTER(Docomposition Based, MOEADFRRMAB);
-		EMOC_ALGORITHM_REGISTER(Docomposition Based, MOEADGRA);
-		EMOC_ALGORITHM_REGISTER(Docomposition Based, MOEADIRA);
-		EMOC_ALGORITHM_REGISTER(Docomposition Based, ENSMOEAD);
-		EMOC_ALGORITHM_REGISTER(Docomposition Based, MOEADCDE);
-		EMOC_ALGORITHM_REGISTER(Docomposition Based, MOEADSTM);
-		EMOC_ALGORITHM_REGISTER(Docomposition Based, RVEA);
-		EMOC_ALGORITHM_REGISTER(Docomposition Based, MOEADPAS);
-		EMOC_ALGORITHM_REGISTER(Docomposition Based, MOEADM2M);
-		EMOC_ALGORITHM_REGISTER(Docomposition Based, MOEADD);
+	// Dominance Based Algorithms
+	EMOC_REGIST_ALGORITHM(Dominance Based, NSGA2);
+	EMOC_REGIST_ALGORITHM(Dominance Based, SPEA2);
+	EMOC_REGIST_ALGORITHM(Dominance Based, SPEA2SDE);
+	EMOC_REGIST_ALGORITHM(Dominance Based, tDEA);
 
-		// Dominance Based Algorithms
-		EMOC_ALGORITHM_REGISTER(Dominance Based, NSGA2);
-		EMOC_ALGORITHM_REGISTER(Dominance Based, SPEA2);
-		EMOC_ALGORITHM_REGISTER(Dominance Based, SPEA2SDE);
-		EMOC_ALGORITHM_REGISTER(Dominance Based, tDEA);
-
-		// Indicator Based Algorithms
-		EMOC_ALGORITHM_REGISTER(Indicator Based, IBEA);
-		EMOC_ALGORITHM_REGISTER(Indicator Based, HYPE);
-		EMOC_ALGORITHM_REGISTER(Indicator Based, SMSEMOA);
-	}
+	// Indicator Based Algorithms
+	EMOC_REGIST_ALGORITHM(Indicator Based, IBEA);
+	EMOC_REGIST_ALGORITHM(Indicator Based, HypE);
+	EMOC_REGIST_ALGORITHM(Indicator Based, SMSEMOA);
 
 }
