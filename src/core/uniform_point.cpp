@@ -33,7 +33,7 @@ namespace emoc {
 		return;
 	}
 
-	/*double** UniformPoint(int num, int *weight_num, int obj_num)
+	double** UniformPointOrigin(int num, int *weight_num, int obj_num)
 	{
 		int column = 0;
 		double *vec = nullptr;
@@ -71,7 +71,7 @@ namespace emoc {
 		}
 		delete[] vec;
 		return lambda;
-	}*/
+	}
 
 	double** UniformPoint(int num, int* weight_num, int obj_num)
 	{

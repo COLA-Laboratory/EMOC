@@ -14,18 +14,29 @@ using emoc::EMOCParameters;
 
 int main(int argc, char* argv[])
 {
-	//int num = 0;
-	//int obj_num = 10;
-	//double** lambda2 = emoc::UniformPoint(30, &num, obj_num);
-	//std::cout << num<< "\n";
-	//for (int i = 0; i < num; i++)
-	//{
-	//	for (int j = 0; j < obj_num; j++)
-	//	{
-	//		std::cout << lambda2[i][j] << " ";
-	//	}
-	//	std::cout << "\n";
-	//}
+	int num = 0;
+	int obj_num = 5;
+	double** lambda2 = emoc::UniformPoint(10, &num, obj_num);
+	std::cout << num << "\n";
+	for (int i = 0; i < num; i++)
+	{
+		for (int j = 0; j < obj_num; j++)
+		{
+			std::cout << lambda2[i][j] << " ";
+		}
+		std::cout << "\n";
+	}
+
+	double** lambda1 = emoc::UniformPointOrigin(10, &num, obj_num);
+	std::cout << num << "\n";
+	for (int i = 0; i < num; i++)
+	{
+		for (int j = 0; j < obj_num; j++)
+		{
+			std::cout << lambda1[i][j] << " ";
+		}
+		std::cout << "\n";
+	}
 
 	// initialization for EMOC
 	//EMOCManager::Instance()->Init();
@@ -47,7 +58,7 @@ int main(int argc, char* argv[])
 
 	// start to run
 	EMOCApplication emoc_app;
-	//is_gui = true; // for debug
+	is_gui = true; // for debug
 	emoc_app.Init(is_gui, para);
 	emoc_app.Run();
 

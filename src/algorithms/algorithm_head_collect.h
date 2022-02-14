@@ -23,3 +23,4 @@
 #include "algorithms/moead_m2m/moead_m2m.h"
 #include "algorithms/tdea/tdea.h"
 #include "algorithms/moead_dd/moead_dd.h"
+#include "algorithms/nsga3/nsga3.h"
