@@ -27,15 +27,14 @@ namespace emoc {
 	void NSGA2::Run()
 	{
 		Initialization();
-
 		while (!IsTermination())
 		{
 			// generate offspring population
 			Crossover(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->offspring_population_.data());
-			MutationPop(g_GlobalSettings->offspring_population_.data(), 2 * (g_GlobalSettings->population_num_ / 2), g_GlobalSettings);
-			EvaluatePop(g_GlobalSettings->offspring_population_.data(), 2 * (g_GlobalSettings->population_num_ / 2));
-			MergePopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_, g_GlobalSettings->offspring_population_.data(), 
-				2 * (g_GlobalSettings->population_num_ / 2), g_GlobalSettings->mixed_population_.data());
+			MutationPop(g_GlobalSettings->offspring_population_.data(), 2 * (real_popnum_ / 2), g_GlobalSettings);
+			EvaluatePop(g_GlobalSettings->offspring_population_.data(), 2 * (real_popnum_ / 2));
+			MergePopulation(g_GlobalSettings->parent_population_.data(), real_popnum_, g_GlobalSettings->offspring_population_.data(),
+				2 * (real_popnum_ / 2), g_GlobalSettings->mixed_population_.data());
 			
 			// select next generation's population
 			EnvironmentalSelection(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->mixed_population_.data());

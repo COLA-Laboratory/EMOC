@@ -1,4 +1,4 @@
-#include "algorithms/moead_swts/moead_swts.h"
+#include "algorithms/moead_dyts_test/moead_dyts_test.h"
 
 #include <cmath>
 #include <iostream>
@@ -14,7 +14,7 @@
 
 namespace emoc{
 
-	MOEADSWTS::MOEADSWTS(int thread_id) :
+	MOEADDYTSTEST::MOEADDYTSTEST(int thread_id) :
 		Algorithm(thread_id),
 		lambda_(nullptr),
 		weight_num_(0),
@@ -25,7 +25,7 @@ namespace emoc{
 
 	}
 
-	MOEADSWTS::~MOEADSWTS()
+	MOEADDYTSTEST::~MOEADDYTSTEST()
 	{
 		for (int i = 0; i < weight_num_; ++i)
 		{
@@ -54,8 +54,12 @@ namespace emoc{
 		beta_ = nullptr;
 	}
 
-	void MOEADSWTS::Run()
+	void MOEADDYTSTEST::Run()
 	{
+		//FILE* fpt = fopen("./output/UF5OP.txt", "w");
+
+
+		int num[5] = { 0 };
 		int offspring_count = 0;
 		Initialization();
 
@@ -65,11 +69,10 @@ namespace emoc{
 
 		while (!IsTermination())
 		{
-
 			SelectCurrentSubproblem();
 			for (int i = 0; i < selected_size_; ++i)
 			{
-				int op = SelectOperator();
+				int op = SelectOperator();  num[op] += 1;
 				int index = selected_indices_[i];
 
 				// set current iteration's neighbour type
@@ -87,10 +90,29 @@ namespace emoc{
 				UpdateIdealpoint(offspring, ideal_point_, g_GlobalSettings->obj_num_);
 
 				// update neighbours' subproblem 
-				double fi = UpdateSubproblem(offspring, index);
+				double fir = UpdateSubproblem(offspring, index);
+				if (fir > 0)
+				{
+					fir_history[count % W] = fir;
+					count++;
+				}
 
 				// update beta distribution
-				UpdateBetaDis(op, fi);
+				if (count < W)
+					UpdateBetaDis(op, fir);
+				else
+					UpdateBetaDis(op, fir,fir_history);
+
+				//if (g_GlobalSettings->current_evaluation_ % 10000 == 0)
+				//{
+				//	double sum = 0;
+				//	for (int j = 0; j < operator_num_; j++)
+				//		sum += num[j];
+				//	for (int i = 0; i < operator_num_; i++)
+				//		fprintf(fpt, "%lf\t", num[i] / sum);
+				//	fprintf(fpt, "\n");
+				//	
+				//}
 			}
 			
 
@@ -103,11 +125,13 @@ namespace emoc{
 
 		for (int i = 0; i < 5; ++i)
 		{
-			printf("op%d: %d\n", i, count_[i]);
+			printf("op%d: %d\n", i, num[i]);
 		}
+		//fflush(fpt);
+		//fclose(fpt);
 	}
 
-	void MOEADSWTS::Initialization()
+	void MOEADDYTSTEST::Initialization()
 	{
 		// initialize parent population
 		g_GlobalSettings->InitializePopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_);
@@ -136,9 +160,6 @@ namespace emoc{
 			utility_[i] = 1.0;
 
 		// initialize dyts parameter
-		W = 0.5 * weight_num_;
-		count_.resize(5, 0);
-		reward_sw_.resize(5, std::vector<int>(W, -1));
 		C = 100;
 		operator_num_ = 5;
 		alpha_ = new double[operator_num_];
@@ -148,9 +169,12 @@ namespace emoc{
 			alpha_[i] = 1.0f;
 			beta_[i] = 1.0f;
 		}
+
+		W = 0.5 * weight_num_;
+		fir_history.resize(W);
 	}
 
-	void MOEADSWTS::SetNeighbours()
+	void MOEADDYTSTEST::SetNeighbours()
 	{
 		// set neighbour size and allocate memory
 		neighbour_num_ = 20;
@@ -190,7 +214,7 @@ namespace emoc{
 	}
 
 
-	int MOEADSWTS::SelectOperator()
+	int MOEADDYTSTEST::SelectOperator()
 	{
 		// select operator according to thompsom sampling
 		int op = 0, i = 0;
@@ -210,28 +234,93 @@ namespace emoc{
 		return op;
 	}
 
-	void MOEADSWTS::UpdateBetaDis(int op, double reward)
+	void MOEADDYTSTEST::UpdateBetaDis(int op, double fir, std::vector<double>& fir_history)
 	{
-		int index = count_[op] % W;
+		double mean = 0.0;
+		double max = fir_history[0];
 
-		// update beta distribution
-		if (reward > 0)
-			alpha_[op] += 1;
-		else
-			beta_[op] += 1;
-
-		if (count_[op] >= W)
+		int realcount = count >= W ? W : count;
+		for (int i = 0; i < realcount; i++)
 		{
-			alpha_[op] -= reward_sw_[op][index];
-			beta_[op] -= (1 - reward_sw_[op][index]);
+			mean += fir_history[i];
+			if (max < fir_history[i])
+				max = fir_history[i];
 		}
+		mean /= realcount;
+		
+		int reward = 0;
+		if (fir > mean) reward = 5;
+		else if (fir > 0) reward = 1;
+		
 
-		// record reward history
-		reward_sw_[op][index] = reward > 0;
-		count_[op] += 1;
+		
+		if (reward == 0)
+		{
+			if (alpha_[op] + beta_[op] < C)
+			{
+					beta_[op] += 1;
+			}
+			else
+			{
+					alpha_[op] = alpha_[op] * C / (1.0 + C);
+					beta_[op] = (beta_[op] + 1) * C / (1.0 + C);
+				
+			}
+		}
+		else
+		{
+
+			for (int i = 0; i < reward; i++)
+			{
+				if (alpha_[op] + beta_[op] < C)
+				{
+					if (reward > 0)
+						alpha_[op] += 1;
+					else
+						beta_[op] += 1;
+				}
+				else
+				{
+					if (reward > 0)
+					{
+						alpha_[op] = (alpha_[op] + 1) * C / (1.0 + C);
+						beta_[op] = beta_[op] * C / (1.0 + C);
+					}
+					else
+					{
+						alpha_[op] = alpha_[op] * C / (1.0 + C);
+						beta_[op] = (beta_[op] + 1) * C / (1.0 + C);
+					}
+				}
+			}
+		}
 	}
 
-	void MOEADSWTS::Crossover(int operator_index, Individual** parent_pop, int current_index, Individual* offspring)
+	void MOEADDYTSTEST::UpdateBetaDis(int op, double reward)
+	{
+		if (alpha_[op] + beta_[op] < C)
+		{
+			if (reward > 0)
+				alpha_[op] += 1;
+			else
+				beta_[op] += 1;
+		}
+		else
+		{
+			if (reward > 0)
+			{
+				alpha_[op] = (alpha_[op] + 1) * C / (1.0 + C);
+				beta_[op] = beta_[op] * C / (1.0 + C);
+			}
+			else
+			{
+				alpha_[op] = alpha_[op] * C / (1.0 + C);
+				beta_[op] = (beta_[op] + 1) * C / (1.0 + C);
+			}
+		}
+	}
+
+	void MOEADDYTSTEST::Crossover(int operator_index, Individual** parent_pop, int current_index, Individual* offspring)
 	{
 		int size = neighbour_type_ == NEIGHBOUR ? neighbour_num_ : weight_num_;
 		int parent2_index = 0, parent3_index = 0, parent4_index = 0, parent5_index = 0, parent6_index = 0;
@@ -279,16 +368,16 @@ namespace emoc{
 				break;
 			case 2:
 				value = parent1->dec_[i] + g_GlobalSettings->de_parameter_.K * (parent1->dec_[i] - parent2->dec_[i])
-					+ g_GlobalSettings->de_parameter_.F * (parent3->dec_[i] - parent4->dec_[i])
-					+ g_GlobalSettings->de_parameter_.F * (parent5->dec_[i] - parent6->dec_[i]);
+					+ g_GlobalSettings->de_parameter_.F * (parent3->dec_[i] - parent4->dec_[i]);
 				break;
 			case 3:
 				value = parent1->dec_[i] + g_GlobalSettings->de_parameter_.K * (parent1->dec_[i] - parent2->dec_[i])
-					+ g_GlobalSettings->de_parameter_.F * (parent3->dec_[i] - parent4->dec_[i]);
+					+ g_GlobalSettings->de_parameter_.F * (parent3->dec_[i] - parent4->dec_[i])
+					+ g_GlobalSettings->de_parameter_.F * (parent5->dec_[i] - parent6->dec_[i]);
 				break;
 			case 4:
 				value = randomperc() < um_pro ?
-					parent1->dec_[i] + rndreal(g_GlobalSettings->dec_lower_bound_[i], g_GlobalSettings->dec_upper_bound_[i]) : parent1->dec_[i];
+					parent1->dec_[i] + rndreal(-1.0,1.0) * (g_GlobalSettings->dec_upper_bound_[i]-g_GlobalSettings->dec_lower_bound_[i]) : parent1->dec_[i];
 				break;
 			default:
 				break;
@@ -316,7 +405,7 @@ namespace emoc{
 		delete[] permutation;
 	}
 
-	double MOEADSWTS::UpdateSubproblem(Individual* offspring, int current_index)
+	double MOEADDYTSTEST::UpdateSubproblem(Individual* offspring, int current_index)
 	{
 		double offspring_fitness = 0.0;
 		double neighbour_fitness = 0.0;
@@ -345,10 +434,10 @@ namespace emoc{
 
 		delete[] sort_list;
 		
-		return neighbour_fitness - offspring_fitness;
+		return (neighbour_fitness - offspring_fitness)/neighbour_fitness;
 	}
 
-	void MOEADSWTS::SelectCurrentSubproblem()
+	void MOEADDYTSTEST::SelectCurrentSubproblem()
 	{
 		int rand[10] = { 0 }, current_max_index = 0;
 
@@ -383,7 +472,7 @@ namespace emoc{
 		}
 	}
 
-	void MOEADSWTS::CalculateFitness(Individual** pop, int pop_num, double* fitness)
+	void MOEADDYTSTEST::CalculateFitness(Individual** pop, int pop_num, double* fitness)
 	{
 		for (int i = 0; i < pop_num; ++i)
 		{
@@ -392,7 +481,7 @@ namespace emoc{
 		}
 	}
 
-	void MOEADSWTS::UpdateUtility()
+	void MOEADDYTSTEST::UpdateUtility()
 	{
 		// calculate delta
 		for (int i = 0; i < weight_num_; ++i)

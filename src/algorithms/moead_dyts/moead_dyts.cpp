@@ -289,7 +289,7 @@ namespace emoc{
 				break;
 			case 4:
 				value = randomperc() < um_pro ?
-					parent1->dec_[i] + rndreal(g_GlobalSettings->dec_lower_bound_[i], g_GlobalSettings->dec_upper_bound_[i]) : parent1->dec_[i];
+					parent1->dec_[i] + rndreal(-1.0,1.0) * (g_GlobalSettings->dec_upper_bound_[i]-g_GlobalSettings->dec_lower_bound_[i]) : parent1->dec_[i];
 				break;
 			default:
 				break;

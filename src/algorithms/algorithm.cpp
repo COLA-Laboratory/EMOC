@@ -150,7 +150,7 @@ namespace emoc {
 	void Algorithm::TrackPopulation(int generation)
 	{
 		int is_terminal = g_GlobalSettings->current_evaluation_ >= g_GlobalSettings->max_evaluation_;
-		RecordPop(g_GlobalSettings->run_id_, generation, g_GlobalSettings,real_popnum_);
+		RecordPop(g_GlobalSettings->run_id_, generation, g_GlobalSettings,real_popnum_, is_terminal);
 	}
 
 	double testTime = 0.0;
@@ -187,7 +187,7 @@ namespace emoc {
 				"set xlabel 'f1'\n"
 				"set ylabel 'f2'\n"
 				"unset key\n"
-				"plot '%s' w p pt 6\n"
+				"plot '%s' w p pt 6 lc rgb \"dark-blue\"\n"
 				//"plot 'PF_ZDT3.txt' w l lt -1 lw 2, 'plot.txt' w p pt 6 ps 1 lc 3, 'golden_point_zdt3_1_1.txt' w p pt 3 ps 2 lc 1\n"
 				, gen, data_file_name);
 		}
@@ -203,7 +203,7 @@ namespace emoc {
 				"set ticslevel 0.0\n"
 				"set view 45,45\n"
 				"unset key\n"
-				"splot  '%s' w p pt 6\n"
+				"splot  '%s' w p pt 6 lc rgb \"dark-blue\"\n"
 				,gen, data_file_name);
 		}
 		else

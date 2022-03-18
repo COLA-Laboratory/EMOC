@@ -562,8 +562,6 @@ namespace emoc {
 		double p1, p2, p3;
 		alglib::mannwhitneyutest(a1, array1.size(), a2, array2.size(), p1, p2, p3);
 
-		//if (count == 1) std::cout << p1 << " " << p2 << " " << p3 << "\n";
-
 		if (p1 > 0.05)
 			res = 0;
 		else

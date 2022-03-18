@@ -11,7 +11,6 @@
 
 namespace emoc{
 
-
 	// ZDT Series
 	EMOC_REGIST_PROBLEM(ZDT Series, ZDT1);
 	EMOC_REGIST_PROBLEM(ZDT Series, ZDT2);

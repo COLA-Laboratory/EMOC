@@ -102,10 +102,10 @@ namespace emoc {
 		}
 		//std::cout << "evaluation:" << g_GlobalSettings->current_evaluation_ << "\n";
 
-		for (int i = 0; i < 5; ++i)
-		{
-			printf("op%d: %d\n", i, num[i]);
-		}
+		//for (int i = 0; i < 5; ++i)
+		//{
+		//	printf("op%d: %d\n", i, num[i]);
+		//}
 	}
 
 	void MOEADCDTS::Initialization()
@@ -218,7 +218,10 @@ namespace emoc {
 		double sum = 0.0;
 		double g_plus = 0.0, g_minus = 0.0;
 
-		for (int i = 0; i < count_[op]; i++)
+		for (int i = 0; i < W-1; i++)
+			sum += reward_sw_[op][i];
+
+		for (int i = W-1; i < count_[op]; i++)
 		{
 			sum += reward_sw_[op][i];
 			double s_plus = reward_sw_[op][i] - sum / (i + 1);
@@ -317,7 +320,7 @@ namespace emoc {
 				break;
 			case 4:
 				value = randomperc() < um_pro ?
-					parent1->dec_[i] + rndreal(g_GlobalSettings->dec_lower_bound_[i], g_GlobalSettings->dec_upper_bound_[i]) : parent1->dec_[i];
+					parent1->dec_[i] + rndreal(-1.0,1.0) * (g_GlobalSettings->dec_upper_bound_[i]-g_GlobalSettings->dec_lower_bound_[i]) : parent1->dec_[i];
 				break;
 			default:
 				break;

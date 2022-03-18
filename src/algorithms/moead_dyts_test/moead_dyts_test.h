@@ -3,9 +3,11 @@
 #include "core/individual.h"
 #include "problem/problem.h"
 
+#include <vector>
+
 namespace emoc {
 
-	class MOEADDTS : public Algorithm
+	class MOEADDYTSTEST : public Algorithm
 	{
 	public:
 		typedef struct
@@ -20,8 +22,8 @@ namespace emoc {
 			GLOBAL
 		}NeighbourType;
 
-		MOEADDTS(int thread_id);
-		virtual ~MOEADDTS();
+		MOEADDYTSTEST(int thread_id);
+		virtual ~MOEADDYTSTEST();
 
 		void Run();
 
@@ -35,10 +37,12 @@ namespace emoc {
 		void CalculateFitness(Individual** pop, int pop_num, double* fitness);
 		void CreditAssignment();
 		int SelectOperator();
+		void UpdateBetaDis(int op, double reward, std::vector<double>& fir_history);
 		void UpdateBetaDis(int op, double reward);
 
 		// use offspring to update the neighbour of current_index-th individual with specified aggregation function and return fir
 		double UpdateSubproblem(Individual* offspring, int current_index);
+
 		
 
 	private:
@@ -51,6 +55,7 @@ namespace emoc {
 		double neighbour_selectpro_;       // the probability of select neighbour scope
 		NeighbourType neighbour_type_;
 		double* ideal_point_;
+
 		// MOEADDRA parameters
 		int* selected_indices_;			   // the indices of selected individuals of current iteration
 		int selected_size_;				   // the number of selected individuals
@@ -58,12 +63,14 @@ namespace emoc {
 		double* utility_;				   // utility for each subproblem
 		double* delta_;					   // difference between new and old individuals' fitness
 
-		// MOEADDTS parameters
-		double gamma_ = 0.99f;
+		// MOEADDYTSTEST parameters
 		int operator_num_;				   // the number of operator
 		double* alpha_;					   // beta distribution parameter
 		double* beta_;					   // beta distribution parameter
 		double C;						   // beta distritbution update threshold
 
+		int count = 0;
+		int W;
+		std::vector<double> fir_history;
 	};
 }

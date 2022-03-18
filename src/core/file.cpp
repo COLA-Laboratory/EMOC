@@ -118,6 +118,21 @@ namespace emoc {
 		fclose(fpt);
 	}
 
+	void CopyFile(const char* src, const char* dest )
+	{
+		FILE* in = fopen(src, "r+");
+		FILE* out = fopen(dest, "w+");
+
+		char buff[1024];
+		while (int len = fread(buff, 1, sizeof(buff), in))
+		{
+			fwrite(buff, 1, len, out);
+		}
+
+		fclose(in);
+		fclose(out);
+	}
+
 	std::vector<std::vector<double>> ReadPop(char* filepath, int obj_num)
 	{
 		// open pf data file
@@ -152,7 +167,7 @@ namespace emoc {
 		return data;
 	}
 
-	void RecordPop(int run_index, int generation, Global* para, int real_popnum)
+	void RecordPop(int run_index, int generation, Global* para, int real_popnum, int is_terminal)
 	{
 		char output_dir[1024];
 		char output_file[1024];
@@ -188,7 +203,11 @@ namespace emoc {
 			);
 		}
 		CreateDirectory(output_dir);
-		sprintf(output_file, "%spop_%d.txt", output_dir, generation);
+
+		if (is_terminal)
+			sprintf(output_file, "%spop_last.txt", output_dir, generation);
+		else
+			sprintf(output_file, "%spop_%d.txt", output_dir, generation);
 
 		PrintObjective(output_file, para->obj_num_, para->parent_population_.data(), real_popnum);
 	}

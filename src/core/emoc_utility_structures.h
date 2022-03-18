@@ -53,7 +53,8 @@ namespace emoc
 		std::vector<double> metric_history;
 		std::vector<bool> is_record;
 
-		double metric_mean = 0.0, metric_std = 0.0, metric_median = 0.0, metric_iqr = 0.0;
+		int median_index = 0, best_index = 0;
+		double metric_mean = 0.0, metric_std = 0.0, metric_median = 0.0, metric_iqr = 0.0, metric_best = 0.0;
 		int metric_mean_ranksum[3] = { -2, -2, -2 }, metric_mean_signrank[3] = { -2, -2, -2 };			// 0:mean best compared result 1:median best compared result 2:last column compared result
 		int metric_median_ranksum[3] = { -2, -2 , -2 }, metric_median_signrank[3] = { -2, -2, -2 };
 	};
