@@ -11,7 +11,7 @@
 #include "ui/uipanel_manager.h"
 #include "alglib/src/statistics.h"
 #include "metric/metric_head_collect.h"
-#include "algorithms/algorithm_head_collect.h"
+#include "algorithm/algorithm_head_collect.h"
 #include "problem/problem_head_collect.h"
 
 namespace emoc {

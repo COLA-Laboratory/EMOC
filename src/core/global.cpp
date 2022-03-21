@@ -6,9 +6,9 @@
 #include "random/random.h"
 #include "core/emoc_manager.h"
 #include "problem/problem_head_collect.h"
-#include "algorithms/algorithm_head_collect.h"
+#include "algorithm/algorithm_head_collect.h"
 #include "problem/problem_factory.h"
-#include "algorithms/algorithm_factory.h"
+#include "algorithm/algorithm_factory.h"
 
 namespace emoc {
 

@@ -10,7 +10,7 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 #include "problem/problem_factory.h"
-#include "algorithms/algorithm_factory.h"
+#include "algorithm/algorithm_factory.h"
 
 namespace emoc {
 

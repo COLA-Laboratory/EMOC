@@ -1,13 +1,7 @@
 #include "problem/problem_head_collect.h"
 
-#include <string>
-#include <vector>
-#include <unordered_map>
-
 #include "core/macro.h"
-#include "core/emoc_manager.h"
 #include "problem/problem_factory.h"
-
 
 namespace emoc{
 
@@ -111,6 +105,5 @@ namespace emoc{
 	EMOC_REGIST_PROBLEM(MOEADDE_F Series, MOEADM2M_F5);
 	EMOC_REGIST_PROBLEM(MOEADDE_F Series, MOEADM2M_F6);
 	EMOC_REGIST_PROBLEM(MOEADDE_F Series, MOEADM2M_F7);
-
 
 }

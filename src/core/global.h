@@ -4,7 +4,7 @@
 
 #include "core/individual.h"
 #include "problem/problem.h"
-#include "algorithms/algorithm.h"
+#include "algorithm/algorithm.h"
 
 
 

@@ -4173,7 +4173,8 @@ void sparsecopytohashbuf(const sparsematrix &s0, const sparsematrix &s1, const x
 /*************************************************************************
 This function converts matrix to CRS format.
 
-Some  algorithms  (linear  algebra ones, for example) require matrices in
+Some  
+(linear  algebra ones, for example) require matrices in
 CRS format. This function allows to perform in-place conversion.
 
 INPUT PARAMETERS

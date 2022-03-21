@@ -30,7 +30,7 @@
 #include "core/macro.h"
 #include "core/emoc_manager.h"
 #include "cxxopts/cxxopts.hpp"
-#include "algorithms/algorithm_factory.h"
+#include "algorithm/algorithm_factory.h"
 #include "problem/problem_factory.h"
 
 namespace emoc {
