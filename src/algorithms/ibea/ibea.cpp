@@ -1,7 +1,6 @@
 #include "algorithms/ibea/ibea.h"
 
 #include <cmath>
-#include <vector>
 
 #include "core/global.h"
 #include "core/tournament_selection.h"
@@ -50,10 +49,10 @@ namespace emoc {
 	void IBEA::Crossover(Individual **parent_pop, Individual **offspring_pop)
 	{
 		// generate random permutation index for tournment selection
-		int *index1 = new int[g_GlobalSettings->population_num_];
-		int *index2 = new int[g_GlobalSettings->population_num_];
-		random_permutation(index1, g_GlobalSettings->population_num_);
-		random_permutation(index2, g_GlobalSettings->population_num_);
+		std::vector<int> index1(g_GlobalSettings->population_num_);
+		std::vector<int> index2(g_GlobalSettings->population_num_);
+		random_permutation(index1.data(), g_GlobalSettings->population_num_);
+		random_permutation(index2.data(), g_GlobalSettings->population_num_);
 
 		for (int i = 0; i < g_GlobalSettings->population_num_ / 2; ++i)
 		{
@@ -61,9 +60,6 @@ namespace emoc {
 			Individual *parent2 = TournamentByFitness(parent_pop[index2[2 * i]], parent_pop[index2[2 * i + 1]]);
 			SBX(parent1, parent2, offspring_pop[2 * i], offspring_pop[2 * i + 1], g_GlobalSettings);
 		}
-
-		delete[] index1;
-		delete[] index2;
 	}
 
 	double IBEA::CalEpsIndicator(Individual *ind1, Individual *ind2)
@@ -84,7 +80,7 @@ namespace emoc {
 		return max_eps;
 	}
 
-	void IBEA::CalFitness(Individual **pop, int pop_num, double *fitness)
+	void IBEA::CalFitness(Individual **pop, int pop_num, std::vector<double> &fitness)
 	{
 		// determine indicator values and their maximum
 		double max_fitness = 0;
@@ -120,7 +116,7 @@ namespace emoc {
 		int mixed_popnum = g_GlobalSettings->population_num_ + 2 * g_GlobalSettings->population_num_ / 2;
 
 		// calculate fitness and store it in fitness array
-		double *fitness = new double[mixed_popnum * mixed_popnum];
+		std::vector<double> fitness(mixed_popnum * mixed_popnum);
 		CalFitness(mixed_pop, mixed_popnum, fitness);
 
 		// select next generation's individuals
@@ -158,10 +154,7 @@ namespace emoc {
 		{
 			if (flag[i] != 1)
 				CopyIndividual(mixed_pop[i], parent_pop[count++]);
-
 		}
-
-		delete[] fitness;
 	}
 
 }

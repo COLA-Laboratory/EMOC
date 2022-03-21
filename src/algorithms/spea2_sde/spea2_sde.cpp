@@ -56,10 +56,10 @@ namespace emoc {
 	void SPEA2SDE::Crossover(Individual** parent_pop, Individual** offspring_pop)
 	{
 		// generate random permutation index for tournment selection
-		int* index1 = new int[g_GlobalSettings->population_num_];
-		int* index2 = new int[g_GlobalSettings->population_num_];
-		random_permutation(index1, g_GlobalSettings->population_num_);
-		random_permutation(index2, g_GlobalSettings->population_num_);
+		std::vector<int> index1(g_GlobalSettings->population_num_);
+		std::vector<int> index2(g_GlobalSettings->population_num_);
+		random_permutation(index1.data(), g_GlobalSettings->population_num_);
+		random_permutation(index2.data(), g_GlobalSettings->population_num_);
 
 		for (int i = 0; i < g_GlobalSettings->population_num_ / 2; ++i)
 		{
@@ -67,14 +67,11 @@ namespace emoc {
 			Individual* parent2 = TournamentByFitness(parent_pop[index2[2 * i]], parent_pop[index2[2 * i + 1]]);
 			SBX(parent1, parent2, offspring_pop[2 * i], offspring_pop[2 * i + 1], g_GlobalSettings);
 		}
-
-		delete[] index1;
-		delete[] index2;
 	}
 
 	void SPEA2SDE::CalDistance(Individual** pop, int pop_num, double** distance, bool is_sort)
 	{
-		double* shifted_obj = new double[g_GlobalSettings->obj_num_];
+		std::vector<double> shifted_obj(g_GlobalSettings->obj_num_);
 		for (int i = 0; i < pop_num; ++i)
 		{
 			for (int j = 0; j < pop_num; ++j)
@@ -88,28 +85,25 @@ namespace emoc {
 				for (int k = 0; k < g_GlobalSettings->obj_num_; k++)
 					shifted_obj[k] = pop[i]->obj_[k] > pop[j]->obj_[k] ? pop[i]->obj_[k] : pop[j]->obj_[k];
 
-				distance[i][j] = CalEuclidianDistance(pop[i]->obj_, shifted_obj, g_GlobalSettings->obj_num_);
+				distance[i][j] = CalEuclidianDistance(pop[i]->obj_, shifted_obj.data(), g_GlobalSettings->obj_num_);
 			}
 
 			if (is_sort)
 				std::sort(distance[i], distance[i] + pop_num);
 		}
-
-		delete[] shifted_obj;
 	}
 
 	void SPEA2SDE::CalFitness(Individual** pop, int pop_num)
 	{
-		int* dominate_num = new int[pop_num];      //dominate_num[i] store the number of individuals which i-th ind dominates
-		int** dominated_index = new int* [pop_num]; //dominated_index[i] store the index of individuals which dominate i-th ind
-		int* dominated_size = new int[pop_num];    //dominated_size[i] store the number of individuals which dominate i-th ind
+		std::vector<int> dominate_num(pop_num);      //dominate_num[i] store the number of individuals which i-th ind dominates
+		std::vector<int> dominated_size(pop_num);    //dominated_size[i] store the number of individuals which dominate i-th ind
+		std::vector<std::vector<int>> dominated_index(pop_num, std::vector<int>(pop_num)); //dominated_index[i] store the index of individuals which dominate i-th ind
 
 		// initialize allocated memory
 		for (int i = 0; i < pop_num; ++i)
 		{
 			dominate_num[i] = 0;
 			dominated_size[i] = 0;
-			dominated_index[i] = new int[pop_num];
 		}
 
 		// calculate R[i]
@@ -160,22 +154,14 @@ namespace emoc {
 
 		// deallocate
 		for (int i = 0; i < pop_num; ++i)
-		{
-			delete[] dominated_index[i];
 			delete[] distance[i];
-		}
 		delete[] distance;
-		delete[] dominated_index;
-		delete[] dominate_num;
-		delete[] dominated_size;
 	}
 
 	std::unordered_map<int, int> SPEA2SDE::TruncatePop(double** distance, int candidate_num)
 	{
 		clock_t start, end;
-		double** temp = new double* [candidate_num];
-		for (int i = 0; i < candidate_num; ++i)
-			temp[i] = new double[candidate_num];
+		std::vector<std::vector<double>> temp(candidate_num, std::vector<double>(candidate_num));
 
 		std::unordered_map<int, int> delete_map;
 		// truncate
@@ -199,7 +185,7 @@ namespace emoc {
 
 			// sort the temp distance matrix
 			for (int i = 0; i < candidate_num; ++i)
-				std::sort(temp[i], temp[i] + candidate_num);
+				std::sort(temp[i].begin(), temp[i].end());
 
 			// sort temp distance matrix's rows and get index
 			std::vector<int> sort_index(candidate_num);
@@ -220,14 +206,8 @@ namespace emoc {
 				});
 
 			delete_map[sort_index[0]] = 1;
-			//std::cout << sort_index[0] << "\n";
 		}
 		end = clock();
-		//printf("EnvironmentalSelection time: %fs\n", (double)(end - start) / CLOCKS_PER_SEC);
-
-		for (int i = 0; i < candidate_num; ++i)
-			delete[] temp[i];
-		delete[] temp;
 
 		return delete_map;
 	}

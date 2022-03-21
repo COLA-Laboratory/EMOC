@@ -66,7 +66,6 @@ namespace emoc {
 
 		while (!IsTermination())
 		{
-
 			SelectCurrentSubproblem();
 			for (int i = 0; i < selected_size_; ++i)
 			{
@@ -100,12 +99,6 @@ namespace emoc {
 				UpdateUtility();
 			}
 		}
-		//std::cout << "evaluation:" << g_GlobalSettings->current_evaluation_ << "\n";
-
-		//for (int i = 0; i < 5; ++i)
-		//{
-		//	printf("op%d: %d\n", i, num[i]);
-		//}
 	}
 
 	void MOEADCDTS::Initialization()

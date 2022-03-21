@@ -149,8 +149,7 @@ namespace emoc {
 
 	void Algorithm::TrackPopulation(int generation)
 	{
-		int is_terminal = g_GlobalSettings->current_evaluation_ >= g_GlobalSettings->max_evaluation_;
-		RecordPop(g_GlobalSettings->run_id_, generation, g_GlobalSettings,real_popnum_, is_terminal);
+		RecordPop(g_GlobalSettings->run_id_, generation, g_GlobalSettings,real_popnum_);
 	}
 
 	double testTime = 0.0;
@@ -269,7 +268,6 @@ namespace emoc {
 					EMOCLock::experiment_pause_cond.wait(locker, [&]() {return !EMOCManager::Instance()->GetExperimentPause(); });
 			}
 		}
-
 
 		return false;
 	}

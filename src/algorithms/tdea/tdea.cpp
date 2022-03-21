@@ -35,7 +35,7 @@ namespace emoc {
 			delete ndpop_[i];
 			delete ndpop_[i + weight_num_];
 			delete extreme_pop_[i];
-			cluster_[i] = nullptr;
+			cluster_[i] = nullptr; 
 			ndpop_[i] = nullptr;
 			extreme_pop_[i] = nullptr;
 		}
@@ -85,7 +85,7 @@ namespace emoc {
 		for (int i = 0; i < weight_num_; i++)
 		{
 			// cluster and cluster_count
-			cluster_[i] = new int[weight_num_];
+			cluster_[i] = new int[weight_num_*2];
 			for (int j = 0; j < weight_num_; j++)
 				cluster_[i][j] = -1;
 			cluster_count_[i] = 0;
@@ -103,10 +103,10 @@ namespace emoc {
 	void tDEA::Crossover(Individual** parent_pop, Individual** offspring_pop)
 	{
 		// generate random permutation index for tournment selection
-		int* index1 = new int[g_GlobalSettings->population_num_];
-		int* index2 = new int[g_GlobalSettings->population_num_];
-		random_permutation(index1, g_GlobalSettings->population_num_);
-		random_permutation(index2, g_GlobalSettings->population_num_);
+		std::vector<int> index1(g_GlobalSettings->population_num_);
+		std::vector<int> index2(g_GlobalSettings->population_num_);
+		random_permutation(index1.data(), g_GlobalSettings->population_num_);
+		random_permutation(index2.data(), g_GlobalSettings->population_num_);
 
 		for (int i = 0; i <weight_num_ / 2; ++i)
 		{
@@ -114,9 +114,6 @@ namespace emoc {
 			Individual* parent2 = TournamentByRank(parent_pop[index2[2 * i]], parent_pop[index2[2 * i + 1]]);
 			SBX(parent1, parent2, offspring_pop[2 * i], offspring_pop[2 * i + 1], g_GlobalSettings);
 		}
-
-		delete[] index1;
-		delete[] index2;
 	}
 
 	void tDEA::EnvironmentalSelection(Individual** parent_pop, int mixpop_num, Individual** mixed_pop)
@@ -132,7 +129,6 @@ namespace emoc {
 		thetaNDSort(ndpop_.data(), normalized_pop, ndpop_num);
 
 		// environmental selection
-		int* index, * perm;
 		int  current_pop_num = 0, temp_number = 0, rank_index = 0;
 
 		while (1)
@@ -160,9 +156,9 @@ namespace emoc {
 		}
 
 
-		index = (int*)malloc(sizeof(int) * temp_number);
-		perm = (int*)malloc(sizeof(int) * temp_number);
-		random_permutation(perm, temp_number);
+		std::vector<int> index(temp_number);
+		std::vector<int> perm(temp_number);
+		random_permutation(perm.data(), temp_number);
 
 		int  count = 0;
 		for (int i = 0; i < ndpop_num; i++)
@@ -176,9 +172,6 @@ namespace emoc {
 			CopyIndividual(ndpop_[index[rnd(0, temp_number - 1)]], parent_pop[current_pop_num]);
 			current_pop_num++;
 		}
-
-		free(perm);
-		free(index);
 
 		for (int i = 0; i < mixpop_num; i++)
 			delete[] normalized_pop[i];
@@ -223,13 +216,11 @@ namespace emoc {
 
 	void tDEA::GetExtremePop(Individual** ndpop, int ndpop_num, Individual** extreme_pop)
 	{
-		double* max_value = NULL, ** weight_vec = NULL;
-		max_value = (double*)malloc(sizeof(double) * ndpop_num);
-		weight_vec = (double**)malloc(sizeof(double*) * g_GlobalSettings->obj_num_);
+		std::vector<double> max_value(ndpop_num);
+		std::vector<std::vector<double>> weight_vec(g_GlobalSettings->obj_num_, std::vector <double>(g_GlobalSettings->obj_num_));
 
 		for (int i = 0; i < g_GlobalSettings->obj_num_; i++)
 		{
-			weight_vec[i] = (double*)malloc(sizeof(double) * g_GlobalSettings->obj_num_);
 			for (int j = 0; j < g_GlobalSettings->obj_num_; j++)
 			{
 				if (i == j)
@@ -272,24 +263,16 @@ namespace emoc {
 
 			CopyIndividual(ndpop[min_idx], extreme_pop[i]);
 		}
-
-		free(max_value);
-		for (int i = 0; i < g_GlobalSettings->obj_num_; i++)
-		{
-			free(weight_vec[i]);
-		}
-		free(weight_vec);
-		return;
 	}
 
 	void tDEA::GetIntercepts(Individual** extreme_pop, Individual** ndpop, int ndpop_num, double* intercepts)
 	{
-		double** arg , *u, *max_obj_value;
-		arg = (double**)malloc(sizeof(double*) * g_GlobalSettings->obj_num_);
+		double** arg = (double**)malloc(sizeof(double*) * g_GlobalSettings->obj_num_);
 		for (int i = 0; i < g_GlobalSettings->obj_num_; i++)
 			arg[i] = (double*)malloc(sizeof(double) * g_GlobalSettings->obj_num_);
-		max_obj_value = (double*)malloc(sizeof(double) * g_GlobalSettings->obj_num_);
-		u = (double*)malloc(sizeof(double) * g_GlobalSettings->obj_num_);
+
+		std::vector<double> u(g_GlobalSettings->obj_num_);
+		std::vector<double> max_obj_value(g_GlobalSettings->obj_num_);
 
 		// initialize 
 		for (int i = 0; i < g_GlobalSettings->obj_num_; i++)
@@ -319,7 +302,7 @@ namespace emoc {
 				arg[i][j] = extreme_pop[i]->obj_[j] -ideal_point_[j];
 
 
-		if (GaussianElimination(arg, u, intercepts,g_GlobalSettings->obj_num_) == nullptr)
+		if (GaussianElimination(arg, u.data(), intercepts,g_GlobalSettings->obj_num_) == nullptr)
 		{
 			for (int i = 0; i < g_GlobalSettings->obj_num_; i++)
 				intercepts[i] = max_obj_value[i];
@@ -343,25 +326,20 @@ namespace emoc {
 			}
 		}
 
-
-		free(u);
-		free(max_obj_value);
 		for (int i = 0; i < g_GlobalSettings->obj_num_; i++)
-		{
 			free(arg[i]);
-		}
 		free(arg);
 	}
 
 	void tDEA::Normalization(Individual** ndpop, int ndpop_num, double** normalized_pop)
 	{
-		double* intercepts = new double[g_GlobalSettings->obj_num_];
+		std::vector<double> intercepts(g_GlobalSettings->obj_num_);
 
 		for (int i = 0; i < ndpop_num; i++)
 			UpdateIdealpoint(ndpop[i], ideal_point_, g_GlobalSettings->obj_num_);
 		
 		GetExtremePop(ndpop, ndpop_num, extreme_pop_.data());
-		GetIntercepts(extreme_pop_.data(), ndpop, ndpop_num, intercepts);
+		GetIntercepts(extreme_pop_.data(), ndpop, ndpop_num, intercepts.data());
 
 		// normalzation
 		for (int i = 0; i < ndpop_num; i++)
@@ -375,8 +353,6 @@ namespace emoc {
 		// update nadir point
 		for (int i = 0; i < g_GlobalSettings->obj_num_;i++)
 			nadir_point_[i] = intercepts[i];
-
-		delete[] intercepts;
 	}
 
 	void tDEA::Cluster(double** normalized_pop, int pop_num)
@@ -409,9 +385,9 @@ namespace emoc {
 	void tDEA::thetaNDSort(Individual** ndpop, double** normalized_pop, int pop_num)
 	{
 		int i = 0, j = 0, sum = 0, index = 0;
-		double* theta, tempDistance = 0, d1 = 0, d2 = 0;
-		DistanceInfo *distanceInfo = new DistanceInfo[pop_num];
-		theta = new double[weight_num_];
+		double tempDistance = 0, d1 = 0, d2 = 0;
+		std::vector<DistanceInfo> distanceInfo(pop_num);
+		std::vector<double> theta(weight_num_);
 
 		//assignment to theta
 		for (i = 0; i < weight_num_; i++)
@@ -447,7 +423,7 @@ namespace emoc {
 					distanceInfo[j].distance = tempDistance;
 					distanceInfo[j].index = index;
 				}
-				std::sort(distanceInfo, distanceInfo + cluster_count_[i], [](DistanceInfo& left, DistanceInfo& right) {return left.distance < right.distance; });
+				std::sort(distanceInfo.begin(), distanceInfo.begin() + cluster_count_[i], [](DistanceInfo& left, DistanceInfo& right) {return left.distance < right.distance; });
 
 				for (j = 0; j < cluster_count_[i]; j++)
 				{
@@ -456,9 +432,6 @@ namespace emoc {
 
 			}
 		}
-
-		delete[] theta;
-		delete[] distanceInfo;
 	}
 
 }

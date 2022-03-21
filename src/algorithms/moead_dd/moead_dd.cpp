@@ -136,7 +136,7 @@ namespace emoc {
 			neighbour_[i] = new int[neighbour_num_];
 		}
 
-		DistanceInfo* sort_list = new DistanceInfo[weight_num_];
+		std::vector<DistanceInfo> sort_list(weight_num_);
 		for (int i = 0; i < weight_num_; ++i)
 		{
 			for (int j = 0; j < weight_num_; ++j)
@@ -152,7 +152,7 @@ namespace emoc {
 				sort_list[j].index = j;
 			}
 
-			std::sort(sort_list, sort_list + weight_num_, [](DistanceInfo& left, DistanceInfo& right) {
+			std::sort(sort_list.begin(), sort_list.end(), [](DistanceInfo& left, DistanceInfo& right) {
 				return left.distance < right.distance;
 				});
 
@@ -161,8 +161,6 @@ namespace emoc {
 				neighbour_[i][j] = sort_list[j + 1].index;
 			}
 		}
-
-		delete[] sort_list;
 	}
 
 	void MOEADD::Crossover(Individual** parent_pop, int current_index, Individual* offspring)

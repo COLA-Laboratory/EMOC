@@ -165,7 +165,7 @@ namespace emoc {
 			neighbour_[i] = new int[neighbour_num_];
 		}
 
-		DistanceInfo* sort_list = new DistanceInfo[weight_num_];
+		std::vector<DistanceInfo> sort_list(weight_num_);
 		for (int i = 0; i < weight_num_; ++i)
 		{
 			for (int j = 0; j < weight_num_; ++j)
@@ -181,17 +181,15 @@ namespace emoc {
 				sort_list[j].index = j;
 			}
 
-			std::sort(sort_list, sort_list + weight_num_, [](DistanceInfo& left, DistanceInfo& right) {
+			std::sort(sort_list.begin(), sort_list.end(), [](DistanceInfo& left, DistanceInfo& right) {
 				return left.distance < right.distance;
-			});
+				});
 
 			for (int j = 0; j < neighbour_num_; j++)
 			{
 				neighbour_[i][j] = sort_list[j + 1].index;
 			}
 		}
-
-		delete[] sort_list;
 	}
 
 	void MOEADSTM::Crossover(Individual** parent_pop, int current_index, Individual* offspring)
@@ -220,10 +218,9 @@ namespace emoc {
 	void MOEADSTM::CalculatePref(Individual** mixed_pop)
 	{
 		int size = weight_num_ + selected_size_;
-		double** normalized_pop = new double* [size];
+		std::vector<std::vector<double>> normalized_pop(size, std::vector<double>(g_GlobalSettings->obj_num_));
 		for (int i = 0; i < size; i++)
 		{
-			normalized_pop[i] = new double[g_GlobalSettings->obj_num_];
 			for (int j = 0; j < g_GlobalSettings->obj_num_; j++)
 			{
 				normalized_pop[i][j] = (mixed_pop[i]->obj_[j] - ideal_point_[j]) / (nadir_point_[j] - ideal_point_[j]);
@@ -237,7 +234,7 @@ namespace emoc {
 			{
 				subproblem_matrix_[j][i].fit = CalInverseChebycheff(mixed_pop[i], lambda_[j], ideal_point_, g_GlobalSettings->obj_num_);
 				subproblem_matrix_[j][i].index = i;
-				dist_matrix_[i][j] = CalPerpendicularDistance(normalized_pop[i], lambda_[j], g_GlobalSettings->obj_num_);
+				dist_matrix_[i][j] = CalPerpendicularDistance(normalized_pop[i].data(), lambda_[j], g_GlobalSettings->obj_num_);
 				solution_matrix_[i][j].fit = dist_matrix_[i][j];
 				solution_matrix_[i][j].index = j;
 			}
@@ -258,12 +255,6 @@ namespace emoc {
 				return left.fit < right.fit;
 				});
 		}
-
-		for (int i = 0; i < size; i++)
-		{
-			delete[] normalized_pop[i];
-		}
-		delete[] normalized_pop;
 	}
 
 	void MOEADSTM::StableMatching(Individual** parent_pop, Individual** mixed_pop)
@@ -272,15 +263,14 @@ namespace emoc {
 
 		// initialize some basical data for stable matching
 		int size = weight_num_ + selected_size_;
-		int* Fp = new int[weight_num_];
-		int* Fx = new int[size];
-		int* free_subproblem = new int[weight_num_];
-		int** Phi = new int* [weight_num_];
+		std::vector<int> Fp(weight_num_);
+		std::vector<int> Fx(size);
+		std::vector<int> free_subproblem(weight_num_);
+		std::vector<std::vector<int>> Phi(weight_num_, std::vector<int>(size));
 		for (int i = 0; i < weight_num_; i++)
-		{
-			Phi[i] = new int[size];
-			for (int j = 0; j < size; j++) Phi[i][j] = 0;
-		}
+			for (int j = 0; j < size; j++) 
+				Phi[i][j] = 0;
+		
 		for (int i = 0; i < weight_num_; i++)
 		{
 			Fp[i] = -1;
@@ -328,15 +318,7 @@ namespace emoc {
 		}
 
 		for (int i = 0; i < weight_num_; i++)
-		{
 			CopyIndividual(mixed_pop[Fp[i]], parent_pop[i]);
-		}
-
-		delete[] Fp;
-		delete[] Fx;
-		delete[] free_subproblem;
-		for (int i = 0; i < weight_num_; i++) delete[] Phi[i];
-		delete[] Phi;
 	}
 
 	void MOEADSTM::SelectCurrentSubproblem()

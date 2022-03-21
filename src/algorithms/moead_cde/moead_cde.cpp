@@ -189,7 +189,7 @@ namespace emoc {
 			neighbour_[i] = new int[neighbour_num_];
 		}
 
-		DistanceInfo* sort_list = new DistanceInfo[weight_num_];
+		std::vector<DistanceInfo> sort_list(weight_num_);
 		for (int i = 0; i < weight_num_; ++i)
 		{
 			for (int j = 0; j < weight_num_; ++j)
@@ -205,7 +205,7 @@ namespace emoc {
 				sort_list[j].index = j;
 			}
 
-			std::sort(sort_list, sort_list + weight_num_, [](DistanceInfo& left, DistanceInfo& right) {
+			std::sort(sort_list.begin(), sort_list.end(), [](DistanceInfo& left, DistanceInfo& right) {
 				return left.distance < right.distance;
 				});
 
@@ -214,8 +214,6 @@ namespace emoc {
 				neighbour_[i][j] = sort_list[j + 1].index;
 			}
 		}
-
-		delete[] sort_list;
 	}
 
 	double MOEADCDE::GenerateFFactor()
@@ -253,21 +251,16 @@ namespace emoc {
 
 	void MOEADCDE::CreditAssignment()
 	{
-		double* reward = new double[operator_num_];
+		std::vector<double> reward(operator_num_);
 		double decaySum = 0;
 
 		for (int i = 0; i < operator_num_; ++i)
 			reward[i] = 0;
-		
 
 		// calculate reward
 		for (int i = 0; i < sliding_window_size_; ++i)
-		{
 			if (sliding_window_[i].op != -1)
-			{
 				reward[sliding_window_[i].op] += sliding_window_[i].fir;
-			}
-		}
 
 		// calculate frr
 		for (int i = 0; i < operator_num_; ++i)
@@ -275,9 +268,6 @@ namespace emoc {
 		
 		for (int i = 0; i < operator_num_; ++i)
 			frr_[i] = reward[i] / decaySum;
-		
-
-		delete[] reward;
 	}
 
 	int MOEADCDE::SelectOperator()
@@ -285,7 +275,8 @@ namespace emoc {
 		int op = 0;
 		int flag = 0;
 		int N[10], sum_N = 0; // record the number of usage of each operator
-		double* ucb_value = new double[operator_num_];
+		std::vector<double> ucb_value(operator_num_);
+		
 
 		for (int i = 0; i < operator_num_; ++i)
 			N[i] = 0;
@@ -331,7 +322,6 @@ namespace emoc {
 			op = max_op;
 		}
 
-		delete[] ucb_value;
 		return op;
 	}
 
@@ -339,8 +329,8 @@ namespace emoc {
 	{
 		int size = neighbour_type_ == NEIGHBOUR ? neighbour_num_ : weight_num_;
 		int parent2_index = 0, parent3_index = 0, parent4_index = 0, parent5_index = 0, parent6_index = 0;
-		int* permutation = new int[size];
-		random_permutation(permutation, size);
+		std::vector<int> permutation(size);
+		random_permutation(permutation.data(), size);
 
 		// randomly select extra 5 parents according to neighbour type
 		if (neighbour_type_ == NEIGHBOUR)
@@ -440,16 +430,14 @@ namespace emoc {
 				offspring1->dec_[i] = (value1);
 			}
 		}
-
-		delete[] permutation;
 	}
 
 	double MOEADCDE::UpdateSubproblem(Individual* offspring, int current_index)
 	{
 		double fir = 0;
 		int size = neighbour_type_ == NEIGHBOUR ? neighbour_num_ : weight_num_;
-		int* perm_index = new int[size];
-		random_permutation(perm_index, size);
+		std::vector<int> perm_index(size);
+		random_permutation(perm_index.data(), size);
 
 		int count = 0, weight_index = 0;
 		double offspring_fitness = 0.0;
@@ -477,7 +465,6 @@ namespace emoc {
 			}
 		}
 
-		delete[] perm_index;
 		return fir;
 	}
 

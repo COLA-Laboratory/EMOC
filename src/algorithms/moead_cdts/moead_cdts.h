@@ -1,10 +1,9 @@
 #pragma once
 #include "algorithms/algorithm.h"
-
-#include <vector>
-
 #include "core/individual.h"
 #include "problem/problem.h"
+
+#include <vector>
 
 namespace emoc {
 

@@ -1,9 +1,10 @@
 #pragma once
-#include <unordered_map>
-
 #include "core/individual.h"
 #include "algorithms/algorithm.h"
 #include "problem/problem.h"
+
+#include <unordered_map>
+#include <vector>
 
 namespace emoc {
 

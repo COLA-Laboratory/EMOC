@@ -127,32 +127,17 @@ namespace emoc {
 		int pop_count = 0;
 		int M = g_GlobalSettings->obj_num_;
 
-		int* index = nullptr;                      // the number of inds belong to each reference vector
-		double* zmin = nullptr;                    // ideal point of the population
-		double* gama = nullptr;
-		double** pop_obj = nullptr;                // translated population objectives
-		int** partition = nullptr;				   // the index of inds belong to each reference vector
-		DistanceInfo** angle_info = nullptr;        
-		DistanceInfo** APD_info = nullptr;       
+		std::vector<int> index(weight_num_);												// the number of inds belong to each reference vector
+		std::vector<double> zmin(M);														// ideal point of the population
+		std::vector<double> gama(weight_num_);
+		std::vector<std::vector<int>> partition(weight_num_,std::vector<int>(mix_pop_num)); // the index of inds belong to each reference vector
+		std::vector<std::vector<DistanceInfo>> angle_info(mix_pop_num, std::vector<DistanceInfo>(weight_num_));
+		std::vector<std::vector<DistanceInfo>> APD_info(weight_num_, std::vector<DistanceInfo>(mix_pop_num));
 
-		// allocate memeory
-		index = (int*)malloc(sizeof(int) * weight_num_);
-		zmin = (double*)malloc(sizeof(double) * M);
-		gama = (double*)malloc(sizeof(double) * weight_num_);
+		double** pop_obj = nullptr;                // translated population objectives
 		pop_obj = (double**)malloc(sizeof(double*) * mix_pop_num);
 		for (int i = 0; i < mix_pop_num; i++)
 			pop_obj[i] = (double*)malloc(sizeof(double) * M);
-		partition = (int**)malloc(sizeof(int*) * weight_num_);
-		for (int i = 0; i < weight_num_; i++)
-			partition[i] = (int*)malloc(sizeof(int) * mix_pop_num);
-
-		angle_info = (DistanceInfo**)malloc(sizeof(DistanceInfo*) * mix_pop_num);
-		for (int i = 0; i < mix_pop_num; i++)
-			angle_info[i] = (DistanceInfo*)malloc(sizeof(DistanceInfo) * weight_num_);
-
-		APD_info = (DistanceInfo**)malloc(sizeof(DistanceInfo*) * weight_num_);
-		for (int i = 0; i < weight_num_; i++)
-			APD_info[i] = (DistanceInfo*)malloc(sizeof(DistanceInfo) * mix_pop_num);
 
 		// initialize 
 		for (int i = 0; i < weight_num_; i++)
@@ -196,7 +181,7 @@ namespace emoc {
 
 		for (int i = 0; i < mix_pop_num; i++)
 		{
-			std::sort(angle_info[i], angle_info[i] + weight_num_, [](DistanceInfo& left, DistanceInfo& right) {
+			std::sort(angle_info[i].begin(), angle_info[i].end(), [](DistanceInfo& left, DistanceInfo& right) {
 				return left.distance < right.distance;
 				});
 			int temp_index = angle_info[i][weight_num_ - 1].index;
@@ -240,7 +225,7 @@ namespace emoc {
 		{
 			if (index[i] != 0)
 			{
-				std::sort(APD_info[i], APD_info[i] + index[i], [](DistanceInfo &left, DistanceInfo &right) {
+				std::sort(APD_info[i].begin(), APD_info[i].begin() + index[i], [](DistanceInfo &left, DistanceInfo &right) {
 					return left.distance < right.distance;
 					});
 				CopyIndividual(mix_pop[APD_info[i][0].index], parent_pop[pop_count]);
@@ -248,23 +233,9 @@ namespace emoc {
 			}
 		}
 
-		for (int i = 0; i < weight_num_; i++)
-		{
-			free(partition[i]);
-			free(APD_info[i]);
-		}
 		for (int i = 0; i < mix_pop_num; i++)
-		{
 			free(pop_obj[i]);
-			free(angle_info[i]);
-		}
 		free(pop_obj);
-		free(angle_info);
-		free(partition);
-		free(APD_info);
-		free(index);
-		free(zmin);
-		free(gama);
 
 		return pop_count;
 	}

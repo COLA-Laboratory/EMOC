@@ -167,7 +167,7 @@ namespace emoc {
 		return data;
 	}
 
-	void RecordPop(int run_index, int generation, Global* para, int real_popnum, int is_terminal)
+	void RecordPop(int run_index, int generation, Global* para, int real_popnum)
 	{
 		char output_dir[1024];
 		char output_file[1024];
@@ -203,11 +203,7 @@ namespace emoc {
 			);
 		}
 		CreateDirectory(output_dir);
-
-		if (is_terminal)
-			sprintf(output_file, "%spop_last.txt", output_dir, generation);
-		else
-			sprintf(output_file, "%spop_%d.txt", output_dir, generation);
+		sprintf(output_file, "%spop_%d.txt", output_dir, generation);
 
 		PrintObjective(output_file, para->obj_num_, para->parent_population_.data(), real_popnum);
 	}

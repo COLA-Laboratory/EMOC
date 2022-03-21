@@ -181,11 +181,11 @@ namespace emoc {
 
 		// select individuals by crowding distance
 		int sort_num = 0;
-		int *pop_sort = new int[mixed_popnum];
+		std::vector<int> pop_sort(mixed_popnum);
 
 		if (current_popnum < g_GlobalSettings->population_num_)
 		{
-			sort_num = CrowdingDistance(mixed_pop, mixed_popnum, pop_sort, rank_index);
+			sort_num = CrowdingDistance(mixed_pop, mixed_popnum, pop_sort.data(), rank_index);
 			while (1)
 			{
 				if (current_popnum < g_GlobalSettings->population_num_)
@@ -205,8 +205,6 @@ namespace emoc {
 		{
 			parent_pop[i]->fitness_ = 0;
 		}
-
-		delete[] pop_sort;
 	}
 
 }

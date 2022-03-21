@@ -130,7 +130,7 @@ namespace emoc {
 			neighbour_[i] = new int[weight_num_ - 1];
 		}
 
-		DistanceInfo *sort_list = new DistanceInfo[weight_num_];
+		std::vector<DistanceInfo> sort_list(weight_num_);
 		for (int i = 0; i < weight_num_; ++i)
 		{
 			for (int j = 0; j < weight_num_; ++j)
@@ -146,17 +146,15 @@ namespace emoc {
 				sort_list[j].index = j;
 			}
 
-			std::sort(sort_list, sort_list + weight_num_, [](DistanceInfo &left, DistanceInfo &right) {
+			std::sort(sort_list.begin(), sort_list.end(), [](DistanceInfo& left, DistanceInfo& right) {
 				return left.distance < right.distance;
-			});
+				});
 
-			for (int j = 0; j < weight_num_ - 1; j++)
+			for (int j = 0; j < weight_num_-1; j++)
 			{
 				neighbour_[i][j] = sort_list[j + 1].index;
 			}
 		}
-
-		delete[] sort_list;
 	}
 
 	void MOEADIRA::Crossover(Individual **parent_pop, int current_index, Individual *offspring)
@@ -165,7 +163,8 @@ namespace emoc {
 		int parent2_index = 0, parent3_index = 0;
 
 		// calculate probability of selecting each subproblem as parent
-		double *pn = new double[size], sum = 0.0;
+		std::vector<double> pn(size);
+		double sum = 0;
 		for (int i = 0; i < size; ++i)
 		{
 			pn[i] = 0.05 + 0.95*(1 - 1 / (1 + 0.05 * exp(-20 * (double)(i + 1) / neighbour_num_ - 0.7)));
@@ -201,15 +200,13 @@ namespace emoc {
 		Individual *parent2 = parent_pop[parent2_index];
 		Individual *parent3 = parent_pop[parent3_index];
 		DE(parent1, parent2, parent3, offspring, g_GlobalSettings);
-
-		delete[] pn;
 	}
 
 	void MOEADIRA::UpdateSubproblem(Individual *offspring, int current_index)
 	{
 		double offspring_fitness = 0.0;
 		double neighbour_fitness = 0.0;
-		DistanceInfo *sort_list = new DistanceInfo[weight_num_];
+		std::vector<DistanceInfo> sort_list(weight_num_);
 
 		// calculate fitness improvement for each subproblem;
 		for (int i = 0; i < weight_num_; ++i)
@@ -221,7 +218,7 @@ namespace emoc {
 			sort_list[i].distance = (neighbour_fitness - offspring_fitness) / neighbour_fitness;
 		}
 
-		std::sort(sort_list, sort_list + weight_num_, [](DistanceInfo &left, DistanceInfo &right) {
+		std::sort(sort_list.begin(), sort_list.end(), [](DistanceInfo &left, DistanceInfo &right) {
 			return left.distance < right.distance;
 		});
 
@@ -232,7 +229,6 @@ namespace emoc {
 		if (offspring_fitness < neighbour_fitness)
 			CopyIndividual(offspring, g_GlobalSettings->parent_population_[index]);
 
-		delete[] sort_list;
 	}
 
 
@@ -243,8 +239,8 @@ namespace emoc {
 			sd_[i] = 0;
 
 		// find maximum and minimum of each objective
-		double *max = (double *)malloc(sizeof(double) * g_GlobalSettings->obj_num_);
-		double *min = (double *)malloc(sizeof(double) * g_GlobalSettings->obj_num_);
+		std::vector<double> max(g_GlobalSettings->obj_num_);
+		std::vector<double> min(g_GlobalSettings->obj_num_);
 
 		for (int j = 0; j < g_GlobalSettings->obj_num_; ++j)
 		{
@@ -263,8 +259,8 @@ namespace emoc {
 			}
 		}
 
-		double *dis = (double *)malloc(sizeof(double) * weight_num_);
-		double *point = (double *)malloc(sizeof(double) * g_GlobalSettings->obj_num_);
+		std::vector<double> dis(weight_num_);
+		std::vector<double> point(g_GlobalSettings->obj_num_);
 
 		int min_index = 0;
 		double temp_min = 0;
@@ -276,7 +272,7 @@ namespace emoc {
 
 			// find belonged subregion
 			for (int j = 0; j < weight_num_; j++)
-				dis[j] = CalPerpendicularDistance(point, lambda_[j], g_GlobalSettings->obj_num_);
+				dis[j] = CalPerpendicularDistance(point.data(), lambda_[j], g_GlobalSettings->obj_num_);
 
 			temp_min = EMOC_INF;
 			for (int j = 0; j < weight_num_; ++j)
@@ -291,10 +287,6 @@ namespace emoc {
 			sd_[min_index] += 1;
 		}
 
-		free(max);
-		free(min);
-		free(dis);
-		free(point);
 	}
 
 	void MOEADIRA::CalculateFitness(Individual **pop, int pop_num, double *fitness)

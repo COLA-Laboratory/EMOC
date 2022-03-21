@@ -64,8 +64,8 @@ namespace emoc {
 
 	void SMSEMOA::Crossover(Individual **parent_pop, Individual *offspring)
 	{
-		int *index = new int[g_GlobalSettings->population_num_];
-		random_permutation(index, g_GlobalSettings->population_num_);
+		std::vector<int> index(g_GlobalSettings->population_num_);
+		random_permutation(index.data(), g_GlobalSettings->population_num_);
 
 		Individual *parent1 = parent_pop[index[0]];
 		Individual *parent2 = parent_pop[index[1]];
@@ -77,8 +77,6 @@ namespace emoc {
 			CopyIndividual(offspring_pop[2], offspring);
 		else
 			CopyIndividual(offspring_pop[1], offspring);
-
-		delete[] index;
 	}
 
 	int SMSEMOA::FindMinVolumeIndex(Individual **pop, int pop_num)
@@ -127,14 +125,8 @@ namespace emoc {
 	void SMSEMOA::EnvironmentalSelection(Individual **parent_pop, Individual *offspring)
 	{
 		// allocate memory for restoring each front index
-		int **front = new int*[g_GlobalSettings->population_num_ + 1];
-		for (int i = 0; i < g_GlobalSettings->population_num_ + 1; i++)
-		{
-			front[i] = new int[g_GlobalSettings->population_num_ + 1];
-		}
-
-		int *front_size = new int[g_GlobalSettings->population_num_ + 1];
-		memset(front_size, 0, g_GlobalSettings->population_num_ + 1);
+		std::vector<std::vector<int>> front(g_GlobalSettings->population_num_ + 1, std::vector<int>(g_GlobalSettings->population_num_ + 1));
+		std::vector<int> front_size(g_GlobalSettings->population_num_ + 1, 0);
 
 		// nds
 		for (int i = 0; i < g_GlobalSettings->population_num_; i++)
@@ -210,11 +202,6 @@ namespace emoc {
 				temp_pop[i] = nullptr;
 			}
 		}
-
-		delete[] front_size;
-		for (int i = 0; i < g_GlobalSettings->population_num_ + 1; i++)
-			delete[] front[i];
-		delete[] front;
 	}
 
 }

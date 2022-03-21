@@ -69,10 +69,10 @@ namespace emoc {
 	void HypE::Crossover(Individual **parent_pop, Individual **offspring_pop)
 	{
 		// generate random permutation index for tournment selection
-		int *index1 = new int[g_GlobalSettings->population_num_];
-		int *index2 = new int[g_GlobalSettings->population_num_];
-		random_permutation(index1, g_GlobalSettings->population_num_);
-		random_permutation(index2, g_GlobalSettings->population_num_);
+		std::vector<int> index1(g_GlobalSettings->population_num_);
+		std::vector<int> index2(g_GlobalSettings->population_num_);
+		random_permutation(index1.data(), g_GlobalSettings->population_num_);
+		random_permutation(index2.data(), g_GlobalSettings->population_num_);
 
 		int greater_is_better = 1;
 		for (int i = 0; i < g_GlobalSettings->population_num_ / 2; ++i)
@@ -81,9 +81,6 @@ namespace emoc {
 			Individual *parent2 = TournamentByFitness(parent_pop[index2[2 * i]], parent_pop[index2[2 * i + 1]], greater_is_better);
 			SBX(parent1, parent2, offspring_pop[2 * i], offspring_pop[2 * i + 1],g_GlobalSettings);
 		}
-
-		delete[] index1;
-		delete[] index2;
 	}
 
 
@@ -136,11 +133,8 @@ namespace emoc {
 		
 		int i, s, k;
 		int domCount, counter;
-		int *hitstat;
-		double *sample;
-
-		hitstat = (int*)malloc(sizeof(int) * pop_num);
-		sample = (double*)malloc(sizeof(double) * g_GlobalSettings->obj_num_);
+		std::vector<double> hitstat(pop_num);
+		std::vector<double> sample(g_GlobalSettings->obj_num_);
 
 		// monte carlo to calculate hv
 		for (i = 0; i < pop_num; i++)
@@ -155,7 +149,7 @@ namespace emoc {
 
 			for (i = 0; i < pop_num; ++i)
 			{
-				if (WeaklyDominates(pop[i]->obj_, sample, g_GlobalSettings->obj_num_))
+				if (WeaklyDominates(pop[i]->obj_, sample.data(), g_GlobalSettings->obj_num_))
 				{
 					domCount++;
 					if (domCount > parameter_k)
@@ -190,8 +184,6 @@ namespace emoc {
 			counter++;
 		}
 
-		free(hitstat);
-		free(sample);
 	}
 
 	void HypE::HypeExact(FitnessInfo *fitness_info, int parameter_k, double *rho, Individual **pop, int pop_num)

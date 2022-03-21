@@ -3,6 +3,8 @@
 #include "core/individual.h"
 #include "problem/problem.h"
 
+#include <vector>
+
 namespace emoc {
 
 	class ENSMOEAD : public Algorithm
@@ -20,6 +22,7 @@ namespace emoc {
 			GLOBAL
 		}NeighbourType;
 
+	public:
 		ENSMOEAD(int thread_id);
 		virtual ~ENSMOEAD();
 
@@ -28,21 +31,22 @@ namespace emoc {
 	private:
 		void Initialization();
 		void SetNeighbours();
+		void SelectCurrentSubproblem();
 		void Crossover(Individual **parent_pop, int current_index, Individual *offspring);
+		
 		// use offspring to update the neighbour of current_index-th individual with specified aggregation function
 		int UpdateSubproblem(Individual *offspring, int current_index);
 
-		void UpdateUtility();
-		void SelectCurrentSubproblem();
-		void CalculateFitness(Individual **pop, int pop_num, double *fitness);
-
 		int SelectNS();
 		void UpdateProbability();
+		void UpdateUtility();
+		void CalculateFitness(Individual** pop, int pop_num, double* fitness);
+
 
 	private:
 		double **lambda_;                  // weight vector
 		int weight_num_;                   // the number of weight vector
-		int **neighbour_;	               // neighbours of each individual
+		int** neighbour_;	               // neighbours of each individual
 		int neighbour_num_;                // the number of neighbours
 		int replace_num_;                  // the number of maximum replaced individual
 		double neighbour_selectpro_;       // the probability of select neighbour scope

@@ -4,6 +4,8 @@
 #include "problem/problem.h"
 #include "metric/hv.h"
 
+#include <vector>
+
 namespace emoc {
 
 	class SMSEMOA : public Algorithm

@@ -56,8 +56,6 @@ namespace emoc{
 
 	void MOEADDYTS::Run()
 	{
-		int num[5] = { 0 };
-		int offspring_count = 0;
 		Initialization();
 
 		// calculate and store the old fitness
@@ -70,7 +68,7 @@ namespace emoc{
 			SelectCurrentSubproblem();
 			for (int i = 0; i < selected_size_; ++i)
 			{
-				int op = SelectOperator();  num[op] += 1;
+				int op = SelectOperator();
 				int index = selected_indices_[i];
 
 				// set current iteration's neighbour type
@@ -93,18 +91,11 @@ namespace emoc{
 				// update beta distribution
 				UpdateBetaDis(op, fi);
 			}
-			
 
 			if (g_GlobalSettings->iteration_num_ % 50 == 0)
 			{
 				UpdateUtility();
 			}
-		}
-		//std::cout << "evaluation:" << g_GlobalSettings->current_evaluation_ << "\n";
-
-		for (int i = 0; i < 5; ++i)
-		{
-			printf("op%d: %d\n", i, num[i]);
 		}
 	}
 
@@ -158,7 +149,7 @@ namespace emoc{
 			neighbour_[i] = new int[neighbour_num_];
 		}
 
-		DistanceInfo* sort_list = new DistanceInfo[weight_num_];
+		std::vector<DistanceInfo> sort_list(weight_num_);
 		for (int i = 0; i < weight_num_; ++i)
 		{
 			for (int j = 0; j < weight_num_; ++j)
@@ -174,7 +165,7 @@ namespace emoc{
 				sort_list[j].index = j;
 			}
 
-			std::sort(sort_list, sort_list + weight_num_, [](DistanceInfo& left, DistanceInfo& right) {
+			std::sort(sort_list.begin(), sort_list.end(), [](DistanceInfo& left, DistanceInfo& right) {
 				return left.distance < right.distance;
 				});
 
@@ -183,8 +174,6 @@ namespace emoc{
 				neighbour_[i][j] = sort_list[j + 1].index;
 			}
 		}
-
-		delete[] sort_list;
 	}
 
 
@@ -236,8 +225,8 @@ namespace emoc{
 	{
 		int size = neighbour_type_ == NEIGHBOUR ? neighbour_num_ : weight_num_;
 		int parent2_index = 0, parent3_index = 0, parent4_index = 0, parent5_index = 0, parent6_index = 0;
-		int* permutation = new int[size];
-		random_permutation(permutation, size);
+		std::vector<int> permutation(size);
+		random_permutation(permutation.data(), size);
 
 		// randomly select extra 5 parents according to neighbour type
 		if (neighbour_type_ == NEIGHBOUR)
@@ -313,15 +302,13 @@ namespace emoc{
 				offspring->dec_[i] = (value);
 			}
 		}
-
-		delete[] permutation;
 	}
 
 	double MOEADDYTS::UpdateSubproblem(Individual* offspring, int current_index)
 	{
 		double offspring_fitness = 0.0;
 		double neighbour_fitness = 0.0;
-		DistanceInfo* sort_list = new DistanceInfo[weight_num_];
+		std::vector<DistanceInfo> sort_list(weight_num_);
 
 		// calculate fitness improvement for each subproblem;
 		for (int i = 0; i < weight_num_; ++i)
@@ -333,7 +320,7 @@ namespace emoc{
 			sort_list[i].distance = (neighbour_fitness - offspring_fitness) / neighbour_fitness;
 		}
 
-		std::sort(sort_list, sort_list + weight_num_, [](DistanceInfo& left, DistanceInfo& right) {
+		std::sort(sort_list.begin(), sort_list.end(), [](DistanceInfo& left, DistanceInfo& right) {
 			return left.distance < right.distance;
 			});
 
@@ -344,8 +331,6 @@ namespace emoc{
 		if (offspring_fitness < neighbour_fitness)
 			CopyIndividual(offspring, g_GlobalSettings->parent_population_[index]);
 
-		delete[] sort_list;
-		
 		return neighbour_fitness - offspring_fitness;
 	}
 

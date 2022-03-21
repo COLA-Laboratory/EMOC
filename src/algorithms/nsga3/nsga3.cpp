@@ -79,10 +79,10 @@ namespace emoc {
 	void NSGA3::Crossover(Individual **parent_pop, Individual **offspring_pop)
 	{
 		// generate random permutation index for tournment selection
-		int *index1 = new int[real_popnum_];
-		int *index2 = new int[real_popnum_];
-		random_permutation(index1, real_popnum_);
-		random_permutation(index2, real_popnum_);
+		std::vector<int> index1(real_popnum_);
+		std::vector<int> index2(real_popnum_);
+		random_permutation(index1.data(), real_popnum_);
+		random_permutation(index2.data(), real_popnum_);
 
 		for (int i = 0; i < real_popnum_ / 2; ++i)
 		{
@@ -90,9 +90,6 @@ namespace emoc {
 			Individual *parent2 = TournamentByRank(parent_pop[index2[2 * i]], parent_pop[index2[2 * i + 1]]);
 			SBX(parent1, parent2, offspring_pop[2 * i], offspring_pop[2 * i + 1], g_GlobalSettings);
 		}
-		
-		delete[] index1;
-		delete[] index2;
 	}
 
 	void NSGA3::EnvironmentalSelection(Individual **parent_pop, Individual **mixed_pop, int mixpop_num)
@@ -109,9 +106,9 @@ namespace emoc {
 		}
 
 		// get extreme population and intercepts
-		double* intercepts = new double[g_GlobalSettings->obj_num_];
+		std::vector<double> intercepts(g_GlobalSettings->obj_num_);
 		GetExtremePop(ndpop_.data(), ndpop_num, extreme_pop_.data());
-		GetIntercepts(extreme_pop_.data(), ndpop_.data(), ndpop_num, intercepts);
+		GetIntercepts(extreme_pop_.data(), ndpop_.data(), ndpop_num, intercepts.data());
 
 		// normalization
 		double** normalized_pop = new double* [ndpop_num];
@@ -122,9 +119,9 @@ namespace emoc {
 				normalized_pop[i][j] = (ndpop_[i]->obj_[j] - ideal_point_[j]) / (intercepts[j] - ideal_point_[j]);
 
 		// associate to reference point
-		int* pi = new int[ndpop_num];
-		double* distance = new double[ndpop_num];
-		Association(normalized_pop, ndpop_num, pi, distance);
+		std::vector<int> pi(ndpop_num);
+		std::vector<double> distance(ndpop_num);
+		Association(normalized_pop, ndpop_num, pi.data(), distance.data());
 
 		// get the number of associated solutions except for the last front of each reference point
 		std::vector<int> rho(real_popnum_, 0);
@@ -212,16 +209,10 @@ namespace emoc {
 			CopyIndividual(ndpop_[pop1_indices[i]], parent_pop[count++]);
 		for (int i = 0; i < selected_indices.size(); i++)
 			CopyIndividual(ndpop_[selected_indices[i]], parent_pop[count++]);
-			
-		
-
 
 		for (int i = 0; i < ndpop_num; i++)
 			delete[] normalized_pop[i];
 		delete[] normalized_pop;
-		delete[] intercepts;
-		delete[] pi;
-		delete[] distance;
 	}
 
 	void NSGA3::GetNdPop(Individual** mixed_pop, int mixpop_num, Individual** ndpop, int& ndpop_num)
@@ -262,20 +253,17 @@ namespace emoc {
 
 	void NSGA3::GetExtremePop(Individual** ndpop, int ndpop_num, Individual** extreme_pop)
 	{
-		double* max_value = NULL, ** weight_vec = NULL;
-		max_value = (double*)malloc(sizeof(double) * ndpop_num);
-		weight_vec = (double**)malloc(sizeof(double*) * g_GlobalSettings->obj_num_);
+		std::vector<double> max_value(ndpop_num);
+		std::vector<std::vector<double>> weight_vec(g_GlobalSettings->obj_num_, std::vector<double>(g_GlobalSettings->obj_num_));
 
 		for (int i = 0; i < g_GlobalSettings->obj_num_; i++)
 		{
-			weight_vec[i] = (double*)malloc(sizeof(double) * g_GlobalSettings->obj_num_);
 			for (int j = 0; j < g_GlobalSettings->obj_num_; j++)
 			{
 				if (i == j)
 					weight_vec[i][j] = 1;
 				else
 					weight_vec[i][j] = 1e-6;
-
 			}
 		}
 
@@ -311,29 +299,21 @@ namespace emoc {
 
 			CopyIndividual(ndpop[min_idx], extreme_pop[i]);
 		}
-
-		for (int i = 0; i < g_GlobalSettings->obj_num_; i++)
-		{
-			free(weight_vec[i]);
-		}
-		free(weight_vec);
-		free(max_value);
-		return;
 	}
 
 	void NSGA3::GetIntercepts(Individual** extreme_pop, Individual** ndpop, int ndpop_num, double* intercepts)
 	{
-		double** arg, * u, * max_obj_value;
+		double** arg;
 		arg = (double**)malloc(sizeof(double*) * g_GlobalSettings->obj_num_);
 		for (int i = 0; i < g_GlobalSettings->obj_num_; i++)
 			arg[i] = (double*)malloc(sizeof(double) * g_GlobalSettings->obj_num_);
-		max_obj_value = (double*)malloc(sizeof(double) * g_GlobalSettings->obj_num_);
-		u = (double*)malloc(sizeof(double) * g_GlobalSettings->obj_num_);
+
+		std::vector<double> max_obj_value(g_GlobalSettings->obj_num_);
+		std::vector<double> u(g_GlobalSettings->obj_num_);
 
 		// initialize 
 		for (int i = 0; i < g_GlobalSettings->obj_num_; i++)
 			max_obj_value[i] = -EMOC_INF;
-
 
 		/* traverse all the individuals of the population and get their maximum value of objective (The simplest way of
 		 * calculating the nadir point is to get these maximum values among the first front individuals) */
@@ -349,13 +329,11 @@ namespace emoc {
 		for (int i = 0; i < g_GlobalSettings->obj_num_; i++)
 			u[i] = 1;
 
-
 		for (int i = 0; i < g_GlobalSettings->obj_num_; i++)
 			for (int j = 0; j < g_GlobalSettings->obj_num_; j++)
 				arg[i][j] = extreme_pop[i]->obj_[j] - ideal_point_[j];
 
-
-		if (GaussianElimination(arg, u, intercepts, g_GlobalSettings->obj_num_) == nullptr)
+		if (GaussianElimination(arg, u.data(), intercepts, g_GlobalSettings->obj_num_) == nullptr)
 		{
 			for (int i = 0; i < g_GlobalSettings->obj_num_; i++)
 				intercepts[i] = max_obj_value[i];
@@ -380,12 +358,8 @@ namespace emoc {
 		}
 
 		for (int i = 0; i < g_GlobalSettings->obj_num_; i++)
-		{
 			free(arg[i]);
-		}
 		free(arg);
-		free(u);
-		free(max_obj_value);
 	}
 
 	void NSGA3::Association(double** pop, int pop_num, int* pi, double* distance)
@@ -408,5 +382,4 @@ namespace emoc {
 			distance[i] = min;
 		}
 	}
-
 }

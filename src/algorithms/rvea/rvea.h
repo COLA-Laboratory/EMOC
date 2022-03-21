@@ -3,6 +3,8 @@
 #include "algorithms/algorithm.h"
 #include "problem/problem.h"
 
+#include <vector>
+
 namespace emoc {
 
 	class RVEA : public Algorithm

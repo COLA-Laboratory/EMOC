@@ -94,7 +94,7 @@ namespace emoc {
 			neighbour_[i] = new int[neighbour_num_];
 		}
 
-		DistanceInfo *sort_list = new DistanceInfo[weight_num_];
+		std::vector<DistanceInfo> sort_list(weight_num_);
 		for (int i = 0; i < weight_num_; ++i)
 		{
 			for (int j = 0; j < weight_num_; ++j)
@@ -110,7 +110,7 @@ namespace emoc {
 				sort_list[j].index = j;
 			}
 
-			std::sort(sort_list, sort_list+weight_num_, [](DistanceInfo &left, DistanceInfo &right) {
+			std::sort(sort_list.begin(), sort_list.end(), [](DistanceInfo &left, DistanceInfo &right) {
 				return left.distance < right.distance;
 			});	
 
@@ -119,8 +119,6 @@ namespace emoc {
 				neighbour_[i][j] = sort_list[j+1].index;
 			}
 		}
-
-		delete[] sort_list;
 	}
 
 	void MOEAD::Crossover(Individual **parent_pop, int current_index, Individual *offspring)
@@ -132,13 +130,12 @@ namespace emoc {
 		Individual *parent2 = parent_pop[neighbour_[current_index][l]];
 
 		SBX(parent1, parent2, g_GlobalSettings->offspring_population_[1], offspring, g_GlobalSettings);
-
 	}
 
 	void MOEAD::UpdateSubproblem(Individual *offspring, int current_index, int aggregation_type)
 	{
-		double *offspring_fitness = new double[neighbour_num_];
-		double *neighbour_fitness = new double[neighbour_num_];
+		std::vector<double> offspring_fitness(neighbour_num_);
+		std::vector<double> neighbour_fitness(neighbour_num_);
 
 		// calculate fitness;
 		switch (aggregation_type)
@@ -188,9 +185,5 @@ namespace emoc {
 				CopyIndividual(offspring, g_GlobalSettings->parent_population_[neighbour_[current_index][i]]);
 			}
 		}
-
-
-		delete[] neighbour_fitness;
-		delete[] offspring_fitness;
 	}
 }

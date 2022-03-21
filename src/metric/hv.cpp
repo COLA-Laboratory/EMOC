@@ -160,7 +160,6 @@ namespace emoc {
 			 for (int j = 0; j < obj_num; j++)
 			 {
 				 double normalized_value = (pop[i]->obj_[j] - obj_min[j]) / (obj_max[j] - obj_min[j]);
-				 //normalized_value = pop[i]->obj_[j];
 				 ps.points[i].objectives[j] = ref[j] > normalized_value ?
 					 (ref[j] - normalized_value) : 0;
 

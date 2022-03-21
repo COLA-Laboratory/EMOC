@@ -3,6 +3,8 @@
 #include "core/individual.h"
 #include "problem/problem.h"
 
+#include <vector>
+
 namespace emoc {
 
 	class MOEADGRA : public Algorithm

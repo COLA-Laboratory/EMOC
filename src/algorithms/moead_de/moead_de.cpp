@@ -98,7 +98,7 @@ namespace emoc {
 			neighbour_[i] = new int[neighbour_num_];
 		}
 
-		DistanceInfo *sort_list = new DistanceInfo[weight_num_];
+		std::vector<DistanceInfo> sort_list(weight_num_);
 		for (int i = 0; i < weight_num_; ++i)
 		{
 			for (int j = 0; j < weight_num_; ++j)
@@ -114,17 +114,15 @@ namespace emoc {
 				sort_list[j].index = j;
 			}
 
-			std::sort(sort_list, sort_list + weight_num_, [](DistanceInfo &left, DistanceInfo &right) {
+			std::sort(sort_list.begin(), sort_list.end(), [](DistanceInfo& left, DistanceInfo& right) {
 				return left.distance < right.distance;
-			});
+				});
 
 			for (int j = 0; j < neighbour_num_; j++)
 			{
 				neighbour_[i][j] = sort_list[j + 1].index;
 			}
 		}
-
-		delete[] sort_list;
 	}
 
 	void MOEADDE::Crossover(Individual **parent_pop, int current_index, Individual *offspring)
@@ -153,8 +151,8 @@ namespace emoc {
 	void MOEADDE::UpdateSubproblem(Individual *offspring, int current_index)
 	{
 		int size = neighbour_type_ == NEIGHBOUR ? neighbour_num_ : weight_num_;
-		int *perm_index = new int[size];
-		random_permutation(perm_index, size);
+		std::vector<int> perm_index(size);
+		random_permutation(perm_index.data(), size);
 
 		int count = 0, weight_index = 0;
 		double offspring_fitness = 0.0;
@@ -180,7 +178,5 @@ namespace emoc {
 				count++;
 			}
 		}
-
-		delete[] perm_index;
 	}
 }

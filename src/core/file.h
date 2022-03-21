@@ -11,7 +11,7 @@ namespace emoc {
 	void PrintObjective(const char* filename, int obj_num, Individual** pop_table, int pop_num);
 	std::vector<std::vector<double>> ReadPop(char* filepath, int obj_num);
 	int CreateDirectory(const std::string& path);
-	void RecordPop(int run_index, int generation, Global* para, int real_popnum, int is_terminal);
+	void RecordPop(int run_index, int generation, Global* para, int real_popnum);
 	void FormalizeStr(char* buff);
 	void ReadParametersFromFile(const char* filename, EMOCParameters* para);
 	void CopyFile(const char* src, const char* dest);
