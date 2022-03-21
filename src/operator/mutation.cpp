@@ -47,15 +47,10 @@ namespace emoc {
 	}
 
 
-	void MutationPop(Individual **pop, int pop_num, Global *g_GlobalSettings)
+	void PolynomialMutation(Individual **pop, int pop_num, Global *g_GlobalSettings)
 	{
 		for (int i = 0; i < pop_num; ++i)
-			MutationInd(pop[i], g_GlobalSettings);
-	}
-
-	void MutationInd(Individual *ind, Global *g_GlobalSettings)
-	{
-		PolynomialMutation(ind, g_GlobalSettings);
+			PolynomialMutation(pop[i], g_GlobalSettings);
 	}
 
 }

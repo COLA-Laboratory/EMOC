@@ -73,7 +73,7 @@ namespace emoc {
 
 					// generate offspring for current subproblem
 					Crossover(g_GlobalSettings->parent_population_.data(), index, offspring);
-					MutationInd(offspring, g_GlobalSettings);
+					PolynomialMutation(offspring, g_GlobalSettings);
 					EvaluateInd(offspring);
 
 					// update ideal point

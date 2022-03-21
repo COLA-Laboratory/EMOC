@@ -86,7 +86,7 @@ namespace emoc {
 				// generate offspring for current subproblem
 				double F = GenerateFFactor();
 				Crossover(op, F, g_GlobalSettings->parent_population_.data(), index, offspring1, offspring2);
-				MutationInd(offspring1, g_GlobalSettings);
+				PolynomialMutation(offspring1, g_GlobalSettings);
 				EvaluateInd(offspring1);
 
 				// update ideal point
@@ -97,7 +97,7 @@ namespace emoc {
 				// mutate another offspring if necessary
 				if (op < 2)
 				{
-					MutationInd(offspring2, g_GlobalSettings);
+					PolynomialMutation(offspring2, g_GlobalSettings);
 					EvaluateInd(offspring2);
 					UpdateIdealpoint(offspring2, ideal_point_, g_GlobalSettings->obj_num_);
 					double temp_fir = UpdateSubproblem(offspring2, index);

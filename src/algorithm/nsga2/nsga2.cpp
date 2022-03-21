@@ -31,7 +31,7 @@ namespace emoc {
 		{
 			// generate offspring population
 			Crossover(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->offspring_population_.data());
-			MutationPop(g_GlobalSettings->offspring_population_.data(), 2 * (real_popnum_ / 2), g_GlobalSettings);
+			PolynomialMutation(g_GlobalSettings->offspring_population_.data(), 2 * (real_popnum_ / 2), g_GlobalSettings);
 			EvaluatePop(g_GlobalSettings->offspring_population_.data(), 2 * (real_popnum_ / 2));
 			MergePopulation(g_GlobalSettings->parent_population_.data(), real_popnum_, g_GlobalSettings->offspring_population_.data(),
 				2 * (real_popnum_ / 2), g_GlobalSettings->mixed_population_.data());
@@ -51,10 +51,10 @@ namespace emoc {
 	void NSGA2::Crossover(Individual **parent_pop, Individual **offspring_pop)
 	{
 		// generate random permutation index for tournment selection
-		int *index1 = new int[g_GlobalSettings->population_num_];
-		int *index2 = new int[g_GlobalSettings->population_num_];
-		random_permutation(index1, g_GlobalSettings->population_num_);
-		random_permutation(index2, g_GlobalSettings->population_num_);
+		std::vector<int> index1(g_GlobalSettings->population_num_);
+		std::vector<int> index2(g_GlobalSettings->population_num_);
+		random_permutation(index1.data(), g_GlobalSettings->population_num_);
+		random_permutation(index2.data(), g_GlobalSettings->population_num_);
 
 		for (int i = 0; i < g_GlobalSettings->population_num_ / 2; ++i)
 		{
@@ -62,9 +62,6 @@ namespace emoc {
 			Individual *parent2 = TournamentByRank(parent_pop[index2[2 * i]], parent_pop[index2[2 * i + 1]]);
 			SBX(parent1, parent2, offspring_pop[2 * i], offspring_pop[2 * i + 1], g_GlobalSettings);
 		}
-		
-		delete[] index1;
-		delete[] index2;
 	}
 	
 	void NSGA2::SetDistanceInfo(std::vector<DistanceInfo> &distanceinfo_vec, int target_index, double distance)
