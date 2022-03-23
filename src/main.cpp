@@ -27,16 +27,6 @@ int main(int argc, char* argv[])
 		std::cout << "\n";
 	}
 
-	double** lambda1 = emoc::UniformPointOrigin(10, &num, obj_num);
-	std::cout << num << "\n";
-	for (int i = 0; i < num; i++)
-	{
-		for (int j = 0; j < obj_num; j++)
-		{
-			std::cout << lambda1[i][j] << " ";
-		}
-		std::cout << "\n";
-	}
 
 	// initialization for EMOC
 	//EMOCManager::Instance()->Init();

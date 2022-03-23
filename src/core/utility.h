@@ -1,7 +1,11 @@
 // This file provides some important utility functions
 #pragma once
+#include <vector>
+#include <string>
+
 #include "core/global.h"
 #include "core/individual.h"
+#include "core/emoc_utility_structures.h"
 
 namespace emoc {
 
@@ -50,4 +54,16 @@ namespace emoc {
 	// Gauussian Elimination
 	double* GaussianElimination(double** A, double* b, double* x, int obj_num);
 
+	// statistic tests
+	int RankSumTest(const std::vector<double>& array1, const std::vector<double>& array2);
+	int SignRankTest(const std::vector<double>& array1, const std::vector<double>& array2);
+
+	// EMOC running results related functions
+	void CollectSingleThreadResult(int run_id, int thread_id, EMOCParameters para);
+	void CollectMultiThreadResult(int run_id, int parameter_id, int thread_id);
+	int GetBestParameterIndex(int start, int end, const std::string& metric, const std::string& format);
+	void StatisticTestAccordingMetric(EMOCMultiThreadResult& res, EMOCMultiThreadResult& compared_res, const std::string& metric, const std::string& format);
+	void UpdateExpStatTest(int parameter_index);
+	void UpdateExpResult(EMOCMultiThreadResult& res, int new_res_index, int parameter_index);
+	void UpdateExpMetricStat(std::vector<double>& indicator_history, std::vector<bool>& is_indicator_record, double& mean, double& std, double& median, double& iqr);
 }

@@ -16,6 +16,9 @@ namespace emoc {
 		void OpenPlotPipe();
 		void ClosePlotPipe();
 
+		void Scatter2D(char* plot_cmd, int gen, char* data_file_name);
+		void Scatter3D(char* plot_cmd, int gen, char* data_file_name);
+
 	private:
 		PlotManager();
 		~PlotManager();

@@ -10,7 +10,7 @@
 #include "core/global.h"
 #include "core/file.h"
 #include "core/emoc_manager.h"
-#include "ui/plot.h"
+#include "ui/plot_manager.h"
 #include "ui/uipanel_manager.h"
 
 namespace emoc {
@@ -151,19 +151,17 @@ namespace emoc {
 		RecordPop(g_GlobalSettings->run_id_, generation, g_GlobalSettings,real_popnum_);
 	}
 
-	double testTime = 0.0;
 	void Algorithm::PlotPopulation(Individual** pop, int gen)
 	{
 		int current_run = EMOCManager::Instance()->GetSingleThreadResultSize();
-		clock_t start_ = clock();
-		clock_t end_ = clock();
 
-		// open data file and script file for gnuplot
+		// construct data file name and open script file for gnuplot
 		FILE  *script_file = nullptr;
 		char data_file_name[256];
 		char script_file_name[256];
 		sprintf(data_file_name, "./output/test_module/run%d/pop_%d.txt", current_run, gen);
 		sprintf(script_file_name, "./plotfile/%d.gnu", gen);
+
 		CreateDirectory(script_file_name);
 		script_file = fopen(script_file_name, "w");
 		if(!script_file)
@@ -172,68 +170,42 @@ namespace emoc {
 			exit(1);
 		}
 
-		int obj_num = g_GlobalSettings->obj_num_;
 
 		// construct plot command
 		char plot_cmd[1024];
-		if (obj_num == 2)
+		if (g_GlobalSettings->obj_num_ == 2)
 		{
-			sprintf(plot_cmd,
-				"set grid\n"
-				"set autoscale\n"
-				"set title 'Generation #%d'\n"
-				"set xlabel 'f1'\n"
-				"set ylabel 'f2'\n"
-				"unset key\n"
-				"plot '%s' w p pt 6 lc rgb \"dark-blue\"\n"
-				//"plot 'PF_ZDT3.txt' w l lt -1 lw 2, 'plot.txt' w p pt 6 ps 1 lc 3, 'golden_point_zdt3_1_1.txt' w p pt 3 ps 2 lc 1\n"
-				, gen, data_file_name);
+			PlotManager::Instance()->Scatter2D(plot_cmd, gen, data_file_name);
 		}
-		else if (obj_num == 3)
+		else if (g_GlobalSettings->obj_num_ == 3)
 		{
-			sprintf(plot_cmd, 
-				"set grid\n"
-				"set autoscale\n"
-				"set title 'Generation #%d'\n"
-				"set xlabel 'f1'\n"
-				"set ylabel 'f2'\n"
-				"set zlabel 'f3'\n"
-				"set ticslevel 0.0\n"
-				"set view 45,45\n"
-				"unset key\n"
-				"splot  '%s' w p pt 6 lc rgb \"dark-blue\"\n"
-				,gen, data_file_name);
+			PlotManager::Instance()->Scatter3D(plot_cmd, gen, data_file_name);
 		}
 		else
 		{
 			std::cerr << "Error!!! in display_pop(...)" << std::endl;
 			fclose(script_file);
 			return;
-			//exit(-1);
 		}
 
-		// write plot cmd script file
+		// write plot cmd to script file
 		fprintf(script_file, "%s", plot_cmd);
 		fflush(script_file);
 		fclose(script_file);
-		char real_cmd[128];
 
+		// construct the real command
+		char real_cmd[128];
 		sprintf(real_cmd, "load '%s'\n", script_file_name);
 
+		// send the real command to gnuplot
 		PlotManager* plot_manager = PlotManager::Instance();
 		if (g_GlobalSettings->iteration_num_ == 0)
 			PlotManager::Instance()->RefreshPipe();
-
-		//start_ = clock();
 		plot_manager->Send(real_cmd);
-		//end_ = clock();
-		//std::cout << (double)end_ << " " << (double)start_ << "\n";
-		//testTime += (double)(end_ - start_) / CLOCKS_PER_SEC;
-		//std::cout << (double)(end_ - start_) / CLOCKS_PER_SEC << " total draw time:" << testTime << "\n";
 
+		// sleep some time for moderating the delay of events e.g. button click.
 		double waiting_time = 15.0 * real_popnum_ / 100.0;
 		waiting_time = waiting_time > 27.5 ? waiting_time : 27.5;
-
 		std::this_thread::sleep_for(std::chrono::milliseconds((int)waiting_time));
 	}
 

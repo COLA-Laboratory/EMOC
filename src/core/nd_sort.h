@@ -2,7 +2,7 @@
 #include "core/individual.h"
 namespace emoc {
 
-	//do non-dominated sorting, and the rank results are stored in individual's member data.
+	// Do non-dominated sorting, and the rank results are stored in individual's rank_ variable.
 	void NonDominatedSort(Individual **pop, int pop_num, int obj_num);
 
 }

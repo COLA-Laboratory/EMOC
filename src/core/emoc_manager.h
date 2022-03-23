@@ -42,6 +42,7 @@ namespace emoc {
 
 		// Getters for some other private variables
 		inline Global* GetGlobalSetting(int index) { return g_GlobalSettingsArray[index]; }
+		inline void AddSingleThreadResult(const EMOCSingleThreadResult& result) { single_thread_result_historty_.push_back(result); }
 		inline int GetSingleThreadResultSize() { return (int)single_thread_result_historty_.size(); }
 		inline int GetMultiThreadResultSize() { return (int)multi_thread_result_history_.size(); }
 		inline  EMOCSingleThreadResult& GetSingleThreadResult(int index) { return single_thread_result_historty_[index]; }
@@ -57,20 +58,6 @@ namespace emoc {
 		void EMOCSingleThreadRun();
 		void EMOCMultiThreadRun();
 		void ExperimentWorker(std::vector<EMOCExperimentTask> tasks, int thread_id);
-
-		// get best index according to para and format
-		int GetBestParameterIndex(int start, int end, const std::string &metric, const std::string& format);
-
-		// statistic tests
-		int RankSumTest(const std::vector<double>& array1, const std::vector<double>& array2);
-		int SignRankTest(const std::vector<double>& array1, const std::vector<double>& array2);
-		void StatisticTestAccordingMetric(EMOCMultiThreadResult& res, EMOCMultiThreadResult& compared_res, const std::string& metric, const std::string& format);
-
-		// experiment module result update functions
-		void UpdateExpStatTest(int parameter_index);
-		void UpdateExpResult(EMOCMultiThreadResult &res, int new_res_index, int parameter_index);
-		void UpdateExpMetricStat(std::vector<double>& indicator_history, std::vector<bool>& is_indicator_record,
-			double& mean, double& std, double& median, double& iqr);
 
 	private:
 		// for release EMOCManager instance
@@ -92,7 +79,7 @@ namespace emoc {
 		static std::mutex singleton_mutex_;
 
 
-		// EMOC state variables
+		// EMOC setting variables
 		EMOCParameters para_;
 		bool is_para_set_;
 		bool is_plot_;			// whether to activate plot function

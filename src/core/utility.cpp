@@ -4,10 +4,12 @@
 #include <iostream>
 #include <cmath>
 
-#include "core/macro.h"
-#include "random/random.h"
 #include "emoc_app.h"
-#include "ui/plot.h"
+#include "ui/plot_manager.h"
+#include "core/macro.h"
+#include "metric/metric_head_collect.h"
+#include "random/random.h"
+#include "alglib/src/statistics.h"
 
 namespace emoc {
 
@@ -612,6 +614,456 @@ namespace emoc {
 		}
 
 		return x;
+	}
+
+	int RankSumTest(const std::vector<double>& array1, const std::vector<double>& array2)
+	{
+		int res = 0;
+
+		alglib::real_1d_array a1, a2;
+		a1.setcontent(array1.size(), array1.data());
+		a2.setcontent(array2.size(), array2.data());
+		double p1, p2, p3;
+		alglib::mannwhitneyutest(a1, array1.size(), a2, array2.size(), p1, p2, p3);
+
+		if (p1 > 0.05)
+			res = 0;
+		else
+			res = 1;
+
+		return res;
+	}
+
+	int SignRankTest(const std::vector<double>& array1, const std::vector<double>& array2)
+	{
+		int res = 0;
+
+		alglib::real_1d_array a;
+		a.setlength(array1.size());
+		for (int i = 0; i < array1.size(); i++)
+			a[i] = array1[i] - array2[i];
+
+		double p1, p2, p3;
+		alglib::wilcoxonsignedranktest(a, array1.size(), 0, p1, p2, p3);
+
+
+		if (p1 > 0.05)
+			res = 0;
+		else
+			res = -1;
+
+		return res;
+	}
+
+	void CollectSingleThreadResult(int run_id, int thread_id, EMOCParameters para)
+	{
+		Global* g = EMOCManager::Instance()->GetGlobalSetting(thread_id);
+		int obj_num = g->obj_num_;
+		int pop_num = g->algorithm_->GetRealPopNum();
+		std::string problem_name = para.problem_name;
+		HVCalculator hv_calculator(obj_num, pop_num);
+
+		double igd = CalculateIGD(g->parent_population_.data(), pop_num, obj_num, problem_name);
+		double hv = hv_calculator.Calculate(g->parent_population_.data(), pop_num, obj_num, problem_name);
+		double gd = CalculateGD(g->parent_population_.data(), pop_num, obj_num, problem_name);
+		double spacing = CalculateSpacing(g->parent_population_.data(), pop_num, obj_num);
+		double igdplus = CalculateIGDPlus(g->parent_population_.data(), pop_num, obj_num, problem_name);
+		double gdplus = CalculateGDPlus(g->parent_population_.data(), pop_num, obj_num, problem_name);
+
+		EMOCSingleThreadResult result;
+		int count = EMOCManager::Instance()->GetSingleThreadResultSize();
+		result.para = para;
+		result.description = para.algorithm_name + " on " + para.problem_name + " Run" + std::to_string(count);
+		result.last_igd = igd;
+		result.last_hv = hv;
+		result.last_gd = gd;
+		result.last_spacing = spacing;
+		result.last_igdplus = igdplus;
+		result.last_gdplus = gdplus;
+		result.runtime = g->algorithm_->GetRuntime();
+		result.pop_num = g->algorithm_->GetRealPopNum();
+		result.max_iteration = g->iteration_num_;
+		result.igd_history[result.max_iteration] = igd;
+		result.hv_history[result.max_iteration] = hv;
+		EMOCManager::Instance()->AddSingleThreadResult(result);
+		if (EMOCManager::Instance()->GetIsGUI()) UIPanelManager::Instance()->AddAvailSingleThreadResult(result.description);
+		printf("run %d time: %fs   igd: %f \n", run_id, result.runtime, igd);
+	}
+
+	void CollectMultiThreadResult(int run_id, int parameter_id, int thread_id)
+	{
+		Global* g = EMOCManager::Instance()->GetGlobalSetting(thread_id);
+		std::string problem = g->problem_name_;
+		int dec_num = g->dec_num_;
+		int obj_num = g->obj_num_;
+		int pop_num = g->algorithm_->GetRealPopNum();
+		HVCalculator hv_calculator(obj_num, pop_num);
+
+		double igd = CalculateIGD(g->parent_population_.data(), pop_num, obj_num, problem);
+		double hv = hv_calculator.Calculate(g->parent_population_.data(), pop_num, obj_num, problem);
+		double gd = CalculateGD(g->parent_population_.data(), pop_num, obj_num, problem);
+		double spacing = CalculateSpacing(g->parent_population_.data(), pop_num, obj_num);
+		double igdplus = CalculateIGDPlus(g->parent_population_.data(), pop_num, obj_num, problem);
+		double gdplus = CalculateGDPlus(g->parent_population_.data(), pop_num, obj_num, problem);
+		double runtime = g->algorithm_->GetRuntime();
+
+		// In experiment module, we record the result when it is really finished
+		if (g->current_evaluation_ >= g->max_evaluation_)
+		{
+			EMOCMultiThreadResult &res = EMOCManager::Instance()->GetMultiThreadResult(parameter_id);
+			res.runtime.metric_history[run_id] = runtime;
+			res.igd.metric_history[run_id] = igd;
+			res.hv.metric_history[run_id] = hv;
+			res.gd.metric_history[run_id] = gd;
+			res.spacing.metric_history[run_id] = spacing;
+			res.igdplus.metric_history[run_id] = igdplus;
+			res.gdplus.metric_history[run_id] = gdplus;
+			res.runtime.is_record[run_id] = true;
+			res.igd.is_record[run_id] = true;
+			res.hv.is_record[run_id] = true;
+			res.gd.is_record[run_id] = true;
+			res.spacing.is_record[run_id] = true;
+			res.igdplus.is_record[run_id] = true;
+			res.gdplus.is_record[run_id] = true;
+
+			// update statistic result only in gui mode
+			if (EMOCManager::Instance()->GetIsGUI())
+			{
+				// update counter, mean, std, etc...
+				UpdateExpResult(res, run_id, parameter_id);
+
+				// update hypothesis test data
+				UpdateExpStatTest(parameter_id);
+			}
+		}
+
+		std::string print_problem = problem + "_" + std::to_string(obj_num) + "_" + std::to_string(dec_num);
+		printf("current thread id : %d, parameter: %d runs: %d, runtime: %f igd:%f algorithm:%s, problem:%s\n",
+			thread_id, parameter_id, run_id, runtime, igd, g->algorithm_name_.c_str(), print_problem.c_str());
+	}
+
+	int GetBestParameterIndex(int start, int end, const std::string& metric, const std::string& format)
+	{
+		int res = start;
+		double best_value1 = 0.0f;
+		double best_value2 = 0.0f;
+
+		GetComparedMetric(metric, format, start, best_value1, best_value2);
+
+		bool is_min_better = true;
+		if (metric == "HV") is_min_better = false;
+		for (int i = start + 1; i < end; i++)
+		{
+			double current_value1, current_value2;
+			GetComparedMetric(metric, format, i, current_value1, current_value2);
+			if ((is_min_better && best_value1 > current_value1) || (!is_min_better && best_value1 < current_value1))
+			{
+				res = i;
+				best_value1 = current_value1;
+				best_value2 = current_value2;
+			}
+			else if (std::fabs(best_value1 - current_value1) < EMOC_EPS)
+			{
+				if (format == "Median")
+				{
+					if ((is_min_better && best_value2 > current_value2) || (!is_min_better && best_value2 < current_value2))
+					{
+						res = i;
+						best_value1 = current_value1;
+						best_value2 = current_value2;
+					}
+				}
+				else if (format == "Mean")  // standard deviation is still the smaller the better
+				{
+					if (best_value2 > current_value2)
+					{
+						res = i;
+						best_value1 = current_value1;
+						best_value2 = current_value2;
+					}
+				}
+			}
+		}
+
+		return res;
+	}
+
+	void StatisticTestAccordingMetric(EMOCMultiThreadResult& res, EMOCMultiThreadResult& compared_res, const std::string& metric, const std::string& format)
+	{
+		int index = 2;
+		if (format == "Mean") index = 0;
+		else if (format == "Median") index = 1;
+
+		if (metric == "Runtime")
+		{
+			bool is_diff_ranksum = RankSumTest(res.runtime.metric_history, compared_res.runtime.metric_history);
+			bool is_diff_signrank = SignRankTest(res.runtime.metric_history, compared_res.runtime.metric_history);
+			if (res.runtime.metric_mean_ranksum[index] == -2) res.runtime.metric_mean_ranksum[index] = is_diff_ranksum ? (res.runtime.metric_mean < compared_res.runtime.metric_mean ? 1 : -1) : 0;
+			if (res.runtime.metric_median_ranksum[index] == -2)res.runtime.metric_median_ranksum[index] = is_diff_ranksum ? (res.runtime.metric_median < compared_res.runtime.metric_median ? 1 : -1) : 0;
+			if (res.runtime.metric_mean_signrank[index] == -2) res.runtime.metric_mean_signrank[index] = is_diff_signrank ? (res.runtime.metric_mean < compared_res.runtime.metric_mean ? 1 : -1) : 0;
+			if (res.runtime.metric_median_signrank[index] == -2)res.runtime.metric_median_signrank[index] = is_diff_signrank ? (res.runtime.metric_median < compared_res.runtime.metric_median ? 1 : -1) : 0;
+		}
+		else if (metric == "IGD")
+		{
+			bool is_diff_ranksum = RankSumTest(res.igd.metric_history, compared_res.igd.metric_history);
+			bool is_diff_signrank = SignRankTest(res.igd.metric_history, compared_res.igd.metric_history);
+			if (res.igd.metric_mean_ranksum[index] == -2) res.igd.metric_mean_ranksum[index] = is_diff_ranksum ? (res.igd.metric_mean < compared_res.igd.metric_mean ? 1 : -1) : 0;
+			if (res.igd.metric_median_ranksum[index] == -2)res.igd.metric_median_ranksum[index] = is_diff_ranksum ? (res.igd.metric_median < compared_res.igd.metric_median ? 1 : -1) : 0;
+			if (res.igd.metric_mean_signrank[index] == -2) res.igd.metric_mean_signrank[index] = is_diff_signrank ? (res.igd.metric_mean < compared_res.igd.metric_mean ? 1 : -1) : 0;
+			if (res.igd.metric_median_signrank[index] == -2)res.igd.metric_median_signrank[index] = is_diff_signrank ? (res.igd.metric_median < compared_res.igd.metric_median ? 1 : -1) : 0;
+		}
+		else if (metric == "HV")
+		{
+			// note that hv is the bigger the better
+			bool is_diff_ranksum = RankSumTest(res.hv.metric_history, compared_res.hv.metric_history);
+			bool is_diff_signrank = SignRankTest(res.hv.metric_history, compared_res.hv.metric_history);
+			if (res.hv.metric_mean_ranksum[index] == -2) res.hv.metric_mean_ranksum[index] = is_diff_ranksum ? (res.hv.metric_mean > compared_res.hv.metric_mean ? 1 : -1) : 0;
+			if (res.hv.metric_median_ranksum[index] == -2)res.hv.metric_median_ranksum[index] = is_diff_ranksum ? (res.hv.metric_median > compared_res.hv.metric_median ? 1 : -1) : 0;
+			if (res.hv.metric_mean_signrank[index] == -2) res.hv.metric_mean_signrank[index] = is_diff_signrank ? (res.hv.metric_mean > compared_res.hv.metric_mean ? 1 : -1) : 0;
+			if (res.hv.metric_median_signrank[index] == -2)res.hv.metric_median_signrank[index] = is_diff_signrank ? (res.hv.metric_median > compared_res.hv.metric_median ? 1 : -1) : 0;
+		}
+		else if (metric == "GD")
+		{
+			bool is_diff_ranksum = RankSumTest(res.gd.metric_history, compared_res.gd.metric_history);
+			bool is_diff_signrank = SignRankTest(res.gd.metric_history, compared_res.gd.metric_history);
+			if (res.gd.metric_mean_ranksum[index] == -2) res.gd.metric_mean_ranksum[index] = is_diff_ranksum ? (res.gd.metric_mean < compared_res.gd.metric_mean ? 1 : -1) : 0;
+			if (res.gd.metric_median_ranksum[index] == -2)res.gd.metric_median_ranksum[index] = is_diff_ranksum ? (res.gd.metric_median < compared_res.gd.metric_median ? 1 : -1) : 0;
+			if (res.gd.metric_mean_signrank[index] == -2) res.gd.metric_mean_signrank[index] = is_diff_signrank ? (res.gd.metric_mean < compared_res.gd.metric_mean ? 1 : -1) : 0;
+			if (res.gd.metric_median_signrank[index] == -2)res.gd.metric_median_signrank[index] = is_diff_signrank ? (res.gd.metric_median < compared_res.gd.metric_median ? 1 : -1) : 0;
+		}
+		else if (metric == "Spacing")
+		{
+			bool is_diff_ranksum = RankSumTest(res.spacing.metric_history, compared_res.spacing.metric_history);
+			bool is_diff_signrank = SignRankTest(res.spacing.metric_history, compared_res.spacing.metric_history);
+			if (res.spacing.metric_mean_ranksum[index] == -2) res.spacing.metric_mean_ranksum[index] = is_diff_ranksum ? (res.spacing.metric_mean < compared_res.spacing.metric_mean ? 1 : -1) : 0;
+			if (res.spacing.metric_median_ranksum[index] == -2)res.spacing.metric_median_ranksum[index] = is_diff_ranksum ? (res.spacing.metric_median < compared_res.spacing.metric_median ? 1 : -1) : 0;
+			if (res.spacing.metric_mean_signrank[index] == -2) res.spacing.metric_mean_signrank[index] = is_diff_signrank ? (res.spacing.metric_mean < compared_res.spacing.metric_mean ? 1 : -1) : 0;
+			if (res.spacing.metric_median_signrank[index] == -2)res.spacing.metric_median_signrank[index] = is_diff_signrank ? (res.spacing.metric_median < compared_res.spacing.metric_median ? 1 : -1) : 0;
+		}
+		else if (metric == "IGDPlus")
+		{
+			bool is_diff_ranksum = RankSumTest(res.igdplus.metric_history, compared_res.igdplus.metric_history);
+			bool is_diff_signrank = SignRankTest(res.igdplus.metric_history, compared_res.igdplus.metric_history);
+			if (res.igdplus.metric_mean_ranksum[index] == -2) res.igdplus.metric_mean_ranksum[index] = is_diff_ranksum ? (res.igdplus.metric_mean < compared_res.igdplus.metric_mean ? 1 : -1) : 0;
+			if (res.igdplus.metric_median_ranksum[index] == -2)res.igdplus.metric_median_ranksum[index] = is_diff_ranksum ? (res.igdplus.metric_median < compared_res.igdplus.metric_median ? 1 : -1) : 0;
+			if (res.igdplus.metric_mean_signrank[index] == -2) res.igdplus.metric_mean_signrank[index] = is_diff_signrank ? (res.igdplus.metric_mean < compared_res.igdplus.metric_mean ? 1 : -1) : 0;
+			if (res.igdplus.metric_median_signrank[index] == -2)res.igdplus.metric_median_signrank[index] = is_diff_signrank ? (res.igdplus.metric_median < compared_res.igdplus.metric_median ? 1 : -1) : 0;
+		}
+		else if (metric == "GDPlus")
+		{
+			bool is_diff_ranksum = RankSumTest(res.gdplus.metric_history, compared_res.gdplus.metric_history);
+			bool is_diff_signrank = SignRankTest(res.gdplus.metric_history, compared_res.gdplus.metric_history);
+			if (res.gdplus.metric_mean_ranksum[index] == -2) res.gdplus.metric_mean_ranksum[index] = is_diff_ranksum ? (res.gdplus.metric_mean < compared_res.gdplus.metric_mean ? 1 : -1) : 0;
+			if (res.gdplus.metric_median_ranksum[index] == -2)res.gdplus.metric_median_ranksum[index] = is_diff_ranksum ? (res.gdplus.metric_median < compared_res.gdplus.metric_median ? 1 : -1) : 0;
+			if (res.gdplus.metric_mean_signrank[index] == -2) res.gdplus.metric_mean_signrank[index] = is_diff_signrank ? (res.gdplus.metric_mean < compared_res.gdplus.metric_mean ? 1 : -1) : 0;
+			if (res.gdplus.metric_median_signrank[index] == -2)res.gdplus.metric_median_signrank[index] = is_diff_signrank ? (res.gdplus.metric_median < compared_res.gdplus.metric_median ? 1 : -1) : 0;
+		}
+		else
+		{
+			// TODO... ADD MORE METRICS
+
+		}
+	}
+
+	void UpdateExpStatTest(int parameter_index)
+	{
+		std::lock_guard<std::mutex> locker(EMOCLock::mutex_pool[parameter_index % EMOCLock::mutex_pool.size()]);
+		int range_index = parameter_index / UIPanelManager::Instance()->GetExpAlgorithmNum();
+		int range_start = range_index * UIPanelManager::Instance()->GetExpAlgorithmNum(), range_end = (range_index + 1) * UIPanelManager::Instance()->GetExpAlgorithmNum();
+
+		bool is_ready = true;
+		for (int i = range_start; i < range_end; i++)
+		{
+			EMOCMultiThreadResult &res = EMOCManager::Instance()->GetMultiThreadResult(i);
+			if (res.valid_res_count < res.runtime.metric_history.size())
+				is_ready = false;
+		}
+
+		// Only do statistic test the when datas in the same row are ready. 
+		if (!is_ready) return;
+
+		// Take the last column algorithm to be the compared object as default.
+		int compared_parameter_index = range_end - 1;
+		EMOCMultiThreadResult& default_compared_res = EMOCManager::Instance()->GetMultiThreadResult(compared_parameter_index);;
+		int igdmean_best_index = GetBestParameterIndex(range_start, range_end, "IGD", "Mean");
+		int igdmedian_best_index = GetBestParameterIndex(range_start, range_end, "IGD", "Median");
+		int runtimemean_best_index = GetBestParameterIndex(range_start, range_end, "Runtime", "Mean");
+		int runtimemedian_best_index = GetBestParameterIndex(range_start, range_end, "Runtime", "Median");
+		int hvmean_best_index = GetBestParameterIndex(range_start, range_end, "HV", "Mean");
+		int hvmedian_best_index = GetBestParameterIndex(range_start, range_end, "HV", "Median");
+		int gdmean_best_index = GetBestParameterIndex(range_start, range_end, "GD", "Mean");
+		int gdmedian_best_index = GetBestParameterIndex(range_start, range_end, "GD", "Median");
+		int spacingmean_best_index = GetBestParameterIndex(range_start, range_end, "Spacing", "Mean");
+		int spacingmedian_best_index = GetBestParameterIndex(range_start, range_end, "Spacing", "Median");
+		int igdplusmean_best_index = GetBestParameterIndex(range_start, range_end, "IGDPlus", "Mean");
+		int igdplusmedian_best_index = GetBestParameterIndex(range_start, range_end, "IGDPlus", "Median");
+		int gdplusmean_best_index = GetBestParameterIndex(range_start, range_end, "GDPlus", "Mean");
+		int gdplusmedian_best_index = GetBestParameterIndex(range_start, range_end, "GDPlus", "Median");
+
+		for (int i = range_start; i < range_end; i++)
+		{
+			EMOCMultiThreadResult& res = EMOCManager::Instance()->GetMultiThreadResult(i);
+
+			// default comparision
+			if (i != range_end - 1)
+			{
+				StatisticTestAccordingMetric(res, default_compared_res, "Runtime", "Default");
+				StatisticTestAccordingMetric(res, default_compared_res, "IGD", "Default");
+				StatisticTestAccordingMetric(res, default_compared_res, "HV", "Default");
+				StatisticTestAccordingMetric(res, default_compared_res, "GD", "Default");
+				StatisticTestAccordingMetric(res, default_compared_res, "Spacing", "Default");
+				StatisticTestAccordingMetric(res, default_compared_res, "IGDPlus", "Default");
+				StatisticTestAccordingMetric(res, default_compared_res, "GDPlus", "Default");
+			}
+
+			// mean best comparision
+			if (i != runtimemean_best_index)
+			{
+				EMOCMultiThreadResult& meanbest_compared_res = EMOCManager::Instance()->GetMultiThreadResult(runtimemean_best_index);
+				StatisticTestAccordingMetric(res, meanbest_compared_res, "Runtime", "Mean");
+			}
+			if (i != igdmean_best_index)
+			{
+				EMOCMultiThreadResult& meanbest_compared_res = EMOCManager::Instance()->GetMultiThreadResult(igdmean_best_index);
+				StatisticTestAccordingMetric(res, meanbest_compared_res, "IGD", "Mean");
+			}
+			if (i != hvmean_best_index)
+			{
+				EMOCMultiThreadResult& meanbest_compared_res = EMOCManager::Instance()->GetMultiThreadResult(hvmean_best_index);
+				StatisticTestAccordingMetric(res, meanbest_compared_res, "HV", "Mean");
+			}
+			if (i != gdmean_best_index)
+			{
+				EMOCMultiThreadResult& meanbest_compared_res = EMOCManager::Instance()->GetMultiThreadResult(gdmean_best_index);
+				StatisticTestAccordingMetric(res, meanbest_compared_res, "GD", "Mean");
+			}
+			if (i != spacingmean_best_index)
+			{
+				EMOCMultiThreadResult& meanbest_compared_res = EMOCManager::Instance()->GetMultiThreadResult(spacingmean_best_index);
+				StatisticTestAccordingMetric(res, meanbest_compared_res, "Spacing", "Mean");
+			}
+			if (i != igdplusmean_best_index)
+			{
+				EMOCMultiThreadResult& meanbest_compared_res = EMOCManager::Instance()->GetMultiThreadResult(igdplusmean_best_index);
+				StatisticTestAccordingMetric(res, meanbest_compared_res, "IGDPlus", "Mean");
+			}
+			if (i != gdplusmean_best_index)
+			{
+				EMOCMultiThreadResult& meanbest_compared_res = EMOCManager::Instance()->GetMultiThreadResult(gdplusmean_best_index);
+				StatisticTestAccordingMetric(res, meanbest_compared_res, "GDPlus", "Mean");
+			}
+
+			// median best comparision
+			if (i != runtimemedian_best_index)
+			{
+				EMOCMultiThreadResult& medianbest_compared_res = EMOCManager::Instance()->GetMultiThreadResult(runtimemedian_best_index);
+				StatisticTestAccordingMetric(res, medianbest_compared_res, "Runtime", "Median");
+			}
+			if (i != igdmedian_best_index)
+			{
+				EMOCMultiThreadResult& medianbest_compared_res = EMOCManager::Instance()->GetMultiThreadResult(igdmedian_best_index);
+				StatisticTestAccordingMetric(res, medianbest_compared_res, "IGD", "Median");
+			}
+			if (i != hvmedian_best_index)
+			{
+				EMOCMultiThreadResult& medianbest_compared_res = EMOCManager::Instance()->GetMultiThreadResult(hvmedian_best_index);
+				StatisticTestAccordingMetric(res, medianbest_compared_res, "HV", "Median");
+			}
+			if (i != gdmedian_best_index)
+			{
+				EMOCMultiThreadResult& medianbest_compared_res = EMOCManager::Instance()->GetMultiThreadResult(gdmedian_best_index);
+				StatisticTestAccordingMetric(res, medianbest_compared_res, "GD", "Median");
+			}
+			if (i != spacingmedian_best_index)
+			{
+				EMOCMultiThreadResult& medianbest_compared_res = EMOCManager::Instance()->GetMultiThreadResult(spacingmedian_best_index);
+				StatisticTestAccordingMetric(res, medianbest_compared_res, "Spacing", "Median");
+			}
+			if (i != igdplusmedian_best_index)
+			{
+				EMOCMultiThreadResult& medianbest_compared_res = EMOCManager::Instance()->GetMultiThreadResult(igdplusmedian_best_index);
+				StatisticTestAccordingMetric(res, medianbest_compared_res, "IGDPlus", "Median");
+			}
+			if (i != gdplusmedian_best_index)
+			{
+				EMOCMultiThreadResult& medianbest_compared_res = EMOCManager::Instance()->GetMultiThreadResult(gdplusmedian_best_index);
+				StatisticTestAccordingMetric(res, medianbest_compared_res, "GDPlus", "Median");
+			}
+		}
+	}
+
+	void UpdateExpResult(EMOCMultiThreadResult& res, int new_res_index, int parameter_index)
+	{
+		std::lock_guard<std::mutex> locker(EMOCLock::mutex_pool[parameter_index % EMOCLock::mutex_pool.size()]);
+		res.valid_res_count++;
+
+		UpdateExpMetricStat(res.igd.metric_history, res.igd.is_record, res.igd.metric_mean, res.igd.metric_std, res.igd.metric_median, res.igd.metric_iqr);
+		UpdateExpMetricStat(res.hv.metric_history, res.hv.is_record, res.hv.metric_mean, res.hv.metric_std, res.hv.metric_median, res.hv.metric_iqr);
+		UpdateExpMetricStat(res.runtime.metric_history, res.runtime.is_record, res.runtime.metric_mean, res.runtime.metric_std, res.runtime.metric_median, res.runtime.metric_iqr);
+		UpdateExpMetricStat(res.gd.metric_history, res.gd.is_record, res.gd.metric_mean, res.gd.metric_std, res.gd.metric_median, res.gd.metric_iqr);
+		UpdateExpMetricStat(res.spacing.metric_history, res.spacing.is_record, res.spacing.metric_mean, res.spacing.metric_std, res.spacing.metric_median, res.spacing.metric_iqr);
+		UpdateExpMetricStat(res.igdplus.metric_history, res.igdplus.is_record, res.igdplus.metric_mean, res.igdplus.metric_std, res.igdplus.metric_median, res.igdplus.metric_iqr);
+		UpdateExpMetricStat(res.gdplus.metric_history, res.gdplus.is_record, res.gdplus.metric_mean, res.gdplus.metric_std, res.gdplus.metric_median, res.gdplus.metric_iqr);
+	}
+
+	void UpdateExpMetricStat(std::vector<double>& indicator_history, std::vector<bool>& is_indicator_record, double& mean, double& std, double& median, double& iqr)
+	{
+		mean = 0.0, std = 0.0;
+		int count = 0;
+		for (int c = 0; c < indicator_history.size(); c++)
+		{
+			if (is_indicator_record[c])
+			{
+				mean += indicator_history[c];
+				count++;
+			}
+		}
+		mean = mean / count;
+		for (int c = 0; c < indicator_history.size(); c++)
+		{
+			if (is_indicator_record[c])
+				std += (indicator_history[c] - mean) * (indicator_history[c] - mean);
+		}
+		std = std / count; std = std::sqrt(std);
+
+
+		std::vector<double> temp_ind;
+		for (int c = 0; c < indicator_history.size(); c++)
+			if (is_indicator_record[c])
+				temp_ind.push_back(indicator_history[c]);
+		std::sort(temp_ind.begin(), temp_ind.end());
+
+		// early return when the size of result is not enough
+		if (temp_ind.size() == 1)
+		{
+			median = temp_ind[0];
+			iqr = 0.0;
+			return;
+		}
+
+		// calculate median
+		if (temp_ind.size() % 2)
+			median = temp_ind[temp_ind.size() / 2];
+		else
+			median = (temp_ind[temp_ind.size() / 2] + temp_ind[temp_ind.size() / 2 - 1]) / 2.0;
+
+		// calculate iqr
+		double Q1 = 0, Q3 = 0;
+		int Q1_remain = temp_ind.size() * 25 % 100;
+		int Q1_index = temp_ind.size() * 25 / 100;		// be careful with the start index is 0 which is different from the calculation in WiKi
+		if (Q1_remain == 0)
+			Q1 = (temp_ind[Q1_index] + temp_ind[Q1_index - 1]) / 2.0;
+		else
+			Q1 = temp_ind[Q1_index];
+
+		int Q3_remain = temp_ind.size() * 75 % 100;
+		int Q3_index = temp_ind.size() * 75 / 100;		// be careful with the start index is 0 which is different from the calculation in WiKi
+		if (Q3_remain == 0)
+			Q3 = (temp_ind[Q3_index] + temp_ind[Q3_index - 1]) / 2.0;
+		else
+			Q3 = temp_ind[Q3_index];
+
+		iqr = Q3 - Q1;
 	}
 
 }

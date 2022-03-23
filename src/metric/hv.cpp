@@ -12,11 +12,23 @@
 namespace emoc {
 
 
-	HVCalculator::HVCalculator():
-		i_fr(0),i_n(0),i_fs(nullptr),i_maxm(0),i_maxn(0),i_safe(0),objective_num(0), partial(nullptr),
+	HVCalculator::HVCalculator(int obj_num, int pop_num):
+		obj_num_(obj_num),pop_num_(pop_num),i_fr(0),i_n(0),i_fs(nullptr),i_maxm(0),i_maxn(0),i_safe(0),objective_num(0), partial(nullptr),
 		heap(nullptr), heapsize(0), stacks(nullptr),stacksize(nullptr),gorder(nullptr),torder(nullptr),tcompare(nullptr),fsorted(nullptr)
 	{
+		Init(obj_num, pop_num);
+	}
 
+	HVCalculator::HVCalculator():
+		i_fr(0), i_n(0), i_fs(nullptr), i_maxm(0), i_maxn(0), i_safe(0), objective_num(0), partial(nullptr),
+		heap(nullptr), heapsize(0), stacks(nullptr), stacksize(nullptr), gorder(nullptr), torder(nullptr), tcompare(nullptr), fsorted(nullptr)
+	{
+
+	}
+
+	HVCalculator::~HVCalculator()
+	{
+		CleanUp();
 	}
 
 	void HVCalculator::Init(int obj_num, int pop_num)

@@ -22,7 +22,6 @@ namespace emoc {
 
 	SMSEMOA::~SMSEMOA()
 	{
-		hv_calculator_.CleanUp();
 		delete[] nadir_point_;
 	}
 

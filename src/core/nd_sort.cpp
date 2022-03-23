@@ -83,15 +83,12 @@ namespace emoc {
 			}
 		}
 
-		free(ni);
 		for (int i = 0; i < pop_num; i++)
-		{
 			free(si[i]);
-		}
 		free(si);
+		free(ni);
 		free(Q);
 		free(dominate_num);
-		return;
 	}
 
 }

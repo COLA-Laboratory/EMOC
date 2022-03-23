@@ -8,7 +8,7 @@
 #include "core/emoc_manager.h"
 #include "metric/igd.h"
 #include "ui/uipanel_manager.h"
-#include "ui/plot.h"
+#include "ui/plot_manager.h"
 #include "IconsFontAwesome5.h"
 
 namespace emoc {

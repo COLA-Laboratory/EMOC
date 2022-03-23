@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -55,14 +56,15 @@ namespace emoc
 
 		int median_index = 0, best_index = 0;
 		double metric_mean = 0.0, metric_std = 0.0, metric_median = 0.0, metric_iqr = 0.0, metric_best = 0.0;
-		int metric_mean_ranksum[3] = { -2, -2, -2 }, metric_mean_signrank[3] = { -2, -2, -2 };			// 0:mean best compared result 1:median best compared result 2:last column compared result
+
+		// [0]:mean best compared result [1]:median best compared result [2]:last column compared result
+		int metric_mean_ranksum[3] = { -2, -2, -2 }, metric_mean_signrank[3] = { -2, -2, -2 };			
 		int metric_median_ranksum[3] = { -2, -2 , -2 }, metric_median_signrank[3] = { -2, -2, -2 };
 	};
 
 	// for (multi-thread or multi-run) epxeriment result
 	struct EMOCMultiThreadResult
 	{
-
 		// metric results
 		MetricHistory runtime;
 		MetricHistory igd;
@@ -96,7 +98,6 @@ namespace emoc
 			gdplus.metric_history.resize(run_num, 0.0);
 			gdplus.is_record.resize(run_num, false);
 		}
-
 	};
 
 	// for (single thread or single run) test result

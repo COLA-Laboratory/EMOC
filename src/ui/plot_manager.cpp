@@ -1,4 +1,4 @@
-#include "ui/plot.h"
+#include "ui/plot_manager.h"
 
 #include <cstdio>
 #include <iostream>
@@ -81,7 +81,37 @@ namespace emoc {
 		}
 	}
 
-	PlotManager::PlotManager():
+	void PlotManager::Scatter2D(char* plot_cmd, int gen, char* data_file_name)
+	{
+		sprintf(plot_cmd,
+			"set grid\n"
+			"set autoscale\n"
+			"set title 'Generation #%d'\n"
+			"set xlabel 'f1'\n"
+			"set ylabel 'f2'\n"
+			"unset key\n"
+			"plot '%s' w p pt 6 lc rgb \"dark-blue\"\n"
+			//"plot 'PF_ZDT3.txt' w l lt -1 lw 2, 'plot.txt' w p pt 6 ps 1 lc 3, 'golden_point_zdt3_1_1.txt' w p pt 3 ps 2 lc 1\n"
+			, gen, data_file_name);
+	}
+
+	void PlotManager::Scatter3D(char* plot_cmd, int gen, char* data_file_name)
+	{
+		sprintf(plot_cmd,
+			"set grid\n"
+			"set autoscale\n"
+			"set title 'Generation #%d'\n"
+			"set xlabel 'f1'\n"
+			"set ylabel 'f2'\n"
+			"set zlabel 'f3'\n"
+			"set ticslevel 0.0\n"
+			"set view 45,45\n"
+			"unset key\n"
+			"splot  '%s' w p pt 6 lc rgb \"dark-blue\"\n"
+			, gen, data_file_name);
+	}
+
+	PlotManager::PlotManager() :
 		is_window_close_(true),
 		gp_(nullptr)
 	{

@@ -19,6 +19,5 @@ namespace emoc {
 		int obj_num_;
 		double *lower_bound_;
 		double *upper_bound_;
-		double* ref_;
 	};
 }

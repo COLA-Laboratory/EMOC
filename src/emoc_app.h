@@ -4,7 +4,7 @@
 #include <unordered_set>
 #include <array>
 
-#include "ui/plot.h"
+#include "ui/plot_manager.h"
 #include "ui/uipanel_manager.h"
 #include "core/emoc_manager.h"
 

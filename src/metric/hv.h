@@ -54,6 +54,8 @@ namespace emoc {
 	{
 	public:
 		HVCalculator();
+		HVCalculator(int obj_num, int pop_num);
+		~HVCalculator();
 
 		void Init(int obj_num, int pop_num);
 		void CleanUp();

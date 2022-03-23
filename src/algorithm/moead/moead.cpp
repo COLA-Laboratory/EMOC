@@ -134,53 +134,40 @@ namespace emoc {
 
 	void MOEAD::UpdateSubproblem(Individual *offspring, int current_index, int aggregation_type)
 	{
-		std::vector<double> offspring_fitness(neighbour_num_);
-		std::vector<double> neighbour_fitness(neighbour_num_);
+		double neighbour_fitness = 0.0, offspring_fitness = 0.0;
 
-		// calculate fitness;
-		switch (aggregation_type)
-		{
-		case 0:
-			// inverse chebycheff
-			for (int i = 0; i < neighbour_num_; ++i)
-			{
-				int weight_index = neighbour_[current_index][i];
-				Individual *current_ind = g_GlobalSettings->parent_population_[weight_index];
-				neighbour_fitness[i] = CalInverseChebycheff(current_ind, lambda_[weight_index], ideal_point_, g_GlobalSettings->obj_num_);
-				offspring_fitness[i] = CalInverseChebycheff(offspring, lambda_[weight_index], ideal_point_, g_GlobalSettings->obj_num_);
-			}
-			break;
-
-		case 1:
-			// weighted sum
-			for (int i = 0; i < neighbour_num_; ++i)
-			{
-				int weight_index = neighbour_[current_index][i];
-				Individual *current_ind = g_GlobalSettings->parent_population_[weight_index];
-				neighbour_fitness[i] = CalWeightedSum(current_ind, lambda_[weight_index], ideal_point_, g_GlobalSettings->obj_num_);
-				offspring_fitness[i] = CalWeightedSum(offspring, lambda_[weight_index], ideal_point_, g_GlobalSettings->obj_num_);
-			}
-			break;
-
-		case 2:
-			// PBI
-			for (int i = 0; i < neighbour_num_; ++i)
-			{
-				int weight_index = neighbour_[current_index][i];
-				Individual *current_ind = g_GlobalSettings->parent_population_[weight_index];
-				neighbour_fitness[i] = CalPBI(current_ind, lambda_[weight_index], ideal_point_, g_GlobalSettings->obj_num_, pbi_theta_);
-				offspring_fitness[i] = CalPBI(offspring, lambda_[weight_index], ideal_point_, g_GlobalSettings->obj_num_, pbi_theta_);
-			}
-			break;
-
-		default:
-			break;
-		}
-
-		// update subproblem
 		for (int i = 0; i < neighbour_num_; ++i)
 		{
-			if (offspring_fitness[i] < neighbour_fitness[i])
+			int weight_index = neighbour_[current_index][i];
+			Individual* current_ind = g_GlobalSettings->parent_population_[weight_index];
+
+			// calculate fitness;
+			switch (aggregation_type)
+			{
+			case 0:
+				// inverse chebycheff
+				neighbour_fitness = CalInverseChebycheff(current_ind, lambda_[weight_index], ideal_point_, g_GlobalSettings->obj_num_);
+				offspring_fitness = CalInverseChebycheff(offspring, lambda_[weight_index], ideal_point_, g_GlobalSettings->obj_num_);
+				break;
+
+			case 1:
+				// weighted sum
+				neighbour_fitness = CalWeightedSum(current_ind, lambda_[weight_index], ideal_point_, g_GlobalSettings->obj_num_);
+				offspring_fitness = CalWeightedSum(offspring, lambda_[weight_index], ideal_point_, g_GlobalSettings->obj_num_);
+				break;
+
+			case 2:
+				// PBI
+				neighbour_fitness = CalPBI(current_ind, lambda_[weight_index], ideal_point_, g_GlobalSettings->obj_num_, pbi_theta_);
+				offspring_fitness = CalPBI(offspring, lambda_[weight_index], ideal_point_, g_GlobalSettings->obj_num_, pbi_theta_);
+				break;
+
+			default:
+				break;
+			}
+
+			// update subproblem
+			if (offspring_fitness < neighbour_fitness)
 			{
 				CopyIndividual(offspring, g_GlobalSettings->parent_population_[neighbour_[current_index][i]]);
 			}
