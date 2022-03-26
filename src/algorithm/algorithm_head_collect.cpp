@@ -6,34 +6,37 @@
 namespace emoc {
 
 	// Docomposition Based Algorithms
-	EMOC_REGIST_ALGORITHM(Docomposition Based, MOEADDYTS);
-	EMOC_REGIST_ALGORITHM(Docomposition Based, MOEADDYTSTEST);
-	EMOC_REGIST_ALGORITHM(Docomposition Based, MOEADCDTS);
-	EMOC_REGIST_ALGORITHM(Docomposition Based, MOEAD);
-	EMOC_REGIST_ALGORITHM(Docomposition Based, MOEADDE);
-	EMOC_REGIST_ALGORITHM(Docomposition Based, MOEADDRA);
-	EMOC_REGIST_ALGORITHM(Docomposition Based, MOEADUCB);
-	EMOC_REGIST_ALGORITHM(Docomposition Based, MOEADFRRMAB);
-	EMOC_REGIST_ALGORITHM(Docomposition Based, MOEADGRA);
-	EMOC_REGIST_ALGORITHM(Docomposition Based, MOEADIRA);
-	EMOC_REGIST_ALGORITHM(Docomposition Based, ENSMOEAD);
-	EMOC_REGIST_ALGORITHM(Docomposition Based, MOEADCDE);
-	EMOC_REGIST_ALGORITHM(Docomposition Based, MOEADSTM);
-	EMOC_REGIST_ALGORITHM(Docomposition Based, RVEA);
-	EMOC_REGIST_ALGORITHM(Docomposition Based, MOEADPAS);
-	EMOC_REGIST_ALGORITHM(Docomposition Based, MOEADM2M);
-	EMOC_REGIST_ALGORITHM(Docomposition Based, MOEADD);
+	EMOC_REGIST_ALGORITHM(Multiobjective, Docomposition Based, MOEADDYTS);
+	EMOC_REGIST_ALGORITHM(Multiobjective, Docomposition Based, MOEADDYTSTEST);
+	EMOC_REGIST_ALGORITHM(Multiobjective, Docomposition Based, MOEADCDTS);
+	EMOC_REGIST_ALGORITHM(Multiobjective, Docomposition Based, MOEAD);
+	EMOC_REGIST_ALGORITHM(Multiobjective, Docomposition Based, MOEADDE);
+	EMOC_REGIST_ALGORITHM(Multiobjective, Docomposition Based, MOEADDRA);
+	EMOC_REGIST_ALGORITHM(Multiobjective, Docomposition Based, MOEADUCB);
+	EMOC_REGIST_ALGORITHM(Multiobjective, Docomposition Based, MOEADFRRMAB);
+	EMOC_REGIST_ALGORITHM(Multiobjective, Docomposition Based, MOEADGRA);
+	EMOC_REGIST_ALGORITHM(Multiobjective, Docomposition Based, MOEADIRA);
+	EMOC_REGIST_ALGORITHM(Multiobjective, Docomposition Based, ENSMOEAD);
+	EMOC_REGIST_ALGORITHM(Multiobjective, Docomposition Based, MOEADCDE);
+	EMOC_REGIST_ALGORITHM(Multiobjective, Docomposition Based, MOEADSTM);
+	EMOC_REGIST_ALGORITHM(Multiobjective, Docomposition Based, RVEA);
+	EMOC_REGIST_ALGORITHM(Multiobjective, Docomposition Based, MOEADPAS);
+	EMOC_REGIST_ALGORITHM(Multiobjective, Docomposition Based, MOEADM2M);
+	EMOC_REGIST_ALGORITHM(Multiobjective, Docomposition Based, MOEADD);
 
 	// Dominance Based Algorithms
-	EMOC_REGIST_ALGORITHM(Dominance Based, NSGA2);
-	EMOC_REGIST_ALGORITHM(Dominance Based, NSGA3);
-	EMOC_REGIST_ALGORITHM(Dominance Based, SPEA2);
-	EMOC_REGIST_ALGORITHM(Dominance Based, SPEA2SDE);
-	EMOC_REGIST_ALGORITHM(Dominance Based, tDEA);
+	EMOC_REGIST_ALGORITHM(Multiobjective,Dominance Based, NSGA2);
+	EMOC_REGIST_ALGORITHM(Multiobjective,Dominance Based, NSGA3);
+	EMOC_REGIST_ALGORITHM(Multiobjective,Dominance Based, SPEA2);
+	EMOC_REGIST_ALGORITHM(Multiobjective,Dominance Based, SPEA2SDE);
+	EMOC_REGIST_ALGORITHM(Multiobjective,Dominance Based, tDEA);
 
 	// Indicator Based Algorithms
-	EMOC_REGIST_ALGORITHM(Indicator Based, IBEA);
-	EMOC_REGIST_ALGORITHM(Indicator Based, HypE);
-	EMOC_REGIST_ALGORITHM(Indicator Based, SMSEMOA);
+	EMOC_REGIST_ALGORITHM(Multiobjective,Indicator Based, IBEA);
+	EMOC_REGIST_ALGORITHM(Multiobjective,Indicator Based, HypE);
+	EMOC_REGIST_ALGORITHM(Multiobjective,Indicator Based, SMSEMOA);
 
+	// Single Objective Algorithms
+	EMOC_REGIST_ALGORITHM(Singleobjective, Single Objective, GA);
+	EMOC_REGIST_ALGORITHM(Singleobjective, Single Objective, DifferentialEvolution);
 }

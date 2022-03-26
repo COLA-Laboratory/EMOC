@@ -9,6 +9,8 @@ namespace emoc{
 	// init function for problem names' lists
 	void InitProblemCategoryList(std::vector<std::string>& problem_category_list);
 	// init function for some other lists
+	void InitSingleDisplayList(std::vector<char*>& display_names);
+	void InitMultiDisplayList(std::vector<char*>& display_names);
 	void InitDisplayList(std::vector<char*>& display_names);
 	void InitFormatList(std::vector<char*>& format_names);
 	void InitHypothesisList(std::vector<char*>& hypothesis_names);
@@ -20,6 +22,7 @@ namespace emoc{
 	void HelpMarker(const char* desc);
 
 	// parameter validity check
+	bool CheckOptimizationType(std::vector<std::string> algorithms, std::vector<std::string> problems, std::string &description, int *optimization_type = nullptr);
 	bool CheckProblemParameters(const std::string& problem, int D, int M, int N, int Evaluation, std::string &description);
 	bool CheckTestPlotSettings(int size_x, int size_y, int offset_x, int offset_y, std::string& description);
 	bool CheckExpSettings(int thread_num, int runs_num, int save_interval, std::string& description);

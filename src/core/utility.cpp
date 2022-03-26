@@ -657,89 +657,176 @@ namespace emoc {
 
 	void CollectSingleThreadResult(int run_id, int thread_id, EMOCParameters para)
 	{
-		Global* g = EMOCManager::Instance()->GetGlobalSetting(thread_id);
-		int obj_num = g->obj_num_;
-		int pop_num = g->algorithm_->GetRealPopNum();
-		std::string problem_name = para.problem_name;
-		HVCalculator hv_calculator(obj_num, pop_num);
+		if (para.objective_num > 1)				// multi-objective
+		{
+			Global* g = EMOCManager::Instance()->GetGlobalSetting(thread_id);
+			int obj_num = g->obj_num_;
+			int pop_num = g->algorithm_->GetRealPopNum();
+			std::string problem_name = para.problem_name;
+			HVCalculator hv_calculator(obj_num, pop_num);
 
-		double igd = CalculateIGD(g->parent_population_.data(), pop_num, obj_num, problem_name);
-		double hv = hv_calculator.Calculate(g->parent_population_.data(), pop_num, obj_num, problem_name);
-		double gd = CalculateGD(g->parent_population_.data(), pop_num, obj_num, problem_name);
-		double spacing = CalculateSpacing(g->parent_population_.data(), pop_num, obj_num);
-		double igdplus = CalculateIGDPlus(g->parent_population_.data(), pop_num, obj_num, problem_name);
-		double gdplus = CalculateGDPlus(g->parent_population_.data(), pop_num, obj_num, problem_name);
+			double igd = CalculateIGD(g->parent_population_.data(), pop_num, obj_num, problem_name);
+			double hv = hv_calculator.Calculate(g->parent_population_.data(), pop_num, obj_num, problem_name);
+			double gd = CalculateGD(g->parent_population_.data(), pop_num, obj_num, problem_name);
+			double spacing = CalculateSpacing(g->parent_population_.data(), pop_num, obj_num);
+			double igdplus = CalculateIGDPlus(g->parent_population_.data(), pop_num, obj_num, problem_name);
+			double gdplus = CalculateGDPlus(g->parent_population_.data(), pop_num, obj_num, problem_name);
 
-		EMOCSingleThreadResult result;
-		int count = EMOCManager::Instance()->GetSingleThreadResultSize();
-		result.para = para;
-		result.description = para.algorithm_name + " on " + para.problem_name + " Run" + std::to_string(count);
-		result.last_igd = igd;
-		result.last_hv = hv;
-		result.last_gd = gd;
-		result.last_spacing = spacing;
-		result.last_igdplus = igdplus;
-		result.last_gdplus = gdplus;
-		result.runtime = g->algorithm_->GetRuntime();
-		result.pop_num = g->algorithm_->GetRealPopNum();
-		result.max_iteration = g->iteration_num_;
-		result.igd_history[result.max_iteration] = igd;
-		result.hv_history[result.max_iteration] = hv;
-		EMOCManager::Instance()->AddSingleThreadResult(result);
-		if (EMOCManager::Instance()->GetIsGUI()) UIPanelManager::Instance()->AddAvailSingleThreadResult(result.description);
-		printf("run %d time: %fs   igd: %f \n", run_id, result.runtime, igd);
+			EMOCSingleThreadResult result;
+			int count = EMOCManager::Instance()->GetSingleThreadResultSize();
+			result.para = para;
+			result.description = para.algorithm_name + " on " + para.problem_name + " Run" + std::to_string(count);
+			result.last_igd = igd;
+			result.last_hv = hv;
+			result.last_gd = gd;
+			result.last_spacing = spacing;
+			result.last_igdplus = igdplus;
+			result.last_gdplus = gdplus;
+			result.best_value = -1;
+			result.runtime = g->algorithm_->GetRuntime();
+			result.pop_num = g->algorithm_->GetRealPopNum();
+			result.max_iteration = g->iteration_num_;
+			result.igd_history[result.max_iteration] = igd;
+			result.hv_history[result.max_iteration] = hv;
+			EMOCManager::Instance()->AddSingleThreadResult(result);
+			if (EMOCManager::Instance()->GetIsGUI()) UIPanelManager::Instance()->AddAvailSingleThreadResult(result.description);
+			printf("run %d time: %fs   igd: %f \n", run_id, result.runtime, igd); 
+		}
+		else if (para.objective_num == 1)		// single-objective
+		{
+			Global* g = EMOCManager::Instance()->GetGlobalSetting(thread_id);
+			std::string problem_name = para.problem_name;
+
+			EMOCSingleThreadResult result;
+			int count = EMOCManager::Instance()->GetSingleThreadResultSize();
+			result.para = para;
+			result.description = para.algorithm_name + " on " + para.problem_name + " Run" + std::to_string(count);
+			result.last_igd = -1;
+			result.last_hv = -1;
+			result.last_gd = -1;
+			result.last_spacing = -1;
+			result.last_igdplus = -1;
+			result.last_gdplus = -1;
+			result.runtime = g->algorithm_->GetRuntime();
+			result.pop_num = g->algorithm_->GetRealPopNum();
+			result.max_iteration = g->iteration_num_;
+			result.igd_history[result.max_iteration] = -1;
+			result.hv_history[result.max_iteration] = -1;
+			result.best_value = g->parent_population_[0]->obj_[0];
+			EMOCManager::Instance()->AddSingleThreadResult(result);
+			if (EMOCManager::Instance()->GetIsGUI()) UIPanelManager::Instance()->AddAvailSingleThreadResult(result.description);
+			printf("run %d time: %fs   best value: %f \n", run_id, result.runtime, result.best_value);
+		}
 	}
 
 	void CollectMultiThreadResult(int run_id, int parameter_id, int thread_id)
 	{
 		Global* g = EMOCManager::Instance()->GetGlobalSetting(thread_id);
-		std::string problem = g->problem_name_;
-		int dec_num = g->dec_num_;
-		int obj_num = g->obj_num_;
-		int pop_num = g->algorithm_->GetRealPopNum();
-		HVCalculator hv_calculator(obj_num, pop_num);
+		// TODO: differentiate single-obj and multi-obj
 
-		double igd = CalculateIGD(g->parent_population_.data(), pop_num, obj_num, problem);
-		double hv = hv_calculator.Calculate(g->parent_population_.data(), pop_num, obj_num, problem);
-		double gd = CalculateGD(g->parent_population_.data(), pop_num, obj_num, problem);
-		double spacing = CalculateSpacing(g->parent_population_.data(), pop_num, obj_num);
-		double igdplus = CalculateIGDPlus(g->parent_population_.data(), pop_num, obj_num, problem);
-		double gdplus = CalculateGDPlus(g->parent_population_.data(), pop_num, obj_num, problem);
-		double runtime = g->algorithm_->GetRuntime();
-
-		// In experiment module, we record the result when it is really finished
-		if (g->current_evaluation_ >= g->max_evaluation_)
+		if (g->obj_num_ > 1)				// multi-objective
 		{
-			EMOCMultiThreadResult &res = EMOCManager::Instance()->GetMultiThreadResult(parameter_id);
-			res.runtime.metric_history[run_id] = runtime;
-			res.igd.metric_history[run_id] = igd;
-			res.hv.metric_history[run_id] = hv;
-			res.gd.metric_history[run_id] = gd;
-			res.spacing.metric_history[run_id] = spacing;
-			res.igdplus.metric_history[run_id] = igdplus;
-			res.gdplus.metric_history[run_id] = gdplus;
-			res.runtime.is_record[run_id] = true;
-			res.igd.is_record[run_id] = true;
-			res.hv.is_record[run_id] = true;
-			res.gd.is_record[run_id] = true;
-			res.spacing.is_record[run_id] = true;
-			res.igdplus.is_record[run_id] = true;
-			res.gdplus.is_record[run_id] = true;
+			std::string problem = g->problem_name_;
+			int dec_num = g->dec_num_;
+			int obj_num = g->obj_num_;
+			int pop_num = g->algorithm_->GetRealPopNum();
+			HVCalculator hv_calculator(obj_num, pop_num);
 
-			// update statistic result only in gui mode
-			if (EMOCManager::Instance()->GetIsGUI())
+			double igd = CalculateIGD(g->parent_population_.data(), pop_num, obj_num, problem);
+			double hv = hv_calculator.Calculate(g->parent_population_.data(), pop_num, obj_num, problem);
+			double gd = CalculateGD(g->parent_population_.data(), pop_num, obj_num, problem);
+			double spacing = CalculateSpacing(g->parent_population_.data(), pop_num, obj_num);
+			double igdplus = CalculateIGDPlus(g->parent_population_.data(), pop_num, obj_num, problem);
+			double gdplus = CalculateGDPlus(g->parent_population_.data(), pop_num, obj_num, problem);
+			double runtime = g->algorithm_->GetRuntime();
+
+			// In experiment module, we record the result when it is really finished
+			if (g->current_evaluation_ >= g->max_evaluation_)
 			{
-				// update counter, mean, std, etc...
-				UpdateExpResult(res, run_id, parameter_id);
+				EMOCMultiThreadResult& res = EMOCManager::Instance()->GetMultiThreadResult(parameter_id);
+				res.runtime.metric_history[run_id] = runtime;
+				res.igd.metric_history[run_id] = igd;
+				res.hv.metric_history[run_id] = hv;
+				res.gd.metric_history[run_id] = gd;
+				res.spacing.metric_history[run_id] = spacing;
+				res.igdplus.metric_history[run_id] = igdplus;
+				res.gdplus.metric_history[run_id] = gdplus;
+				res.best_value.metric_history[run_id] = -1;
+				res.runtime.is_record[run_id] = true;
+				res.igd.is_record[run_id] = true;
+				res.hv.is_record[run_id] = true;
+				res.gd.is_record[run_id] = true;
+				res.spacing.is_record[run_id] = true;
+				res.igdplus.is_record[run_id] = true;
+				res.gdplus.is_record[run_id] = true;
+				res.best_value.is_record[run_id] = true;
 
-				// update hypothesis test data
-				UpdateExpStatTest(parameter_id);
+				// update statistic result only in gui mode
+				if (EMOCManager::Instance()->GetIsGUI())
+				{
+					// update counter, mean, std, etc...
+					UpdateExpResult(res, run_id, parameter_id);
+
+					// update hypothesis test data
+					UpdateExpStatTest(parameter_id);
+				}
 			}
-		}
 
-		std::string print_problem = problem + "_" + std::to_string(obj_num) + "_" + std::to_string(dec_num);
-		printf("current thread id : %d, parameter: %d runs: %d, runtime: %f igd:%f algorithm:%s, problem:%s\n",
-			thread_id, parameter_id, run_id, runtime, igd, g->algorithm_name_.c_str(), print_problem.c_str());
+			std::string print_problem = problem + "_" + std::to_string(obj_num) + "_" + std::to_string(dec_num);
+			printf("current thread id : %d, parameter: %d runs: %d, runtime: %f igd:%f algorithm:%s, problem:%s\n",
+				thread_id, parameter_id, run_id, runtime, igd, g->algorithm_name_.c_str(), print_problem.c_str());
+		}
+		else if (g->obj_num_ == 1)
+		{
+			std::string problem = g->problem_name_;
+			int dec_num = g->dec_num_;
+			int obj_num = g->obj_num_;
+			int pop_num = g->algorithm_->GetRealPopNum();
+
+			double igd = -1;
+			double hv = -1;
+			double gd = -1;
+			double spacing = -1;
+			double igdplus = -1;
+			double gdplus = -1;
+			double runtime	= g->algorithm_->GetRuntime();
+
+			// In experiment module, we record the result when it is really finished
+			if (g->current_evaluation_ >= g->max_evaluation_)
+			{
+				EMOCMultiThreadResult& res = EMOCManager::Instance()->GetMultiThreadResult(parameter_id);
+				res.runtime.metric_history[run_id]	= runtime;
+				res.igd.metric_history[run_id] = igd;
+				res.hv.metric_history[run_id] = hv;
+				res.gd.metric_history[run_id] = gd;
+				res.spacing.metric_history[run_id] = spacing;
+				res.igdplus.metric_history[run_id] = igdplus;
+				res.gdplus.metric_history[run_id] = gdplus;
+				res.best_value.metric_history[run_id] = g->parent_population_[0]->obj_[0];
+				res.runtime.is_record[run_id] = true;
+				res.igd.is_record[run_id] = true;
+				res.hv.is_record[run_id] = true;
+				res.gd.is_record[run_id] = true;
+				res.spacing.is_record[run_id] = true;
+				res.igdplus.is_record[run_id] = true;
+				res.gdplus.is_record[run_id] = true;
+				res.best_value.is_record[run_id] = true;
+
+				// update statistic result only in gui mode
+				if (EMOCManager::Instance()->GetIsGUI())
+				{
+					// update counter, mean, std, etc...
+					UpdateExpResult(res, run_id, parameter_id);
+
+					// update hypothesis test data
+					UpdateExpStatTest(parameter_id);
+				}
+			}
+
+			std::string print_problem = problem + "_" + std::to_string(obj_num) + "_" + std::to_string(dec_num);
+			printf("current thread id : %d, parameter: %d runs: %d, runtime: %f best_value:%f algorithm:%s, problem:%s\n",
+				thread_id, parameter_id, run_id, runtime, g->parent_population_[0]->obj_[0], g->algorithm_name_.c_str(), print_problem.c_str());
+		}
 	}
 
 	int GetBestParameterIndex(int start, int end, const std::string& metric, const std::string& format)
@@ -858,6 +945,15 @@ namespace emoc {
 			if (res.gdplus.metric_mean_signrank[index] == -2) res.gdplus.metric_mean_signrank[index] = is_diff_signrank ? (res.gdplus.metric_mean < compared_res.gdplus.metric_mean ? 1 : -1) : 0;
 			if (res.gdplus.metric_median_signrank[index] == -2)res.gdplus.metric_median_signrank[index] = is_diff_signrank ? (res.gdplus.metric_median < compared_res.gdplus.metric_median ? 1 : -1) : 0;
 		}
+		else if (metric == "BestValue")
+		{
+			bool is_diff_ranksum = RankSumTest(res.best_value.metric_history, compared_res.best_value.metric_history);
+			bool is_diff_signrank = SignRankTest(res.best_value.metric_history, compared_res.best_value.metric_history);
+			if (res.best_value.metric_mean_ranksum[index] == -2) res.best_value.metric_mean_ranksum[index] = is_diff_ranksum ? (res.best_value.metric_mean < compared_res.best_value.metric_mean ? 1 : -1) : 0;
+			if (res.best_value.metric_median_ranksum[index] == -2)res.best_value.metric_median_ranksum[index] = is_diff_ranksum ? (res.best_value.metric_median < compared_res.best_value.metric_median ? 1 : -1) : 0;
+			if (res.best_value.metric_mean_signrank[index] == -2) res.best_value.metric_mean_signrank[index] = is_diff_signrank ? (res.best_value.metric_mean < compared_res.best_value.metric_mean ? 1 : -1) : 0;
+			if (res.best_value.metric_median_signrank[index] == -2)res.best_value.metric_median_signrank[index] = is_diff_signrank ? (res.best_value.metric_median < compared_res.best_value.metric_median ? 1 : -1) : 0;
+		}
 		else
 		{
 			// TODO... ADD MORE METRICS
@@ -899,6 +995,8 @@ namespace emoc {
 		int igdplusmedian_best_index = GetBestParameterIndex(range_start, range_end, "IGDPlus", "Median");
 		int gdplusmean_best_index = GetBestParameterIndex(range_start, range_end, "GDPlus", "Mean");
 		int gdplusmedian_best_index = GetBestParameterIndex(range_start, range_end, "GDPlus", "Median");
+		int bestvalue_mean_best_index = GetBestParameterIndex(range_start, range_end, "BestValue", "Mean");
+		int bestvalue_median_best_index = GetBestParameterIndex(range_start, range_end, "BestValue", "Median");
 
 		for (int i = range_start; i < range_end; i++)
 		{
@@ -914,6 +1012,7 @@ namespace emoc {
 				StatisticTestAccordingMetric(res, default_compared_res, "Spacing", "Default");
 				StatisticTestAccordingMetric(res, default_compared_res, "IGDPlus", "Default");
 				StatisticTestAccordingMetric(res, default_compared_res, "GDPlus", "Default");
+				StatisticTestAccordingMetric(res, default_compared_res, "BestValue", "Default");
 			}
 
 			// mean best comparision
@@ -952,6 +1051,11 @@ namespace emoc {
 				EMOCMultiThreadResult& meanbest_compared_res = EMOCManager::Instance()->GetMultiThreadResult(gdplusmean_best_index);
 				StatisticTestAccordingMetric(res, meanbest_compared_res, "GDPlus", "Mean");
 			}
+			if (i != bestvalue_mean_best_index)
+			{
+				EMOCMultiThreadResult& meanbest_compared_res = EMOCManager::Instance()->GetMultiThreadResult(bestvalue_mean_best_index);
+				StatisticTestAccordingMetric(res, meanbest_compared_res, "BestValue", "Mean");
+			}
 
 			// median best comparision
 			if (i != runtimemedian_best_index)
@@ -989,6 +1093,11 @@ namespace emoc {
 				EMOCMultiThreadResult& medianbest_compared_res = EMOCManager::Instance()->GetMultiThreadResult(gdplusmedian_best_index);
 				StatisticTestAccordingMetric(res, medianbest_compared_res, "GDPlus", "Median");
 			}
+			if (i != bestvalue_median_best_index)
+			{
+				EMOCMultiThreadResult& medianbest_compared_res = EMOCManager::Instance()->GetMultiThreadResult(bestvalue_median_best_index);
+				StatisticTestAccordingMetric(res, medianbest_compared_res, "BestValue", "Median");
+			}
 		}
 	}
 
@@ -1004,6 +1113,7 @@ namespace emoc {
 		UpdateExpMetricStat(res.spacing.metric_history, res.spacing.is_record, res.spacing.metric_mean, res.spacing.metric_std, res.spacing.metric_median, res.spacing.metric_iqr);
 		UpdateExpMetricStat(res.igdplus.metric_history, res.igdplus.is_record, res.igdplus.metric_mean, res.igdplus.metric_std, res.igdplus.metric_median, res.igdplus.metric_iqr);
 		UpdateExpMetricStat(res.gdplus.metric_history, res.gdplus.is_record, res.gdplus.metric_mean, res.gdplus.metric_std, res.gdplus.metric_median, res.gdplus.metric_iqr);
+		UpdateExpMetricStat(res.best_value.metric_history, res.best_value.is_record, res.best_value.metric_mean, res.best_value.metric_std, res.best_value.metric_median, res.best_value.metric_iqr);
 	}
 
 	void UpdateExpMetricStat(std::vector<double>& indicator_history, std::vector<bool>& is_indicator_record, double& mean, double& std, double& median, double& iqr)

@@ -8,3 +8,8 @@
 #include "problem/moeadde_f/moeadde_f.h"
 #include "problem/immoea_f/immoea_f.h"
 #include "problem/moeadm2m_f/moeadm2m_f.h"
+
+#include "problem/sphere/sphere.h"
+#include "problem/ackley/ackley.h"
+#include "problem/rastrigin/rastrigin.h"
+#include "problem/griewank/griewank.h"

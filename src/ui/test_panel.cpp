@@ -217,11 +217,12 @@ namespace emoc {
 				para.runs_num = 1;
 				para.is_open_multithread = false;
 
+				bool is_optimization_legal = CheckOptimizationType({ para.algorithm_name }, { para.problem_name }, description);
 				bool is_valid1 = CheckProblemParameters(para.problem_name, D, M, N, Evaluation, description);
 				bool is_valid2 = CheckTestPlotSettings(plot_size[0], plot_size[1], plot_position[0], plot_position[1], description);
 
 				// start to run when the parameter is valid
-				if (is_valid1 && is_valid2)
+				if (is_optimization_legal && is_valid1 && is_valid2)
 				{
 					EMOCManager::Instance()->SetTaskParameters(para);
 					std::thread algorithm_thread(&EMOCManager::Run, EMOCManager::Instance());
@@ -508,18 +509,54 @@ namespace emoc {
 		else if (col_name == "Runtime")
 			ImGui::Text((std::to_string(res.runtime) + "s").c_str());
 		else if (col_name == "IGD")
-			ImGui::Text(std::to_string(res.last_igd).c_str());
+		{
+			if (std::fabs(res.last_igd + 1) < EMOC_EPS)
+				ImGui::Text("None");
+			else
+				ImGui::Text(std::to_string(res.last_igd).c_str());
+		}
 		else if (col_name == "HV")
-			ImGui::Text(std::to_string(res.last_hv).c_str());
+		{
+			if (std::fabs(res.last_hv + 1) < EMOC_EPS)
+				ImGui::Text("None");
+			else
+				ImGui::Text(std::to_string(res.last_hv).c_str());
+		}
 		else if (col_name == "GD")
-			ImGui::Text(std::to_string(res.last_gd).c_str());
+		{
+			if (std::fabs(res.last_gd + 1) < EMOC_EPS)
+				ImGui::Text("None");
+			else
+				ImGui::Text(std::to_string(res.last_gd).c_str());
+		}
 		else if (col_name == "Spacing")
-			ImGui::Text(std::to_string(res.last_spacing).c_str());
+		{
+			if (std::fabs(res.last_spacing + 1) < EMOC_EPS)
+				ImGui::Text("None");
+			else
+				ImGui::Text(std::to_string(res.last_spacing).c_str());
+		}
 		else if (col_name == "IGDPlus")
-			ImGui::Text(std::to_string(res.last_igdplus).c_str());
+		{
+			if (std::fabs(res.last_igdplus + 1) < EMOC_EPS)
+				ImGui::Text("None");
+			else
+				ImGui::Text(std::to_string(res.last_igdplus).c_str());
+		}
 		else if (col_name == "GDPlus")
-			ImGui::Text(std::to_string(res.last_gdplus).c_str());
-
+		{
+			if (std::fabs(res.last_gdplus + 1) < EMOC_EPS)
+				ImGui::Text("None");
+			else
+				ImGui::Text(std::to_string(res.last_gdplus).c_str());
+		}
+		else if (col_name == "BestValue")
+		{
+			if (std::fabs(res.best_value + 1) < EMOC_EPS)
+				ImGui::Text("None");
+			else
+				ImGui::Text(std::to_string(res.best_value).c_str());
+		}
 	}
 
 	void TestPanel::DisplaySelectedRun(int index)

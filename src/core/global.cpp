@@ -87,12 +87,13 @@ namespace emoc {
 
 	void Global::Init()
 	{
-		AllocateMemory();
-
 		// Because the initialization of algorithm needs the Global object has been created,
 		// we need delay the following function after Global has been created and call it before Start().
 		InitializeProblem();
 		InitializeAlgorithm();
+
+		// allocate memory for all population
+		AllocateMemory();
 
 		// set decision boundary
 		SetDecBound();

@@ -5,6 +5,8 @@
 #include <iostream>
 #include <thread>
 #include <algorithm>
+#include <unordered_map>
+#include <unordered_set>
 
 #include "core/emoc_manager.h"
 #include "imgui.h"
@@ -47,6 +49,70 @@ namespace emoc {
 		}
 	}
 
+	bool CheckOptimizationType(std::vector<std::string> algorithms, std::vector<std::string> problems, std::string& description, int* optimization_type)
+	{
+		bool res = true;
+		int algorithm_type = -1, problem_type = -1; // 0:single-objective, 1:multi-objective
+		std::unordered_set<std::string> &single_objective_algorithm = AlgorithmFactory::Instance()->GetSingleObjectiveAlgorithms();
+		std::unordered_set<std::string> &multi_objective_algorithm = AlgorithmFactory::Instance()->GetMultiObjectiveAlgorithms();
+		std::unordered_set<std::string> &single_objective_problem = ProblemFactory::Instance()->GetSingleObjectiveProblems();
+		std::unordered_set<std::string> &multi_objective_problem = ProblemFactory::Instance()->GetMultiObjectiveProblems();
+
+		// whether algorithms contaion both single-objective and multi-objective
+		for (int i = 0; i < algorithms.size(); i++)
+		{
+			if (!res) break;
+
+			int current_type;
+			std::string current_algorithm = algorithms[i];
+			if (single_objective_algorithm.find(current_algorithm) != single_objective_algorithm.end())
+				current_type = 0;
+			else if (multi_objective_algorithm.find(current_algorithm) != multi_objective_algorithm.end())
+				current_type = 1;
+			
+			if (algorithm_type != -1 && current_type != algorithm_type)
+			{
+				res = false;
+				description = "EMOC cannot do multi-objective optimization and single-objective optimization together!\n\n";
+			}
+			algorithm_type = current_type;
+		}
+
+		// whether problems contaion both single-objective and multi-objective
+		for (int i = 0; i < problems.size(); i++)
+		{
+			if (!res) break;
+
+			int current_type;
+			std::string current_problem = problems[i];
+			if (single_objective_problem.find(current_problem) != single_objective_problem.end())
+				current_type = 0;
+			else if (multi_objective_problem.find(current_problem) != multi_objective_problem.end())
+				current_type = 1;
+
+			if (problem_type != -1 && current_type != problem_type)
+			{
+				res = false;
+				description = "EMOC cannot do multi-objective optimization and single-objective optimization together!\n\n";
+			}
+			problem_type = current_type;
+		}
+
+		// whether algorithm type is different from problem type
+		if (res)
+		{
+			if (algorithm_type != problem_type)
+			{
+				res = false;
+				description = "EMOC cannot do multi-objective optimization and single-objective optimization together!\n\n";
+			}
+			if(optimization_type != nullptr)
+				*optimization_type = algorithm_type;
+		}
+	
+		return res;
+	}
+
 	void InitAlgorithmCategoryList(std::vector<std::string>& algorithm_category_list)
 	{
 		std::unordered_map<std::string, std::vector<char*>>& IMPLEMENTED_ALGORITHMS = AlgorithmFactory::Instance()->GetImplementedAlgorithmsName();
@@ -67,8 +133,16 @@ namespace emoc {
 		std::sort(problem_category_list.begin(), problem_category_list.end());
 	}
 
-	void InitDisplayList(std::vector<char*>& display_names)
+	void InitSingleDisplayList(std::vector<char*>& display_names)
 	{
+		display_names.clear();
+		display_names.push_back("Runtime");
+		display_names.push_back("BestValue");
+	}
+
+	void InitMultiDisplayList(std::vector<char*>& display_names)
+	{
+		display_names.clear();
 		display_names.push_back("Runtime");
 		display_names.push_back("IGD");
 		display_names.push_back("HV");
@@ -76,6 +150,19 @@ namespace emoc {
 		display_names.push_back("Spacing");
 		display_names.push_back("IGDPlus");
 		display_names.push_back("GDPlus");
+	}
+
+	void InitDisplayList(std::vector<char*>& display_names)
+	{
+		display_names.clear();
+		display_names.push_back("Runtime");
+		display_names.push_back("IGD");
+		display_names.push_back("HV");
+		display_names.push_back("GD");
+		display_names.push_back("Spacing");
+		display_names.push_back("IGDPlus");
+		display_names.push_back("GDPlus");
+		display_names.push_back("BestValue");
 	}
 
 	void InitFormatList(std::vector<char*>& format_names)
@@ -137,7 +224,6 @@ namespace emoc {
 			c = tolower(c);
 		}
 
-		//std::cout << problem_name << std::endl;
 		if (problem_name.size() >= 3 && problem_name.substr(0,3) == "zdt")
 		{
 			if (M != 2)
@@ -333,10 +419,19 @@ namespace emoc {
 				}
 			}
 		}
+		else if(problem_name=="sphere"||problem_name=="ackley"||problem_name=="griewank"||problem_name=="levy"||problem_name=="rastrigin"||problem_name=="schwefel")
+		{
+			if (M != 1)
+			{
+				description = "The M parameter of " + problem + " must be 1!\n\n";
+				res = false;
+			}
+		}
 		else
 		{
-			// TODO: ADD MORE TEST PROBLEMS
+		// TODO: ADD MORE TEST PROBLEMS
 		}
+
 
 		return res;
 	}
@@ -435,6 +530,10 @@ namespace emoc {
 		else if (para == "GDPlus")
 		{
 			GetComparedMetric(format, res.gdplus.metric_mean, res.gdplus.metric_std, res.gdplus.metric_median, res.gdplus.metric_iqr, metric1, metric2);
+		}
+		else if(para == "BestValue")
+		{
+			GetComparedMetric(format, res.best_value.metric_mean, res.best_value.metric_std, res.best_value.metric_median, res.best_value.metric_iqr, metric1, metric2);
 		}
 		else
 		{

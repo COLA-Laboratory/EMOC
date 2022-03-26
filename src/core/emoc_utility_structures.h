@@ -74,6 +74,9 @@ namespace emoc
 		MetricHistory igdplus;
 		MetricHistory gdplus;
 
+		// for single objective
+		MetricHistory best_value;
+
 		int valid_res_count = 0;
 
 		EMOCMultiThreadResult()
@@ -97,6 +100,8 @@ namespace emoc
 			igdplus.is_record.resize(run_num, false);
 			gdplus.metric_history.resize(run_num, 0.0);
 			gdplus.is_record.resize(run_num, false);
+			best_value.metric_history.resize(run_num, 0.0);
+			best_value.is_record.resize(run_num, false);
 		}
 	};
 
@@ -111,6 +116,7 @@ namespace emoc
 		double last_spacing;
 		double last_igdplus;
 		double last_gdplus;
+		double best_value;
 		double runtime;
 		double pop_num;
 		int max_iteration;

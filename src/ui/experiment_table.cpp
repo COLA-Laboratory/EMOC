@@ -383,6 +383,11 @@ namespace emoc{
 				hypothesis_symbol = GetHypothesisSymbol(res.gdplus.metric_mean_ranksum[comp_index], res.gdplus.metric_median_ranksum[comp_index], res.gdplus.metric_mean_signrank[comp_index], res.gdplus.metric_median_signrank[comp_index], hypothesis, format);
 				SetTableContent(display, format, res.gdplus.metric_mean, res.gdplus.metric_std, res.gdplus.metric_median, res.gdplus.metric_iqr);
 			}
+			else if (para == "BestValue")
+			{
+				hypothesis_symbol = GetHypothesisSymbol(res.best_value.metric_mean_ranksum[comp_index], res.best_value.metric_median_ranksum[comp_index], res.best_value.metric_mean_signrank[comp_index], res.best_value.metric_median_signrank[comp_index], hypothesis, format);
+				SetTableContent(display, format, res.best_value.metric_mean, res.best_value.metric_std, res.best_value.metric_median, res.best_value.metric_iqr);
+			}
 			else
 			{
 				// TODO: ADD MORE METRICS
@@ -602,6 +607,21 @@ namespace emoc{
 						{
 							hypothesis_symbol = GetHypothesisSymbol(res.spacing.metric_mean_ranksum[comp_index], res.spacing.metric_median_ranksum[comp_index], res.spacing.metric_mean_signrank[comp_index], res.spacing.metric_median_signrank[comp_index], hypothesis_name, format_name);
 							SetTableContent(display, format_name, res.spacing.metric_mean, res.spacing.metric_std, res.spacing.metric_median, res.spacing.metric_iqr);
+						}
+						else if (para_name == "IGDPlus")
+						{
+							hypothesis_symbol = GetHypothesisSymbol(res.igdplus.metric_mean_ranksum[comp_index], res.igdplus.metric_median_ranksum[comp_index], res.igdplus.metric_mean_signrank[comp_index], res.igdplus.metric_median_signrank[comp_index], hypothesis_name, format_name);
+							SetTableContent(display, format_name, res.igdplus.metric_mean, res.igdplus.metric_std, res.igdplus.metric_median, res.igdplus.metric_iqr);
+						}
+						else if (para_name == "GDPlus")
+						{
+							hypothesis_symbol = GetHypothesisSymbol(res.gdplus.metric_mean_ranksum[comp_index], res.gdplus.metric_median_ranksum[comp_index], res.gdplus.metric_mean_signrank[comp_index], res.gdplus.metric_median_signrank[comp_index], hypothesis_name, format_name);
+							SetTableContent(display, format_name, res.gdplus.metric_mean, res.gdplus.metric_std, res.gdplus.metric_median, res.gdplus.metric_iqr);
+						}
+						else if (para_name == "BestValue")
+						{
+							hypothesis_symbol = GetHypothesisSymbol(res.best_value.metric_mean_ranksum[comp_index], res.best_value.metric_median_ranksum[comp_index], res.best_value.metric_mean_signrank[comp_index], res.best_value.metric_median_signrank[comp_index], hypothesis_name, format_name);
+							SetTableContent(display, format_name, res.best_value.metric_mean, res.best_value.metric_std, res.best_value.metric_median, res.best_value.metric_iqr);
 						}
 						else
 						{

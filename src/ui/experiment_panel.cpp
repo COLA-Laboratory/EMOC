@@ -203,13 +203,20 @@ namespace emoc {
 				//std::cout << "Consturct Table Time: " << (double)(end - start) / CLOCKS_PER_SEC << "s\n";
 
 				ConstructTasks();
+				int optimizaiton_type;
+				bool is_optimization_legal = CheckOptimizationType(selected_algorithms, selected_problems, description, &optimizaiton_type);
 				bool is_valid1 = CheckExpSettings(thread_num, run_num, save_interval, description);
 				bool is_valid2 = true;
 				for (int i = 0; i < table_problems.size(); i++)
 					is_valid2 &= CheckProblemParameters(table_problems[i], table_Ds[i], table_Ms[i], table_Ns[i], table_Evaluations[i], description);
 
+				// reset display names
+				display_index = 0;
+				if (optimizaiton_type == 0) InitSingleDisplayList(display_names);
+				else if (optimizaiton_type == 1) InitMultiDisplayList(display_names);
+
 				// start to run when the parameter is valid
-				if (is_valid1 && is_valid2)
+				if (is_optimization_legal && is_valid1 && is_valid2)
 				{
 					if (experiment_tasks.size() > 0)
 					{
