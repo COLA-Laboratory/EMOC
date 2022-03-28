@@ -17,8 +17,12 @@ namespace emoc {
 
 	private:
 		void Initialization();
-		void Crossover(Individual **parent_pop, Individual **offspring_pop);
-		void EnvironmentalSelection(Individual **parent_pop, Individual **mixed_pop);
+		void Mutation(Individual *parent, Individual *offspring);
+		double CalAnnealProb(double parent_fitness, double offspring_fitness);
+
+	private:
+		double T_;
+		std::vector<double> sigma_;
 	};
 
 }

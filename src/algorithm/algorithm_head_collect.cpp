@@ -39,4 +39,5 @@ namespace emoc {
 	// Single Objective Algorithms
 	EMOC_REGIST_ALGORITHM(Singleobjective, Single Objective, GA);
 	EMOC_REGIST_ALGORITHM(Singleobjective, Single Objective, DifferentialEvolution);
+	EMOC_REGIST_ALGORITHM(Singleobjective, Single Objective, SA);
 }

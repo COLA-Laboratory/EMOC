@@ -26,3 +26,4 @@
 #include "algorithm/nsga3/nsga3.h"
 #include "algorithm/ga/ga.h"
 #include "algorithm/de/de.h"
+#include "algorithm/sa/sa.h"
