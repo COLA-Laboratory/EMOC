@@ -12,7 +12,7 @@
 
 namespace emoc {
 
-	Global::Global(const char *algorithn_name, const char *problem_name, int population_num,
+	Global::Global(const char* algorithn_name, const char* problem_name, int population_num,
 		int dec_num, int obj_num, int max_evaluation, int thread_id, int output_interval, int run_id) :
 		dec_num_(dec_num),
 		obj_num_(obj_num),
@@ -28,7 +28,9 @@ namespace emoc {
 		problem_(nullptr),
 		algorithm_(nullptr),
 		run_id_(run_id),
-		thread_id_(thread_id)
+		thread_id_(thread_id),
+		is_customized_init_pop_(false),
+		is_customized_problem_(false)
 	{
 		// reserve population space
 		parent_population_.reserve(population_num);
@@ -50,20 +52,44 @@ namespace emoc {
 		DestroyMemory();
 	}
 
-	void Global::InitializePopulation(Individual **pop,int pop_num)
+	void Global::InitializePopulation(Individual** pop, int pop_num)
 	{
+		// When the initial population is set before algorithm starts, return directly.
+		if (iteration_num_ == 0 && is_customized_init_pop_)
+			return;
+
 		for (int i = 0; i < pop_num; ++i)
 		{
 			InitializeIndividual(pop[i]);
 		}
 	}
 
-	void Global::InitializeIndividual(Individual *ind)
+	void Global::InitializeIndividual(Individual* ind)
 	{
 		for (int i = 0; i < dec_num_; ++i)
 		{
 			ind->dec_[i] = rndreal(dec_lower_bound_[i], dec_upper_bound_[i]);
 		}
+	}
+
+	void Global::SetCustomProblem(Problem* problem)
+	{
+		problem_ = problem;
+		is_customized_problem_ = true;
+	}
+
+	void Global::SetCustomInitialPop(std::vector<std::vector<double>>& initial_pop)
+	{
+		int initial_pop_num = initial_pop.size();
+		int initial_dec_dim = initial_pop[0].size();
+		if (initial_pop_num > population_num_) throw std::runtime_error("initial population number is larger than the setted parameter!\n");
+		if (initial_dec_dim != dec_num_) throw std::runtime_error("initial population decision dimensions is not equal to the setted parameter!\n");
+
+		for (int i = 0; i < initial_pop_num; i++)
+			for (int j = 0; j < initial_dec_dim; j++)
+				parent_population_[i]->dec_[j] = initial_pop[i][j];
+
+		is_customized_init_pop_ = true;
 	}
 
 	void Global::Start()
@@ -73,7 +99,7 @@ namespace emoc {
 		bool is_experiment = EMOCManager::Instance()->GetIsExperiment();
 
 		// When test module in gui mode, we need to update the EMOC state.
-		if (is_gui &&!is_experiment)
+		if (is_gui && !is_experiment)
 		{
 			EMOCManager::Instance()->SetTestPause(false);
 			EMOCManager::Instance()->SetTestFinish(false);
@@ -89,7 +115,8 @@ namespace emoc {
 	{
 		// Because the initialization of algorithm needs the Global object has been created,
 		// we need delay the following function after Global has been created and call it before Start().
-		InitializeProblem();
+		if (!is_customized_problem_)
+			InitializeProblem();
 		InitializeAlgorithm();
 
 		// allocate memory for all population
@@ -110,7 +137,7 @@ namespace emoc {
 
 	void Global::InitializeProblem()
 	{
-		problem_ = ProblemFactory::Instance()->CreateProblemObject(problem_name_, dec_num_,obj_num_);
+		problem_ = ProblemFactory::Instance()->CreateProblemObject(problem_name_, dec_num_, obj_num_);
 		if (problem_ == nullptr)
 		{
 			std::cout << "The problem name " << problem_name_ << " is wrong, please check it again" << std::endl;

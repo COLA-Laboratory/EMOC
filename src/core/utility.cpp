@@ -13,7 +13,7 @@
 
 namespace emoc {
 
-	DominateReleation CheckDominance(Individual *ind1, Individual *ind2, int obj_num)
+	DominateReleation CheckDominance(Individual* ind1, Individual* ind2, int obj_num)
 	{
 		int flag1 = 0, flag2 = 0;
 
@@ -39,7 +39,7 @@ namespace emoc {
 		}
 	}
 
-	int WeaklyDominates(double *point1, double *point2, int obj_num)
+	int WeaklyDominates(double* point1, double* point2, int obj_num)
 	{
 		int i = 0, better = 1;
 		while (i < obj_num && better)
@@ -50,7 +50,7 @@ namespace emoc {
 		return better;
 	}
 
-	double CalEuclidianDistance(const double *a, const double *b, int dimension)
+	double CalEuclidianDistance(const double* a, const double* b, int dimension)
 	{
 		double distance = 0.0;
 		for (int i = 0; i < dimension; i++)
@@ -58,7 +58,7 @@ namespace emoc {
 		return sqrt(distance);
 	}
 
-	double CalPerpendicularDistance(double *a, double *weight, int dimension)
+	double CalPerpendicularDistance(double* a, double* weight, int dimension)
 	{
 		double sin = CalculateSin(a, weight, dimension);
 		double d2 = CalculateNorm(a, dimension);
@@ -69,10 +69,10 @@ namespace emoc {
 
 	double CalPerpendicularDistanceNormalization(double* a, double* weight, int dimension, double* ideal, double* nadir)
 	{
-		double *new_a = new double[dimension];
+		double* new_a = new double[dimension];
 		for (int i = 0; i < dimension; i++)
 			new_a[i] = (a[i] - ideal[i]) / (nadir[i] - ideal[i]);
-		
+
 		double sin = CalculateSin(a, weight, dimension);
 		double d2 = CalculateNorm(a, dimension);
 		d2 = d2 * sin;
@@ -95,7 +95,7 @@ namespace emoc {
 		return (int)ans;
 	}
 
-	double CalculateDotProduct(double *vector1, double *vector2, int dimension)
+	double CalculateDotProduct(double* vector1, double* vector2, int dimension)
 	{
 		double dot_product = 0;
 		for (int i = 0; i < dimension; i++)
@@ -104,18 +104,18 @@ namespace emoc {
 		return dot_product;
 	}
 
-	double CalculateCos(double *a, double *b, int dimension)
+	double CalculateCos(double* a, double* b, int dimension)
 	{
 		return CalculateDotProduct(a, b, dimension) / (CalculateNorm(a, dimension) * CalculateNorm(b, dimension));
 	}
 
-	double CalculateSin(double *a, double *b, int dimension)
+	double CalculateSin(double* a, double* b, int dimension)
 	{
 		double cos = CalculateCos(a, b, dimension);
 		return sqrt(1 - pow(cos, 2.0));
 	}
 
-	double CalculateNorm(double *vector, int dimension)
+	double CalculateNorm(double* vector, int dimension)
 	{
 		double norm = 0;
 		for (int i = 0; i < dimension; i++)
@@ -126,7 +126,7 @@ namespace emoc {
 		return sqrt(norm);
 	}
 
-	void UpdateIdealpoint(Individual *ind, double *ideal_point, int obj_num)
+	void UpdateIdealpoint(Individual* ind, double* ideal_point, int obj_num)
 	{
 		for (int i = 0; i < obj_num; i++)
 		{
@@ -135,7 +135,7 @@ namespace emoc {
 		}
 	}
 
-	void UpdateIdealpoint(Individual **pop, int pop_num, double *ideal_point, int obj_num)
+	void UpdateIdealpoint(Individual** pop, int pop_num, double* ideal_point, int obj_num)
 	{
 		for (int i = 0; i < obj_num; ++i)
 			ideal_point[i] = EMOC_INF;
@@ -150,7 +150,7 @@ namespace emoc {
 		}
 	}
 
-	void UpdateNadirpoint(Individual *ind, double *nadir_point, int obj_num)
+	void UpdateNadirpoint(Individual* ind, double* nadir_point, int obj_num)
 	{
 		for (int i = 0; i < obj_num; i++)
 		{
@@ -159,7 +159,7 @@ namespace emoc {
 		}
 	}
 
-	void UpdateNadirpoint(Individual **pop, int pop_num, double *nadir_point, int obj_num)
+	void UpdateNadirpoint(Individual** pop, int pop_num, double* nadir_point, int obj_num)
 	{
 		for (int i = 0; i < obj_num; ++i)
 			nadir_point[i] = -EMOC_INF;
@@ -219,7 +219,7 @@ namespace emoc {
 			{
 				double diff = fabs(ind->obj_[i] - ideal_point[i]) / (nadir_point[i] - ideal_point[i]);
 				if (weight_vector[i] < EMOC_EPS)
-					sum  += pow (diff / 0.000001, (double)p);
+					sum += pow(diff / 0.000001, (double)p);
 				else
 					sum += pow(diff / weight_vector[i], (double)p);
 			}
@@ -245,7 +245,7 @@ namespace emoc {
 		return fitness;
 	}
 
-	double CalInverseChebycheff(Individual *ind, double *weight_vector, double *ideal_point, int obj_num)
+	double CalInverseChebycheff(Individual* ind, double* weight_vector, double* ideal_point, int obj_num)
 	{
 		double fitness = 0, max = -1.0e+20;
 
@@ -267,7 +267,7 @@ namespace emoc {
 		return fitness;
 	}
 
-	double CalPBI(Individual *ind, double *weight_vector, double *ideal_point, int obj_num, double theta)
+	double CalPBI(Individual* ind, double* weight_vector, double* ideal_point, int obj_num, double theta)
 	{
 		theta == 0.0 ? 5.0 : theta;
 		double d1 = 0.0, d2 = 0.0, nl = 0.0;
@@ -299,7 +299,7 @@ namespace emoc {
 
 
 		start_ = clock();
-		FILE* fptr1 = nullptr, *fptr2 = nullptr;
+		FILE* fptr1 = nullptr, * fptr2 = nullptr;
 		char dataFileName[256];
 		char scriptFileName[256];
 		sprintf(dataFileName, "./plotfile/plot%d.txt", gen);
@@ -335,7 +335,7 @@ namespace emoc {
 				"set ylabel 'f2'\n"
 				"unset key\n"
 				"plot '%s' w p pt 6 ps 1 lc 3\n"
-				,gen, dataFileName);
+				, gen, dataFileName);
 		}
 		else if (obj_num == 3)
 		{
@@ -390,7 +390,7 @@ namespace emoc {
 		//std::cout << (double)end_ << " " << (double)start_ << "\n";
 		//std::cout << (double)(end_ - start_) / CLOCKS_PER_SEC << " total draw time:" << testTime << "\n";
 		//show for a short time
-        //Sleep(10);
+		//Sleep(10);
 	}
 
 	double** LoadPFData(int& pf_size, int obj_num, std::string problem_name)
@@ -400,7 +400,7 @@ namespace emoc {
 
 		// get problem name without number
 		int count = 0;
-		for (int i = problem_name.size() - 1;i >= 0;i--)
+		for (int i = problem_name.size() - 1; i >= 0; i--)
 		{
 			if (problem_name[i] >= '0' && problem_name[i] <= '9')
 				count++;
@@ -657,14 +657,16 @@ namespace emoc {
 
 	void CollectSingleThreadResult(int run_id, int thread_id, EMOCParameters para)
 	{
+		EMOCSingleThreadResult result;
+		Global* g = EMOCManager::Instance()->GetGlobalSetting(thread_id);
+		int dec_num = g->dec_num_;
+		int obj_num = g->obj_num_;
+		int pop_num = g->algorithm_->GetRealPopNum();
+		std::string problem_name = para.problem_name;
+
 		if (para.objective_num > 1)				// multi-objective
 		{
-			Global* g = EMOCManager::Instance()->GetGlobalSetting(thread_id);
-			int obj_num = g->obj_num_;
-			int pop_num = g->algorithm_->GetRealPopNum();
-			std::string problem_name = para.problem_name;
 			HVCalculator hv_calculator(obj_num, pop_num);
-
 			double igd = CalculateIGD(g->parent_population_.data(), pop_num, obj_num, problem_name);
 			double hv = hv_calculator.Calculate(g->parent_population_.data(), pop_num, obj_num, problem_name);
 			double gd = CalculateGD(g->parent_population_.data(), pop_num, obj_num, problem_name);
@@ -672,7 +674,6 @@ namespace emoc {
 			double igdplus = CalculateIGDPlus(g->parent_population_.data(), pop_num, obj_num, problem_name);
 			double gdplus = CalculateGDPlus(g->parent_population_.data(), pop_num, obj_num, problem_name);
 
-			EMOCSingleThreadResult result;
 			int count = EMOCManager::Instance()->GetSingleThreadResultSize();
 			result.para = para;
 			result.description = para.algorithm_name + " on " + para.problem_name + " Run" + std::to_string(count);
@@ -690,14 +691,10 @@ namespace emoc {
 			result.hv_history[result.max_iteration] = hv;
 			EMOCManager::Instance()->AddSingleThreadResult(result);
 			if (EMOCManager::Instance()->GetIsGUI()) UIPanelManager::Instance()->AddAvailSingleThreadResult(result.description);
-			printf("run %d time: %fs   igd: %f \n", run_id, result.runtime, igd); 
+			printf("run %d time: %fs   igd: %f \n", run_id, result.runtime, igd);
 		}
 		else if (para.objective_num == 1)		// single-objective
 		{
-			Global* g = EMOCManager::Instance()->GetGlobalSetting(thread_id);
-			std::string problem_name = para.problem_name;
-
-			EMOCSingleThreadResult result;
 			int count = EMOCManager::Instance()->GetSingleThreadResultSize();
 			result.para = para;
 			result.description = para.algorithm_name + " on " + para.problem_name + " Run" + std::to_string(count);
@@ -717,6 +714,33 @@ namespace emoc {
 			if (EMOCManager::Instance()->GetIsGUI()) UIPanelManager::Instance()->AddAvailSingleThreadResult(result.description);
 			printf("run %d time: %fs   best value: %f \n", run_id, result.runtime, result.best_value);
 		}
+
+		// set result for python dlls
+		EMOCGeneralResult py_res;
+		py_res.igd = result.last_igd;
+		py_res.hv = result.last_hv;
+		py_res.gd = result.last_igd;
+		py_res.spacing = result.last_igd;
+		py_res.igdplus = result.last_igd;
+		py_res.gdplus = result.last_igd;
+		py_res.runtime = result.runtime;
+		py_res.best_value = result.best_value;
+		py_res.pop_num = g->algorithm_->GetRealPopNum();
+
+		// record population information
+		py_res.pop_decs.clear();
+		py_res.pop_objs.clear();
+		for (int j = 0; j < py_res.pop_num; j++)
+		{
+			py_res.pop_decs.push_back(std::vector<double>(dec_num));
+			py_res.pop_objs.push_back(std::vector<double>(obj_num));
+			for (int k = 0; k < dec_num; k++)
+				py_res.pop_decs[j][k] = g->parent_population_[j]->dec_[k];
+
+			for (int k = 0; k < obj_num; k++)
+				py_res.pop_objs[j][k] = g->parent_population_[j]->obj_[k];
+		}
+		EMOCManager::Instance()->SetPythonResult(py_res);
 	}
 
 	void CollectMultiThreadResult(int run_id, int parameter_id, int thread_id)
@@ -789,13 +813,13 @@ namespace emoc {
 			double spacing = -1;
 			double igdplus = -1;
 			double gdplus = -1;
-			double runtime	= g->algorithm_->GetRuntime();
+			double runtime = g->algorithm_->GetRuntime();
 
 			// In experiment module, we record the result when it is really finished
 			if (g->current_evaluation_ >= g->max_evaluation_)
 			{
 				EMOCMultiThreadResult& res = EMOCManager::Instance()->GetMultiThreadResult(parameter_id);
-				res.runtime.metric_history[run_id]	= runtime;
+				res.runtime.metric_history[run_id] = runtime;
 				res.igd.metric_history[run_id] = igd;
 				res.hv.metric_history[run_id] = hv;
 				res.gd.metric_history[run_id] = gd;
@@ -970,7 +994,7 @@ namespace emoc {
 		bool is_ready = true;
 		for (int i = range_start; i < range_end; i++)
 		{
-			EMOCMultiThreadResult &res = EMOCManager::Instance()->GetMultiThreadResult(i);
+			EMOCMultiThreadResult& res = EMOCManager::Instance()->GetMultiThreadResult(i);
 			if (res.valid_res_count < res.runtime.metric_history.size())
 				is_ready = false;
 		}

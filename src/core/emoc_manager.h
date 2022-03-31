@@ -9,12 +9,12 @@
 #include "core/emoc_utility_structures.h"
 
 namespace emoc {
-	
+
 	class EMOCManager
 	{
 	public:
 		static EMOCManager* Instance();
-		
+
 		void Run();
 		void ExperimentModuleRun(std::vector<EMOCParameters> experiment_tasks, int thread_num);
 
@@ -39,6 +39,7 @@ namespace emoc {
 		inline void SetExperimentFinish(bool is_finish) { is_experiment_finish_ = is_finish; }
 		inline void SetMultiThreadDataState(bool state) { is_multithread_result_ready_ = state; }
 		inline void SetTaskParameters(const EMOCParameters& para) { para_ = para; is_para_set_ = true; }
+		inline void SetPythonResult(EMOCGeneralResult& py_res) { py_res_ = py_res; }
 
 		// Getters for some other private variables
 		inline Global* GetGlobalSetting(int index) { return g_GlobalSettingsArray[index]; }
@@ -47,12 +48,13 @@ namespace emoc {
 		inline int GetMultiThreadResultSize() { return (int)multi_thread_result_history_.size(); }
 		inline  EMOCSingleThreadResult& GetSingleThreadResult(int index) { return single_thread_result_historty_[index]; }
 		inline  EMOCMultiThreadResult& GetMultiThreadResult(int index) { return multi_thread_result_history_[index]; }
+		inline EMOCGeneralResult GetPythonResult() { return py_res_; }
 
 	private:
 		EMOCManager();
 		~EMOCManager();
-		EMOCManager(const EMOCManager &);
-		EMOCManager& operator=(const EMOCManager &);
+		EMOCManager(const EMOCManager&);
+		EMOCManager& operator=(const EMOCManager&);
 
 		// emoc run functions
 		void EMOCSingleThreadRun();
@@ -61,7 +63,7 @@ namespace emoc {
 
 	private:
 		// for release EMOCManager instance
-		class Garbo 
+		class Garbo
 		{
 		public:
 			Garbo() {};
@@ -100,6 +102,8 @@ namespace emoc {
 		// reserved Global arrays
 		std::vector<Global*> g_GlobalSettingsArray;
 
+		// optimization result information for python side 
+		EMOCGeneralResult py_res_;
 	};
 
 

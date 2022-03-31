@@ -10,6 +10,7 @@ namespace emoc
 	// EMOCParameters structure cannot forward declaration, so we put the definition here
 	struct EMOCParameters
 	{
+	public:
 		std::string algorithm_name;
 		std::string problem_name;
 		bool is_plot;
@@ -22,6 +23,11 @@ namespace emoc
 		int is_open_multithread;
 		int thread_num;
 
+		// custom problem and initial population variables for python dlls
+		Problem* custom_problem = nullptr;
+		std::vector<std::vector<double>> custom_initial_pop;
+
+	public:
 		EMOCParameters() :
 			algorithm_name("NSGA2"),
 			problem_name("ZDT1"),
@@ -38,6 +44,10 @@ namespace emoc
 		}
 
 		~EMOCParameters() {}
+
+		// custom problem and initial population function for python dlls
+		inline void SetProblem(Problem* problem) { custom_problem = problem; }
+		inline void SetInitialPop(std::vector<std::vector<double>> initial_pop) { custom_initial_pop = initial_pop; }
 	};
 
 
@@ -58,7 +68,7 @@ namespace emoc
 		double metric_mean = 0.0, metric_std = 0.0, metric_median = 0.0, metric_iqr = 0.0, metric_best = 0.0;
 
 		// [0]:mean best compared result [1]:median best compared result [2]:last column compared result
-		int metric_mean_ranksum[3] = { -2, -2, -2 }, metric_mean_signrank[3] = { -2, -2, -2 };			
+		int metric_mean_ranksum[3] = { -2, -2, -2 }, metric_mean_signrank[3] = { -2, -2, -2 };
 		int metric_median_ranksum[3] = { -2, -2 , -2 }, metric_median_signrank[3] = { -2, -2, -2 };
 	};
 
@@ -130,5 +140,22 @@ namespace emoc
 		std::unordered_map<int, double> gdplus_history;
 
 		EMOCSingleThreadResult() {}
+	};
+
+	// for python dlls
+	struct EMOCGeneralResult
+	{
+		double igd = 0.0;
+		double hv = 0.0;
+		double gd = 0.0;
+		double spacing = 0.0;
+		double igdplus = 0.0;
+		double gdplus = 0.0;
+		double runtime = 0.0;
+		double best_value = 0.0;
+
+		int pop_num = 0;
+		std::vector<std::vector<double>> pop_decs;
+		std::vector<std::vector<double>> pop_objs;
 	};
 }

@@ -40,7 +40,7 @@ namespace emoc {
 	{
 		if (is_para_set_ == false)
 			std::cout << "Task parameters are not set, running with default parameters!\n";
-		
+
 		if (para_.is_open_multithread)
 			EMOCMultiThreadRun();
 		else
@@ -51,7 +51,7 @@ namespace emoc {
 	void EMOCManager::ExperimentModuleRun(std::vector<EMOCParameters> experiment_tasks, int thread_num)
 	{
 		// Each experiment_task here can be separeted into 'run_num' small tasks which represent by EMOCExperimentTask
-		
+
 		// initialize experiment result
 		multi_thread_result_history_.clear();
 		for (int i = 0; i < experiment_tasks.size(); i++)
@@ -66,7 +66,7 @@ namespace emoc {
 		// print some task info
 		for (int i = 0; i < experiment_tasks.size(); i++)
 		{
-			std::cout <<  "----------TASK PARAMETER " <<i <<" ---------\n";
+			std::cout << "----------TASK PARAMETER " << i << " ---------\n";
 			std::cout << experiment_tasks[i].algorithm_name << "\n";
 			std::cout << experiment_tasks[i].problem_name << "\n";
 			std::cout << experiment_tasks[i].population_num << "\n";
@@ -77,7 +77,7 @@ namespace emoc {
 		}
 
 		std::vector<std::vector<EMOCExperimentTask>> emoc_thread_tasks(thread_num);
-		
+
 		int task_count = 0;
 		for (int i = 0; i < experiment_tasks.size(); i++)
 		{
@@ -103,7 +103,7 @@ namespace emoc {
 		// EMOC experiment task running
 		std::vector<std::thread> experiment_threads;
 		for (int i = 0; i < thread_num; i++)
-			if(!emoc_thread_tasks[i].empty())
+			if (!emoc_thread_tasks[i].empty())
 				experiment_threads.push_back(std::thread(&EMOCManager::ExperimentWorker, EMOCManager::Instance(), emoc_thread_tasks[i], i));
 
 		for (int i = 0; i < experiment_threads.size(); i++)
@@ -135,6 +135,12 @@ namespace emoc {
 			// create EMOC main entity and run it
 			g_GlobalSettingsArray[thread_id] = new emoc::Global(algorithm_name, problem_name, population_num,
 				dec_num, obj_num, max_eval, thread_id, output_interval, run);
+
+			// Check customized problem, this needs to check before the Init() function
+			if (para_.custom_problem) g_GlobalSettingsArray[thread_id]->SetCustomProblem(para_.custom_problem);
+			// Check customized initial population, this needs to check before the Init() function
+			if (!para_.custom_initial_pop.empty()) g_GlobalSettingsArray[thread_id]->SetCustomInitialPop(para_.custom_initial_pop);
+
 			g_GlobalSettingsArray[thread_id]->Init();
 			SetIsPlot(is_plot);
 			g_GlobalSettingsArray[thread_id]->Start();
@@ -152,7 +158,7 @@ namespace emoc {
 		// initialize experiment result
 		multi_thread_result_history_.clear();
 		multi_thread_result_history_.push_back(EMOCMultiThreadResult(para_.runs_num));
-		
+
 		if (para_.thread_num <= 0) para_.thread_num = 8;
 		std::vector<std::vector<EMOCExperimentTask>> emoc_thread_tasks(para_.thread_num);
 
@@ -166,7 +172,7 @@ namespace emoc {
 			emoc_thread_tasks[task_count % para_.thread_num].push_back(t);
 			task_count++;
 		}
-        
+
 		// update EMOC experiment module state (it is also necessary for none gui mode)
 		{
 			std::lock_guard<std::mutex> locker1(EMOCLock::experiment_finish_mutex);
@@ -177,11 +183,11 @@ namespace emoc {
 
 		std::vector<std::thread> experiment_threads;
 		for (int i = 0; i < para_.thread_num; i++)
-			if(!emoc_thread_tasks[i].empty())
+			if (!emoc_thread_tasks[i].empty())
 				experiment_threads.push_back(std::thread(&EMOCManager::ExperimentWorker, EMOCManager::Instance(), emoc_thread_tasks[i], i));
 
 		for (int i = 0; i < experiment_threads.size(); i++)
-				experiment_threads[i].join();
+			experiment_threads[i].join();
 
 		// update EMOC experiment module state (it is also necessary for none gui mode)
 		{
@@ -222,7 +228,7 @@ namespace emoc {
 
 	}
 
-	
+
 	EMOCManager::EMOCManager() :
 		para_(),
 		is_para_set_(false),
@@ -234,12 +240,12 @@ namespace emoc {
 		is_experiment_pause_(false),
 		is_experiment_finish_(true),
 		is_multithread_result_ready_(false),
-		g_GlobalSettingsArray(MAX_THREAD_NUM,nullptr)
+		g_GlobalSettingsArray(MAX_THREAD_NUM, nullptr)
 	{
 		// for random number initialization
 		randomize();
 		for (int i = 0; i < MAX_THREAD_NUM; i++)
-			g_GlobalSettingsArray[i] = nullptr; 
+			g_GlobalSettingsArray[i] = nullptr;
 	}
 
 	EMOCManager::~EMOCManager()

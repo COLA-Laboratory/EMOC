@@ -54,22 +54,22 @@ namespace emoc {
 	{
 		// record runtime
 		end_ = clock();
-		if(g_GlobalSettings->iteration_num_ >= 1) runtime_ += (double)(end_ - start_) / CLOCKS_PER_SEC;
-		
+		if (g_GlobalSettings->iteration_num_ >= 1) runtime_ += (double)(end_ - start_) / CLOCKS_PER_SEC;
+
 		// get current emoc mode
 		bool is_gui = EMOCManager::Instance()->GetIsGUI();
 		bool is_experiment = EMOCManager::Instance()->GetIsExperiment();
 		bool is_plot = EMOCManager::Instance()->GetIsPlot();
 
 		// update uipanel's data when necessary
-		if(is_gui && !is_experiment)
+		if (is_gui && !is_experiment)
 			UIPanelManager::Instance()->SetCurrentEvaluation(g_GlobalSettings->current_evaluation_);
 
 		// record the population every interval generations and the first and last genration 
 		bool is_terminate = g_GlobalSettings->current_evaluation_ >= g_GlobalSettings->max_evaluation_;
 		if (g_GlobalSettings->iteration_num_ % g_GlobalSettings->output_interval_ == 0 || is_terminate)
 			TrackPopulation(g_GlobalSettings->iteration_num_);
-		
+
 		if (is_plot)
 			PlotPopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->iteration_num_);
 
@@ -91,13 +91,13 @@ namespace emoc {
 		}
 	}
 
-	void Algorithm::EvaluateInd(Individual *ind)
+	void Algorithm::EvaluateInd(Individual* ind)
 	{
 		g_GlobalSettings->problem_->CalObj(ind);
 		g_GlobalSettings->current_evaluation_++;
 	}
 
-	int Algorithm::MergePopulation(Individual **pop_src1, int pop_num1, Individual **pop_src2, int pop_num2, Individual **pop_dest)
+	int Algorithm::MergePopulation(Individual** pop_src1, int pop_num1, Individual** pop_src2, int pop_num2, Individual** pop_dest)
 	{
 		int i = 0, j = 0;
 
@@ -115,7 +115,7 @@ namespace emoc {
 		return i;
 	}
 
-	void Algorithm::CopyIndividual(Individual *ind_src, Individual *ind_dest)
+	void Algorithm::CopyIndividual(Individual* ind_src, Individual* ind_dest)
 	{
 		// copy individual properties
 		ind_dest->fitness_ = ind_src->fitness_;
@@ -148,7 +148,7 @@ namespace emoc {
 
 	void Algorithm::TrackPopulation(int generation)
 	{
-		RecordPop(g_GlobalSettings->run_id_, generation, g_GlobalSettings,real_popnum_);
+		RecordPop(g_GlobalSettings->run_id_, generation, g_GlobalSettings, real_popnum_);
 	}
 
 	void Algorithm::PlotPopulation(Individual** pop, int gen)
@@ -156,7 +156,7 @@ namespace emoc {
 		int current_run = EMOCManager::Instance()->GetSingleThreadResultSize();
 
 		// construct data file name and open script file for gnuplot
-		FILE  *script_file = nullptr;
+		FILE* script_file = nullptr;
 		char data_file_name[256];
 		char script_file_name[256];
 		sprintf(data_file_name, "./output/test_module/run%d/pop_%d.txt", current_run, gen);
@@ -164,16 +164,22 @@ namespace emoc {
 
 		CreateDirectory(script_file_name);
 		script_file = fopen(script_file_name, "w");
-		if(!script_file)
+		if (!script_file)
 		{
-			std::cout<<"Can not create the plot script file: "<<script_file_name<<"\n";
+			std::cout << "Can not create the plot script file: " << script_file_name << "\n";
 			exit(1);
 		}
 
 
 		// construct plot command
 		char plot_cmd[1024];
-		if (g_GlobalSettings->obj_num_ == 2)
+		if (g_GlobalSettings->obj_num_ == 1)
+		{
+			// do nothing
+			fclose(script_file);
+			return;
+		}
+		else if (g_GlobalSettings->obj_num_ == 2)
 		{
 			PlotManager::Instance()->Scatter2D(plot_cmd, gen, data_file_name);
 		}
@@ -183,6 +189,7 @@ namespace emoc {
 		}
 		else
 		{
+			// Wait to implement other visualization
 			std::cerr << "Error!!! in display_pop(...)" << std::endl;
 			fclose(script_file);
 			return;

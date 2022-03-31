@@ -1,4 +1,6 @@
 #pragma once
+#include <vector>
+
 #include "core/individual.h"
 
 namespace emoc {
@@ -12,12 +14,13 @@ namespace emoc {
 		Problem(int dec_num, int obj_num);
 		virtual ~Problem();
 
-		virtual void CalObj(Individual *ind) = 0;
+		virtual void CalObj(Individual* ind) = 0;
 
 	public:
 		int dec_num_;
 		int obj_num_;
-		double *lower_bound_;
-		double *upper_bound_;
+		std::vector<double> lower_bound_;
+		std::vector<double> upper_bound_;
 	};
+
 }
