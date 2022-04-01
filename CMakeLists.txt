@@ -4,11 +4,13 @@ project(EMOC)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
-set(CMAKE_BUILD_TYPE "Release")    			    # make no difference in windows for Visual Studio
+set(CMAKE_BUILD_TYPE "Release" CACHE STRING "set build type to release")    			    # make no difference in windows for Visual Studio
 set(CMAKE_CONFIGURATION_TYPES "Release;Debug")	# this is for Visual Studio
+set(BUILD_PYTHON_DLL OFF CACHE BOOL "Whether build python dll")
 message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
 message(STATUS "Configuration Type: ${CMAKE_CONFIGURATION_TYPES}")
 
+# set compiler optimization flags
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -Ot")	
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
@@ -19,8 +21,13 @@ endif()
 
 
 
-# set headers
+# search files
+file(GLOB_RECURSE SRC ./src/*.cpp)
 file(GLOB_RECURSE HEADERS ./src/*.h)
+file(GLOB_RECURSE MAIN_NAME ./src/main.cpp)
+file(GLOB_RECURSE PYTHON_MAIN_NAME ./src/python_main.cpp)
+
+# set HEADERS
 set(HEADERS ${HEADERS}
 		vendor/random/random.h
 		vendor/glfw/include/GLFW/glfw3.h
@@ -41,8 +48,7 @@ set(HEADERS ${HEADERS}
         vendor/cxxopts/cxxopts.hpp
 )      
 
-# set srcs	
-file(GLOB_RECURSE SRC ./src/*.cpp)	
+# set SRC		
 set(SRC ${SRC}
 		vendor/random/random.cpp
 		vendor/imgui/imgui.cpp
@@ -57,11 +63,6 @@ set(SRC ${SRC}
         vendor/alglib/src/specialfunctions.cpp
         vendor/alglib/src/statistics.cpp  
 )
-		
-add_executable(EMOC ${HEADERS} ${SRC})
-
-# add glfw source code
-add_subdirectory(vendor/glfw)
 
 # set include dir and link dir
 set(INCLUDE_DIR 
@@ -78,17 +79,38 @@ set(LINK_DIR
     ./build/vendor/glfw/src
 )
 
+# add glfw source code as a subproject
+add_subdirectory(vendor/glfw)	
+
+# create real EMOC project
+if(BUILD_PYTHON_DLL)
+	list(REMOVE_ITEM SRC ${MAIN_NAME})
+	add_subdirectory(vendor/pybind11)
+	pybind11_add_module(EMOC ${HEADERS} ${SRC})
+else()
+	list(REMOVE_ITEM SRC ${PYTHON_MAIN_NAME})
+	add_executable(EMOC ${HEADERS} ${SRC})
+endif()
+
+# add include dir and link dir
 target_include_directories(${PROJECT_NAME} PUBLIC ${INCLUDE_DIR})
 target_link_directories(${PROJECT_NAME} PUBLIC ${LINK_DIR})
 
+
+# link library and some post build commang
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    target_link_libraries(EMOC glfw3.lib opengl32.lib)
+    target_link_libraries(EMOC PRIVATE glfw3.lib opengl32.lib)
 	set_target_properties(EMOC PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
 	source_group(TREE "${CMAKE_SOURCE_DIR}" FILES ${HEADERS} ${SRC})
-	add_custom_command(TARGET EMOC POST_BUILD COMMAND copy ..\\build\\Release\\EMOC.exe ..\\EMOC.exe)
+	if(NOT BUILD_PYTHON_DLL)
+		add_custom_command(TARGET EMOC POST_BUILD COMMAND copy ..\\build\\Release\\EMOC.exe ..\\EMOC.exe)
+	endif()
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    target_link_libraries(EMOC glfw3 dl X11 GL pthread) 
-	add_custom_command(TARGET EMOC POST_BUILD COMMAND mv ./EMOC ../EMOC)
+    target_link_libraries(EMOC PRIVATE glfw3 dl X11 GL pthread) 
+	if(NOT BUILD_PYTHON_DLL)
+		add_custom_command(TARGET EMOC POST_BUILD COMMAND mv ./EMOC ../EMOC)
+	endif()
 endif()
+
 
 

@@ -45,6 +45,9 @@ namespace emoc {
 		de_parameter_.K = 0.5;
 		pm_parameter_.muatation_pro = 1.0 / (double)dec_num;
 		pm_parameter_.eta_m = 20.0;
+
+		// allocate memory for all population
+		AllocateMemory();
 	}
 
 	Global::~Global()
@@ -118,9 +121,6 @@ namespace emoc {
 		if (!is_customized_problem_)
 			InitializeProblem();
 		InitializeAlgorithm();
-
-		// allocate memory for all population
-		AllocateMemory();
 
 		// set decision boundary
 		SetDecBound();

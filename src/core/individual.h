@@ -10,7 +10,6 @@ namespace emoc {
 	{
 	public:
 		Individual(int dec_num, int obj_num);
-		Individual(const Individual& ind);
 		~Individual();
 
 	public:
