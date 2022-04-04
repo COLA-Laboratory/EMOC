@@ -18,7 +18,7 @@
 #include <sys/types.h>
 #include <cstring>
 #include <unistd.h>
-#elif
+#elif defined(__APPLE__)// macos
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <cstring>
@@ -29,6 +29,7 @@
 #include "ui/ui_utility.h"
 #include "core/macro.h"
 #include "core/emoc_manager.h"
+#include "core/emoc_utility_structures.h"
 #include "cxxopts/cxxopts.hpp"
 #include "algorithm/algorithm_factory.h"
 #include "problem/problem_factory.h"
@@ -244,6 +245,10 @@ namespace emoc {
 				{
 					int ret = _mkdir(tmpDirPath);
 #elif defined(__linux) || defined(linux)
+				if (access(tmpDirPath, F_OK) == -1)
+				{
+					int ret = mkdir(tmpDirPath, S_IRWXU | S_IRWXG | S_IRWXO);
+#elif defined(__APPLE__)
 				if (access(tmpDirPath, F_OK) == -1)
 				{
 					int ret = mkdir(tmpDirPath, S_IRWXU | S_IRWXG | S_IRWXO);

@@ -11,7 +11,7 @@
 #elif defined(__linux) || defined(linux) // linux
 #define POPEN popen
 #define PCLOSE pclose
-#elif // macos?
+#elif defined(__APPLE__)// macos
 #define POPEN popen
 #define PCLOSE pclose
 #endif

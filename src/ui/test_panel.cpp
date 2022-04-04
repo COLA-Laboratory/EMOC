@@ -187,7 +187,7 @@ namespace emoc {
 			{
 				// Reopen the pipe and set position and size.
 				char pos_size_cmd[256];
-				sprintf(pos_size_cmd, "set term wxt position %d,%d size %d,%d\n", plot_position[0], plot_position[1], plot_size[0], plot_size[1]);
+				sprintf(pos_size_cmd, "set term %s position %d,%d size %d,%d\n",GNUPLOT_TERMINAL,  plot_position[0], plot_position[1], plot_size[0], plot_size[1]);
 				PlotManager::Instance()->Send(pos_size_cmd);
 
 				EMOCManager::Instance()->SetIsExperiment(false);
@@ -684,7 +684,7 @@ namespace emoc {
 
 			char canvas_size_cmd[256];
 			char multiplot_set[256];
-			sprintf(canvas_size_cmd, "set term wxt size %d,%d\n", width, height);
+			sprintf(canvas_size_cmd, "set term %s size %d,%d\n", GNUPLOT_TERMINAL, width, height);
 			sprintf(multiplot_set, "set multiplot layout %d,%d\n", row, graph_per_row);
 			PlotManager::Instance()->Send(canvas_size_cmd);
 			PlotManager::Instance()->Send(multiplot_set);
