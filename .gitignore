@@ -14,3 +14,4 @@ EMOC.exe
 gnulotTest.cpp
 main_backup.cpp
 matplotlibcpp.h
+*.DS_Store
