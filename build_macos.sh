@@ -1,4 +1,4 @@
-sudo brew install gnuplot
+brew install gnuplot
 
 mkdir build
 cd build
