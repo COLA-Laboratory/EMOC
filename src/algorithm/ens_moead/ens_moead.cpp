@@ -58,7 +58,7 @@ namespace emoc {
 		delta_ = nullptr;
 	}
 
-	void ENSMOEAD::Run()
+	void ENSMOEAD::Solve()
 	{
 		Initialization();
 

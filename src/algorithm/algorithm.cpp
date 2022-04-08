@@ -94,6 +94,7 @@ namespace emoc {
 	void Algorithm::EvaluateInd(Individual* ind)
 	{
 		g_GlobalSettings->problem_->CalObj(ind);
+		g_GlobalSettings->problem_->CalCon(ind);
 		g_GlobalSettings->current_evaluation_++;
 	}
 
@@ -124,6 +125,10 @@ namespace emoc {
 		// copy individual decision and objective datas
 		memcpy(ind_dest->dec_, ind_src->dec_, sizeof(double) * g_GlobalSettings->dec_num_);
 		memcpy(ind_dest->obj_, ind_src->obj_, sizeof(double) * g_GlobalSettings->obj_num_);
+
+		// copy individual constraints
+		for (int i = 0; i < ind_src->con.size(); i++)
+			ind_dest->con[i] = ind_src->con[i];
 	}
 
 	void Algorithm::SwapIndividual(Individual* ind1, Individual* ind2)
@@ -143,6 +148,13 @@ namespace emoc {
 			double t = ind1->obj_[i];
 			ind1->obj_[i] = ind2->obj_[i];
 			ind2->obj_[i] = t;
+		}
+
+		for (int i = 0; i < ind1->con.size(); i++)
+		{
+			double t = ind1->con[i];
+			ind1->con[i] = ind2->con[i];
+			ind2->con[i] = t;
 		}
 	}
 

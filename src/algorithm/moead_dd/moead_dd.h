@@ -20,7 +20,7 @@ namespace emoc {
 		MOEADD(int thread_id);
 		virtual ~MOEADD();
 
-		void Run();
+		void Solve();
 
 	private:
 		void Initialization();

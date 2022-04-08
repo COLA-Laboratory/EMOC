@@ -14,7 +14,7 @@ namespace emoc {
 		SMSEMOA(int thread_id);
 		virtual ~SMSEMOA();
 
-		void Run();
+		void Solve();
 
 	private:
 		void Initialization();

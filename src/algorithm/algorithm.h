@@ -17,7 +17,7 @@ namespace emoc {
 		virtual ~Algorithm();
 
 		void PrintPop();
-		virtual void Run() = 0;
+		virtual void Solve() = 0;
 
 		inline int GetRealPopNum() { return real_popnum_; }
 		inline double GetRuntime() { return runtime_; }

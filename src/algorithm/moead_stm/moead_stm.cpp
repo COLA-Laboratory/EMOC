@@ -70,7 +70,7 @@ namespace emoc {
 		subproblem_matrix_ = nullptr;
 	}
 
-	void MOEADSTM::Run()
+	void MOEADSTM::Solve()
 	{
 		Initialization();
 

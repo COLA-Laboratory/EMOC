@@ -45,8 +45,8 @@ namespace emoc {
 		int current_evaluation = 0;
 		int max_evaluation = 1000000;
 		int N = 100;
-		int D = 30;
-		int M = 2;
+		int D = 7;
+		int M = 3;
 		int Evaluation = 25000;
 		int plot_size[2] = {500, 400};
 		int	plot_position[2] = {150, 300}; // settings for test module population plot

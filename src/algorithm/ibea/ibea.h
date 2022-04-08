@@ -13,7 +13,7 @@ namespace emoc {
 		IBEA(int thread_id);
 		virtual ~IBEA();
 
-		void Run();
+		void Solve();
 
 	private:
 		void Initialization();

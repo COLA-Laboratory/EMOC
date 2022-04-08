@@ -25,7 +25,7 @@ namespace emoc {
 		MOEADIRA(int thread_id);
 		virtual ~MOEADIRA();
 
-		void Run();
+		void Solve();
 
 	private:
 		void Initialization();

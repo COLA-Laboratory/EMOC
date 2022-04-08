@@ -31,7 +31,7 @@ namespace emoc {
 		MOEADUCB(int thread_id);
 		virtual ~MOEADUCB();
 
-		void Run();
+		void Solve();
 
 	private:
 		void Initialization();

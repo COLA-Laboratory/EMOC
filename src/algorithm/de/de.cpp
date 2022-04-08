@@ -25,7 +25,7 @@ namespace emoc {
 
 	}
 
-	void DifferentialEvolution::Run()
+	void DifferentialEvolution::Solve()
 	{
 		Initialization();
 		while (!IsTermination())

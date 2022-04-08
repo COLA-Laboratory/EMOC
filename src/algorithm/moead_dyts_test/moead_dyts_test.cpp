@@ -54,7 +54,7 @@ namespace emoc{
 		beta_ = nullptr;
 	}
 
-	void MOEADDYTSTEST::Run()
+	void MOEADDYTSTEST::Solve()
 	{
 		//FILE* fpt = fopen("./output/UF5OP.txt", "w");
 

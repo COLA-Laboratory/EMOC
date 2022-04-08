@@ -54,7 +54,7 @@ namespace emoc{
 		beta_ = nullptr;
 	}
 
-	void MOEADDYTS::Run()
+	void MOEADDYTS::Solve()
 	{
 		Initialization();
 

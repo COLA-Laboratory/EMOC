@@ -14,4 +14,9 @@ namespace emoc {
 
 	}
 
+	void Problem::CalCon(Individual* ind)
+	{
+		// do nothing
+	}
+
 }

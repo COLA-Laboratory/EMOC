@@ -25,7 +25,7 @@ namespace emoc {
 		MOEADGRA(int thread_id);
 		virtual ~MOEADGRA();
 
-		void Run();
+		void Solve();
 
 	private:
 		void Initialization();

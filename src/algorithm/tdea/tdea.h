@@ -19,7 +19,7 @@ namespace emoc {
 		tDEA(int thread_id);
 		virtual ~tDEA();
 
-		void Run();
+		void Solve();
 
 	private:
 		void Initialization();

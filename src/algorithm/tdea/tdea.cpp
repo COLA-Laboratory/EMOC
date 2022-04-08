@@ -47,7 +47,7 @@ namespace emoc {
 		cluster_ = nullptr;
 	}
 
-	void tDEA::Run()
+	void tDEA::Solve()
 	{
 		Initialization();
 

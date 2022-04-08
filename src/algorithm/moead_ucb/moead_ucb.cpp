@@ -57,7 +57,7 @@ namespace emoc {
 		variance_ = nullptr;
 	}
 
-	void MOEADUCB::Run()
+	void MOEADUCB::Solve()
 	{
 		int num[4] = {0};
 		int offspring_count = 0;

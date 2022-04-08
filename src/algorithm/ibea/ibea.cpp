@@ -21,7 +21,7 @@ namespace emoc {
 
 	}
 
-	void IBEA::Run()
+	void IBEA::Solve()
 	{
 		Initialization();
 

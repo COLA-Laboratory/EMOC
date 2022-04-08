@@ -27,7 +27,7 @@ namespace emoc {
 		delete[] nadir_point_;
 	}
 
-	void HypE::Run()
+	void HypE::Solve()
 	{
 		Initialization();
 

@@ -20,7 +20,7 @@ namespace emoc {
 
 	}
 
-	void SA::Run()
+	void SA::Solve()
 	{
 		Initialization();
 		while (!IsTermination())

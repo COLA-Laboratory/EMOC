@@ -56,7 +56,7 @@ namespace emoc {
 		F_success_set_ = nullptr;
 	}
 
-	void MOEADCDE::Run()
+	void MOEADCDE::Solve()
 	{
 		int num[4] = { 0 };
 		int offspring_count = 0;

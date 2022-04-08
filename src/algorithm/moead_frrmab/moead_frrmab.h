@@ -31,7 +31,7 @@ namespace emoc {
 		MOEADFRRMAB(int thread_id);
 		virtual ~MOEADFRRMAB();
 
-		void Run();
+		void Solve();
 
 	private:
 		void Initialization();

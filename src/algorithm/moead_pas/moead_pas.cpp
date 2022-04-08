@@ -48,7 +48,7 @@ namespace emoc {
 		Pi = nullptr;
 	}
 
-	void MOEADPAS::Run()
+	void MOEADPAS::Solve()
 	{
 		Initialization();
 		Individual* offspring = g_GlobalSettings->offspring_population_[0];

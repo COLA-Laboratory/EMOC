@@ -19,7 +19,7 @@ namespace emoc {
 		RVEA(int thread_id);
 		virtual ~RVEA();
 
-		void Run();
+		void Solve();
 
 	private:
 		void Initialization();

@@ -25,7 +25,7 @@ namespace emoc {
 		delete[] nadir_point_;
 	}
 
-	void SMSEMOA::Run()
+	void SMSEMOA::Solve()
 	{
 		Initialization();
 		Individual *offspring = g_GlobalSettings->offspring_population_[0];

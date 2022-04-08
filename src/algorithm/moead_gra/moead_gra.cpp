@@ -52,7 +52,7 @@ namespace emoc {
 		P_			 = nullptr;
 	}
 
-	void MOEADGRA::Run()
+	void MOEADGRA::Solve()
 	{
 		Initialization();
 		

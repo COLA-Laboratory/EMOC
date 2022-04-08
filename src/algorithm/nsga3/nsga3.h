@@ -13,7 +13,7 @@ namespace emoc {
 		NSGA3(int thread_id);
 		virtual ~NSGA3();
 		
-		void Run();
+		void Solve();
 
 	private:
 		void Initialization();

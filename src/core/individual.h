@@ -17,9 +17,10 @@ namespace emoc {
 		double fitness_;
 		double* dec_;
 		double* obj_;
+		std::vector<double> con;
 
 		// This is for data exchange between c++ and python, you should use the dec_ and obj_ 
-		// in the c++ side.
+		// in the c++ side.  TODO: this should be modified, just use the vector directly in c++.
 		std::vector<double> dec;
 		std::vector<double> obj;
 	};

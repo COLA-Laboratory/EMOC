@@ -15,6 +15,7 @@ namespace emoc {
 		virtual ~Problem();
 
 		virtual void CalObj(Individual* ind) = 0;
+		virtual void CalCon(Individual* ind);
 
 	public:
 		int dec_num_;

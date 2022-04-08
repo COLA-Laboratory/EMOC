@@ -13,7 +13,7 @@ namespace emoc {
 		SPEA2SDE(int thread_id);
 		virtual ~SPEA2SDE();
 
-		void Run();
+		void Solve();
 
 	private:
 		void Initialization();

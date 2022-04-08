@@ -44,7 +44,7 @@ namespace emoc {
 		ideal_point_ = nullptr;
 	}
 
-	void MOEADD::Run()
+	void MOEADD::Solve()
 	{
 		Initialization();
 		Individual* offspring = g_GlobalSettings->offspring_population_[0];

@@ -54,7 +54,7 @@ namespace emoc {
 		frr_ = nullptr;
 	}
 
-	void MOEADFRRMAB::Run()
+	void MOEADFRRMAB::Solve()
 	{
 		int offspring_count = 0;
 		Initialization();

@@ -35,7 +35,7 @@ namespace emoc {
 		lambda_ = nullptr;
 	}
 
-	void MOEADM2M::Run()
+	void MOEADM2M::Solve()
 	{
 		Initialization();
 		Individual* offspring = g_GlobalSettings->offspring_population_[0];

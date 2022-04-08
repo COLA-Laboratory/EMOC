@@ -50,7 +50,7 @@ namespace emoc {
 		sd_ = nullptr;
 	}
 
-	void MOEADIRA::Run()
+	void MOEADIRA::Solve()
 	{
 		Initialization();
 

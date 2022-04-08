@@ -46,7 +46,7 @@ namespace emoc {
 		nadir_point_ = nullptr;
 	}
 
-	void RVEA::Run()
+	void RVEA::Solve()
 	{
 		Initialization();
 		Individual* offspring = g_GlobalSettings->offspring_population_[0];

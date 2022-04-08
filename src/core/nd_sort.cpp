@@ -8,7 +8,7 @@
 
 namespace emoc {
 
-	void NonDominatedSort(Individual **pop, int pop_num, int obj_num)
+	void NonDominatedSort(Individual **pop, int pop_num, int obj_num, bool is_consider_cons)
 	{
 		int index = 0; 
 		int dominate_relation = 0;
@@ -46,7 +46,8 @@ namespace emoc {
 					continue;
 
 				ind_tempB = pop[j];
-				dominate_relation = CheckDominance(ind_tempA, ind_tempB, obj_num);
+				dominate_relation = is_consider_cons ? CheckDominanceWithConstraint(ind_tempA, ind_tempB, obj_num) 
+					:CheckDominance(ind_tempA, ind_tempB, obj_num);
 				if (DOMINATE == dominate_relation)
 				{
 					si[i][index++] = j;

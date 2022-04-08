@@ -15,7 +15,8 @@ namespace emoc {
 		NON_DOMINATED = 0,
 		DOMINATE = 1
 	};
-	DominateReleation CheckDominance(Individual *ind1, Individual *ind2, int obj_num);
+	DominateReleation CheckDominance(Individual* ind1, Individual* ind2, int obj_num);
+	DominateReleation CheckDominanceWithConstraint(Individual* ind1, Individual* ind2, int obj_num);
 	int WeaklyDominates(double *point1, double *point2, int obj_num);
 
 	int Combination(int n, int k);

@@ -13,7 +13,7 @@ namespace emoc {
 		SA(int thread_id);
 		virtual ~SA();
 		
-		void Run();
+		void Solve();
 
 	private:
 		void Initialization();

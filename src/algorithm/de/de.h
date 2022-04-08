@@ -13,7 +13,7 @@ namespace emoc {
 		DifferentialEvolution(int thread_id);
 		virtual ~DifferentialEvolution();
 		
-		void Run();
+		void Solve();
 
 	private:
 		void Initialization();

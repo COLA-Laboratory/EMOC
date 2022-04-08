@@ -108,7 +108,7 @@ namespace emoc {
 			EMOCManager::Instance()->SetTestFinish(false);
 		}
 
-		algorithm_->Run();
+		algorithm_->Solve();
 
 		if (is_gui && !is_experiment)
 			EMOCManager::Instance()->SetTestFinish(true);

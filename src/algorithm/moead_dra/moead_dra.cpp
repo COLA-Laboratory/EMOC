@@ -49,7 +49,7 @@ namespace emoc {
 		delta_ = nullptr;
 	}
 
-	void MOEADDRA::Run()
+	void MOEADDRA::Solve()
 	{
 		Initialization();
 

@@ -624,4 +624,230 @@ namespace emoc {
 		}
 	}
 
+	C1DTLZ1::C1DTLZ1(int dec_num, int obj_num) :Problem(dec_num, obj_num)
+	{
+		for (int i = 0; i < dec_num; ++i)
+		{
+			lower_bound_[i] = 0.0;
+			upper_bound_[i] = 1.0;
+		}
+	}
+
+	C1DTLZ1::~C1DTLZ1()
+	{
+
+	}
+
+	void C1DTLZ1::CalObj(Individual* ind)
+	{
+		double gx = 0.0;
+		int k = dec_num_ - obj_num_ + 1;
+
+		for (int i = dec_num_ - k; i < dec_num_; i++)
+			gx += pow((ind->dec_[i] - 0.5), 2.0) - cos(20.0 * PI * (ind->dec_[i] - 0.5));
+		gx = 100.0 * (k + gx);
+
+		for (int i = 0; i < obj_num_; i++)
+			ind->obj_[i] = (1.0 + gx) * 0.5;
+
+		for (int i = 0; i < obj_num_; i++)
+		{
+			for (int j = 0; j < obj_num_ - (i + 1); j++)
+				ind->obj_[i] *= ind->dec_[j];
+			if (i != 0)
+			{
+				int aux = obj_num_ - (i + 1);
+				ind->obj_[i] *= 1 - ind->dec_[aux];
+			}
+		}
+	}
+
+	void C1DTLZ1::CalCon(Individual* ind)
+	{
+		double sum = 0.0;
+		for (int i = 0; i < obj_num_ - 1; i++)
+			sum += ind->obj_[i] / 0.5;
+
+		ind->con[0] = ind->obj_[obj_num_ - 1] / 0.6 + sum - 1;
+	}
+
+	C1DTLZ3::C1DTLZ3(int dec_num, int obj_num) :Problem(dec_num, obj_num)
+	{
+		for (int i = 0; i < dec_num; ++i)
+		{
+			lower_bound_[i] = 0.0;
+			upper_bound_[i] = 1.0;
+		}
+	}
+
+	C1DTLZ3::~C1DTLZ3()
+	{
+
+	}
+
+	void C1DTLZ3::CalObj(Individual* ind)
+	{
+		double gx = 0.0;
+		int k = dec_num_ - obj_num_ + 1;
+
+		for (int i = dec_num_ - k; i < dec_num_; i++)
+			gx += pow((ind->dec_[i] - 0.5), 2.0) - cos(20.0 * PI * (ind->dec_[i] - 0.5));
+		gx = 10.0 * (k + gx);
+
+		for (int i = 0; i < obj_num_; i++)
+			ind->obj_[i] = 1.0 + gx;
+
+		for (int i = 0; i < obj_num_; i++)
+		{
+			for (int j = 0; j < obj_num_ - (i + 1); j++)
+				ind->obj_[i] *= cos(PI * 0.5 * ind->dec_[j]);
+			if (i != 0)
+			{
+				int aux = obj_num_ - (i + 1);
+				ind->obj_[i] *= sin(PI * 0.5 * ind->dec_[aux]);
+			}
+		}
+	}
+
+	void C1DTLZ3::CalCon(Individual* ind)
+	{
+		double sum = 0.0;
+		for (int i = 0; i < obj_num_; i++)
+			sum += ind->obj_[i] * ind->obj_[i];
+		
+		double r = 0;
+		if (obj_num_ == 2)
+			r = 6;
+		else if (obj_num_ <= 3)
+			r = 9;
+		else if (obj_num_ <= 8)
+			r = 12.5;
+		else
+			r = 15;
+
+		ind->con[0] = -(sum - 16) * (sum - r * r);
+	}
+
+	C2DTLZ2::C2DTLZ2(int dec_num, int obj_num) :Problem(dec_num, obj_num)
+	{
+		for (int i = 0; i < dec_num; ++i)
+		{
+			lower_bound_[i] = 0.0;
+			upper_bound_[i] = 1.0;
+		}
+	}
+
+	C2DTLZ2::~C2DTLZ2()
+	{
+
+	}
+
+	void C2DTLZ2::CalObj(Individual* ind)
+	{
+		double gx = 0.0;
+		int k = dec_num_ - obj_num_ + 1;
+
+		for (int i = dec_num_ - k; i < dec_num_; i++)
+			gx += pow((ind->dec_[i] - 0.5), 2.0);
+
+		for (int i = 0; i < obj_num_; i++)
+			ind->obj_[i] = 1.0 + gx;
+
+		for (int i = 0; i < obj_num_; i++)
+		{
+			for (int j = 0; j < obj_num_ - (i + 1); j++)
+				ind->obj_[i] *= cos(PI * 0.5 * ind->dec_[j]);
+			if (i != 0)
+			{
+				int aux = obj_num_ - (i + 1);
+				ind->obj_[i] *= sin(PI * 0.5 * ind->dec_[aux]);
+			}
+		}
+	}
+
+	void C2DTLZ2::CalCon(Individual* ind)
+	{
+		double r = 0;
+		if (obj_num_ == 3)
+			r = 0.4;
+		else
+			r = 0.5;
+
+		double min1 = EMOC_INF, min2 = 0.0;
+		for (int i = 0; i < obj_num_; i++)
+		{
+			double temp = (ind->obj_[i] - 1) * (ind->obj_[i] - 1);
+			for (int j = 0; j < obj_num_; j++)
+			{
+				if (j == i) continue;
+				temp += ind->obj_[j] * ind->obj_[j];
+			}
+			temp -= r * r;
+			if (temp < min1)
+				min1 = temp;
+		}
+
+		for (int i = 0; i < obj_num_; i++)
+		{
+			min2 += (ind->obj_[i] - 1.0 / std::sqrt(obj_num_)) * (ind->obj_[i] - 1.0 / std::sqrt(obj_num_));
+		}
+		min2 -= r * r;
+
+		ind->con[0] = min1 < min2 ? min1 : min2;
+	}
+
+	C3DTLZ4::C3DTLZ4(int dec_num, int obj_num) :Problem(dec_num, obj_num)
+	{
+		for (int i = 0; i < dec_num; ++i)
+		{
+			lower_bound_[i] = 0.0;
+			upper_bound_[i] = 1.0;
+		}
+	}
+
+	C3DTLZ4::~C3DTLZ4()
+	{
+
+	}
+
+	void C3DTLZ4::CalObj(Individual* ind)
+	{
+		double gx = 0.0, alpha = 100.0;
+		int k = dec_num_ - obj_num_ + 1;
+
+		for (int i = dec_num_ - k; i < dec_num_; i++)
+			gx += pow((ind->dec_[i] - 0.5), 2.0);
+
+		for (int i = 0; i < obj_num_; i++)
+			ind->obj_[i] = 1.0 + gx;
+
+		for (int i = 0; i < obj_num_; i++)
+		{
+			for (int j = 0; j < obj_num_ - (i + 1); j++)
+				ind->obj_[i] *= cos(PI * 0.5 * pow(ind->dec_[j], alpha));
+			if (i != 0)
+			{
+				int aux = obj_num_ - (i + 1);
+				ind->obj_[i] *= sin(PI * 0.5 * pow(ind->dec_[aux], alpha));
+			}
+		}
+	}
+
+	void C3DTLZ4::CalCon(Individual* ind)
+	{
+		// initialize all constraints as zero
+		for (int i = 0; i < ind->con.size(); i++)
+			ind->con[i] = 0.0;
+
+		for (int i = 0; i < obj_num_; i++)
+		{
+			double sum = 0.0;
+			for (int j = 0; j < obj_num_; j++)
+			{
+				if(j == i) continue;
+				sum += ind->obj_[j] * ind->obj_[j];
+			}
+			ind->con[i] = 1.0 - (ind->obj_[i] * ind->obj_[i]) / 4.0 - sum ;
+		}
+	}
 }

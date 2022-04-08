@@ -26,7 +26,7 @@ namespace emoc {
 		ENSMOEAD(int thread_id);
 		virtual ~ENSMOEAD();
 
-		void Run();
+		void Solve();
 
 	private:
 		void Initialization();

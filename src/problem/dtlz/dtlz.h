@@ -144,4 +144,44 @@ namespace emoc {
 
 		void CalObj(Individual* ind);
 	};
+
+	class C1DTLZ1 :public Problem
+	{
+	public:
+		C1DTLZ1(int dec_num, int obj_num);
+		virtual ~C1DTLZ1();
+
+		void CalObj(Individual* ind);
+		void CalCon(Individual* ind);
+	};
+
+	class C1DTLZ3 :public Problem
+	{
+	public:
+		C1DTLZ3(int dec_num, int obj_num);
+		virtual ~C1DTLZ3();
+
+		void CalObj(Individual* ind);
+		void CalCon(Individual* ind);
+	};
+
+	class C2DTLZ2 :public Problem
+	{
+	public:
+		C2DTLZ2(int dec_num, int obj_num);
+		virtual ~C2DTLZ2();
+
+		void CalObj(Individual* ind);
+		void CalCon(Individual* ind);
+	};
+
+	class C3DTLZ4 :public Problem
+	{
+	public:
+		C3DTLZ4(int dec_num, int obj_num);
+		virtual ~C3DTLZ4();
+
+		void CalObj(Individual* ind);
+		void CalCon(Individual* ind);
+	};
 }

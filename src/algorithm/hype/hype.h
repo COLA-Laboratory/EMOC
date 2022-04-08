@@ -17,7 +17,7 @@ namespace emoc {
 		HypE(int thread_id);
 		virtual ~HypE();
 
-		void Run();
+		void Solve();
 
 	private:
 		void Initialization();

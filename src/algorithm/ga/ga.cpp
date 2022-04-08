@@ -23,7 +23,7 @@ namespace emoc {
 
 	}
 
-	void GA::Run()
+	void GA::Solve()
 	{
 		Initialization();
 		while (!IsTermination())

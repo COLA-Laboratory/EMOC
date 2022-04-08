@@ -33,7 +33,7 @@ namespace emoc {
 			delete ndpop_[i];
 	}
 
-	void NSGA3::Run()
+	void NSGA3::Solve()
 	{
 		Initialization();
 

@@ -36,8 +36,13 @@ namespace emoc {
 	EMOC_REGIST_ALGORITHM(Multiobjective,Indicator Based, HypE);
 	EMOC_REGIST_ALGORITHM(Multiobjective,Indicator Based, SMSEMOA);
 
+	// Constraint Algorithms
+	EMOC_REGIST_ALGORITHM(Multiobjective, Constraint, CNSGA2);
+	EMOC_REGIST_ALGORITHM(Multiobjective, Constraint, CMOEAD);
+
 	// Single Objective Algorithms
 	EMOC_REGIST_ALGORITHM(Singleobjective, Single Objective, GA);
 	EMOC_REGIST_ALGORITHM(Singleobjective, Single Objective, DifferentialEvolution);
 	EMOC_REGIST_ALGORITHM(Singleobjective, Single Objective, SA);
+
 }

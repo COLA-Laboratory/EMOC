@@ -39,6 +39,40 @@ namespace emoc {
 		}
 	}
 
+	DominateReleation CheckDominanceWithConstraint(Individual* ind1, Individual* ind2, int obj_num)
+	{
+		bool is_infeasible1 = false, is_infeasible2 = false;
+		double cons1 = 0.0, cons2 = 0.0;
+		for (int i = 0; i < ind1->con.size(); i++)
+		{
+			cons1 += std::max(0.0, ind1->con[i]);
+			if (ind1->con[i] > 0)
+				is_infeasible1 = true;
+		}
+		for (int i = 0; i < ind2->con.size(); i++)
+		{
+			cons2 += std::max(0.0, ind2->con[i]);
+			if (ind2->con[i] > 0)
+				is_infeasible2 = true;
+		}
+
+		if (!is_infeasible1 && !is_infeasible2)
+			return CheckDominance(ind1, ind2, obj_num);
+		else if (is_infeasible1 && !is_infeasible2)
+			return DOMINATED;
+		else if (!is_infeasible1 && is_infeasible2)
+			return DOMINATE;
+		else if (is_infeasible1 && is_infeasible2)
+		{
+			if (std::fabs(cons1 - cons2) < EMOC_EPS)
+				return NON_DOMINATED;
+			else if (cons1 < cons2)
+				return DOMINATE;
+			else if (cons1 > cons2)
+				return DOMINATED;
+		}
+	}
+
 	int WeaklyDominates(double* point1, double* point2, int obj_num)
 	{
 		int i = 0, better = 1;

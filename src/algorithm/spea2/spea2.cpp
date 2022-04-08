@@ -24,7 +24,7 @@ namespace emoc {
 
 	}
 
-	void SPEA2::Run()
+	void SPEA2::Solve()
 	{
 		Initialization();
 		CalFitness(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_);

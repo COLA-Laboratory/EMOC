@@ -54,7 +54,7 @@ namespace emoc {
 		beta_ = nullptr;
 	}
 
-	void MOEADCDTS::Run()
+	void MOEADCDTS::Solve()
 	{
 		int num[5] = { 0 };
 		int offspring_count = 0;

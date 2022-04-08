@@ -25,7 +25,7 @@ namespace emoc {
 		MOEADCDTS(int thread_id);
 		virtual ~MOEADCDTS();
 
-		void Run();
+		void Solve();
 
 	private:
 		void Initialization();

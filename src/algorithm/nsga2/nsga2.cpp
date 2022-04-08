@@ -24,7 +24,7 @@ namespace emoc {
 
 	}
 
-	void NSGA2::Run()
+	void NSGA2::Solve()
 	{
 		Initialization();
 		while (!IsTermination())
@@ -145,7 +145,7 @@ namespace emoc {
 	void NSGA2::EnvironmentalSelection(Individual **parent_pop, Individual **mixed_pop)
 	{
 		int current_popnum = 0, rank_index = 0;
-		int mixed_popnum = g_GlobalSettings->population_num_ + 2 * g_GlobalSettings->population_num_ / 2;
+		int mixed_popnum = g_GlobalSettings->population_num_ + 2 * (g_GlobalSettings->population_num_ / 2);
 
 		NonDominatedSort(mixed_pop, mixed_popnum, g_GlobalSettings->obj_num_);
 
