@@ -59,6 +59,7 @@ set(HEADERS ${HEADERS}
         vendor/alglib/src/statistics.h
         vendor/alglib/src/stdafx.h
         vendor/cxxopts/cxxopts.hpp
+        vendor/stb_image/stb_image.h
 )      
 
 # set SRC		

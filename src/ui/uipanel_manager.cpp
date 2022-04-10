@@ -1,3 +1,4 @@
+#define STB_IMAGE_IMPLEMENTATION
 #include "ui/uipanel_manager.h"
 
 #include <iostream>
@@ -9,6 +10,7 @@
 #include "ui/imgui_impl_opengl3.h"
 #include "imgui_internal.h"
 #include "IconsFontAwesome5.h"
+#include "stb_image/stb_image.h"
 
 namespace emoc {
 
@@ -168,6 +170,12 @@ namespace emoc {
 			std::cout << "ERROR: glfw create window false!\n";
 			exit(-1);
 		}
+
+		GLFWimage images[1];
+		images[0].pixels = stbi_load("resource/icon.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
+		glfwSetWindowIcon(window_, 1, images);
+		stbi_image_free(images[0].pixels);
+
 		glfwMakeContextCurrent(window_);
 		glfwSwapInterval(1); // Enable vsync
 	}
