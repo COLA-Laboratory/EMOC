@@ -10,7 +10,7 @@
 #include "core/nd_sort.h"
 #include "core/uniform_point.h"
 #include "operator/de.h"
-#include "operator/mutation.h"
+#include "operator/polynomial_mutation.h"
 #include "random/random.h"
 
 namespace emoc {

@@ -11,6 +11,14 @@ namespace emoc {
 	class Problem
 	{
 	public:
+		enum EncodingType
+		{
+			REAL,
+			BINARY,
+			PERMUTATION
+		};
+
+	public:
 		Problem(int dec_num, int obj_num);
 		virtual ~Problem();
 
@@ -22,6 +30,7 @@ namespace emoc {
 		int obj_num_;
 		std::vector<double> lower_bound_;
 		std::vector<double> upper_bound_;
+		EncodingType encoding_;
 	};
 
 }

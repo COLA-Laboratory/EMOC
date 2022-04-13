@@ -14,11 +14,13 @@ namespace emoc {
 		virtual ~GA();
 		
 		void Solve();
-
+		 
 	private:
 		void Initialization();
-		void Crossover(Individual **parent_pop, Individual **offspring_pop);
-		void EnvironmentalSelection(Individual **parent_pop, Individual **mixed_pop);
+		void Crossover(Individual** parent_pop, Individual** offspring_pop);
+		void Mutation(Individual** pop, int pop_num);
+		void EnvironmentalSelection(Individual** parent_pop, Individual** mixed_pop);
+		double CalFitness(Individual* ind);
 	};
 
 }

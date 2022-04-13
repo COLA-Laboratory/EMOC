@@ -13,3 +13,5 @@
 #include "problem/ackley/ackley.h"
 #include "problem/rastrigin/rastrigin.h"
 #include "problem/griewank/griewank.h"
+#include "problem/kp/knapsack.h"
+#include "problem/tsp/tsp.h"

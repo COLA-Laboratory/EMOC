@@ -114,5 +114,7 @@ namespace emoc{
 	EMOC_REGIST_PROBLEM(Singleobjective, Single Objective, Sphere);
 	EMOC_REGIST_PROBLEM(Singleobjective, Single Objective, Ackley);
 	EMOC_REGIST_PROBLEM(Singleobjective, Single Objective, Rastrigin);
-	EMOC_REGIST_PROBLEM(Singleobjective, Single Objective, Griewank);
+	EMOC_REGIST_PROBLEM(Singleobjective, Single Objective, TSP);
+	EMOC_REGIST_PROBLEM(Singleobjective, Single Objective, Knapsack);
+
 }

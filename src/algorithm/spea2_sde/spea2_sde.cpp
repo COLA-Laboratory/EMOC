@@ -10,7 +10,7 @@
 #include "core/utility.h"
 #include "core/tournament_selection.h"
 #include "operator/sbx.h"
-#include "operator/mutation.h"
+#include "operator/polynomial_mutation.h"
 #include "random/random.h"
 
 namespace emoc {

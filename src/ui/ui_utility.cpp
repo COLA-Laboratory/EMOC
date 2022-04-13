@@ -419,7 +419,7 @@ namespace emoc {
 				}
 			}
 		}
-		else if(problem_name=="sphere"||problem_name=="ackley"||problem_name=="griewank"||problem_name=="levy"||problem_name=="rastrigin"||problem_name=="schwefel")
+		else if(problem_name=="sphere"||problem_name=="ackley"||problem_name=="griewank"||problem_name=="levy"||problem_name=="rastrigin"||problem_name=="schwefel"||problem_name=="knapsack"||problem_name=="tsp")
 		{
 			if (M != 1)
 			{

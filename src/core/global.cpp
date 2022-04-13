@@ -69,9 +69,22 @@ namespace emoc {
 
 	void Global::InitializeIndividual(Individual* ind)
 	{
-		for (int i = 0; i < dec_num_; ++i)
+		if (problem_->encoding_ == Problem::REAL)
 		{
-			ind->dec_[i] = rndreal(dec_lower_bound_[i], dec_upper_bound_[i]);
+			for (int i = 0; i < dec_num_; ++i)
+				ind->dec_[i] = rndreal(dec_lower_bound_[i], dec_upper_bound_[i]);
+		}
+		else if (problem_->encoding_ == Problem::BINARY)
+		{
+			for (int i = 0; i < dec_num_; ++i)
+				ind->dec_[i] = rnd(0,1);
+		}
+		else if (problem_->encoding_ == Problem::PERMUTATION)
+		{
+			std::vector<int> perm(dec_num_);
+			random_permutation(perm.data(), perm.size());
+			for (int i = 0; i < dec_num_; ++i)
+				ind->dec_[i] = perm[i];
 		}
 	}
 

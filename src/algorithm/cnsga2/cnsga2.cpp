@@ -8,7 +8,7 @@
 #include "core/global.h"
 #include "core/nd_sort.h"
 #include "core/tournament_selection.h"
-#include "operator/mutation.h"
+#include "operator/polynomial_mutation.h"
 #include "operator/sbx.h"
 #include "random/random.h"
 

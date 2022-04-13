@@ -7,6 +7,9 @@ namespace emoc {
 	{
 		lower_bound_.resize(dec_num);
 		upper_bound_.resize(dec_num);
+
+		// the default encoding type is REAL
+		encoding_ = REAL;
 	}
 
 	Problem::~Problem()

@@ -1,5 +1,7 @@
 #include "algorithm/ga/ga.h"
 
+#include <iostream>
+#include <cmath>
 #include <vector>
 #include <algorithm>
 
@@ -7,8 +9,12 @@
 #include "core/global.h"
 #include "core/nd_sort.h"
 #include "core/tournament_selection.h"
-#include "operator/mutation.h"
+#include "operator/polynomial_mutation.h"
+#include "operator/swap_mutation.h"
+#include "operator/bit_mutation.h"
 #include "operator/sbx.h"
+#include "operator/uniform_crossover.h"
+#include "operator/order_crossover.h"
 #include "random/random.h"
 
 namespace emoc {
@@ -30,7 +36,7 @@ namespace emoc {
 		{
 			// generate offspring population
 			Crossover(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->offspring_population_.data());
-			PolynomialMutation(g_GlobalSettings->offspring_population_.data(), 2 * (real_popnum_ / 2), g_GlobalSettings);
+			Mutation(g_GlobalSettings->offspring_population_.data(), 2 * (real_popnum_ / 2));
 			EvaluatePop(g_GlobalSettings->offspring_population_.data(), 2 * (real_popnum_ / 2));
 			MergePopulation(g_GlobalSettings->parent_population_.data(), real_popnum_, g_GlobalSettings->offspring_population_.data(),
 				2 * (real_popnum_ / 2), g_GlobalSettings->mixed_population_.data());
@@ -57,28 +63,75 @@ namespace emoc {
 
 		for (int i = 0; i < g_GlobalSettings->population_num_ / 2; ++i)
 		{
-			Individual *parent1 = TournamentByCustom(parent_pop[index1[2 * i]], parent_pop[index1[2 * i]]->obj_[0],
-				parent_pop[index1[2 * i + 1]], parent_pop[index1[2 * i + 1]]->obj_[0]);
-			Individual *parent2 = TournamentByCustom(parent_pop[index2[2 * i]], parent_pop[index2[2 * i]]->obj_[0],
-				parent_pop[index2[2 * i + 1]], parent_pop[index2[2 * i + 1]]->obj_[0]);
-			SBX(parent1, parent2, offspring_pop[2 * i], offspring_pop[2 * i + 1], g_GlobalSettings);
+			double fitness1 = CalFitness(parent_pop[index1[2 * i]]);
+			double fitness2 = CalFitness(parent_pop[index1[2 * i + 1]]);
+			Individual *parent1 = TournamentByCustom(parent_pop[index1[2 * i]], fitness1,
+				parent_pop[index1[2 * i + 1]], fitness2);
+
+			fitness1 = CalFitness(parent_pop[index2[2 * i]]);
+			fitness2 = CalFitness(parent_pop[index2[2 * i + 1]]);
+			Individual *parent2 = TournamentByCustom(parent_pop[index2[2 * i]], fitness1,
+				parent_pop[index2[2 * i + 1]], fitness2);
+
+			if (g_GlobalSettings->problem_->encoding_ == Problem::REAL)
+			{
+				SBX(parent1, parent2, offspring_pop[2 * i], offspring_pop[2 * i + 1], g_GlobalSettings);
+			}
+			else if (g_GlobalSettings->problem_->encoding_ == Problem::BINARY)
+			{
+				UniformCrossover(parent1, parent2, offspring_pop[2 * i], offspring_pop[2 * i + 1], g_GlobalSettings);
+			}
+			else if (g_GlobalSettings->problem_->encoding_ == Problem::PERMUTATION)
+			{
+				OrderCrossover(parent1, parent2, offspring_pop[2 * i], offspring_pop[2 * i + 1], g_GlobalSettings);
+			}
 		}
 	}
 	
-	void GA::EnvironmentalSelection(Individual **parent_pop, Individual **mixed_pop)
+	void GA::Mutation(Individual** pop, int pop_num)
+	{
+		for (int i = 0; i < pop_num; i++)
+		{
+			if (g_GlobalSettings->problem_->encoding_ == Problem::REAL)
+			{
+				PolynomialMutation(pop[i], g_GlobalSettings);
+			}
+			else if (g_GlobalSettings->problem_->encoding_ == Problem::BINARY)
+			{
+				BitMutation(pop[i], g_GlobalSettings);
+			}
+			else if (g_GlobalSettings->problem_->encoding_ == Problem::PERMUTATION)
+			{
+				SwapMutation(pop[i], g_GlobalSettings);
+			}
+		}
+	}
+
+	void GA::EnvironmentalSelection(Individual** parent_pop, Individual** mixed_pop)
 	{
 		int mixed_num = real_popnum_ + 2 * (real_popnum_ / 2);
 		std::vector<int> sorted_index(mixed_num);
 		for (int i = 0; i < mixed_num; i++)
 			sorted_index[i] = i;
 
+		for (int i = 0; i < mixed_num; i++)
+			mixed_pop[i]->fitness_ = CalFitness(mixed_pop[i]);
+
 		std::sort(sorted_index.begin(), sorted_index.end(), [&](int& left, int& right) {
-			return mixed_pop[left]->obj_[0] < mixed_pop[right]->obj_[0];
+			return mixed_pop[left]->fitness_ < mixed_pop[right]->fitness_;
 			});
 
 		// copy individuals
 		for (int i = 0; i < g_GlobalSettings->population_num_; i++)
 			CopyIndividual(mixed_pop[sorted_index[i]], parent_pop[i]);
+	}
+
+	double GA::CalFitness(Individual* ind)
+	{
+		double con = 0.0;
+		for (int j = 0; j < ind->con.size(); j++)
+			con += std::max(0.0, ind->con[j]);
+		return ind->obj_[0] + (con > 0 ? (1e10+con) : 0.0);
 	}
 
 }
