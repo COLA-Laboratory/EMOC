@@ -13,9 +13,9 @@ namespace emoc {
 	public:
 		enum EncodingType
 		{
-			REAL,
-			BINARY,
-			PERMUTATION
+			REAL = 1,
+			BINARY = 2,
+			PERMUTATION = 4
 		};
 
 	public:

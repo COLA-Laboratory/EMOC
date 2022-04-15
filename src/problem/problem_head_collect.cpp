@@ -32,6 +32,12 @@ namespace emoc{
 	EMOC_REGIST_PROBLEM(Multiobjective, DTLZ Series, MDTLZ2);
 	EMOC_REGIST_PROBLEM(Multiobjective, DTLZ Series, MDTLZ3);
 	EMOC_REGIST_PROBLEM(Multiobjective, DTLZ Series, MDTLZ4);
+	EMOC_REGIST_PROBLEM(Multiobjective, DCDTLZ Series, DC1DTLZ1);
+	EMOC_REGIST_PROBLEM(Multiobjective, DCDTLZ Series, DC1DTLZ3);
+	EMOC_REGIST_PROBLEM(Multiobjective, DCDTLZ Series, DC2DTLZ1);
+	EMOC_REGIST_PROBLEM(Multiobjective, DCDTLZ Series, DC2DTLZ3);
+	EMOC_REGIST_PROBLEM(Multiobjective, DCDTLZ Series, DC3DTLZ1);
+	EMOC_REGIST_PROBLEM(Multiobjective, DCDTLZ Series, DC3DTLZ3);
 
 	// UF Series
 	EMOC_REGIST_PROBLEM(Multiobjective, UF Series, UF1);

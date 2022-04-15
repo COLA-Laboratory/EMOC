@@ -39,6 +39,7 @@ namespace emoc {
 	// Constraint Algorithms
 	EMOC_REGIST_ALGORITHM(Multiobjective, Constraint, CNSGA2);
 	EMOC_REGIST_ALGORITHM(Multiobjective, Constraint, CMOEAD);
+	EMOC_REGIST_ALGORITHM(Multiobjective, Constraint, CTAEA);
 
 	// Single Objective Algorithms
 	EMOC_REGIST_ALGORITHM(Singleobjective, Single Objective, GA);

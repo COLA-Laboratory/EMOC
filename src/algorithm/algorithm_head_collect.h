@@ -1,6 +1,7 @@
 #pragma once
 #include "algorithm/moead/moead.h"
 #include "algorithm/cmoead/cmoead.h"
+#include "algorithm/ctaea/ctaea.h"
 #include "algorithm/moead_de/moead_de.h"
 #include "algorithm/nsga2/nsga2.h"
 #include "algorithm/cnsga2/cnsga2.h"

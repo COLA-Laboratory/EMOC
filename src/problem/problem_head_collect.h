@@ -1,5 +1,6 @@
 #pragma once
 #include "problem/zdt/zdt.h"
+#include "problem/dcdtlz/dcdtlz.h"
 #include "problem/dtlz/dtlz.h"
 #include "problem/uf/uf.h"
 #include "problem/wfg/wfg.h"
