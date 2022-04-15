@@ -13,14 +13,6 @@ namespace emoc {
 	class Algorithm
 	{
 	public:
-		enum HandlingType
-		{
-			REAL = 1,
-			BINARY = 2,
-			PERMUTATION = 4
-		};
-
-	public:
 		Algorithm(int thread_id);
 		virtual ~Algorithm();
 
@@ -52,6 +44,7 @@ namespace emoc {
 		clock_t start_, end_;
 		double runtime_;
 		double record_file_time_;
+
 	};
 
 }

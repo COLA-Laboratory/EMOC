@@ -109,7 +109,7 @@ namespace emoc {
 			if(optimization_type != nullptr)
 				*optimization_type = algorithm_type;
 		}
-	
+
 		return res;
 	}
 

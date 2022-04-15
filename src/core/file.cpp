@@ -61,6 +61,64 @@ namespace emoc {
 		fclose(fpt);
 	}
 
+	static void PrintDecision(const char* filename, int dec_num, Individual** pop_table, int pop_num)
+	{
+		FILE* fpt = fopen(filename, "w");
+
+		if (fpt == nullptr)
+		{
+			std::cout << "Can not open " << filename << " !." << std::endl;
+			std::cout << "Press enter to exit" << std::endl;
+			std::cout << strerror(errno) << "\n";
+			std::cin.get();
+			exit(-1);
+		}
+
+		for (int i = 0; i < pop_num; ++i)
+		{
+			Individual* ind = pop_table[i];
+			for (int j = 0; j < dec_num; ++j)
+				fprintf(fpt, "%lf\t", ind->dec_[j]);
+			fprintf(fpt, "\n");
+		}
+
+		fflush(fpt);
+		fclose(fpt);
+	}
+
+	static void PrintCityPosition(const char* filename, int dec_num, Individual** pop_table,
+		std::vector<std::vector<double>> positions, int pop_num)
+	{
+		FILE* fpt = fopen(filename, "w");
+
+		if (fpt == nullptr)
+		{
+			std::cout << "Can not open " << filename << " !." << std::endl;
+			std::cout << "Press enter to exit" << std::endl;
+			std::cout << strerror(errno) << "\n";
+			std::cin.get();
+			exit(-1);
+		}
+
+		Individual* ind = pop_table[0];
+		for (int i = 0; i < dec_num; ++i)
+		{
+			int city_id = (int)(ind->dec_[i]);
+			for(int j = 0;j < positions[city_id].size();j++)
+				fprintf(fpt, "%lf\t", positions[city_id][j]);
+			fprintf(fpt, "\n");
+		}
+
+		int start_city_id = (int)(ind->dec_[0]);
+		for (int j = 0; j < positions[start_city_id].size(); j++)
+			fprintf(fpt, "%lf\t", positions[start_city_id][j]);
+		
+
+		fflush(fpt);
+		fclose(fpt);
+	}
+
+
 	void CopyFile(const char* src, const char* dest )
 	{
 		FILE* in = fopen(src, "r+");
@@ -148,7 +206,47 @@ namespace emoc {
 		CreateDirectory(output_dir);
 		sprintf(output_file, "%spop_%d.txt", output_dir, generation);
 
-		PrintObjective(output_file, para->obj_num_, para->parent_population_.data(), real_popnum);
+		if (para->problem_->encoding_ == Problem::REAL)
+			PrintObjective(output_file, para->obj_num_, para->parent_population_.data(), real_popnum);
+		else if(para->problem_->encoding_ == Problem::BINARY)
+			PrintDecision(output_file, para->dec_num_, para->parent_population_.data(), real_popnum);
+		else if (para->problem_->encoding_ == Problem::PERMUTATION)
+		{
+			if (para->problem_name_ == "TSP")
+			{
+				static bool is_read = false;
+				static std::vector<std::vector<double>> positions(para->dec_num_, std::vector<double>(2, 0));
+
+				// reset the data when a new run starts
+				if (para->iteration_num_ == 0)
+				{
+					is_read = false;
+					positions.resize(para->dec_num_, std::vector<double>(2, 0));
+				}
+
+				if (!is_read)
+				{
+					std::string path = "./output/problem_config/TSP_" + std::to_string(para->dec_num_) + "D.txt";
+					std::fstream data_file(path);
+					if (!data_file)
+					{
+						std::cerr << path << " file doesn't exist!\n";
+					}
+					else
+					{
+						for (int i = 0; i < para->dec_num_; i++)
+						{
+							data_file >> positions[i][0] >> positions[i][1];
+						}
+					}
+					data_file.close();
+					is_read = true;
+				}
+				PrintCityPosition(output_file, para->dec_num_, para->parent_population_.data(), positions, real_popnum);
+			}
+			else
+				PrintObjective(output_file, para->obj_num_, para->parent_population_.data(), real_popnum);
+		}
 	}
 
 	void EMOCParamerterParse(int argc, char* argv[], EMOCParameters& para, bool& is_gui)

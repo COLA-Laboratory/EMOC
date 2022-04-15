@@ -185,28 +185,49 @@ namespace emoc {
 
 		// construct plot command
 		char plot_cmd[1024];
-		if (g_GlobalSettings->obj_num_ == 1)
+		if (g_GlobalSettings->problem_->encoding_ == Problem::BINARY)
 		{
-			// do nothing
-			fclose(script_file);
-			return;
+			PlotManager::Instance()->BinaryHeatMap(plot_cmd,gen,real_popnum_,g_GlobalSettings->dec_num_,data_file_name);
 		}
-		else if (g_GlobalSettings->obj_num_ == 2)
+		else if (g_GlobalSettings->problem_->encoding_ == Problem::PERMUTATION)
 		{
-			PlotManager::Instance()->Scatter2D(plot_cmd, gen, data_file_name);
+			if(g_GlobalSettings->problem_name_ == "TSP")
+				PlotManager::Instance()->TSPVisulization(plot_cmd,gen,data_file_name);
+			else
+			{
+				// do nothing
+				fclose(script_file);
+				return;
+			}
 		}
-		else if (g_GlobalSettings->obj_num_ == 3)
+		else if (g_GlobalSettings->problem_->encoding_ == Problem::BINARY)
 		{
-			PlotManager::Instance()->Scatter3D(plot_cmd, gen, data_file_name);
+			if (g_GlobalSettings->obj_num_ == 1)
+			{
+				// do nothing
+				fclose(script_file);
+				return;
+			}
+			else if (g_GlobalSettings->obj_num_ == 2)
+			{
+				PlotManager::Instance()->Scatter2D(plot_cmd, gen, data_file_name);
+			}
+			else if (g_GlobalSettings->obj_num_ == 3)
+			{
+				PlotManager::Instance()->Scatter3D(plot_cmd, gen, data_file_name);
+			}
+			else if (g_GlobalSettings->obj_num_ <= 7)
+			{
+				PlotManager::Instance()->ParallelAxisPlot(plot_cmd, gen, g_GlobalSettings->obj_num_,data_file_name);
+			}
+			else
+			{
+				// Gnuplot didn't support
+				std::cerr << "Error!!! in display_pop(...)" << std::endl;
+				fclose(script_file);
+				return;
+			}
 		}
-		else
-		{
-			// Wait to implement other visualization
-			std::cerr << "Error!!! in display_pop(...)" << std::endl;
-			fclose(script_file);
-			return;
-		}
-
 		// write plot cmd to script file
 		fprintf(script_file, "%s", plot_cmd);
 		fflush(script_file);

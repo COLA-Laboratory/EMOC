@@ -111,6 +111,64 @@ namespace emoc {
 			, gen, data_file_name);
 	}
 
+	void PlotManager::ParallelAxisPlot(char* plot_cmd, int gen, int obj_num, char* data_file_name)
+	{
+		char columns[128]="";
+		int index = 0;
+		for (int i = 0; i < obj_num - 1; i++)
+			sprintf(columns, "%s%d:", columns, i+1);
+		sprintf(columns, "%s%d", columns, obj_num);
+
+		char xtics[1024] = "";
+		char ytics[1024] = "";
+		sprintf(xtics, "set xtics(");
+		for (int i = 0; i < obj_num - 1; i++)
+			sprintf(xtics, "%s%d,", xtics, i + 1);
+		sprintf(xtics, "%s%d)", xtics, obj_num);
+		for (int i = 0; i < obj_num - 1; i++)
+			sprintf(ytics, "%sset paxis %d tics\n", ytics, i + 1);
+		sprintf(ytics, "%sset paxis %d tics", ytics, obj_num);
+		sprintf(plot_cmd,
+			"unset key\n"
+			"unset ytics\n"
+			"unset border\n"
+			"set title 'Generation #%d'\n"
+			"%s\n"
+			"%s\n"
+			"plot  '%s' u %s w parallel lc 6\n"
+			, gen,xtics,ytics, data_file_name, columns);
+	}
+
+	void PlotManager::BinaryHeatMap(char* plot_cmd, int gen, int pop_num, int dec_num, char* data_file_name)
+	{
+		sprintf(plot_cmd,
+			"set view map\n"
+			"set palette defined(0 \"white\", 1 \"black\")\n"
+			"set xrange[-0.5:%f]\n"
+			"set yrange[-0.5:%f]\n"
+			"set title 'Generation #%d'\n"
+			"set xlabel 'Dimension No.'\n"
+			"set ylabel 'Individual No.'\n"
+			"unset key\n"
+			"unset border\n"
+			"unset colorbox\n"
+			"splot  '%s' matrix with image\n"
+			, dec_num+0.5, pop_num+0.5, gen, data_file_name);
+	}
+
+	void PlotManager::TSPVisulization(char* plot_cmd, int gen, char* data_file_name)
+	{
+		sprintf(plot_cmd,
+			"set title 'Generation #%d'\n"
+			"set xlabel 'position x'\n"
+			"set ylabel 'position y'\n"
+			"unset key\n"
+			"set xrange[0:1]\n"
+			"set yrange[0:1]\n"
+			"plot '%s' with lp lc 6 lw 2 pt 7 ps 1\n"
+			, gen, data_file_name);
+	}
+
 	PlotManager::PlotManager() :
 		is_window_close_(true),
 		gp_(nullptr)

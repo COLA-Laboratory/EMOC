@@ -18,6 +18,9 @@ namespace emoc {
 
 		void Scatter2D(char* plot_cmd, int gen, char* data_file_name);
 		void Scatter3D(char* plot_cmd, int gen, char* data_file_name);
+		void ParallelAxisPlot(char* plot_cmd, int gen, int obj_num, char* data_file_name);
+		void BinaryHeatMap(char* plot_cmd, int gen, int pop_num, int dec_num, char* data_file_name);
+		void TSPVisulization(char* plot_cmd, int gen, char* data_file_name);
 
 	private:
 		PlotManager();
