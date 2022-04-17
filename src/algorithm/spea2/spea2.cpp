@@ -80,7 +80,7 @@ namespace emoc {
 					continue;
 				}
 
-				distance[i][j] = CalEuclidianDistance(pop[i]->obj_, pop[j]->obj_, g_GlobalSettings->obj_num_);
+				distance[i][j] = CalEuclidianDistance(pop[i]->obj_.data(), pop[j]->obj_.data(), g_GlobalSettings->obj_num_);
 			}
 
 			if(is_sort)

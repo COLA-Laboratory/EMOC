@@ -27,8 +27,8 @@ namespace emoc {
 		double gx;
 		double* xreal, * obj;
 
-		obj = ind->obj_;
-		xreal = ind->dec_;
+		obj = ind->obj_.data();
+		xreal = ind->dec_.data();
 
 		gx = 0.0;
 		k = dec_num_ - obj_num_ + 1;
@@ -53,7 +53,7 @@ namespace emoc {
 
 	void DC1DTLZ1::CalCon(Individual* ind)
 	{
-		ind->con[0] = 0.5 - std::cos(3 * PI * ind->dec_[0]);
+		ind->con_[0] = 0.5 - std::cos(3 * PI * ind->dec_[0]);
 	}
 
 	DC1DTLZ3::DC1DTLZ3(int dec_num, int obj_num) :Problem(dec_num, obj_num)
@@ -77,8 +77,8 @@ namespace emoc {
 		double gx, fsum;
 		double* xreal, * obj;
 
-		obj = ind->obj_;
-		xreal = ind->dec_;
+		obj = ind->obj_.data();
+		xreal = ind->dec_.data();
 
 		gx = 0.0;
 		k = dec_num_ - obj_num_ + 1;
@@ -103,7 +103,7 @@ namespace emoc {
 
 	void DC1DTLZ3::CalCon(Individual* ind)
 	{
-		ind->con[0] = 0.5 - std::cos(3 * PI * ind->dec_[0]);
+		ind->con_[0] = 0.5 - std::cos(3 * PI * ind->dec_[0]);
 	}
 
 	DC2DTLZ1::DC2DTLZ1(int dec_num, int obj_num) :Problem(dec_num, obj_num)
@@ -126,8 +126,8 @@ namespace emoc {
 		double gx;
 		double* xreal, * obj;
 
-		obj = ind->obj_;
-		xreal = ind->dec_;
+		obj = ind->obj_.data();
+		xreal = ind->dec_.data();
 
 		gx = 0.0;
 		k = dec_num_ - obj_num_ + 1;
@@ -155,16 +155,16 @@ namespace emoc {
 		int i, k;
 		double gx;
 		double* xreal, * obj;
-		obj = ind->obj_;
-		xreal = ind->dec_;
+		obj = ind->obj_.data();
+		xreal = ind->dec_.data();
 		gx = 0.0;
 		k = dec_num_ - obj_num_ + 1;
 		for (i = dec_num_ - k; i < dec_num_; i++)
 			gx += std::pow((xreal[i] - 0.5), 2.0) - std::cos(20.0 * PI * (xreal[i] - 0.5));
 		gx = 100.0 * (k + gx);
 
-		ind->con[0] = 0.9 - std::cos(3 * PI * gx);
-		ind->con[1] = 0.9 - std::exp(-gx);
+		ind->con_[0] = 0.9 - std::cos(3 * PI * gx);
+		ind->con_[1] = 0.9 - std::exp(-gx);
 	}
 
 	DC2DTLZ3::DC2DTLZ3(int dec_num, int obj_num) :Problem(dec_num, obj_num)
@@ -188,8 +188,8 @@ namespace emoc {
 		double gx, fsum;
 		double* xreal, * obj;
 
-		obj = ind->obj_;
-		xreal = ind->dec_;
+		obj = ind->obj_.data();
+		xreal = ind->dec_.data();
 
 		gx = 0.0;
 		k = dec_num_ - obj_num_ + 1;
@@ -217,16 +217,16 @@ namespace emoc {
 		int i, k;
 		double gx;
 		double* xreal, * obj;
-		obj = ind->obj_;
-		xreal = ind->dec_;
+		obj = ind->obj_.data();
+		xreal = ind->dec_.data();
 		gx = 0.0;
 		k = dec_num_ - obj_num_ + 1;
 		for (i = dec_num_ - k; i < dec_num_; i++)
 			gx += std::pow((xreal[i] - 0.5), 2.0) - std::cos(20.0 * PI * (xreal[i] - 0.5));
 		gx = 10.0 * (k + gx);
 
-		ind->con[0] = 0.5 - std::cos(3 * PI * gx);
-		ind->con[1] = 0.5 - std::exp(-gx);
+		ind->con_[0] = 0.5 - std::cos(3 * PI * gx);
+		ind->con_[1] = 0.5 - std::exp(-gx);
 	}
 
 	DC3DTLZ1::DC3DTLZ1(int dec_num, int obj_num) :Problem(dec_num, obj_num)
@@ -249,8 +249,8 @@ namespace emoc {
 		double gx;
 		double* xreal, * obj;
 
-		obj = ind->obj_;
-		xreal = ind->dec_;
+		obj = ind->obj_.data();
+		xreal = ind->dec_.data();
 
 		gx = 0.0;
 		k = dec_num_ - obj_num_ + 1;
@@ -278,8 +278,8 @@ namespace emoc {
 		int i, k;
 		double gx;
 		double* xreal, * obj;
-		obj = ind->obj_;
-		xreal = ind->dec_;
+		obj = ind->obj_.data();
+		xreal = ind->dec_.data();
 		gx = 0.0;
 		k = dec_num_ - obj_num_ + 1;
 		for (i = dec_num_ - k; i < dec_num_; i++)
@@ -288,9 +288,9 @@ namespace emoc {
 
 		for (int i = 0; i < obj_num_ - 1; i++)
 		{
-			ind->con[i] = 0.5 - std::cos(3 * PI * ind->dec_[i]);
+			ind->con_[i] = 0.5 - std::cos(3 * PI * ind->dec_[i]);
 		}
-		ind->con[obj_num_ - 1] = 0.5 - std::cos(3 * PI * gx);
+		ind->con_[obj_num_ - 1] = 0.5 - std::cos(3 * PI * gx);
 	}
 
 	DC3DTLZ3::DC3DTLZ3(int dec_num, int obj_num) :Problem(dec_num, obj_num)
@@ -314,8 +314,8 @@ namespace emoc {
 		double gx, fsum;
 		double* xreal, * obj;
 
-		obj = ind->obj_;
-		xreal = ind->dec_;
+		obj = ind->obj_.data();
+		xreal = ind->dec_.data();
 
 		gx = 0.0;
 		k = dec_num_ - obj_num_ + 1;
@@ -343,8 +343,8 @@ namespace emoc {
 		int i, k;
 		double gx;
 		double* xreal, * obj;
-		obj = ind->obj_;
-		xreal = ind->dec_;
+		obj = ind->obj_.data();
+		xreal = ind->dec_.data();
 		gx = 0.0;
 		k = dec_num_ - obj_num_ + 1;
 		for (i = dec_num_ - k; i < dec_num_; i++)
@@ -353,8 +353,8 @@ namespace emoc {
 
 		for (int i = 0; i < obj_num_ - 1; i++)
 		{
-			ind->con[i] = 0.5 - std::cos(3 * PI * ind->dec_[i]);
+			ind->con_[i] = 0.5 - std::cos(3 * PI * ind->dec_[i]);
 		}
-		ind->con[obj_num_ - 1] = 0.5 - std::cos(3 * PI * gx);
+		ind->con_[obj_num_ - 1] = 0.5 - std::cos(3 * PI * gx);
 	}
 }

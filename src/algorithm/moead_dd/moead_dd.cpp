@@ -101,10 +101,10 @@ namespace emoc {
 		for (int i = 0; i < pop_num; i++)
 		{
 			int max_index = 0;
-			double max = CalculateCos(pop[i]->obj_, lambda_[0], g_GlobalSettings->obj_num_);
+			double max = CalculateCos(pop[i]->obj_.data(), lambda_[0], g_GlobalSettings->obj_num_);
 			for (int j = 1; j < weight_num_; j++)
 			{
-				double current_cos = CalculateCos(pop[i]->obj_, lambda_[j], g_GlobalSettings->obj_num_);
+				double current_cos = CalculateCos(pop[i]->obj_.data(), lambda_[j], g_GlobalSettings->obj_num_);
 				if (max < current_cos)
 				{
 					max = current_cos;

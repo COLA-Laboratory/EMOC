@@ -236,10 +236,10 @@ namespace emoc {
 		int flag;
 
 		double con1 = 0.0, con2 = 0.0;
-		for (int i = 0; i < ind1->con.size(); i++)
+		for (int i = 0; i < ind1->con_.size(); i++)
 		{
-			con1 += std::max(0.0, ind1->con[i]);
-			con2 += std::max(0.0, ind2->con[i]);
+			con1 += std::max(0.0, ind1->con_[i]);
+			con2 += std::max(0.0, ind2->con_[i]);
 		}
 
 		if (con1 < EMOC_EPS && con2 < EMOC_EPS)
@@ -411,12 +411,12 @@ namespace emoc {
 		temp = pool->child;
 		do {
 			i = temp->index;
-			min_distance = CalPerpendicularDistance(pop[i]->obj_, lambda[0], g_GlobalSettings->obj_num_);
+			min_distance = CalPerpendicularDistance(pop[i]->obj_.data(), lambda[0], g_GlobalSettings->obj_num_);
 
 			min_idx = 0;
 			for (j = 1; j < weight_num; j++)
 			{
-				distance = CalPerpendicularDistance(pop[i]->obj_, lambda[j], g_GlobalSettings->obj_num_);
+				distance = CalPerpendicularDistance(pop[i]->obj_.data(), lambda[j], g_GlobalSettings->obj_num_);
 				if (distance < min_distance)
 				{
 					min_distance = distance;
@@ -451,10 +451,10 @@ namespace emoc {
 		flag1 = flag2 = 0;
 
 		double con1 = 0.0, con2 = 0.0;
-		for (int i = 0; i < a->con.size(); i++)
+		for (int i = 0; i < a->con_.size(); i++)
 		{
-			con1 += std::max(0.0, a->con[i]);
-			con2 += std::max(0.0, b->con[i]);
+			con1 += std::max(0.0, a->con_[i]);
+			con2 += std::max(0.0, b->con_[i]);
 		}
 
 		if (con1 < con2)
@@ -552,8 +552,8 @@ namespace emoc {
 					array[i].idx = temp2->index;
 
 					double con = 0.0;
-					for (int p = 0; p < mixed_pop[temp2->index]->con.size(); p++)
-						con += std::max(0.0, mixed_pop[temp2->index]->con[p]);
+					for (int p = 0; p < mixed_pop[temp2->index]->con_.size(); p++)
+						con += std::max(0.0, mixed_pop[temp2->index]->con_[p]);
 
 					array[i].x = con;
 					temp2 = temp2->child;
@@ -618,8 +618,8 @@ namespace emoc {
 		for (i = 0; i < 2 * real_popnum_; i++)
 		{
 			double con = 0.0;
-			for (int j = 0; j < mixed_pop[i]->con.size(); j++)
-				con += std::max(0.0, mixed_pop[i]->con[j]);
+			for (int j = 0; j < mixed_pop[i]->con_.size(); j++)
+				con += std::max(0.0, mixed_pop[i]->con_[j]);
 			
 			if (con < EMOC_EPS)
 			{
@@ -661,7 +661,7 @@ namespace emoc {
 									temp_idx = loop1->index;
 									if (temp_idx != cur_idx)
 									{
-										temp_distance = CalEuclidianDistance(mixed_pop[cur_idx]->obj_, mixed_pop[temp_idx]->obj_, g_GlobalSettings->obj_num_);
+										temp_distance = CalEuclidianDistance(mixed_pop[cur_idx]->obj_.data(), mixed_pop[temp_idx]->obj_.data(), g_GlobalSettings->obj_num_);
 										if (temp_distance < close_distance)
 											close_distance = temp_distance;
 									}
@@ -677,7 +677,7 @@ namespace emoc {
 										k = loop2->index;
 										if (j != k)
 										{
-											temp_distance = CalEuclidianDistance(mixed_pop[j]->obj_, mixed_pop[k]->obj_, g_GlobalSettings->obj_num_);
+											temp_distance = CalEuclidianDistance(mixed_pop[j]->obj_.data(), mixed_pop[k]->obj_.data(), g_GlobalSettings->obj_num_);
 											if (temp_distance < close_distance && c_CA_location[j] == i && c_CA_location[k] == i)
 											{
 												close_distance = temp_distance;

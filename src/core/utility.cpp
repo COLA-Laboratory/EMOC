@@ -43,16 +43,16 @@ namespace emoc {
 	{
 		bool is_infeasible1 = false, is_infeasible2 = false;
 		double cons1 = 0.0, cons2 = 0.0;
-		for (int i = 0; i < ind1->con.size(); i++)
+		for (int i = 0; i < ind1->con_.size(); i++)
 		{
-			cons1 += std::max(0.0, ind1->con[i]);
-			if (ind1->con[i] > 0)
+			cons1 += std::max(0.0, ind1->con_[i]);
+			if (ind1->con_[i] > 0)
 				is_infeasible1 = true;
 		}
-		for (int i = 0; i < ind2->con.size(); i++)
+		for (int i = 0; i < ind2->con_.size(); i++)
 		{
-			cons2 += std::max(0.0, ind2->con[i]);
-			if (ind2->con[i] > 0)
+			cons2 += std::max(0.0, ind2->con_[i]);
+			if (ind2->con_[i] > 0)
 				is_infeasible2 = true;
 		}
 

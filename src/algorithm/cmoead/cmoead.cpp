@@ -172,10 +172,10 @@ namespace emoc {
 
 			// get constraint values
 			double CVO = 0.0, CVP = 0.0;
-			for (int j = 0; j < offspring->con.size(); j++)
-				CVO += std::max(0.0, offspring->con[j]);
-			for (int j = 0; j < current_ind->con.size(); j++)
-				CVP += std::max(0.0, current_ind->con[j]);
+			for (int j = 0; j < offspring->con_.size(); j++)
+				CVO += std::max(0.0, offspring->con_[j]);
+			for (int j = 0; j < current_ind->con_.size(); j++)
+				CVP += std::max(0.0, current_ind->con_[j]);
 
 			// calculate fitness;
 			neighbour_fitness = CalPBI(current_ind, lambda_[weight_index], ideal_point_, g_GlobalSettings->obj_num_, pbi_theta_);

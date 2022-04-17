@@ -129,8 +129,8 @@ namespace emoc {
 	double GA::CalFitness(Individual* ind)
 	{
 		double con = 0.0;
-		for (int j = 0; j < ind->con.size(); j++)
-			con += std::max(0.0, ind->con[j]);
+		for (int j = 0; j < ind->con_.size(); j++)
+			con += std::max(0.0, ind->con_[j]);
 		return ind->obj_[0] + (con > 0 ? (1e10+con) : 0.0);
 	}
 

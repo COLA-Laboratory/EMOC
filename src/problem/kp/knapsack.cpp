@@ -55,7 +55,7 @@ namespace emoc {
 			sum += weight_[i];
 			total_weight += ind->dec_[i] * weight_[i];
 		}
-		ind->con[0] = total_weight - sum / 2.0;
+		ind->con_[0] = total_weight - sum / 2.0;
 	}
 
 	void Knapsack::Init()

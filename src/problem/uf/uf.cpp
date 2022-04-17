@@ -28,8 +28,8 @@ namespace emoc {
 		int count1 = 0, count2 = 0;
 		double sum1 = 0.0, sum2 = 0.0, yj = 0.0;
 
-		double *obj = ind->obj_;
-		double *xreal = ind->dec_;
+		double *obj = ind->obj_.data();
+		double *xreal = ind->dec_.data();
 
 		for (int i = 2; i <= dec_num_; i++)
 		{
@@ -72,8 +72,8 @@ namespace emoc {
 		int count1 = 0, count2 = 0;
 		double sum1 = 0.0, sum2 = 0.0, yj = 0.0;
 
-		double *obj = ind->obj_;
-		double *xreal = ind->dec_;
+		double *obj = ind->obj_.data();
+		double *xreal = ind->dec_.data();
 
 		for (int i = 2; i <= dec_num_; i++)
 		{
@@ -117,8 +117,8 @@ namespace emoc {
 		double sum1 = 0.0, sum2 = 0.0;
 		double prod1 = 1.0, prod2 = 1.0, yj = 0.0, pj = 0.0;
 
-		double *obj = ind->obj_;
-		double *xreal = ind->dec_;
+		double *obj = ind->obj_.data();
+		double *xreal = ind->dec_.data();
 
 		for (int i = 2; i <= dec_num_; i++)
 		{
@@ -164,8 +164,8 @@ namespace emoc {
 		double sum1 = 0.0, sum2 = 0.0;
 		double yj = 0.0, hj = 0.0;
 
-		double *obj = ind->obj_;
-		double *xreal = ind->dec_;
+		double *obj = ind->obj_.data();
+		double *xreal = ind->dec_.data();
 
 		for (int i = 2; i <= dec_num_; i++)
 		{
@@ -209,8 +209,8 @@ namespace emoc {
 		double sum1 = 0.0, sum2 = 0.0;
 		double yj = 0.0, hj = 0.0, Nm = 10.0, Em = 0.1;
 
-		double *obj = ind->obj_;
-		double *xreal = ind->dec_;
+		double *obj = ind->obj_.data();
+		double *xreal = ind->dec_.data();
 
 		for (int i = 2; i <= dec_num_; i++)
 		{
@@ -256,8 +256,8 @@ namespace emoc {
 		double prod1 = 1.0, prod2 = 1.0;
 		double yj = 0.0, hj = 0.0, pj = 0.0, Nm = 2.0, Em = 0.1;
 
-		double *obj = ind->obj_;
-		double *xreal = ind->dec_;
+		double *obj = ind->obj_.data();
+		double *xreal = ind->dec_.data();
 
 		for (int i = 2; i <= dec_num_; i++)
 		{
@@ -304,8 +304,8 @@ namespace emoc {
 		int count1 = 0, count2 = 0;
 		double sum1 = 0.0, sum2 = 0.0, yj = 0.0;
 
-		double *obj = ind->obj_;
-		double *xreal = ind->dec_;
+		double *obj = ind->obj_.data();
+		double *xreal = ind->dec_.data();
 
 		for (int i = 2; i <= dec_num_; i++)
 		{
@@ -352,8 +352,8 @@ namespace emoc {
 		int count1 = 0, count2 = 0, count3 = 0;
 		double sum1 = 0.0, sum2 = 0.0, sum3 = 0.0, yj = 0.0;
 
-		double *obj = ind->obj_;
-		double *xreal = ind->dec_;
+		double *obj = ind->obj_.data();
+		double *xreal = ind->dec_.data();
 
 		for (int i = 3; i <= dec_num_; i++)
 		{
@@ -404,8 +404,8 @@ namespace emoc {
 		int count1 = 0, count2 = 0, count3 = 0;
 		double sum1 = 0.0, sum2 = 0.0, sum3 = 0.0, yj = 0.0, Em = 0.1;
 
-		double *obj = ind->obj_;
-		double *xreal = ind->dec_;
+		double *obj = ind->obj_.data();
+		double *xreal = ind->dec_.data();
 
 		for (int i = 3; i <= dec_num_; i++)
 		{
@@ -458,8 +458,8 @@ namespace emoc {
 		int count1 = 0, count2 = 0, count3 = 0;
 		double sum1 = 0.0, sum2 = 0.0, sum3 = 0.0, yj = 0.0, hj = 0.0;
 
-		double *obj = ind->obj_;
-		double *xreal = ind->dec_;
+		double *obj = ind->obj_.data();
+		double *xreal = ind->dec_.data();
 
 		for (int i = 3; i <= dec_num_; i++)
 		{

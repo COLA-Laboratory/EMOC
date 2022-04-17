@@ -84,6 +84,8 @@ namespace emoc {
 	void PlotManager::Scatter2D(char* plot_cmd, int gen, char* data_file_name)
 	{
 		sprintf(plot_cmd,
+			"reset session\n"
+			"set border\n"
 			"set grid\n"
 			"set autoscale\n"
 			"set title 'Generation #%d'\n"
@@ -98,6 +100,8 @@ namespace emoc {
 	void PlotManager::Scatter3D(char* plot_cmd, int gen, char* data_file_name)
 	{
 		sprintf(plot_cmd,
+			"reset session\n"
+			"set border\n"
 			"set grid\n"
 			"set autoscale\n"
 			"set title 'Generation #%d'\n"
@@ -129,6 +133,7 @@ namespace emoc {
 			sprintf(ytics, "%sset paxis %d tics\n", ytics, i + 1);
 		sprintf(ytics, "%sset paxis %d tics", ytics, obj_num);
 		sprintf(plot_cmd,
+			"reset session\n"
 			"unset key\n"
 			"unset ytics\n"
 			"unset border\n"
@@ -142,6 +147,7 @@ namespace emoc {
 	void PlotManager::BinaryHeatMap(char* plot_cmd, int gen, int pop_num, int dec_num, char* data_file_name)
 	{
 		sprintf(plot_cmd,
+			"reset session\n"
 			"set view map\n"
 			"set palette defined(0 \"white\", 1 \"black\")\n"
 			"set xrange[-0.5:%f]\n"
@@ -149,6 +155,7 @@ namespace emoc {
 			"set title 'Generation #%d'\n"
 			"set xlabel 'Dimension No.'\n"
 			"set ylabel 'Individual No.'\n"
+			"unset grid\n"
 			"unset key\n"
 			"unset border\n"
 			"unset colorbox\n"
@@ -159,10 +166,12 @@ namespace emoc {
 	void PlotManager::TSPVisulization(char* plot_cmd, int gen, char* data_file_name)
 	{
 		sprintf(plot_cmd,
+			"reset session\n"
 			"set title 'Generation #%d'\n"
 			"set xlabel 'position x'\n"
 			"set ylabel 'position y'\n"
 			"unset key\n"
+			"unset grid\n"
 			"set xrange[0:1]\n"
 			"set yrange[0:1]\n"
 			"plot '%s' with lp lc 6 lw 2 pt 7 ps 1\n"

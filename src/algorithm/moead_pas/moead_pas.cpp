@@ -230,7 +230,7 @@ namespace emoc {
 					}
 
 					int best_index = min_weightedLp_ind[j];
-					perpendicular_distance[j] = CalPerpendicularDistanceNormalization(g_GlobalSettings->parent_population_[best_index]->obj_, lambda_[i], g_GlobalSettings->obj_num_, ideal_point_, nadir_point_);
+					perpendicular_distance[j] = CalPerpendicularDistanceNormalization(g_GlobalSettings->parent_population_[best_index]->obj_.data(), lambda_[i], g_GlobalSettings->obj_num_, ideal_point_, nadir_point_);
 				}
 
 				int closest_index = 0;

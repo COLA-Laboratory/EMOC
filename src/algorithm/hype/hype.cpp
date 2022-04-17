@@ -149,7 +149,7 @@ namespace emoc {
 
 			for (i = 0; i < pop_num; ++i)
 			{
-				if (WeaklyDominates(pop[i]->obj_, sample.data(), g_GlobalSettings->obj_num_))
+				if (WeaklyDominates(pop[i]->obj_.data(), sample.data(), g_GlobalSettings->obj_num_))
 				{
 					domCount++;
 					if (domCount > parameter_k)

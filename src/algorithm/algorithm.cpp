@@ -122,13 +122,13 @@ namespace emoc {
 		ind_dest->fitness_ = ind_src->fitness_;
 		ind_dest->rank_ = ind_src->rank_;
 
-		// copy individual decision and objective datas
-		memcpy(ind_dest->dec_, ind_src->dec_, sizeof(double) * g_GlobalSettings->dec_num_);
-		memcpy(ind_dest->obj_, ind_src->obj_, sizeof(double) * g_GlobalSettings->obj_num_);
-
-		// copy individual constraints
-		for (int i = 0; i < ind_src->con.size(); i++)
-			ind_dest->con[i] = ind_src->con[i];
+		// copy individual decision, objective and constraint datas
+		for (int i = 0; i < ind_src->dec_.size(); i++)
+			ind_dest->dec_[i] = ind_src->dec_[i];
+		for (int i = 0; i < ind_src->obj_.size(); i++)
+			ind_dest->obj_[i] = ind_src->obj_[i];
+		for (int i = 0; i < ind_src->con_.size(); i++)
+			ind_dest->con_[i] = ind_src->con_[i];
 	}
 
 	void Algorithm::SwapIndividual(Individual* ind1, Individual* ind2)
@@ -150,11 +150,11 @@ namespace emoc {
 			ind2->obj_[i] = t;
 		}
 
-		for (int i = 0; i < ind1->con.size(); i++)
+		for (int i = 0; i < ind1->con_.size(); i++)
 		{
-			double t = ind1->con[i];
-			ind1->con[i] = ind2->con[i];
-			ind2->con[i] = t;
+			double t = ind1->con_[i];
+			ind1->con_[i] = ind2->con_[i];
+			ind2->con_[i] = t;
 		}
 	}
 
@@ -195,12 +195,12 @@ namespace emoc {
 				PlotManager::Instance()->TSPVisulization(plot_cmd,gen,data_file_name);
 			else
 			{
-				// do nothing
+				// For other permutation problems, there is no visuliazation now.
 				fclose(script_file);
 				return;
 			}
 		}
-		else if (g_GlobalSettings->problem_->encoding_ == Problem::BINARY)
+		else if (g_GlobalSettings->problem_->encoding_ == Problem::REAL)
 		{
 			if (g_GlobalSettings->obj_num_ == 1)
 			{

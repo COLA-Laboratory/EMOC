@@ -486,8 +486,8 @@ namespace emoc {
 		int xs_num = dec_num_;
 
 		double* xreal, * obj;
-		obj = ind->obj_;
-		xreal = ind->dec_;
+		obj = ind->obj_.data();
+		xreal = ind->dec_.data();
 
 		//linkage
 		int temp_index = obj_num_;
@@ -536,8 +536,8 @@ namespace emoc {
 		int xs_num = dec_num_;
 
 		double* xreal, * obj;
-		obj = ind->obj_;
-		xreal = ind->dec_;
+		obj = ind->obj_.data();
+		xreal = ind->dec_.data();
 
 		//linkage
 		int temp_index = obj_num_;
@@ -592,8 +592,8 @@ namespace emoc {
 		int xs_num = dec_num_;
 
 		double* xreal, * obj;
-		obj = ind->obj_;
-		xreal = ind->dec_;
+		obj = ind->obj_.data();
+		xreal = ind->dec_.data();
 
 		//linkage
 		int temp_index = obj_num_;
@@ -644,8 +644,8 @@ namespace emoc {
 		int xs_num = dec_num_;
 
 		double* xreal, * obj;
-		obj = ind->obj_;
-		xreal = ind->dec_;
+		obj = ind->obj_.data();
+		xreal = ind->dec_.data();
 
 		//linkage
 		int temp_index = obj_num_;
@@ -696,8 +696,8 @@ namespace emoc {
 		int xs_num = dec_num_;
 
 		double* xreal, * obj;
-		obj = ind->obj_;
-		xreal = ind->dec_;
+		obj = ind->obj_.data();
+		xreal = ind->dec_.data();
 
 		//linkage
 		int temp_index = obj_num_;
@@ -748,8 +748,8 @@ namespace emoc {
 		int xs_num = dec_num_;
 
 		double* xreal, * obj;
-		obj = ind->obj_;
-		xreal = ind->dec_;
+		obj = ind->obj_.data();
+		xreal = ind->dec_.data();
 
 		//linkage
 		int temp_index = obj_num_;
@@ -800,8 +800,8 @@ namespace emoc {
 		int xs_num = dec_num_;
 
 		double* xreal, * obj;
-		obj = ind->obj_;
-		xreal = ind->dec_;
+		obj = ind->obj_.data();
+		xreal = ind->dec_.data();
 
 		//linkage
 		int temp_index = obj_num_;
@@ -852,8 +852,8 @@ namespace emoc {
 		int xs_num = dec_num_;
 
 		double* xreal, * obj;
-		obj = ind->obj_;
-		xreal = ind->dec_;
+		obj = ind->obj_.data();
+		xreal = ind->dec_.data();
 
 		//linkage
 		int temp_index = obj_num_;
@@ -906,8 +906,8 @@ namespace emoc {
 		int xs_num = dec_num_;
 
 		double* xreal, * obj;
-		obj = ind->obj_;
-		xreal = ind->dec_;
+		obj = ind->obj_.data();
+		xreal = ind->dec_.data();
 
 		//linkage
 		int temp_index = obj_num_;

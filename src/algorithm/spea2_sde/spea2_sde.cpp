@@ -85,7 +85,7 @@ namespace emoc {
 				for (int k = 0; k < g_GlobalSettings->obj_num_; k++)
 					shifted_obj[k] = pop[i]->obj_[k] > pop[j]->obj_[k] ? pop[i]->obj_[k] : pop[j]->obj_[k];
 
-				distance[i][j] = CalEuclidianDistance(pop[i]->obj_, shifted_obj.data(), g_GlobalSettings->obj_num_);
+				distance[i][j] = CalEuclidianDistance(pop[i]->obj_.data(), shifted_obj.data(), g_GlobalSettings->obj_num_);
 			}
 
 			if (is_sort)

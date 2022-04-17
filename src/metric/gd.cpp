@@ -30,7 +30,7 @@ namespace emoc {
 			temp_ind = pop[i];
 			for (int j = 0; j < pf_size; j++)
 			{
-				temp_distance = CalEuclidianDistance(pfdata[j], temp_ind->obj_, obj_num);
+				temp_distance = CalEuclidianDistance(pfdata[j], temp_ind->obj_.data(), obj_num);
 
 				if (min_distance > temp_distance)
 				{

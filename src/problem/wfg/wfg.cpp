@@ -572,8 +572,8 @@ namespace emoc {
 	void WFG1::CalObj(Individual *ind)
 	{
 		int size = 0;
-		double *xreal = ind->dec_;
-		double *obj = ind->obj_;
+		double *xreal = ind->dec_.data();
+		double *obj = ind->obj_.data();
 
 		Degenerate = 0;
 
@@ -606,8 +606,8 @@ namespace emoc {
 	void WFG2::CalObj(Individual *ind)
 	{
 		int size = 0;
-		double *xreal = ind->dec_;
-		double *obj = ind->obj_;
+		double *xreal = ind->dec_.data();
+		double *obj = ind->obj_.data();
 
 		Degenerate = 0;
 
@@ -642,8 +642,8 @@ namespace emoc {
 	void WFG3::CalObj(Individual *ind)
 	{
 		int size = 0;
-		double *xreal = ind->dec_;
-		double *obj = ind->obj_;
+		double *xreal = ind->dec_.data();
+		double *obj = ind->obj_.data();
 
 		Degenerate = 1;
 
@@ -677,8 +677,8 @@ namespace emoc {
 	void WFG4::CalObj(Individual *ind)
 	{
 		int size = 0;
-		double *xreal = ind->dec_;
-		double *obj = ind->obj_;
+		double *xreal = ind->dec_.data();
+		double *obj = ind->obj_.data();
 
 		Degenerate = 0;
 
@@ -711,8 +711,8 @@ namespace emoc {
 	void WFG5::CalObj(Individual *ind)
 	{
 		int size = 0;
-		double *xreal = ind->dec_;
-		double *obj = ind->obj_;
+		double *xreal = ind->dec_.data();
+		double *obj = ind->obj_.data();
 
 		Degenerate = 0;
 
@@ -745,8 +745,8 @@ namespace emoc {
 	void WFG6::CalObj(Individual *ind)
 	{
 		int size = 0;
-		double *xreal = ind->dec_;
-		double *obj = ind->obj_;
+		double *xreal = ind->dec_.data();
+		double *obj = ind->obj_.data();
 
 		Degenerate = 0;
 
@@ -779,8 +779,8 @@ namespace emoc {
 	void WFG7::CalObj(Individual *ind)
 	{
 		int size = 0;
-		double *xreal = ind->dec_;
-		double *obj = ind->obj_;
+		double *xreal = ind->dec_.data();
+		double *obj = ind->obj_.data();
 
 		Degenerate = 0;
 
@@ -814,8 +814,8 @@ namespace emoc {
 	void WFG8::CalObj(Individual *ind)
 	{
 		int size = 0;
-		double *xreal = ind->dec_;
-		double *obj = ind->obj_;
+		double *xreal = ind->dec_.data();
+		double *obj = ind->obj_.data();
 
 		Degenerate = 0;
 
@@ -849,8 +849,8 @@ namespace emoc {
 	void WFG9::CalObj(Individual *ind)
 	{
 		int size = 0;
-		double *xreal = ind->dec_;
-		double *obj = ind->obj_;
+		double *xreal = ind->dec_.data();
+		double *obj = ind->obj_.data();
 
 		Degenerate = 0;
 

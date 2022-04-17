@@ -23,7 +23,7 @@ namespace emoc {
 				if(i == j)
 					continue;
 
-				temp_distance = CalEuclidianDistance(pop[i]->obj_, pop[j]->obj_, obj_num);
+				temp_distance = CalEuclidianDistance(pop[i]->obj_.data(), pop[j]->obj_.data(), obj_num);
 
 				if (min_distance > temp_distance)
 				{

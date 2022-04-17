@@ -668,7 +668,7 @@ namespace emoc {
 		for (int i = 0; i < obj_num_ - 1; i++)
 			sum += ind->obj_[i] / 0.5;
 
-		ind->con[0] = ind->obj_[obj_num_ - 1] / 0.6 + sum - 1;
+		ind->con_[0] = ind->obj_[obj_num_ - 1] / 0.6 + sum - 1;
 	}
 
 	C1DTLZ3::C1DTLZ3(int dec_num, int obj_num) :Problem(dec_num, obj_num)
@@ -725,7 +725,7 @@ namespace emoc {
 		else
 			r = 15;
 
-		ind->con[0] = -(sum - 16) * (sum - r * r);
+		ind->con_[0] = -(sum - 16) * (sum - r * r);
 	}
 
 	C2DTLZ2::C2DTLZ2(int dec_num, int obj_num) :Problem(dec_num, obj_num)
@@ -793,7 +793,7 @@ namespace emoc {
 		}
 		min2 -= r * r;
 
-		ind->con[0] = min1 < min2 ? min1 : min2;
+		ind->con_[0] = min1 < min2 ? min1 : min2;
 	}
 
 	C3DTLZ4::C3DTLZ4(int dec_num, int obj_num) :Problem(dec_num, obj_num)
@@ -836,8 +836,8 @@ namespace emoc {
 	void C3DTLZ4::CalCon(Individual* ind)
 	{
 		// initialize all constraints as zero
-		for (int i = 0; i < ind->con.size(); i++)
-			ind->con[i] = 0.0;
+		for (int i = 0; i < ind->con_.size(); i++)
+			ind->con_[i] = 0.0;
 
 		for (int i = 0; i < obj_num_; i++)
 		{
@@ -847,7 +847,7 @@ namespace emoc {
 				if(j == i) continue;
 				sum += ind->obj_[j] * ind->obj_[j];
 			}
-			ind->con[i] = 1.0 - (ind->obj_[i] * ind->obj_[i]) / 4.0 - sum ;
+			ind->con_[i] = 1.0 - (ind->obj_[i] * ind->obj_[i]) / 4.0 - sum ;
 		}
 	}
 }
