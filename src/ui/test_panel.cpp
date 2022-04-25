@@ -38,10 +38,10 @@ namespace emoc {
 
 	void TestPanel::Render()
 	{		
-		// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-		static bool show_demo_window = false;
-		if (show_demo_window)
-			ImGui::ShowDemoWindow(&show_demo_window);
+		//// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
+		//static bool show_demo_window = false;
+		//if (show_demo_window)
+		//	ImGui::ShowDemoWindow(&show_demo_window);
 
 		// get EMOC running state
 		bool is_finish = EMOCManager::Instance()->GetTestFinish();
@@ -77,11 +77,6 @@ namespace emoc {
 			DisplayPlotWindow();
 	}
 
-	//bool Combo(const char* label, int* current_item, const std::vector<std::string>& items,  int items_count, int height_in_items = -1)
-	//{
-	//	return ImGui::Combo(label, current_item, [](void* data, int idx, const char** out_text) { *out_text = ((const std::vector<std::string>*)data)[idx].c_str(); return true; }, (void*)&items, items_count, height_in_items);
-	//}
-
 	void TestPanel::DisplayParameterWindow(bool is_finish, bool is_pause)
 	{
 		// Test Module Parameter Setting Window
@@ -95,8 +90,6 @@ namespace emoc {
 
 			bool is_value_changed = ImGui::Combo("##AlgorithmCategortyTestCombo", &algorithm_category_index, ItemGet, 
 				reinterpret_cast<void*>(&algorithm_category_list), algorithm_category_list.size());
-			//bool is_value_changed = ImGui::Combo("##AlgorithmCategortyTestCombo", &algorithm_list.category_index, 
-			//	algorithm_list.algorithm_category.data(), algorithm_list.algorithm_category.size());
 
 			if (is_value_changed) algorithm_index = 0;
 			//UpdateCurrentAlgorithmCombo();
@@ -114,11 +107,8 @@ namespace emoc {
 			ImGui::SetNextItemWidth(-FLT_MIN);
 			is_value_changed = ImGui::Combo("##ProblemCategortyTestCombo", &problem_category_index, ItemGet, 
 				reinterpret_cast<void*>(&problem_category_list), problem_category_list.size());
-			//is_value_changed = ImGui::Combo("##ProblemCategortyTestCombo", &problem_list.category_index,
-			//	problem_list.problem_category.data(), problem_list.problem_category.size());
 
 			if (is_value_changed) problem_index = 0;
-			//UpdateCurrentProblemCombo();
 			SelectCurrentProblemCombo(problem_category_list[problem_category_index], &current_problem_names);
 			ImGui::SetNextItemWidth(-FLT_MIN);
 			ImGui::Combo("##ProblemTestCombo", &problem_index, (*current_problem_names).data(), (*current_problem_names).size());
@@ -453,18 +443,7 @@ namespace emoc {
 			float remain_height = (window_height - 150.0f) > 0.0f ? window_height - 150.0f : 0.0f;
 			ImGui::Dummy(ImVec2(0.0f, remain_height * 0.5f));	// for vertical center
 
-
-			//// a simple progress bar
-			//static float progress = 0.0f;
-			//progress = (float)current_evaluation / (float)max_evaluation;
-			//if (progress > 1.0f) progress = 1.0f;
-			//ImGui::SetNextItemWidth(remain_width * 0.95f);
-			//ImGui::ProgressBar(progress, ImVec2(0.f, 0.f));
-			//ImGui::SameLine(); ImGui::Dummy(ImVec2(2.0f, 0.0f)); ImGui::SameLine(); ImGui::Text("%d evaluations", current_evaluation);
-			//ImGui::Dummy(ImVec2(0.0f, 10.0f));
-
-
-			//// put the button at the appropriate position
+			// put the button at the appropriate position
 			float button_pos = window_width * 0.95f > 400 ? (window_width * 0.95 - 400) * 0.5f : 0.0f;
 			
 			ImGui::SetCursorPosX(button_pos);
@@ -474,15 +453,6 @@ namespace emoc {
 				ConstructAndSendPlotCMD();
 			}
 			ImGui::SameLine(); ImGui::Dummy(ImVec2(10.0f, 0.0f)); ImGui::SameLine();
-
-
-			//if (ImGui::Button("Stop##PlotTest", ImVec2(100, 60)))
-			//{
-			//	std::cout << "Stop\n";
-
-			//}
-
-
 
 			ImGui::EndChild();
 
@@ -586,10 +556,8 @@ namespace emoc {
 				ImGui::SetNextItemWidth(-FLT_MIN);
 				ImGui::Combo(comboname, &plot_metric_indexes[index],plot_metrics.data(), plot_metrics.size());
 
-				//std::cout << index << " " << plot_metrics[plot_metric_indexes[index]] << "\n";
 				if (plot_metrics[plot_metric_indexes[index]] != std::string("Population") && plot_metrics[plot_metric_indexes[index]] != std::string("Runtime"))
 				{
-					//std::cout << index << " here!" << "\n";
 					char settingname[128];
 					sprintf(settingname, "##PlotTest%s%d", plot_metrics[plot_metric_indexes[index]], index);
 					ImGui::AlignTextToFramePadding();
@@ -703,9 +671,6 @@ namespace emoc {
 
 			sprintf(multiplot_set, "unset multiplot\n");
 			PlotManager::Instance()->Send(multiplot_set);
-
-			std::cout << "here\n";
-
 		}
 	}
 
@@ -758,7 +723,6 @@ namespace emoc {
 		int avail_run_index = selected_runs[selected_run_intex];
 		EMOCSingleThreadResult &res = EMOCManager::Instance()->GetSingleThreadResult(avail_run_index);
 		int last_generation = res.max_iteration;
-		std::cout << "last generation:" << last_generation << "\n";
 		int interval = (last_generation) / (display_num - 1);
 		int remain = (last_generation) % (display_num - 1);
 
@@ -769,7 +733,6 @@ namespace emoc {
 			{
 				if (i == 1) generation += remain;
 				generations.push_back(generation);
-				std::cout << generation << "\n";
 				generation += interval;
 			}
 		}

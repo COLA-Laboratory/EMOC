@@ -41,7 +41,6 @@ namespace emoc{
 
 	}
 
-	// ImVec4(0.33f, 0.33f, 0.35f, 1.00f);
 	void ExperimentTable::Render(bool is_displayM, bool is_displayD, bool is_displayN, bool is_displayEvaluation, 
 		const std::string &display_para, const std::string& format, const std::string& hypothesis, const std::string& comp)
 	{
@@ -241,8 +240,6 @@ namespace emoc{
 				else
 					std::cout << "\n\t\t-------------------------------------------------------------------\n";
 			}
-
-
 		}
 	}
 
@@ -297,8 +294,6 @@ namespace emoc{
 				}
 				std::cout << "\n";
 			}
-
-
 		}
 	}
 
@@ -479,10 +474,6 @@ namespace emoc{
 	{
 		char symbol[3] = { '-', '=', '+' };
 		char res = ' ';
-
-
-		//if (hypothesis == "Rank Sum Test")
-		//	std::cout << "wuhu!\n";
 
 		if (format == "Mean" || format == "Mean(STD)")
 		{
@@ -792,9 +783,6 @@ namespace emoc{
 					else
 						data_file << "\\hline\n";
 				}
-
-				
-
 				current_row += multi_row;
 			}
 

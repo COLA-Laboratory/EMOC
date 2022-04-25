@@ -61,8 +61,8 @@ namespace emoc {
 		std::vector<Individual*> offspring_population_;
 		std::vector<Individual*> mixed_population_;
 
-		double* dec_lower_bound_;	// set by problem's lower bound
-		double* dec_upper_bound_;	// set by problem's lower bound
+		std::vector<double> dec_lower_bound_;	// set by problem's lower bound
+		std::vector<double> dec_upper_bound_;	// set by problem's lower bound
 
 		SBXPara sbx_parameter_;
 		DEPara de_parameter_;

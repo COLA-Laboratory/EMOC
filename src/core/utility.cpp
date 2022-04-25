@@ -489,7 +489,7 @@ namespace emoc {
 				//std::cout << "\n";
 			}
 		}
-
+		pf_file.close();
 		return pf_data;
 	}
 

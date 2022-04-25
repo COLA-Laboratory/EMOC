@@ -8,5 +8,5 @@ sudo apt install mesa-common-dev libgl1-mesa-dev
 # build EMOC
 mkdir build
 cd build
-cmake ..
+cmake -DBUILD_PYTHON_DLL=OFF ..
 make -j4

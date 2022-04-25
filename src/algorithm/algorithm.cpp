@@ -19,7 +19,6 @@ namespace emoc {
 		g_GlobalSettings(nullptr),
 		thread_id_(thread_id),
 		real_popnum_(0),
-		record_file_time_(0.0f),
 		runtime_(0.0)
 	{
 		g_GlobalSettings = EMOCManager::Instance()->GetGlobalSetting(thread_id);

@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
 
 	// start to run
 	EMOCApplication emoc_app;
-	is_gui = true; // for debug
+	//is_gui = true; // for debug
 	emoc_app.Init(is_gui, para);
 	emoc_app.Run();
 

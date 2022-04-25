@@ -16,7 +16,7 @@ namespace emoc {
 
 	NSGA2::NSGA2(int thread_id) :Algorithm(thread_id)
 	{
-		real_popnum_ = g_GlobalSettings->population_num_;
+
 	}
 
 	NSGA2::~NSGA2()

@@ -1,3 +1,4 @@
+# download dependencies
 brew install gnuplot
 
 mkdir build

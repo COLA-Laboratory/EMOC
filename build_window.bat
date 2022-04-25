@@ -1,4 +1,4 @@
 mkdir build
 cd build 
-cmake -G "Visual Studio 16 2019" -S ../ -B ./
+cmake -DBUILD_PYTHON_DLL=OFF -G "Visual Studio 16 2019" ..
 pause

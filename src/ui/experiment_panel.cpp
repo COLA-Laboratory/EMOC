@@ -198,9 +198,7 @@ namespace emoc {
 				
 				table.UpdateExperimentTable(table_algorithms, table_problems, table_Ms,
 					table_Ds, table_Ns, table_Evaluations, parameter_indexes);
-				//table.PrintTable();
 				end = clock();
-				//std::cout << "Consturct Table Time: " << (double)(end - start) / CLOCKS_PER_SEC << "s\n";
 
 				ConstructTasks();
 				int optimizaiton_type;
@@ -298,17 +296,6 @@ namespace emoc {
 			float remain_width = window_width - text_width;
 			float remain_height = (window_height - 150.0f) > 0.0f ? window_height - 150.0f : 0.0f;
 			ImGui::Dummy(ImVec2(0.0f, remain_height * 0.5f));	// for vertical center
-
-
-			// a simple progress bar
-			//static float progress = 0.0f;
-			//progress = (float)current_evaluation / (float)max_evaluation;
-			//if (progress > 1.0f) progress = 1.0f;
-			//ImGui::SetNextItemWidth(remain_width * 0.95f);
-			//ImGui::ProgressBar(progress, ImVec2(0.f, 0.f));
-			//ImGui::SameLine(); ImGui::Dummy(ImVec2(2.0f, 0.0f)); ImGui::SameLine(); ImGui::Text("%d evaluations", current_evaluation);
-			//ImGui::Dummy(ImVec2(0.0f, 10.0f));
-
 
 			// put the button at the appropriate position
 			float button_pos = remain_width * 0.95f > 320.0f ? (remain_width * 0.95 - 320.0) * 0.5f : 0.0f;
@@ -411,20 +398,6 @@ namespace emoc {
 
 			table.Render(is_displayM, is_displayD, is_displayN, is_displayEvaluation,
 				display_names[display_index],format_names[format_index], hypothesis_names[hypothesis_index], compared_names[compared_index]);
-			
-			//ImGui::SetCursorPosX(ImGui::GetWindowSize().x - 260.0f);
-			//if (!is_finish) ImGui::BeginDisabled();
-			//if (ImGui::Button("Open Plot Window", ImVec2(250.0f, 40.0f)))
-			//{
-			//	// Open a new ImGui window for experiment module plotting analysis
-			//}
-			//if (!is_finish) ImGui::EndDisabled();
-
-			//if (ImGui::Button("PrintMetricTest", ImVec2(250.0f, 40.0f)))
-			//{
-			//	// Open a new ImGui window for experiment module plotting analysis
-			//	table.PrintMetric(display_names[display_index]);
-			//}
 
 			ImGui::End();
 		}
@@ -454,12 +427,7 @@ namespace emoc {
 		if (is_open = ImGui::CollapsingHeader(header_name.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap))
 		{
 			DisplayMovePopup(index, operation_button_pos, true, is_delete);
-			//DisplayMovePopup(index, true, is_delete);
-			//ImGui::Text("Test!\n");
-			//if(!is_delete)
-			//	DisplayAlgorithmParameters(algorithm);
 		}
-		//if (!is_open) DisplayMovePopup(index, true, is_delete);
 		if (!is_open) DisplayMovePopup(index, operation_button_pos, true, is_delete);
 	}
 
@@ -595,44 +563,6 @@ namespace emoc {
 			ImGui::EndPopup();
 		}
 	}
-
-	//void ExperimentPanel::UpdateCurrentAlgorithmList()
-	//{
-	//	std::string category = algorithm_list.algorithm_category[algorithm_list.category_index];
-	//	if (category == "Docomposition Based")
-	//		current_algorithm_names = &algorithm_list.decomposition_algorithm_names;
-	//	else if (category == "Dominance Based")
-	//		current_algorithm_names = &algorithm_list.dominance_algorithm_names;
-	//	else if (category == "Indicator Based")
-	//		current_algorithm_names = &algorithm_list.indicator_algorithm_names;
-	//	else
-	//		std::cerr << "Experiment Module ERROR: Algorithm Category " << category << " Doesn't Exists!\n";
-	//}
-
-	//void ExperimentPanel::UpdateCurrentProblemList()
-	//{
-	//	std::string category = problem_list.problem_category[problem_list.category_index];
-	//	if (category == "ZDT Series")
-	//		current_problem_names = &problem_list.zdt_names;
-	//	else if (category == "DTLZ Series")
-	//		current_problem_names = &problem_list.dtlz_names;
-	//	else if (category == "UF Series")
-	//		current_problem_names = &problem_list.uf_names;
-	//	else if (category == "WFG Series")
-	//		current_problem_names = &problem_list.wfg_names;
-	//	else if (category == "LSMOP Series")
-	//		current_problem_names = &problem_list.lsmop_names;
-	//	else if (category == "BT Series")
-	//		current_problem_names = &problem_list.bt_names;
-	//	else if (category == "MOEADDE_F Series")
-	//		current_problem_names = &problem_list.moeadde_f_names;
-	//	else if (category == "IMMOEA_F Series")
-	//		current_problem_names = &problem_list.immoea_f_names;
-	//	else if (category == "MOEADM2M_F Series")
-	//		current_problem_names = &problem_list.moeadm2m_f_names;
-	//	else
-	//		std::cerr << "Experiment Module ERROR: Problem Category " << category << " Doesn't Exists!\n";
-	//}
 
 	void ExperimentPanel::ConstructTasks()
 	{

@@ -23,8 +23,8 @@ namespace emoc {
 		output_interval_(output_interval),
 		algorithm_name_(algorithn_name),
 		problem_name_(problem_name),
-		dec_lower_bound_(nullptr),
-		dec_upper_bound_(nullptr),
+		dec_lower_bound_(std::vector<double>(dec_num)),
+		dec_upper_bound_(std::vector<double>(dec_num)),
 		problem_(nullptr),
 		algorithm_(nullptr),
 		run_id_(run_id),
@@ -170,9 +170,6 @@ namespace emoc {
 
 	void Global::AllocateMemory()
 	{
-		dec_lower_bound_ = new double[dec_num_];
-		dec_upper_bound_ = new double[dec_num_];
-
 		for (int i = 0; i < population_num_; ++i)
 		{
 			parent_population_.push_back(new Individual(dec_num_, obj_num_));
@@ -184,11 +181,6 @@ namespace emoc {
 
 	void Global::DestroyMemory()
 	{
-		delete[] dec_lower_bound_;
-		delete[] dec_upper_bound_;
-		dec_lower_bound_ = nullptr;
-		dec_upper_bound_ = nullptr;
-
 		int size = parent_population_.size();
 		for (int i = 0; i < size; ++i)
 		{
@@ -202,7 +194,8 @@ namespace emoc {
 			mixed_population_[i + size] = nullptr;
 		}
 
-		delete problem_;
+		if(!is_customized_problem_)
+			delete problem_;
 		delete algorithm_;
 	}
 

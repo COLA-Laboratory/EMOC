@@ -5,7 +5,7 @@ project(EMOC)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_BUILD_TYPE "Release" CACHE STRING "set build type to release")    			    # make no difference in windows for Visual Studio
-set(CMAKE_CONFIGURATION_TYPES "Release;Debug")	# this is for Visual Studio
+set(CMAKE_CONFIGURATION_TYPES "Release")	# this is for Visual Studio
 set(BUILD_PYTHON_DLL OFF CACHE BOOL "Whether build python dll")
 message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
 message(STATUS "Configuration Type: ${CMAKE_CONFIGURATION_TYPES}")

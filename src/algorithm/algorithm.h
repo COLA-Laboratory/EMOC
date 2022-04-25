@@ -43,7 +43,6 @@ namespace emoc {
 
 		clock_t start_, end_;
 		double runtime_;
-		double record_file_time_;
 
 	};
 

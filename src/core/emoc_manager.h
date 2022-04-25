@@ -56,7 +56,7 @@ namespace emoc {
 		EMOCManager(const EMOCManager&);
 		EMOCManager& operator=(const EMOCManager&);
 
-		// emoc run functions
+		// emoc run functions for non-experiment module
 		void EMOCSingleThreadRun();
 		void EMOCMultiThreadRun();
 		void ExperimentWorker(std::vector<EMOCExperimentTask> tasks, int thread_id);
