@@ -37,7 +37,7 @@ namespace emoc {
 
 			// generate offspring population
 			Crossover(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->offspring_population_.data());
-			PolynomialMutation(g_GlobalSettings->offspring_population_.data(), 2 * g_GlobalSettings->population_num_ / 2, g_GlobalSettings);
+			PolynomialMutation(g_GlobalSettings->offspring_population_.data(), 2 * g_GlobalSettings->population_num_ / 2, g_GlobalSettings->dec_lower_bound_, g_GlobalSettings->dec_upper_bound_, mutation_para_);
 			EvaluatePop(g_GlobalSettings->offspring_population_.data(), 2 * g_GlobalSettings->population_num_ / 2);
 
 			// update ideal point and nadir point
@@ -64,6 +64,10 @@ namespace emoc {
 		{
 			nadir_point_[i] *= 1.2;
 		}
+
+		// set mutation parameter
+		mutation_para_.pro = 1.0 / g_GlobalSettings->dec_num_;
+		mutation_para_.index1 = 20.0;
 	}
 
 	void HypE::Crossover(Individual **parent_pop, Individual **offspring_pop)

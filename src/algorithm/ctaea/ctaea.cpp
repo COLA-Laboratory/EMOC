@@ -93,7 +93,7 @@ namespace emoc {
 		{
 			CalculateNdProportion(CA, DA);
 			Crossover(CA, DA, g_GlobalSettings->offspring_population_.data());
-			PolynomialMutation(g_GlobalSettings->offspring_population_.data(), real_popnum_, g_GlobalSettings);
+			PolynomialMutation(g_GlobalSettings->offspring_population_.data(), real_popnum_, g_GlobalSettings->dec_lower_bound_, g_GlobalSettings->dec_upper_bound_, mutation_para_);
 			EvaluatePop(g_GlobalSettings->offspring_population_.data(), real_popnum_);
 
 			// update the ideal point
@@ -139,6 +139,10 @@ namespace emoc {
 		// initialize DA
 		for (int i = 0; i < weight_num; i++)
 			CopyIndividual(CA[i], DA[i]);
+
+		// set mutation parameter
+		mutation_para_.pro = 1.0 / g_GlobalSettings->dec_num_;
+		mutation_para_.index1 = 20.0;
 	}
 
 	void CTAEA::CalculateNdProportion(Individual** CA, Individual** DA)

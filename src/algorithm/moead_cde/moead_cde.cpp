@@ -86,7 +86,7 @@ namespace emoc {
 				// generate offspring for current subproblem
 				double F = GenerateFFactor();
 				Crossover(op, F, g_GlobalSettings->parent_population_.data(), index, offspring1, offspring2);
-				PolynomialMutation(offspring1, g_GlobalSettings);
+				PolynomialMutation(offspring1, g_GlobalSettings->dec_lower_bound_, g_GlobalSettings->dec_upper_bound_, mutation_para_);
 				EvaluateInd(offspring1);
 
 				// update ideal point
@@ -97,7 +97,7 @@ namespace emoc {
 				// mutate another offspring if necessary
 				if (op < 2)
 				{
-					PolynomialMutation(offspring2, g_GlobalSettings);
+					PolynomialMutation(offspring2, g_GlobalSettings->dec_lower_bound_, g_GlobalSettings->dec_upper_bound_, mutation_para_);
 					EvaluateInd(offspring2);
 					UpdateIdealpoint(offspring2, ideal_point_, g_GlobalSettings->obj_num_);
 					double temp_fir = UpdateSubproblem(offspring2, index);
@@ -125,11 +125,6 @@ namespace emoc {
 			{
 				UpdateUtility();
 			}
-		}
-
-		for (int i = 0; i < 4; ++i)
-		{
-			printf("op%d: %d\n", i, num[i]);
 		}
 	}
 
@@ -177,6 +172,10 @@ namespace emoc {
 		F_old_ = 0.5;
 		F_success_count_ = 0;
 		F_success_set_ = new double[2000];
+
+		// set mutation parameter
+		mutation_para_.pro = 1.0 / g_GlobalSettings->dec_num_;
+		mutation_para_.index1 = 20.0;
 	}
 
 	void MOEADCDE::SetNeighbours()

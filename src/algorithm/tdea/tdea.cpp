@@ -55,7 +55,7 @@ namespace emoc {
 		{
 			// generate offspring population
 			Crossover(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->offspring_population_.data());
-			PolynomialMutation(g_GlobalSettings->offspring_population_.data(), 2 * (weight_num_ / 2), g_GlobalSettings);
+			PolynomialMutation(g_GlobalSettings->offspring_population_.data(), 2 * (weight_num_ / 2), g_GlobalSettings->dec_lower_bound_, g_GlobalSettings->dec_upper_bound_, mutation_para_);
 			EvaluatePop(g_GlobalSettings->offspring_population_.data(), 2 * (weight_num_ / 2));
 			MergePopulation(g_GlobalSettings->parent_population_.data(), weight_num_, g_GlobalSettings->offspring_population_.data(),
 				2 * (weight_num_  / 2), g_GlobalSettings->mixed_population_.data());
@@ -97,6 +97,10 @@ namespace emoc {
 			// extreme pop - weightnum
 			extreme_pop_.push_back(new Individual(g_GlobalSettings->dec_num_, g_GlobalSettings->obj_num_));
 		}
+
+		// set mutation parameter
+		mutation_para_.pro = 1.0 / g_GlobalSettings->dec_num_;
+		mutation_para_.index1 = 20.0;
 
 
 	}

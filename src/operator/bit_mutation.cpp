@@ -6,11 +6,13 @@
 
 namespace emoc {
 
-	void BitMutation(Individual* ind, Global* g_GlobalSettings)
+	void BitFlipMutation(Individual* ind, MutationParameter& mutation_para)
 	{
-		for (int i = 0; i < g_GlobalSettings->dec_num_; i++)
+		int dec_num = ind->dec_.size();
+
+		for (int i = 0; i < dec_num; i++)
 		{
-			if (randomperc() < g_GlobalSettings->pm_parameter_.muatation_pro)
+			if (randomperc() < mutation_para.pro)
 				ind->dec_[i] = 1 - ind->dec_[i];
 		}
 	}

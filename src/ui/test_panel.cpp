@@ -3,7 +3,7 @@
 #include <iostream>
 #include <thread>
 
-#include "emoc_app.h"
+#include "core/emoc_app.h"
 #include "core/file.h"
 #include "core/emoc_manager.h"
 #include "metric/igd.h"

@@ -6,17 +6,18 @@
 
 namespace emoc {
 
-	void PolynomialMutation(Individual *ind, Global *g_GlobalSettings)
+	void PolynomialMutation(Individual* ind, std::vector<double>& lower_bound, std::vector<double>& upper_bound, MutationParameter& mutation_para)
 	{
+		int dec_num = ind->dec_.size();
 		double rnd, delta1, delta2, mut_pow, deltaq;
 		double y, yl, yu, val, xy;
 
-		double mutation_pro = g_GlobalSettings->pm_parameter_.muatation_pro;
-		double eta_m = g_GlobalSettings->pm_parameter_.eta_m;
-		for (int i = 0; i < g_GlobalSettings->dec_num_; i++)
+		double mutation_pro = mutation_para.pro;
+		double eta_m = mutation_para.index1;
+		for (int i = 0; i < dec_num; i++)
 		{
-			yl = g_GlobalSettings->dec_lower_bound_[i];
-			yu = g_GlobalSettings->dec_upper_bound_[i];
+			yl = lower_bound[i];
+			yu = upper_bound[i];
 			y = ind->dec_[i];
 			if (randomperc() <= mutation_pro)
 			{
@@ -47,10 +48,10 @@ namespace emoc {
 	}
 
 
-	void PolynomialMutation(Individual **pop, int pop_num, Global *g_GlobalSettings)
+	void PolynomialMutation(Individual** pop, int pop_num, std::vector<double>& lower_bound, std::vector<double>& upper_bound, MutationParameter& mutation_para)
 	{
 		for (int i = 0; i < pop_num; ++i)
-			PolynomialMutation(pop[i], g_GlobalSettings);
+			PolynomialMutation(pop[i],lower_bound,upper_bound, mutation_para);
 	}
 
 }

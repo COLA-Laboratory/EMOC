@@ -35,7 +35,7 @@ namespace emoc {
 
 	public:
 		Global(const char* algorithn_name, const char* problem_name, int population_num,
-			int dec_num, int obj_num, int max_evaluation, int thread_num, int output_interval, int run_id = 0);
+			int dec_num, int obj_num, int max_evaluation, int thread_id, int output_interval, int run_id = 0);
 		~Global();
 
 		void Init();
@@ -52,10 +52,10 @@ namespace emoc {
 		int dec_num_;
 		int obj_num_;
 		int population_num_;
-		int iteration_num_;
-		int current_evaluation_;
 		int max_evaluation_;
 		int output_interval_;
+		std::string algorithm_name_;
+		std::string problem_name_;
 
 		std::vector<Individual*> parent_population_;
 		std::vector<Individual*> offspring_population_;
@@ -68,10 +68,10 @@ namespace emoc {
 		DEPara de_parameter_;
 		PolyMutationPara pm_parameter_;
 
+		int iteration_num_;
+		int current_evaluation_;
 		Problem* problem_;
 		Algorithm* algorithm_;
-		std::string algorithm_name_;
-		std::string problem_name_;
 
 		int run_id_;
 		int thread_id_;

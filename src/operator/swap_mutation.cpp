@@ -6,12 +6,14 @@
 
 namespace emoc {
 
-	void SwapMutation(Individual* ind, Global* g_GlobalSettings)
+	void SwapMutation(Individual* ind, MutationParameter& mutation_para)
 	{
-		int rand1 = rnd(0, g_GlobalSettings->dec_num_ - 1);
-		int rand2 = rnd(0, g_GlobalSettings->dec_num_ - 1);
+		int dec_num = ind->dec_.size();
 
-		if (randomperc() < 1.0 / g_GlobalSettings->population_num_)
+		int rand1 = rnd(0, dec_num - 1);
+		int rand2 = rnd(0, dec_num - 1);
+
+		if (randomperc() < 1.0 / mutation_para.pro)
 		{
 			double temp = ind->dec_[rand1];
 			ind->dec_[rand1] = ind->dec_[rand2];

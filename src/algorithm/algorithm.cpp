@@ -6,7 +6,7 @@
 #include <chrono>
 #include <iostream>
 
-#include "emoc_app.h"
+#include "core/emoc_app.h"
 #include "core/global.h"
 #include "core/file.h"
 #include "core/emoc_manager.h"
@@ -32,7 +32,7 @@ namespace emoc {
 
 	void Algorithm::PrintPop()
 	{
-		for (int i = 0; i < 2; ++i)
+		for (int i = 0; i < real_popnum_; ++i)
 		{
 			std::cout << "population[" << i << "]: \n";
 			std::cout << "--dec--:";

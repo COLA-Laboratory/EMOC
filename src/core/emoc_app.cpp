@@ -1,4 +1,4 @@
-#include "emoc_app.h"
+#include "core/emoc_app.h"
 
 namespace emoc {
 

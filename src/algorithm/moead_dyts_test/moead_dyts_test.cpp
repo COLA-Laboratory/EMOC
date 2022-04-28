@@ -83,7 +83,7 @@ namespace emoc{
 
 				// generate offspring for current subproblem
 				Crossover(op, g_GlobalSettings->parent_population_.data(), index, offspring);
-				PolynomialMutation(offspring, g_GlobalSettings);
+				PolynomialMutation(offspring, g_GlobalSettings->dec_lower_bound_, g_GlobalSettings->dec_upper_bound_, mutation_para_);
 				EvaluateInd(offspring);
 
 				// update ideal point
@@ -172,6 +172,10 @@ namespace emoc{
 
 		W = 0.5 * weight_num_;
 		fir_history.resize(W);
+
+		// set mutation parameter
+		mutation_para_.pro = 1.0 / g_GlobalSettings->dec_num_;
+		mutation_para_.index1 = 20.0;
 	}
 
 	void MOEADDYTSTEST::SetNeighbours()

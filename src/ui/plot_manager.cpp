@@ -3,7 +3,7 @@
 #include <cstdio>
 #include <iostream>
 
-#include "emoc_app.h"
+#include "core/emoc_app.h"
 
 #if defined(_WIN32) // windows
 #define POPEN _popen

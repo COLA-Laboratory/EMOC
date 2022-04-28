@@ -3,7 +3,7 @@
 
 #include "problem/problem.h"
 #include "core/individual.h"
-
+#include "core/emoc_utility_structures.h"
 
 namespace emoc {
 
@@ -27,7 +27,7 @@ namespace emoc {
 		void EvaluatePop(Individual **pop, int pop_num);
 		void EvaluateInd(Individual *ind);
 
-		// copy population pop_src1 and population pop_src2 to population pop_dest
+		// utility functions for population operation
 		int MergePopulation(Individual** pop_src1, int pop_num1, Individual** pop_src2, int pop_num2, Individual** pop_dest);
 		void CopyIndividual(Individual* ind_src, Individual* ind_dest);
 		void SwapIndividual(Individual* ind1, Individual* ind2);
@@ -39,11 +39,12 @@ namespace emoc {
 	protected:
 		Global *g_GlobalSettings;	// pointer to current run's global settings
 		int thread_id_;				// current thread id
-		int real_popnum_;
+		int real_popnum_;			// real population number
+		double runtime_;			// total time for the algorithm to optimize the problem
+		CrossoverParameter cross_para_;
+		MutationParameter mutation_para_;
 
 		clock_t start_, end_;
-		double runtime_;
-
 	};
 
 }

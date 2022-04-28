@@ -9,6 +9,7 @@
 #include "core/global.h"
 #include "core/nd_sort.h"
 #include "core/tournament_selection.h"
+#include "core/emoc_utility_structures.h"
 #include "operator/polynomial_mutation.h"
 #include "operator/swap_mutation.h"
 #include "operator/bit_mutation.h"
@@ -94,15 +95,19 @@ namespace emoc {
 		{
 			if (g_GlobalSettings->problem_->encoding_ == Problem::REAL)
 			{
-				PolynomialMutation(pop[i], g_GlobalSettings);
+				mutation_para_.pro = 1.0 / g_GlobalSettings->dec_num_;
+				mutation_para_.index1 = 20.0;
+				PolynomialMutation(pop[i], g_GlobalSettings->dec_lower_bound_, g_GlobalSettings->dec_upper_bound_, mutation_para_);
 			}
 			else if (g_GlobalSettings->problem_->encoding_ == Problem::BINARY)
 			{
-				BitMutation(pop[i], g_GlobalSettings);
+				mutation_para_.pro = 1.0 / g_GlobalSettings->dec_num_;
+				BitFlipMutation(pop[i], mutation_para_);
 			}
 			else if (g_GlobalSettings->problem_->encoding_ == Problem::PERMUTATION)
 			{
-				SwapMutation(pop[i], g_GlobalSettings);
+				mutation_para_.pro = 1.0 / g_GlobalSettings->population_num_;
+				SwapMutation(pop[i], mutation_para_);
 			}
 		}
 	}

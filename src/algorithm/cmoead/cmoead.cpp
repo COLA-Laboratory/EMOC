@@ -61,7 +61,7 @@ namespace emoc {
 
                 // generate offspring for current subproblem
 				Crossover(g_GlobalSettings->parent_population_.data(), i, offspring);
-				PolynomialMutation(offspring, g_GlobalSettings);
+				PolynomialMutation(offspring, g_GlobalSettings->dec_lower_bound_, g_GlobalSettings->dec_upper_bound_, mutation_para_);
 				EvaluateInd(offspring);
 
 				// update ideal point
@@ -89,6 +89,15 @@ namespace emoc {
 
 		// initialize ideal point
 		UpdateIdealpoint(g_GlobalSettings->parent_population_.data(), weight_num_, ideal_point_, g_GlobalSettings->obj_num_);
+
+		// set mutation parameter
+		mutation_para_.pro = 1.0 / g_GlobalSettings->dec_num_;
+		mutation_para_.index1 = 20.0;
+
+		// set crossover parameter
+		cross_para_.pro = 1.0;
+		cross_para_.index1 = 0.5;
+		cross_para_.index2 = 0.5;
 	}
 
 	void CMOEAD::SetNeighbours()

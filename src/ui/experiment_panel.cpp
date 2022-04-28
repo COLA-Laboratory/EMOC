@@ -4,7 +4,7 @@
 #include <iostream>
 #include <thread>
 
-#include "emoc_app.h"
+#include "core/emoc_app.h"
 #include "imgui.h"
 #include "ui/uipanel_manager.h"
 #include "IconsFontAwesome5.h"

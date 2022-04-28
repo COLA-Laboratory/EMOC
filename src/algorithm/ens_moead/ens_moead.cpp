@@ -83,7 +83,7 @@ namespace emoc {
 
 					// generate offspring for current subproblem
 					Crossover(g_GlobalSettings->parent_population_.data(), index, offspring);
-					PolynomialMutation(offspring,g_GlobalSettings);
+					PolynomialMutation(offspring, g_GlobalSettings->dec_lower_bound_, g_GlobalSettings->dec_upper_bound_, mutation_para_);
 					EvaluateInd(offspring);
 
 					// update ideal point
@@ -143,6 +143,10 @@ namespace emoc {
 		utility_ = new double[weight_num_];
 		for (int i = 0; i < weight_num_; ++i)
 			utility_[i] = 1.0;
+
+		// set mutation parameter
+		mutation_para_.pro = 1.0 / g_GlobalSettings->dec_num_;
+		mutation_para_.index1 = 20.0;
 	}
 
 	void ENSMOEAD::SetNeighbours()
