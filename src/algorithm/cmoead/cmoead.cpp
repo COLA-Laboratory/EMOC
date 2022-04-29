@@ -96,8 +96,7 @@ namespace emoc {
 
 		// set crossover parameter
 		cross_para_.pro = 1.0;
-		cross_para_.index1 = 0.5;
-		cross_para_.index2 = 0.5;
+		cross_para_.index1 = 20.0;
 	}
 
 	void CMOEAD::SetNeighbours()
@@ -157,7 +156,8 @@ namespace emoc {
 		Individual* parent1 = parent_pop[parent1_index];
 		Individual* parent2 = parent_pop[parent2_index];
 
-		SBX(parent1, parent2, offspring, g_GlobalSettings->offspring_population_[1], g_GlobalSettings);
+		SBX(parent1, parent2, offspring, g_GlobalSettings->offspring_population_[1],
+			g_GlobalSettings->dec_lower_bound_,g_GlobalSettings->dec_upper_bound_,cross_para_);
 	}
 
 	void CMOEAD::UpdateSubproblem(Individual *offspring, int current_index)

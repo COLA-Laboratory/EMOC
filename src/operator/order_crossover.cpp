@@ -7,12 +7,13 @@
 
 namespace emoc {
 
-	void OrderCrossover(Individual *parent1, Individual *parent2, Individual *offspring1, Individual *offspring2, Global *g_GlobalSettings)
+	void OrderCrossover(Individual *parent1, Individual *parent2, Individual *offspring1, Individual *offspring2)
 	{
-		std::vector<int> ht1(g_GlobalSettings->dec_num_, 0), ht2(g_GlobalSettings->dec_num_,0);
-		int k = rnd(0, g_GlobalSettings->dec_num_-1);
+		int dec_num = parent1->dec_.size();
+		std::vector<int> ht1(dec_num, 0), ht2(dec_num,0);
+		int k = rnd(0, dec_num -1);
 
-		for (int i = 0; i < g_GlobalSettings->dec_num_; i++)
+		for (int i = 0; i < dec_num; i++)
 		{
 			if (i <= k)
 			{
@@ -24,7 +25,7 @@ namespace emoc {
 		}
 
 		int index1 = k + 1, index2 = k + 1;
-		for (int i = 0; i < g_GlobalSettings->dec_num_; i++)
+		for (int i = 0; i < dec_num; i++)
 		{
 			if (ht1[(int)(parent2->dec_[i])] == 0)
 			{

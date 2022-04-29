@@ -59,7 +59,7 @@ namespace emoc {
 
 		void Init(int obj_num, int pop_num);
 		void CleanUp();
-		double Calculate(Individual** pop, int pop_num, int obj_num, std::string problem_name);
+		double Calculate(Individual** pop, int pop_num, int obj_num, double **pf_data, int pf_size);
 		void MinExclusiveHV2(FRONT ps, double* min);
 		void MinExclusiveHV(FRONT ps, double* min);
 		void ReadData(FILECONTENTS* fc, emoc::Individual** pop_table, double* nadir_point, int pop_size, int obj_num);

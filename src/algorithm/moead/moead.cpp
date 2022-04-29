@@ -86,6 +86,10 @@ namespace emoc {
 		// set mutation parameter
 		mutation_para_.pro = 1.0 / g_GlobalSettings->dec_num_;
 		mutation_para_.index1 = 20.0;
+
+		// set crossover parameter
+		cross_para_.pro = 1.0;
+		cross_para_.index1 = 20.0;
 	}
 
 	void MOEAD::SetNeighbours()
@@ -133,7 +137,8 @@ namespace emoc {
 		Individual *parent1 = parent_pop[neighbour_[current_index][k]];
 		Individual *parent2 = parent_pop[neighbour_[current_index][l]];
 
-		SBX(parent1, parent2, g_GlobalSettings->offspring_population_[1], offspring, g_GlobalSettings);
+		SBX(parent1, parent2, g_GlobalSettings->offspring_population_[1], offspring,
+			g_GlobalSettings->dec_lower_bound_, g_GlobalSettings->dec_upper_bound_, cross_para_);
 	}
 
 	void MOEAD::UpdateSubproblem(Individual *offspring, int current_index, int aggregation_type)

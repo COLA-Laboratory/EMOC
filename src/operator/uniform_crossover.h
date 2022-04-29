@@ -4,6 +4,6 @@
 
 namespace emoc {
 
-	void UniformCrossover(Individual *parent1, Individual *parent2, Individual *offspring1, Individual *offspring2, Global *g_GlobalSettings);
+	void UniformCrossover(Individual *parent1, Individual *parent2, Individual *offspring1, Individual *offspring2);
 
 }

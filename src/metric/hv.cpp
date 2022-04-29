@@ -118,7 +118,7 @@ namespace emoc {
 		free(tcompare);
 	}
 
-	double HVCalculator::Calculate(Individual** pop, int pop_num, int obj_num, std::string problem_name)
+	double HVCalculator::Calculate(Individual** pop, int pop_num, int obj_num, double** pf_data, int pf_size)
 	{
 		 int num_same = 0;
 
@@ -132,24 +132,20 @@ namespace emoc {
 		 for (int i = 0; i < obj_num; ++i)
 			 ref[i] = 1.2;
 
-		 int pf_size = 0;
-		 double** pfdata = nullptr;
-		 pfdata = LoadPFData(pf_size, obj_num, problem_name);
-
 		 // get normalized bound from pf data
 		 for (int i = 0; i < obj_num; ++i)
 		 {
 			 double temp_min = EMOC_INF, temp_max = -EMOC_INF;
 			 for (int j = 0; j < pf_size; ++j)
 			 {
-				 if (temp_min > pfdata[j][i])
+				 if (temp_min > pf_data[j][i])
 				 {
-					 temp_min = pfdata[j][i];
+					 temp_min = pf_data[j][i];
 				 }
 
-				 if (temp_max < pfdata[j][i])
+				 if (temp_max < pf_data[j][i])
 				 {
-					 temp_max = pfdata[j][i];
+					 temp_max = pf_data[j][i];
 				 }
 			 }
 			 obj_min[i] = temp_min;
@@ -184,9 +180,6 @@ namespace emoc {
 			 free(ps.points[i].objectives);
 		 free(ps.points);
 
-		 for (int i = 0; i < pf_size; ++i)
-			 delete[] pfdata[i];
-		 delete[] pfdata;
 
 		 free(ref);
 		 free(obj_max);

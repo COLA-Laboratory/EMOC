@@ -143,6 +143,10 @@ namespace emoc {
 		// set mutation parameter
 		mutation_para_.pro = 1.0 / g_GlobalSettings->dec_num_;
 		mutation_para_.index1 = 20.0;
+
+		// set crossover parameter
+		cross_para_.pro = 1.0;
+		cross_para_.index1 = 20.0;
 	}
 
 	void CTAEA::CalculateNdProportion(Individual** CA, Individual** DA)
@@ -228,7 +232,8 @@ namespace emoc {
 			else
 				parent2 = CTAEATournament(DA[a2[i]], DA[a2[i + 1]]);
 
-			SBX(parent1, parent2, offspring_pop[i], offspring_pop[i + 1],g_GlobalSettings);
+			SBX(parent1, parent2, offspring_pop[i], offspring_pop[i + 1],
+				g_GlobalSettings->dec_lower_bound_, g_GlobalSettings->dec_upper_bound_, cross_para_);
 		}
 
 		free(a1);

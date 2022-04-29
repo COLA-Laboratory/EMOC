@@ -484,9 +484,7 @@ namespace emoc {
 				for (int j = 0; j < obj_num; j++)
 				{
 					pf_file >> pf_data[i][j];
-					//std::cout << pf_data[i][j]<<" ";
 				}
-				//std::cout << "\n";
 			}
 		}
 		pf_file.close();
@@ -700,13 +698,15 @@ namespace emoc {
 
 		if (para.objective_num > 1)				// multi-objective
 		{
+			int pf_size = 0;
+			double **pf_data = LoadPFData(pf_size, obj_num, problem_name);
 			HVCalculator hv_calculator(obj_num, pop_num);
-			double igd = CalculateIGD(g->parent_population_.data(), pop_num, obj_num, problem_name);
-			double hv = hv_calculator.Calculate(g->parent_population_.data(), pop_num, obj_num, problem_name);
-			double gd = CalculateGD(g->parent_population_.data(), pop_num, obj_num, problem_name);
+			double igd = CalculateIGD(g->parent_population_.data(), pop_num, obj_num, pf_data, pf_size);
+			double hv = hv_calculator.Calculate(g->parent_population_.data(), pop_num, obj_num, pf_data, pf_size);
+			double gd = CalculateGD(g->parent_population_.data(), pop_num, obj_num, pf_data, pf_size);
 			double spacing = CalculateSpacing(g->parent_population_.data(), pop_num, obj_num);
-			double igdplus = CalculateIGDPlus(g->parent_population_.data(), pop_num, obj_num, problem_name);
-			double gdplus = CalculateGDPlus(g->parent_population_.data(), pop_num, obj_num, problem_name);
+			double igdplus = CalculateIGDPlus(g->parent_population_.data(), pop_num, obj_num, pf_data, pf_size);
+			double gdplus = CalculateGDPlus(g->parent_population_.data(), pop_num, obj_num, pf_data, pf_size);
 
 			int count = EMOCManager::Instance()->GetSingleThreadResultSize();
 			result.para = para;
@@ -726,6 +726,11 @@ namespace emoc {
 			EMOCManager::Instance()->AddSingleThreadResult(result);
 			if (EMOCManager::Instance()->GetIsGUI()) UIPanelManager::Instance()->AddAvailSingleThreadResult(result.description);
 			printf("run %d time: %fs   igd: %f \n", run_id, result.runtime, igd);
+
+			// free pf data memory
+			for (int i = 0; i < pf_size; ++i)
+				delete[] pf_data[i];
+			delete[] pf_data;
 		}
 		else if (para.objective_num == 1)		// single-objective
 		{
@@ -789,13 +794,15 @@ namespace emoc {
 			int obj_num = g->obj_num_;
 			int pop_num = g->algorithm_->GetRealPopNum();
 			HVCalculator hv_calculator(obj_num, pop_num);
+			int pf_size = 0;
+			double** pf_data = LoadPFData(pf_size, obj_num, problem);
 
-			double igd = CalculateIGD(g->parent_population_.data(), pop_num, obj_num, problem);
-			double hv = hv_calculator.Calculate(g->parent_population_.data(), pop_num, obj_num, problem);
-			double gd = CalculateGD(g->parent_population_.data(), pop_num, obj_num, problem);
+			double igd = CalculateIGD(g->parent_population_.data(), pop_num, obj_num, pf_data, pf_size);
+			double hv = hv_calculator.Calculate(g->parent_population_.data(), pop_num, obj_num, pf_data, pf_size);
+			double gd = CalculateGD(g->parent_population_.data(), pop_num, obj_num, pf_data, pf_size);
 			double spacing = CalculateSpacing(g->parent_population_.data(), pop_num, obj_num);
-			double igdplus = CalculateIGDPlus(g->parent_population_.data(), pop_num, obj_num, problem);
-			double gdplus = CalculateGDPlus(g->parent_population_.data(), pop_num, obj_num, problem);
+			double igdplus = CalculateIGDPlus(g->parent_population_.data(), pop_num, obj_num, pf_data, pf_size);
+			double gdplus = CalculateGDPlus(g->parent_population_.data(), pop_num, obj_num, pf_data, pf_size);
 			double runtime = g->algorithm_->GetRuntime();
 
 			// In experiment module, we record the result when it is really finished
@@ -833,6 +840,11 @@ namespace emoc {
 			std::string print_problem = problem + "_" + std::to_string(obj_num) + "_" + std::to_string(dec_num);
 			printf("current thread id : %d, parameter: %d runs: %d, runtime: %f igd:%f algorithm:%s, problem:%s\n",
 				thread_id, parameter_id, run_id, runtime, igd, g->algorithm_name_.c_str(), print_problem.c_str());
+
+			// free pf data memory
+			for (int i = 0; i < pf_size; ++i)
+				delete[] pf_data[i];
+			delete[] pf_data;
 		}
 		else if (g->obj_num_ == 1)
 		{

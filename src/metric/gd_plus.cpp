@@ -11,13 +11,8 @@
 
 namespace emoc {
 
-	double CalculateGDPlus(Individual** pop, int pop_num, int obj_num, std::string& problem_name)
+	double CalculateGDPlus(Individual** pop, int pop_num, int obj_num, double** pf_data, int pf_size)
 	{
-		// load pf data
-		int pf_size = 0;
-		double** pfdata = nullptr;
-		pfdata = LoadPFData(pf_size, obj_num, problem_name);
-
 		// calculate igd value
 		double gd_value = 0;
 		Individual* temp_ind = nullptr;
@@ -34,7 +29,7 @@ namespace emoc {
 				temp_distance = 0;
 				for (int k = 0; k < obj_num; k++)
 				{
-					new_distance[k] = pop[i]->obj_[k] > pfdata[j][k] ? pop[i]->obj_[k] - pfdata[j][k] : 0;
+					new_distance[k] = pop[i]->obj_[k] > pf_data[j][k] ? pop[i]->obj_[k] - pf_data[j][k] : 0;
 					temp_distance += new_distance[k] * new_distance[k];
 				}
 
@@ -47,13 +42,7 @@ namespace emoc {
 			gd_value += min_distance;
 		}
 		gd_value /= pop_num;
-
-		// free pf data memory
-		for (int i = 0; i < pf_size; ++i)
-			delete[] pfdata[i];
-		delete[] pfdata;
 		delete[] new_distance;
-
 		return 	gd_value;
 	}
 

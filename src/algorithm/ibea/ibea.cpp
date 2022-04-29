@@ -48,6 +48,10 @@ namespace emoc {
 		// set mutation parameter
 		mutation_para_.pro = 1.0 / g_GlobalSettings->dec_num_;
 		mutation_para_.index1 = 20.0;
+
+		// set crossover parameter
+		cross_para_.pro = 1.0;
+		cross_para_.index1 = 20.0;
 	}
 
 	void IBEA::Crossover(Individual **parent_pop, Individual **offspring_pop)
@@ -62,7 +66,8 @@ namespace emoc {
 		{
 			Individual *parent1 = TournamentByFitness(parent_pop[index1[2 * i]], parent_pop[index1[2 * i + 1]]);
 			Individual *parent2 = TournamentByFitness(parent_pop[index2[2 * i]], parent_pop[index2[2 * i + 1]]);
-			SBX(parent1, parent2, offspring_pop[2 * i], offspring_pop[2 * i + 1], g_GlobalSettings);
+			SBX(parent1, parent2, offspring_pop[2 * i], offspring_pop[2 * i + 1],
+				g_GlobalSettings->dec_lower_bound_, g_GlobalSettings->dec_upper_bound_, cross_para_);
 		}
 	}
 

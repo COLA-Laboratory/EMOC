@@ -6,9 +6,11 @@
 
 namespace emoc {
 
-	void UniformCrossover(Individual *parent1, Individual *parent2, Individual *offspring1, Individual *offspring2, Global *g_GlobalSettings)
+	void UniformCrossover(Individual *parent1, Individual *parent2, Individual *offspring1, Individual *offspring2)
 	{
-		for (int i = 0; i < g_GlobalSettings->dec_num_; i++)
+		int dec_num = parent1->dec_.size();
+
+		for (int i = 0; i < dec_num; i++)
 		{
 			if (randomperc() < 0.5)
 			{

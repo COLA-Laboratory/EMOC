@@ -63,6 +63,10 @@ namespace emoc {
 		// set mutation parameter
 		mutation_para_.pro = 1.0 / g_GlobalSettings->dec_num_;
 		mutation_para_.index1 = 20.0;
+
+		// set crossover parameter
+		cross_para_.pro = 1.0;
+		cross_para_.index1 = 20.0;
 	}
 
 	void SMSEMOA::Crossover(Individual **parent_pop, Individual *offspring)
@@ -73,7 +77,8 @@ namespace emoc {
 		Individual *parent1 = parent_pop[index[0]];
 		Individual *parent2 = parent_pop[index[1]];
 		Individual **offspring_pop = g_GlobalSettings->offspring_population_.data();
-		SBX(parent1, parent2, offspring_pop[1], offspring_pop[2], g_GlobalSettings);
+		SBX(parent1, parent2, offspring_pop[1], offspring_pop[2],
+			g_GlobalSettings->dec_lower_bound_, g_GlobalSettings->dec_upper_bound_, cross_para_);
 
 		DominateReleation res = CheckDominance(offspring_pop[1], offspring_pop[2], g_GlobalSettings->obj_num_);
 		if (DOMINATED == res)

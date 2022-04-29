@@ -98,6 +98,10 @@ namespace emoc {
 		// set mutation parameter
 		mutation_para_.pro = 1.0 / g_GlobalSettings->dec_num_;
 		mutation_para_.index1 = 20.0;
+
+		// set crossover parameter
+		cross_para_.pro = 1.0;
+		cross_para_.index1 = 20.0;
 	}
 
 	void MOEADD::Association(Individual** pop, int pop_num)
@@ -208,9 +212,11 @@ namespace emoc {
 		Individual* parent2 = parent_pop[parent2_index];
 		Individual* parent3 = parent_pop[parent3_index];
 		if (randomperc() < 0.5)
-			SBX(parent2, parent3, offspring, g_GlobalSettings->offspring_population_[1], g_GlobalSettings);
+			SBX(parent2, parent3, offspring, g_GlobalSettings->offspring_population_[1],
+				g_GlobalSettings->dec_lower_bound_, g_GlobalSettings->dec_upper_bound_, cross_para_);
 		else
-			SBX(parent2, parent3, g_GlobalSettings->offspring_population_[1], offspring, g_GlobalSettings);
+			SBX(parent2, parent3, g_GlobalSettings->offspring_population_[1], offspring,
+				g_GlobalSettings->dec_lower_bound_, g_GlobalSettings->dec_upper_bound_, cross_para_);
 	}
 
 	void MOEADD::EnvironmentSelection(Individual** mixed_pop, int mixedpop_num, Individual** parent_pop)

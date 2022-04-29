@@ -4,18 +4,21 @@
 
 namespace emoc {
 
-	void DE(Individual *parent1, Individual *parent2, Individual *parent3, Individual *offspring, Global *g_GlobalSettings)
+	void DE(Individual *parent1, Individual *parent2, Individual *parent3, Individual *offspring, 
+		std::vector<double>& lower_bound, std::vector<double>& upper_bound, CrossoverParameter& cross_para)
 	{
 		double value = 0.0;
+		int dec_num = parent1->dec_.size();
+		double F = cross_para.index1;
 
-		for (int i = 0; i < g_GlobalSettings->dec_num_; ++i)
+		for (int i = 0; i < dec_num; ++i)
 		{
-			double yl = g_GlobalSettings->dec_lower_bound_[i];
-			double yu = g_GlobalSettings->dec_upper_bound_[i];
+			double yl = lower_bound[i];
+			double yu = upper_bound[i];
 
-			if (randomperc() < g_GlobalSettings->de_parameter_.crossover_pro)
+			if (randomperc() < cross_para.pro)
 			{
-				value = parent1->dec_[i] + g_GlobalSettings->de_parameter_.F * (parent2->dec_[i] -parent3->dec_[i]);
+				value = parent1->dec_[i] + F * (parent2->dec_[i] -parent3->dec_[i]);
 				value = (value > yu) ? yu : (value < yl) ? yl : value;
 			}
 			else

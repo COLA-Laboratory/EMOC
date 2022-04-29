@@ -12,17 +12,8 @@
 
 namespace emoc {
 
-	double CalculateIGD(Individual **pop, int pop_num, int obj_num, std::string &problem_name)
+	double CalculateIGD(Individual **pop, int pop_num, int obj_num, double** pf_data, int pf_size)
 	{
-		//char buff[1000];
-		//_getcwd(buff, 1000);
-		//std::cout << "current path£º" << buff << std::endl;
-
-		// load pf data
-		int pf_size = 0;
-		double **pfdata = nullptr;
-		pfdata = LoadPFData(pf_size,obj_num,problem_name);
-
 		// calculate igd value
 		double igd_value = 0;
 		Individual *temp_ind = nullptr;
@@ -34,7 +25,7 @@ namespace emoc {
 			for (int j = 0; j < pop_num; j++)
 			{
 				temp_ind = pop[j];
-				temp_distance = CalEuclidianDistance(pfdata[i],temp_ind->obj_.data(), obj_num);
+				temp_distance = CalEuclidianDistance(pf_data[i],temp_ind->obj_.data(), obj_num);
 
 				if (min_distance > temp_distance)
 				{
@@ -43,14 +34,8 @@ namespace emoc {
 			}
 			igd_value += min_distance;
 		}
+
 		igd_value /= pf_size;
-
-		// free pf data memory
-		for (int i = 0; i < pf_size; ++i)
-			delete[] pfdata[i];
-		delete[] pfdata;
-
-		
 		return 	igd_value;
 	}
 

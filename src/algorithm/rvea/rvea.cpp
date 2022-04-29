@@ -93,6 +93,10 @@ namespace emoc {
 		// set mutation parameter
 		mutation_para_.pro = 1.0 / g_GlobalSettings->dec_num_;
 		mutation_para_.index1 = 20.0;
+
+		// set crossover parameter
+		cross_para_.pro = 1.0;
+		cross_para_.index1 = 20.0;
 	}
 
 	void RVEA::Crossover(Individual** parent_pop, Individual** offspring_pop)
@@ -108,7 +112,8 @@ namespace emoc {
 			parent1 = parent_pop[k];
 			parent2 = parent_pop[l];
 
-			SBX(parent1, parent2, offspring_pop[index], offspring_pop[index + 1], g_GlobalSettings);
+			SBX(parent1, parent2, offspring_pop[index], offspring_pop[index + 1],
+				g_GlobalSettings->dec_lower_bound_, g_GlobalSettings->dec_upper_bound_, cross_para_);
 			index += 2;
 		}
 	}

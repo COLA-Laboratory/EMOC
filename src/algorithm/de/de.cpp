@@ -49,6 +49,10 @@ namespace emoc {
 		// set mutation parameter
 		mutation_para_.pro = 1.0 / g_GlobalSettings->dec_num_;
 		mutation_para_.index1 = 20.0;
+
+		// set crossover parameter
+		cross_para_.pro = 1.0;
+		cross_para_.index1 = 0.5;
 	}
 
 	void DifferentialEvolution::Crossover(Individual **parent_pop, Individual **offspring_pop)
@@ -69,7 +73,7 @@ namespace emoc {
 				parent_pop[index2[i]], parent_pop[index2[i]]->obj_[0]);
 			Individual* parent2 = TournamentByCustom(parent_pop[index3[i]], parent_pop[index3[i]]->obj_[0],
 				parent_pop[index4[i]], parent_pop[index4[i]]->obj_[0]);
-			DE(parent_pop[i], parent1, parent2, offspring_pop[i], g_GlobalSettings);
+			DE(parent_pop[i], parent1, parent2, offspring_pop[i], g_GlobalSettings->dec_lower_bound_, g_GlobalSettings->dec_upper_bound_, cross_para_);
 		}
 	}
 	
