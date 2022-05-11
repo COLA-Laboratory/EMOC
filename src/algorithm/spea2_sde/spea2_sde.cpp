@@ -8,7 +8,7 @@
 #include "core/macro.h"
 #include "core/global.h"
 #include "core/utility.h"
-#include "core/tournament_selection.h"
+#include "operator/tournament_selection.h"
 #include "operator/sbx.h"
 #include "operator/polynomial_mutation.h"
 #include "random/random.h"
@@ -123,12 +123,12 @@ namespace emoc {
 				if (i == j)
 					continue;
 
-				DominateReleation res = CheckDominance(pop[i], pop[j], g_GlobalSettings->obj_num_);
-				if (res == DOMINATE)
+				int res = CheckDominance(pop[i], pop[j], g_GlobalSettings->obj_num_);
+				if (res == 1)
 				{
 					dominate_num[i]++;
 				}
-				else if (res == DOMINATED)
+				else if (res == -1)
 				{
 					dominated_index[i][dominated_size[i]++] = j;
 				}

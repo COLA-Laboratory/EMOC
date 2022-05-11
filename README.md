@@ -1,40 +1,47 @@
-# EMOC
+# EMOC: Evolutionary Multi-objective Optimization in C++
 
-EMOC is a multi-objective optimization library written in c++11 which involves some basic evolutionary algorithms (now is 10+). 
+<div align="center">
+<img src="./resource/image/emoc_big.png" width = "300px" align=center />
 
+</div>
 
+EMOC stands for **E**volutionary **M**ulti-objective **O**ptimization in **C**++ which is a framework for single-objective and multi-objective optimization. This library is mainly for research and educational purposes.
 
-## Build
-
-The CMakeLists.txt file is provided to build project.
-
-For **windows**, we recommend  use visual studio 2017 or later version to build project:
-
-```c++
-mkdir build
-cd build
-cmake -G "Visual Studio 15 2017" ..
-```
-
-then open the generated .sln file and click build button, you can find the .exe file has already in the project directory. 
+For more information about install and usage, please refer to the document site.
 
 
+## Features
 
-For **linux**, compile the project with following command:
+- **Rich algorithms and problems**
 
-```c++
-mkdir build
-cd build
-cmake ..
-make -j4
-```
+  EMOC implemented about 30 algorithms and more than 80 test problems which both include single-objective and multi-objective types.
 
-the compiled executable file EMOC will appear in the project directory.
+- **Developed in C++ and Cross-platform**
+
+  All the source code of EMOC are wrote in C++. So the running efficiency is guaranteed when comparing other implementation with python, java or matlab. We also provide cross-platform compatibility for users with different operator systems.
+
+- **Friendly GUI**
+
+  EMOC provides a user-friendly GUI with the function of configuring parameters of once-run and experiments without writing a single line of code.
+
+- **Various Optimization Types**
+
+  EMOC supports unconstraint optimization, constraint optimization and combinatorial optimization (including binary encoding and permutation encoding).
+
+- **Save into Excel or Latex**
+
+  Users can save the experiment results of EMOC in the format of Excel or Latex.
 
   
+## 3rd Party Libraries
 
-
-
-
-
+- [GLFW](https://www.glfw.org/)
+- [ALGLIB](https://www.alglib.net/)
+- [Dear Imgui](https://github.com/ocornut/imgui)
+- [pybind11](https://github.com/pybind/pybind11)
+- [cxxopts](https://github.com/jarro2783/cxxopts)
+- [stb_image](https://github.com/nothings/stb)
+- [Gnuplot](http://www.gnuplot.info/)
+- [CMake](https://cmake.org/)
+- [Font-Awesome](https://github.com/FortAwesome/Font-Awesome)
 

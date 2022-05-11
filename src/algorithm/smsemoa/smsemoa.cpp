@@ -80,8 +80,8 @@ namespace emoc {
 		SBX(parent1, parent2, offspring_pop[1], offspring_pop[2],
 			g_GlobalSettings->dec_lower_bound_, g_GlobalSettings->dec_upper_bound_, cross_para_);
 
-		DominateReleation res = CheckDominance(offspring_pop[1], offspring_pop[2], g_GlobalSettings->obj_num_);
-		if (DOMINATED == res)
+		int res = CheckDominance(offspring_pop[1], offspring_pop[2], g_GlobalSettings->obj_num_);
+		if (-1 == res)
 			CopyIndividual(offspring_pop[2], offspring);
 		else
 			CopyIndividual(offspring_pop[1], offspring);

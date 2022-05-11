@@ -8,7 +8,7 @@
 #include "core/macro.h"
 #include "core/global.h"
 #include "core/nd_sort.h"
-#include "core/tournament_selection.h"
+#include "operator/tournament_selection.h"
 #include "core/emoc_utility_structures.h"
 #include "operator/polynomial_mutation.h"
 #include "operator/swap_mutation.h"

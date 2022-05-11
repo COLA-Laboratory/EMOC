@@ -13,7 +13,7 @@
 
 namespace emoc {
 
-	DominateReleation CheckDominance(Individual* ind1, Individual* ind2, int obj_num)
+	int CheckDominance(Individual* ind1, Individual* ind2, int obj_num)
 	{
 		int flag1 = 0, flag2 = 0;
 
@@ -29,17 +29,17 @@ namespace emoc {
 		}
 
 		if (flag1 == 1 && flag2 == 0)
-			return (DOMINATE);
+			return 1;
 		else
 		{
 			if (flag1 == 0 && flag2 == 1)
-				return (DOMINATED);
+				return -1;
 			else
-				return (NON_DOMINATED);
+				return 0;
 		}
 	}
 
-	DominateReleation CheckDominanceWithConstraint(Individual* ind1, Individual* ind2, int obj_num)
+	int CheckDominanceWithConstraint(Individual* ind1, Individual* ind2, int obj_num)
 	{
 		bool is_infeasible1 = false, is_infeasible2 = false;
 		double cons1 = 0.0, cons2 = 0.0;
@@ -59,17 +59,17 @@ namespace emoc {
 		if (!is_infeasible1 && !is_infeasible2)
 			return CheckDominance(ind1, ind2, obj_num);
 		else if (is_infeasible1 && !is_infeasible2)
-			return DOMINATED;
+			return -1;
 		else if (!is_infeasible1 && is_infeasible2)
-			return DOMINATE;
+			return 1;
 		else if (is_infeasible1 && is_infeasible2)
 		{
 			if (std::fabs(cons1 - cons2) < EMOC_EPS)
-				return NON_DOMINATED;
+				return 0;
 			else if (cons1 < cons2)
-				return DOMINATE;
+				return 1;
 			else if (cons1 > cons2)
-				return DOMINATED;
+				return -1;
 		}
 	}
 
@@ -320,111 +320,6 @@ namespace emoc {
 
 		ind->fitness_ = d1 + theta * d2;
 		return  (d1 + theta * d2);
-	}
-
-
-
-	// this just for test now
-	void display_pop(FILE* gp, Individual** pop, int pop_num, int obj_num, int gen)
-	{
-
-		clock_t start_ = clock();
-		clock_t end_ = clock();
-
-
-		start_ = clock();
-		FILE* fptr1 = nullptr, * fptr2 = nullptr;
-		char dataFileName[256];
-		char scriptFileName[256];
-		sprintf(dataFileName, "./plotfile/plot%d.txt", gen);
-		sprintf(scriptFileName, "./plotfile/%d.gnu", gen);
-		fptr1 = fopen(dataFileName, "w");
-		fptr2 = fopen(scriptFileName, "w");
-		if (!fptr1)
-		{
-			std::cerr << "<Error!!!> Could not open file" << std::endl;
-			exit(-1);
-		}
-		for (int i = 0; i < pop_num; i++)
-		{
-			for (int j = 0; j < obj_num - 1; j++)
-			{
-				fprintf(fptr1, "%f\t", pop[i]->obj_[j]);
-			}
-			fprintf(fptr1, "%f\n", pop[i]->obj_[obj_num - 1]);
-		}
-		fflush(fptr1);
-		fclose(fptr1);
-
-		char CMD[1024];
-		if (obj_num == 2)
-		{
-			sprintf(CMD,/*"set term post eps color enh solid\n"
-					"set term pdfcairo lw 2 font 'Times New Roman,8'\n"
-					"set output '../pop/pop_%d.pdf'\n"*/
-				"set grid\n"
-				"set autoscale\n"
-				"set title 'Generation #%d'\n"
-				"set xlabel 'f1'\n"
-				"set ylabel 'f2'\n"
-				"unset key\n"
-				"plot '%s' w p pt 6 ps 1 lc 3\n"
-				, gen, dataFileName);
-		}
-		else if (obj_num == 3)
-		{
-			sprintf(CMD, "set term post eps color enh solid\n"
-				"set term pdfcairo lw 2 font 'Times New Roman,8'\n"
-				"set output '../pop/pop_%d.pdf'\n"
-				"set grid\n"
-				"set autoscale\n"
-				"set title 'Generation #%d'\n"
-				"set xlabel 'f1'\n"
-				"set ylabel 'f2'\n"
-				"set zlabel 'f3'\n"
-				"set xrange [0:1]\n"
-				"set yrange [0:1]\n"
-				"set zrange [0:1]\n"
-				"set view 45,45\n"
-				"unset key\n"
-				"splot 'plot.txt' w points pointtype 6 pointsize 1\n"
-				, gen, gen);
-		}
-		else
-		{
-			std::cerr << "Error!!! in display_pop(...)" << std::endl;
-			exit(-1);
-		}
-		fprintf(fptr2, "%s", CMD);
-		fflush(fptr2);
-		fclose(fptr2);
-		//fwrite(CMD, 1,150,gp);
-		//int res = fprintf(gp, CMD);
-
-
-		char realCMD[1024];
-		sprintf(realCMD,
-			"load '%s'\n"
-			, scriptFileName);
-
-		//{
-		//	std::lock_guard<std::mutex> locker(finish_mutex);
-		//	auto &cmd_queue = PlotManager::Instance()->GetPlotCMDQueue();
-		//	cmd_queue.push(realCMD);
-		//	cond.notify_one();
-		//}
-
-
-		//fprintf(gp, realCMD);
-		////fputs(realCMD, gp);
-		//fflush(gp);
-
-
-		end_ = clock();
-		//std::cout << (double)end_ << " " << (double)start_ << "\n";
-		//std::cout << (double)(end_ - start_) / CLOCKS_PER_SEC << " total draw time:" << testTime << "\n";
-		//show for a short time
-		//Sleep(10);
 	}
 
 	double** LoadPFData(int& pf_size, int obj_num, std::string problem_name)

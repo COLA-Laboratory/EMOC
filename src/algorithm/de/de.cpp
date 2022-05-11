@@ -6,7 +6,7 @@
 
 #include "core/macro.h"
 #include "core/global.h"
-#include "core/tournament_selection.h"
+#include "operator/tournament_selection.h"
 #include "operator/polynomial_mutation.h"
 #include "operator/de.h"
 #include "random/random.h"

@@ -5,7 +5,6 @@
 
 namespace emoc {
 
-	// simulated binary crossover
 	void BitFlipMutation(Individual *ind, MutationParameter &mutation_para);
 
 }

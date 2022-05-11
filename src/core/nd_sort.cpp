@@ -48,11 +48,11 @@ namespace emoc {
 				ind_tempB = pop[j];
 				dominate_relation = is_consider_cons ? CheckDominanceWithConstraint(ind_tempA, ind_tempB, obj_num) 
 					:CheckDominance(ind_tempA, ind_tempB, obj_num);
-				if (DOMINATE == dominate_relation)
+				if (1 == dominate_relation)
 				{
 					si[i][index++] = j;
 				}
-				else if (DOMINATED == dominate_relation)
+				else if (-1 == dominate_relation)
 				{
 					ni[i]++;
 				}

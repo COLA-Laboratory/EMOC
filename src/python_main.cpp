@@ -74,8 +74,8 @@ PYBIND11_MODULE(EMOC, m) {
 	// define Individual class for problem's CalObj function parameters
 	py::class_<Individual>(m, "Individual")
 		.def(py::init<int, int>())
-		.def_readwrite("dec", &Individual::dec)
-		.def_readwrite("obj", &Individual::obj);
+		.def_readwrite("dec", &Individual::dec_)
+		.def_readwrite("obj", &Individual::obj_);
 
 	// define Problem base class, so we can write custom problem derived from this class in python
 	py::class_<emoc::Problem, emoc::PyProblem /* <--- trampoline*/>(m, "Problem")

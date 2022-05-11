@@ -159,15 +159,6 @@ namespace emoc
 		std::vector<std::vector<double>> pop_objs;
 	};
 
-	//// set default operator parameters
-	//sbx_parameter_.crossover_pro = 1.0;
-	//sbx_parameter_.eta_c = 20.0;
-	//de_parameter_.crossover_pro = 1.0;
-	//de_parameter_.F = 0.5;
-	//de_parameter_.K = 0.5;
-	//pm_parameter_.muatation_pro = 1.0 / (double)dec_num;
-	//pm_parameter_.eta_m = 20.0;
-
 	// crossover parameter
 	struct CrossoverParameter
 	{

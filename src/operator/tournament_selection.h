@@ -7,6 +7,4 @@ namespace emoc {
 	Individual* TournamentByFitness(Individual* ind1, Individual* ind2, int greater_is_better = 0);
 	Individual* TournamentByCustom(Individual* ind1, double ind1_prop, Individual* ind2, double ind2_prop, int greater_is_better = 0);
 
-
-	// add a tournament by costume property later...
 }

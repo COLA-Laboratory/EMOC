@@ -6,7 +6,7 @@
 #include "core/global.h"
 #include "core/utility.h"
 #include "core/nd_sort.h"
-#include "core/tournament_selection.h"
+#include "operator/tournament_selection.h"
 #include "operator/sbx.h"
 #include "operator/polynomial_mutation.h"
 #include "random/random.h"
