@@ -1,7 +1,7 @@
 # EMOC: Evolutionary Multi-objective Optimization in C++
 
 <div align="center">
-<img src="./resource/image/emoc_big.png" width = "300px" align=center />
+<img src="./resource/emoc_big.png" width = "300px" align=center />
 
 </div>
 
