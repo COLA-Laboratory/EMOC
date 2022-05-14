@@ -5,9 +5,9 @@
 
 </div>
 
-EMOC stands for **E**volutionary **M**ulti-objective **O**ptimization in **C**++ which is a framework for single-objective and multi-objective optimization. This library is mainly for research and educational purposes.
+EMOC stands for **E**volutionary **M**ulti-objective **O**ptimization in **C**++ which is a framework for single-objective and multi-objective optimization. 
 
-For more information about install and usage, please refer to the document site.
+For more information about installation and usage, please refer to the [document site](https://cola-laboratory.github.io/EMOCDoc/).
 
 
 ## Features

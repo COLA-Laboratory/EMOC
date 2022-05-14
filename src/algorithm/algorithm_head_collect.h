@@ -17,8 +17,6 @@
 #include "algorithm/moead_gra/moead_gra.h"
 #include "algorithm/moead_ira/moead_ira.h"
 #include "algorithm/moead_dyts/moead_dyts.h"
-#include "algorithm/moead_dyts_test/moead_dyts_test.h"
-#include "algorithm/moead_cdts/moead_cdts.h"
 #include "algorithm/moead_cde/moead_cde.h"
 #include "algorithm/moead_stm/moead_stm.h"
 #include "algorithm/rvea/rvea.h"

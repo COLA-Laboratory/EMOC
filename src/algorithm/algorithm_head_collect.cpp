@@ -7,8 +7,6 @@ namespace emoc {
 
 	// Docomposition Based Algorithms
 	EMOC_REGIST_ALGORITHM(Multiobjective, Docomposition Based, MOEADDYTS);
-	EMOC_REGIST_ALGORITHM(Multiobjective, Docomposition Based, MOEADDYTSTEST);
-	EMOC_REGIST_ALGORITHM(Multiobjective, Docomposition Based, MOEADCDTS);
 	EMOC_REGIST_ALGORITHM(Multiobjective, Docomposition Based, MOEAD);
 	EMOC_REGIST_ALGORITHM(Multiobjective, Docomposition Based, MOEADDE);
 	EMOC_REGIST_ALGORITHM(Multiobjective, Docomposition Based, MOEADDRA);
