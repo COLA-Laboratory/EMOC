@@ -4,11 +4,7 @@
 #define PI 3.14159265358979323846
 #define MAX_THREAD_NUM 128
 #define MAX_BUFFSIZE 256
-#if defined(__APPLE__)
-	#define GNUPLOT_TERMINAL "qt"
-#else
-	#define GNUPLOT_TERMINAL "wxt"
-#endif
+#define GNUPLOT_TERMINAL "wxt"
 
 #define EMOC_REGIST_ALGORITHM(OPTIMIZATION_TYPE,CATEGORY,NAME)\
 Algorithm * CreateAlgorithm##NAME(int thread_id) {\
