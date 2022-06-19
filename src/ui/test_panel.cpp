@@ -120,12 +120,12 @@ namespace emoc {
 			float input_pos = max_text_width + 0.18f * remain_width;
 			ImGui::PushItemWidth(0.81f * remain_width);
 			ImGui::AlignTextToFramePadding();
-			ImGui::Text("D"); ImGui::SameLine();
+			ImGui::Text("n"); ImGui::SameLine();
 			ImGui::SetCursorPosX(input_pos);
 			ImGui::InputInt("##DTest", &D, 0);
 
 			ImGui::AlignTextToFramePadding();
-			ImGui::Text("M"); ImGui::SameLine();
+			ImGui::Text("m"); ImGui::SameLine();
 			ImGui::SetCursorPosX(input_pos);
 			ImGui::InputInt("##MTest", &M, 0);
 
@@ -135,7 +135,7 @@ namespace emoc {
 			ImGui::InputInt("##NTest", &N, 0);
 
 			ImGui::AlignTextToFramePadding();
-			ImGui::Text("Evaluation"); ImGui::SameLine();
+			ImGui::Text("nFE"); ImGui::SameLine();
 			ImGui::SetCursorPosX(input_pos);
 			ImGui::InputInt("##EvaluationTest", &Evaluation, 0);
 			ImGui::PopItemWidth();
@@ -173,7 +173,7 @@ namespace emoc {
 			// When algorithm is running, we diable 'Start' button.
 			static std::string description = "";
 			if (!is_finish) ImGui::BeginDisabled();
-			if (ImGui::Button("Start##Test", ImVec2(window_width * 0.95f, window_height * 0.1f)))
+			if (ImGui::Button("Start##Test", ImVec2(window_width * 0.95f, window_height * 0.05f)))
 			{
 				// Reopen the pipe and set position and size.
 				char pos_size_cmd[256];
@@ -314,8 +314,8 @@ namespace emoc {
 			TextCenter("Result Info Display");
 			ImGui::Dummy(ImVec2(0.0f, 5.0f));
 			static bool is_displayN = true; ImGui::Checkbox("N##Test", &is_displayN); ImGui::SameLine();
-			static bool is_displayM = true; ImGui::Checkbox("M##Test", &is_displayM); ImGui::SameLine();
-			static bool is_displayD = true; ImGui::Checkbox("D##Test", &is_displayD); ImGui::SameLine();
+			static bool is_displayM = true; ImGui::Checkbox("m##Test", &is_displayM); ImGui::SameLine();
+			static bool is_displayD = true; ImGui::Checkbox("n##Test", &is_displayD); ImGui::SameLine();
 			static bool is_displayEvaluation = true; ImGui::Checkbox("Evaluation##Test", &is_displayEvaluation);
 
 			// set this frame's table columns
