@@ -6,11 +6,14 @@ TEMPTEST/
 BUILDBACKUP/
 plotfile/
 output/
+cmake-build-debug/
+cmake-build-release/
 
 # Files 
 *.user
 build32.bat
 EMOC.exe
+EMOC
 gnulotTest.cpp
 main_backup.cpp
 matplotlibcpp.h

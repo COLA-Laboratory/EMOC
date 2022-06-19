@@ -18,6 +18,7 @@ elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     find_package(OpenGL REQUIRED)
     find_package(X11 REQUIRED)
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
+	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -w")
     find_library(COCOA_LIBRARY Cocoa)
     if(NOT COCOA_LIBRARY)
@@ -91,6 +92,8 @@ set(LINK_DIR
     ./build/vendor/glfw/src/Debug
     ./build/vendor/glfw/src/Release
     ./build/vendor/glfw/src
+	./cmake-build-debug/vendor/glfw/src
+	./cmake-build-release/vendor/glfw/src
 )
 
 # add glfw source code as a subproject
@@ -127,7 +130,7 @@ elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
     target_link_libraries(EMOC PRIVATE glfw3 ${OPENGL_LIBRARY} ${COCOA_LIBRARY}  ${IOKIT_LIBRARY}) 
     if(NOT BUILD_PYTHON_DLL)
-        add_custom_command(TARGET EMOC POST_BUILD COMMAND mv ./EMOC ../EMOC)
+        # add_custom_command(TARGET EMOC POST_BUILD COMMAND mv ./EMOC ../EMOC)
     endif()
 endif()
 
