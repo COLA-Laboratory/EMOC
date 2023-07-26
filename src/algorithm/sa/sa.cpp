@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <iostream>
 
+#include "cmath"
 #include "core/macro.h"
 #include "core/global.h"
 #include "core/utility.h"

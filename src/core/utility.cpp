@@ -3,7 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <cmath>
-
+#include <algorithm>
 #include "emoc_app.h"
 #include "ui/plot_manager.h"
 #include "core/macro.h"

@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <thread>
-
+#include <cmath>
 #include "core/emoc_app.h"
 #include "core/file.h"
 #include "core/emoc_manager.h"
