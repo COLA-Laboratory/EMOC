@@ -61,6 +61,8 @@ set(HEADERS ${HEADERS}
         vendor/alglib/src/stdafx.h
         vendor/cxxopts/cxxopts.hpp
         vendor/stb_image/stb_image.h
+        vendor/pinv/calculatePinv.h
+
 )      
 
 # set SRC		
@@ -77,6 +79,7 @@ set(SRC ${SRC}
         vendor/alglib/src/linalg.cpp
         vendor/alglib/src/specialfunctions.cpp
         vendor/alglib/src/statistics.cpp  
+        vendor/pinv/calculatePinv.cpp
 )
 
 # set include dir and link dir
@@ -128,7 +131,8 @@ elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 		add_custom_command(TARGET EMOC POST_BUILD COMMAND mv ./EMOC ../EMOC)
 	endif()
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
-    target_link_libraries(EMOC PRIVATE glfw3 ${OPENGL_LIBRARY} ${COCOA_LIBRARY}  ${IOKIT_LIBRARY}) 
+    # target_link_libraries(EMOC PRIVATE glfw3 ${OPENGL_LIBRARY} ${COCOA_LIBRARY}  ${IOKIT_LIBRARY}) 
+    target_link_libraries(EMOC PRIVATE glfw ${OPENGL_LIBRARY} ${COCOA_LIBRARY}  ${IOKIT_LIBRARY}) 
     if(NOT BUILD_PYTHON_DLL)
         # add_custom_command(TARGET EMOC POST_BUILD COMMAND mv ./EMOC ../EMOC)
     endif()
