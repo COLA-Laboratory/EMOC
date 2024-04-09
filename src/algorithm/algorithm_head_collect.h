@@ -28,3 +28,4 @@
 #include "algorithm/ga/ga.h"
 #include "algorithm/de/de.h"
 #include "algorithm/sa/sa.h"
+#include "algorithm/moead_plvf/moead_plvf.h"
