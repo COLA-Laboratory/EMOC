@@ -1,0 +1,16 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/htian/Documents/EMOC-main/vendor/pinv/eigen-3.3.8/test/product_small.cpp"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"BuildOfficial"
+		],
+		"name" : "product_small_3"
+	}
+}

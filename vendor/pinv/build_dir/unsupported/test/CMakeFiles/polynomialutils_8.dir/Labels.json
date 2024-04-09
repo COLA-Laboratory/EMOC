@@ -1,0 +1,16 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/htian/Documents/EMOC-main/vendor/pinv/eigen-3.3.8/unsupported/test/polynomialutils.cpp"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"BuildUnsupported"
+		],
+		"name" : "polynomialutils_8"
+	}
+}

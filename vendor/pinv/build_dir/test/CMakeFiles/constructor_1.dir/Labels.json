@@ -1,0 +1,16 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/htian/Documents/EMOC-main/vendor/pinv/eigen-3.3.8/test/constructor.cpp"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"BuildOfficial"
+		],
+		"name" : "constructor_1"
+	}
+}
