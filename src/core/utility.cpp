@@ -13,6 +13,182 @@
 
 namespace emoc {
 
+	double* SetWeight(const std::string& weightstring)
+	{
+		int size = count(weightstring.begin(),weightstring.end(),',')+1;
+        if(!size)
+        {
+            std::cout<<"\nthe dimensionality of weight is 0, hence exits."<<std::endl;
+            exit(1);
+        }
+        double *m_w = nullptr;
+        m_w = new double[size];
+        int i = 0;
+        //std::string::size_type -- unsigned long long
+        std::string::size_type start = 0, end;
+        while((end = weightstring.find(',',start)) != std::string::npos)
+        {
+            m_w[i++] = atof(weightstring.substr(start,end-start).c_str());
+            start = end + 1;
+        }
+        m_w[i] = atof(weightstring.substr(start).c_str());
+        return m_w;
+	}
+
+	double* SetWeight(int obj_num_, std::string problem_name)
+	{
+		double *m_w = new double[obj_num_];
+		if(problem_name == "ZDT1" || problem_name == "ZDT4")
+		{
+			m_w[0] = 0.3;
+			m_w[1] = 0.4;
+		}
+		else if(problem_name == "ZDT2")
+		{
+			m_w[0] = 0.2;
+			m_w[1] = 0.8;
+		}
+		else if(problem_name == "ZDT3")
+		{
+			m_w[0] = 0.15;
+			m_w[1] = 0.4;
+		}
+		else if(problem_name == "ZDT6")
+		{
+			m_w[0] = 0.9;
+			m_w[1] = 0.3;
+		}
+		else if(problem_name == "DTLZ1")
+		{
+			switch (obj_num_)
+			{
+			case 3:
+				m_w[0] = 0.3;
+				m_w[1] = 0.3;
+				m_w[2] = 0.2;
+				break;
+			case 5:
+				m_w[0] = 0.2;
+				m_w[1] = 0.1;
+				m_w[2] = 0.1;
+				m_w[3] = 0.3;
+				m_w[4] = 0.4;
+				break;
+			case 8:
+				m_w[0] = 0.1;
+				m_w[1] = 0.2;
+				m_w[2] = 0.1;
+				m_w[3] = 0.4;
+				m_w[4] = 0.4;
+				m_w[5] = 0.1;
+				m_w[6] = 0.3;
+				m_w[7] = 0.1;
+				break;
+			case 10:
+				m_w[0] = 0.05;
+				m_w[1] = 0.1;
+				m_w[2] = 0.1;
+				m_w[3] = 0.05;
+				m_w[4] = 0.1;
+				m_w[5] = 0.2;
+				m_w[6] = 0.08;
+				m_w[7] = 0.03;
+				m_w[8] = 0.3;
+				m_w[9] = 0.1;
+				break;
+			
+			default:
+				break;
+			}
+		}
+		else if(problem_name == "DTLZ2" || problem_name == "DTLZ3" || problem_name == "DTLZ4")
+		{
+			switch (obj_num_)
+			{
+			case 3:
+				m_w[0] = 0.7;
+				m_w[1] = 0.8;
+				m_w[2] = 0.5;
+				break;
+			case 5:
+				m_w[0] = 0.7;
+				m_w[1] = 0.6;
+				m_w[2] = 0.3;
+				m_w[3] = 0.8;
+				m_w[4] = 0.5;
+				break;
+			case 8:
+				m_w[0] = 0.6;
+				m_w[1] = 0.5;
+				m_w[2] = 0.75;
+				m_w[3] = 0.2;
+				m_w[4] = 0.3;
+				m_w[5] = 0.55;
+				m_w[6] = 0.7;
+				m_w[7] = 0.6;
+				break;
+			case 10:
+				m_w[0] = 0.3;
+				m_w[1] = 0.3;
+				m_w[2] = 0.3;
+				m_w[3] = 0.1;
+				m_w[4] = 0.3;
+				m_w[5] = 0.55;
+				m_w[6] = 0.35;
+				m_w[7] = 0.35;
+				m_w[8] = 0.25;
+				m_w[9] = 0.45;
+				break;
+			default:
+				break;
+			}
+			
+		}
+		else if(problem_name == "DTLZ5" || problem_name == "DTLZ6")
+		{
+			switch (obj_num_)
+			{
+			case 3:
+				m_w[0] = 0.2;
+				m_w[1] = 0.3;
+				m_w[2] = 0.6;
+				break;
+			case 5:
+				m_w[0] = 0.12;
+				m_w[1] = 0.12;
+				m_w[2] = 0.17;
+				m_w[3] = 0.24;
+				m_w[4] = 0.7;
+				break;
+			case 8:
+				m_w[0] = 0.04;
+				m_w[1] = 0.04;
+				m_w[2] = 0.0566;
+				m_w[3] = 0.8;
+				m_w[4] = 0.113;
+				m_w[5] = 0.16;
+				m_w[6] = 0.2263;
+				m_w[7] = 0.68;
+				break;
+			case 10:
+				m_w[0] = 0;
+				m_w[1] = 0;
+				m_w[2] = 0;
+				m_w[3] = 0;
+				m_w[4] = 0.0096;
+				m_w[5] = 0.027;
+				m_w[6] = 0.082;
+				m_w[7] = 0.25;
+				m_w[8] = 0.75;
+				m_w[9] = 0.08;
+				break;
+			default:
+				break;
+			}
+		}
+		return m_w;
+	}
+
 	int CheckDominance(Individual* ind1, Individual* ind2, int obj_num)
 	{
 		int flag1 = 0, flag2 = 0;

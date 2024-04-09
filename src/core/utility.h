@@ -9,6 +9,10 @@
 
 namespace emoc {
 
+	// set weight
+	double* SetWeight(const std::string& weightstring);
+	double* SetWeight(int obj_num_, std::string problem_name);
+
 	// dominance related functions
 	int CheckDominance(Individual* ind1, Individual* ind2, int obj_num);
 	int CheckDominanceWithConstraint(Individual* ind1, Individual* ind2, int obj_num);
