@@ -31,3 +31,6 @@
 #include "algorithm/moead_plvf/moead_plvf.h"
 #include "algorithm/iemod/iemod.h"
 #include "algorithm/nsga2_ltr/nsga2_ltr.h"
+#include "algorithm/moead_ltr/moead_ltr.h"
+#include "algorithm/r2_ibea/r2_ibea.h"
+#include "algorithm/r2_ibea_ltr/r2_ibea_ltr.h"
