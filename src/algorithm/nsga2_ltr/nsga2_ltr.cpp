@@ -1,7 +1,7 @@
 // I-NSGA-II/LTR
 // Paper: Li, Ke, Guiyu Lai, and Xin Yao. "Interactive evolutionary multi-objective optimization via learning-to-rank." IEEE Transactions on Evolutionary Computation (2023).
 // Link: https://ieeexplore.ieee.org/abstract/document/10015671
-// created by Tian Huang 10/04/2024
+// created by Guiyu Lai 2021/6/9
 // lreaning to rank in RankNet.py, require installing tensorflow
 // to run this algorithm, make sure conda activate proper python environment before cmake
 
