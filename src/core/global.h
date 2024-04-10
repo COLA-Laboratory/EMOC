@@ -5,6 +5,7 @@
 #include "core/individual.h"
 #include "problem/problem.h"
 #include "algorithm/algorithm.h"
+#define INF 1.0e14
 #define MAX_QUEUE_SIZE -1 // max number of pairwise comparisons for training, <-1> means no limited
 
 namespace emoc {
