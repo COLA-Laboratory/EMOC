@@ -1,3 +1,11 @@
+// Algorithm: IEMO/D
+// Paper: Tomczyk, Michał K., and Miłosz Kadziński. "Decomposition-based interactive evolutionary algorithm for multiple objective optimization." IEEE Transactions on Evolutionary Computation 24.2 (2019): 320-334.
+// Link: https://ieeexplore.ieee.org/abstract/document/8710313
+// created by Tian Huang 10/04/2024
+// make sure you have installed java
+// IEMO/D also requires a hitandrun folder, run the follong command before run IEMOD:
+// mkdir hitandrun
+
 #include "algorithm/iemod/iemod.h"
 
 #include <cmath>
