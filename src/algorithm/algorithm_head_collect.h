@@ -29,3 +29,4 @@
 #include "algorithm/de/de.h"
 #include "algorithm/sa/sa.h"
 #include "algorithm/moead_plvf/moead_plvf.h"
+#include "algorithm/iemod/iemod.h"

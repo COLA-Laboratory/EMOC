@@ -22,6 +22,7 @@ namespace emoc {
 	EMOC_REGIST_ALGORITHM(Multiobjective, Docomposition Based, MOEADM2M);
 	EMOC_REGIST_ALGORITHM(Multiobjective, Docomposition Based, MOEADD);
 	EMOC_REGIST_ALGORITHM(Multiobjective, Docomposition Based, MOEADPLVF);
+	EMOC_REGIST_ALGORITHM(Multiobjective, Docomposition Based, IEMOD);
 
 	// Dominance Based Algorithms
 	EMOC_REGIST_ALGORITHM(Multiobjective,Dominance Based, NSGA2);
