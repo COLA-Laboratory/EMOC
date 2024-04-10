@@ -1,4 +1,4 @@
-// I-MOEA/D/LTR
+// Algorithm: I-MOEA/D/LTR
 // Paper: Li, Ke, Guiyu Lai, and Xin Yao. "Interactive evolutionary multi-objective optimization via learning-to-rank." IEEE Transactions on Evolutionary Computation (2023).
 // Link: https://ieeexplore.ieee.org/abstract/document/10015671
 // Created by Guiyu Lai on 2021/6/9.
