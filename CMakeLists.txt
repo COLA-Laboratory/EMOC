@@ -9,6 +9,8 @@ set(CMAKE_CONFIGURATION_TYPES "Release")	# this is for Visual Studio
 set(BUILD_PYTHON_DLL OFF CACHE BOOL "Whether build python dll")
 message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
 message(STATUS "Configuration Type: ${CMAKE_CONFIGURATION_TYPES}")
+find_package(Python 3.8 EXACT COMPONENTS Interpreter Development)       # recommend python3.8, you can change to your python version
+message(STATUS "Python_version:${Python_INCLUDE_DIRS}")
 
 # set compiler optimization flags
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
@@ -115,6 +117,7 @@ endif()
 # add include dir and link dir
 target_include_directories(${PROJECT_NAME} PUBLIC ${INCLUDE_DIR})
 target_link_directories(${PROJECT_NAME} PUBLIC ${LINK_DIR})
+include_directories(${Python_INCLUDE_DIRS})
 
 
 # link library and some post build commang
@@ -126,13 +129,13 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 		add_custom_command(TARGET EMOC POST_BUILD COMMAND copy ..\\build\\Release\\EMOC.exe ..\\EMOC.exe)
 	endif()
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    target_link_libraries(EMOC PRIVATE glfw3 dl X11 GL pthread) 
+    target_link_libraries(EMOC PRIVATE glfw3 dl X11 GL pthread ${Python_LIBRARIES}) 
 	if(NOT BUILD_PYTHON_DLL)
 		add_custom_command(TARGET EMOC POST_BUILD COMMAND mv ./EMOC ../EMOC)
 	endif()
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
     # target_link_libraries(EMOC PRIVATE glfw3 ${OPENGL_LIBRARY} ${COCOA_LIBRARY}  ${IOKIT_LIBRARY}) 
-    target_link_libraries(EMOC PRIVATE glfw ${OPENGL_LIBRARY} ${COCOA_LIBRARY}  ${IOKIT_LIBRARY}) 
+    target_link_libraries(EMOC PRIVATE glfw ${OPENGL_LIBRARY} ${COCOA_LIBRARY}  ${IOKIT_LIBRARY} ${Python_LIBRARIES}) 
     if(NOT BUILD_PYTHON_DLL)
         # add_custom_command(TARGET EMOC POST_BUILD COMMAND mv ./EMOC ../EMOC)
     endif()
