@@ -30,3 +30,4 @@
 #include "algorithm/sa/sa.h"
 #include "algorithm/moead_plvf/moead_plvf.h"
 #include "algorithm/iemod/iemod.h"
+#include "algorithm/nsga2_ltr/nsga2_ltr.h"
