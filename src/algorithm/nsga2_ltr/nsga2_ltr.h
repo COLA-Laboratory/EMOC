@@ -57,6 +57,7 @@ namespace emoc {
         double *weight_;        // weight for DM
         int weight_num_;        // the number of weight vector
         int tau;                // consultation frequency
+        int first_tau;          // first time to consult
         std::queue<double *> winners_;
         std::queue<double *> losers_;
 	};

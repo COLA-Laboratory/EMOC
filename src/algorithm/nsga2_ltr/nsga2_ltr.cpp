@@ -56,7 +56,7 @@ namespace emoc {
 	{
         bool falg_EnvironmentalSelection;
 		Initialization();
-        int first_tau = 0.4 * g_GlobalSettings->max_evaluation_ / g_GlobalSettings->population_num_;
+        first_tau = 0.4 * g_GlobalSettings->max_evaluation_ / g_GlobalSettings->population_num_;
         printf("first tau = %d \n", first_tau);
         
 		while (!IsTermination())
@@ -279,7 +279,7 @@ namespace emoc {
          * initialize model in first consultation
          */
         // if (g_GlobalSettings->iteration_num_ == g_GlobalSettings->tau_)
-        if (g_GlobalSettings->iteration_num_ == tau)
+        if (g_GlobalSettings->iteration_num_ == first_tau)
         {
             PyObject *pCreateModel = PyObject_GetAttrString(pModule, "CreateModel");
             PyObject_CallFunctionObjArgs(pCreateModel, PyLong_FromLong((long)(g_GlobalSettings->obj_num_)),PyLong_FromLong((long)(g_GlobalSettings->run_id_)), NULL);
@@ -416,7 +416,7 @@ namespace emoc {
         // PyObject* pyParams=PyTuple_New(2);
         // PyTuple_SetItem(pyParams, 0, PF_py);          //PF from last layer
         // PyTuple_SetItem(pyParams, 1, Py_BuildValue("l", g_GlobalSettings->run_id_));
-        // // PyTuple_SetItem(pyParams, 2, Py_BuildValue("s", "NULL"));                   
+        // PyTuple_SetItem(pyParams, 2, Py_BuildValue("s", "NULL"));                   
         
 
         
