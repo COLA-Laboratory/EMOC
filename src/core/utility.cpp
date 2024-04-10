@@ -477,6 +477,48 @@ namespace emoc {
 		return fitness;
 	}
 
+	double CalInverseChebycheff(Individual *ind, double* weight_vector, int obj_num)
+	{
+		double fitness = 0, max = -1.0e+20;
+
+		for (int i = 0; i < obj_num; ++i)
+		{
+			double diff = fabs(ind->obj_[i]);
+			if (weight_vector[i] < EMOC_EPS)
+				fitness = diff / 0.000001;
+			else
+				fitness = diff / weight_vector[i];
+
+			if (fitness > max)
+				max = fitness;
+		}
+
+		fitness = max;
+		ind->fitness_ = fitness;
+
+		return fitness;
+	}
+
+	double CalInverseChebycheff(double *obj, double *weight_vector, double *ideal_point, int obj_num)
+	{
+		double fitness = 0, min = -1.0e+20;
+
+        for (int i = 0; i < obj_num; ++i)
+        {
+            double diff = fabs(obj[i] - ideal_point[i]);
+            if (weight_vector[i] < EMOC_EPS)
+                fitness = diff / 0.000001;
+            else
+                fitness = diff / weight_vector[i];
+
+            if (fitness > min)
+                min = fitness;
+        }
+        fitness = min;
+        // ind->fitness_ = fitness;
+        return fitness;
+	}
+
 	double CalPBI(Individual* ind, double* weight_vector, double* ideal_point, int obj_num, double theta)
 	{
 		theta == 0.0 ? 5.0 : theta;
