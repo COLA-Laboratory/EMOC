@@ -34,3 +34,4 @@
 #include "algorithm/moead_ltr/moead_ltr.h"
 #include "algorithm/r2_ibea/r2_ibea.h"
 #include "algorithm/r2_ibea_ltr/r2_ibea_ltr.h"
+#include "algorithm/moead_ppl/moead_ppl.h"
