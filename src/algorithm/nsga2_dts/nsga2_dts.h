@@ -60,7 +60,7 @@ namespace emoc {
 		double *utl;	        // store the utility function value
 		int select_sum;
 		mat PVals;              // store the winning probability of each solution
-		mat PSubset;			// store the winning probability of each subset
+		// mat PSubset;			// store the winning probability of each subset
 		int best_index;
         // int best_region;
         // vec win_times;

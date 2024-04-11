@@ -1,6 +1,9 @@
+// Algorithm: D-PBEMO-DTS (ablation experiment algorithm)
+// Paper: (ICML 2024 under review) Huang, Tian, and Ke Li. "Direct Preference-Based Evolutionary Multi-Objective Optimization with Dueling Bandit." arXiv preprint arXiv:2311.14003 (2023).
+// Link: https://arxiv.org/abs/2311.14003
+// Created by Tian Huang 11/04/2024
+
 #include "algorithm/nsga2_dts/nsga2_dts.h"
-
-
 #include <algorithm>
 #include <iostream>
 // #include <ctime>
@@ -492,7 +495,7 @@ namespace emoc {
                 PVals(i, j) = 1 / (1 + exp(-1000* diff));
             }
         }
-        PVals.save("compare.dat",raw_ascii);
+        // PVals.save("compare.dat",raw_ascii);
 
     }
 
@@ -500,7 +503,7 @@ namespace emoc {
     {
         // mat PVals;
         int best;
-        PVals.load("compare.dat");
+        // PVals.load("compare.dat");
 
         double learning_rate = 0.51;
         int T_round = 100;
