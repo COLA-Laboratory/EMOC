@@ -82,6 +82,8 @@ set(SRC ${SRC}
         vendor/alglib/src/specialfunctions.cpp
         vendor/alglib/src/statistics.cpp  
         vendor/pinv/calculatePinv.cpp
+        vendor/C-DTS/Arm.cpp
+        vendor/C-DTS/CDTS.cpp
 )
 
 # set include dir and link dir
