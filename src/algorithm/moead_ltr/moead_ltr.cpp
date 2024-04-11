@@ -4,6 +4,8 @@
 // Created by Guiyu Lai on 2021/6/9.
 // lreaning to rank in RankNet.py, require installing tensorflow
 // to run this algorithm, make sure conda activate proper python environment before cmake
+// python == 3.8
+// tensorflow == 2.13.0
 
 #include "algorithm/moead_ltr/moead_ltr.h"
 #include <cmath>
