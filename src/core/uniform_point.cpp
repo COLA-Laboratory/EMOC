@@ -119,6 +119,27 @@ namespace emoc {
 		return lambda;
 	}
 
+	double** LoadUniformWeights(int num,int obj_num,char* file)
+	{
+		double **lambda=nullptr;
+		lambda=new double*[num];
+		for(int i=0;i<num;i++)
+		{
+			lambda[i]=new double[obj_num];
+		}
+		std::ifstream in;
+		in.open(file);
+		for(int i=0;i<num;i++)
+		{
+			for(int j=0;j<obj_num;j++)
+			{
+				in>>lambda[i][j];
+			}
+		}
+		in.close();
+		return lambda;
+	}
+
 	double** HitAndRun(int num, int obj_num, char *run, char *outputFile)
     {
         pid_t status = system(run);
