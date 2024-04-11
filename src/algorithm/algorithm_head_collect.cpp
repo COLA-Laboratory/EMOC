@@ -36,6 +36,7 @@ namespace emoc {
 	EMOC_REGIST_ALGORITHM(Multiobjective,Dominance Based, tDEA);
 	EMOC_REGIST_ALGORITHM(Multiobjective,Dominance Based, NSGA2_LTR);
 	EMOC_REGIST_ALGORITHM(Multiobjective,Dominance Based, DPBEMO_NSGA2);
+	EMOC_REGIST_ALGORITHM(Multiobjective,Dominance Based, DPBEMO_DTS);
 
 	// Indicator Based Algorithms
 	EMOC_REGIST_ALGORITHM(Multiobjective,Indicator Based, IBEA);

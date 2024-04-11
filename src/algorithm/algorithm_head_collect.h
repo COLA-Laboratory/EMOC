@@ -39,3 +39,4 @@
 #include "algorithm/moead_direct/meoad_direct.h"
 #include "algorithm/nsga2_direct/nsga2_direct.h"
 #include "algorithm/r2_ibea_direct/r2_ibea_direct.h"
+#include "algorithm/nsga2_dts/nsga2_dts.h"
