@@ -84,6 +84,7 @@ set(SRC ${SRC}
         vendor/pinv/calculatePinv.cpp
         vendor/C-DTS/Arm.cpp
         vendor/C-DTS/CDTS.cpp
+        vendor/C-DTS/DTS.cpp
 )
 
 # set include dir and link dir
