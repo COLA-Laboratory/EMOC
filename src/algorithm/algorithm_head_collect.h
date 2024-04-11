@@ -36,3 +36,6 @@
 #include "algorithm/r2_ibea_ltr/r2_ibea_ltr.h"
 #include "algorithm/moead_ppl/moead_ppl.h"
 #include "algorithm/moead_pbo/moead_pbo.h"
+#include "algorithm/moead_direct/meoad_direct.h"
+#include "algorithm/nsga2_direct/nsga2_direct.h"
+#include "algorithm/r2_ibea_direct/r2_ibea_direct.h"

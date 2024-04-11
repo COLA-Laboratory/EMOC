@@ -26,6 +26,7 @@ namespace emoc {
 	EMOC_REGIST_ALGORITHM(Multiobjective, Docomposition Based, MOEAD_LTR);
 	EMOC_REGIST_ALGORITHM(Multiobjective, Docomposition Based, MOEADPPL);
 	EMOC_REGIST_ALGORITHM(Multiobjective, Docomposition Based, MOEADPBO);
+	EMOC_REGIST_ALGORITHM(Multiobjective, Docomposition Based, DPBEMO_MOEAD);
 
 	// Dominance Based Algorithms
 	EMOC_REGIST_ALGORITHM(Multiobjective,Dominance Based, NSGA2);
@@ -34,6 +35,7 @@ namespace emoc {
 	EMOC_REGIST_ALGORITHM(Multiobjective,Dominance Based, SPEA2SDE);
 	EMOC_REGIST_ALGORITHM(Multiobjective,Dominance Based, tDEA);
 	EMOC_REGIST_ALGORITHM(Multiobjective,Dominance Based, NSGA2_LTR);
+	EMOC_REGIST_ALGORITHM(Multiobjective,Dominance Based, DPBEMO_NSGA2);
 
 	// Indicator Based Algorithms
 	EMOC_REGIST_ALGORITHM(Multiobjective,Indicator Based, IBEA);
@@ -41,6 +43,7 @@ namespace emoc {
 	EMOC_REGIST_ALGORITHM(Multiobjective,Indicator Based, SMSEMOA);
 	EMOC_REGIST_ALGORITHM(Multiobjective,Indicator Based, R2_IBEA);
 	EMOC_REGIST_ALGORITHM(Multiobjective,Indicator Based, R2_IBEA_LTR);
+	EMOC_REGIST_ALGORITHM(Multiobjective,Indicator Based, DPBEMO_R2_IBEA);
 
 	// Constraint Algorithms
 	EMOC_REGIST_ALGORITHM(Multiobjective, Constraint, CNSGA2);
