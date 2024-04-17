@@ -189,6 +189,163 @@ namespace emoc {
 		return m_w;
 	}
 
+	// set golden reference point
+	arma::vec SetGold(int obj_num_, std::string problem_name)
+	{
+		std::vector<double> gold_point(obj_num_);
+		if(problem_name == "ZDT1" || problem_name == "ZDT4")
+		{
+			gold_point[0] = 0.3;
+			gold_point[1] = 0.4;
+		}
+		else if(problem_name == "ZDT2")
+		{
+			gold_point[0] = 0.2;
+			gold_point[1] = 0.8;
+		}
+		else if(problem_name == "ZDT3")
+		{
+			gold_point[0] = 0.15;
+			gold_point[1] = 0.4;
+		}
+		else if(problem_name == "ZDT6")
+		{
+			gold_point[0] = 0.9;
+			gold_point[1] = 0.3;
+		}
+		else if(problem_name == "DTLZ1")
+		{
+			switch (obj_num_)
+			{
+			case 3:
+				gold_point[0] = 0.3;
+				gold_point[1] = 0.3;
+				gold_point[2] = 0.2;
+				break;
+			case 5:
+				gold_point[0] = 0.2;
+				gold_point[1] = 0.1;
+				gold_point[2] = 0.1;
+				gold_point[3] = 0.3;
+				gold_point[4] = 0.4;
+				break;
+			case 8:
+				gold_point[0] = 0.1;
+				gold_point[1] = 0.2;
+				gold_point[2] = 0.1;
+				gold_point[3] = 0.4;
+				gold_point[4] = 0.4;
+				gold_point[5] = 0.1;
+				gold_point[6] = 0.3;
+				gold_point[7] = 0.1;
+				break;
+			case 10:
+				gold_point[0] = 0.05;
+				gold_point[1] = 0.1;
+				gold_point[2] = 0.1;
+				gold_point[3] = 0.05;
+				gold_point[4] = 0.1;
+				gold_point[5] = 0.2;
+				gold_point[6] = 0.08;
+				gold_point[7] = 0.03;
+				gold_point[8] = 0.3;
+				gold_point[9] = 0.1;
+				break;
+			
+			default:
+				break;
+			}
+		}
+		else if(problem_name == "DTLZ2" || problem_name == "DTLZ3" || problem_name == "DTLZ4")
+		{
+			switch (obj_num_)
+			{
+			case 3:
+				gold_point[0] = 0.7;
+				gold_point[1] = 0.8;
+				gold_point[2] = 0.5;
+				break;
+			case 5:
+				gold_point[0] = 0.7;
+				gold_point[1] = 0.6;
+				gold_point[2] = 0.3;
+				gold_point[3] = 0.8;
+				gold_point[4] = 0.5;
+				break;
+			case 8:
+				gold_point[0] = 0.6;
+				gold_point[1] = 0.5;
+				gold_point[2] = 0.75;
+				gold_point[3] = 0.2;
+				gold_point[4] = 0.3;
+				gold_point[5] = 0.55;
+				gold_point[6] = 0.7;
+				gold_point[7] = 0.6;
+				break;
+			case 10:
+				gold_point[0] = 0.3;
+				gold_point[1] = 0.3;
+				gold_point[2] = 0.3;
+				gold_point[3] = 0.1;
+				gold_point[4] = 0.3;
+				gold_point[5] = 0.55;
+				gold_point[6] = 0.35;
+				gold_point[7] = 0.35;
+				gold_point[8] = 0.25;
+				gold_point[9] = 0.45;
+				break;
+			default:
+				break;
+			}
+			
+		}
+		else if(problem_name == "DTLZ5" || problem_name == "DTLZ6")
+		{
+			switch (obj_num_)
+			{
+			case 3:
+				gold_point[0] = 0.2;
+				gold_point[1] = 0.3;
+				gold_point[2] = 0.6;
+				break;
+			case 5:
+				gold_point[0] = 0.12;
+				gold_point[1] = 0.12;
+				gold_point[2] = 0.17;
+				gold_point[3] = 0.24;
+				gold_point[4] = 0.7;
+				break;
+			case 8:
+				gold_point[0] = 0.04;
+				gold_point[1] = 0.04;
+				gold_point[2] = 0.0566;
+				gold_point[3] = 0.8;
+				gold_point[4] = 0.113;
+				gold_point[5] = 0.16;
+				gold_point[6] = 0.2263;
+				gold_point[7] = 0.68;
+				break;
+			case 10:
+				gold_point[0] = 0;
+				gold_point[1] = 0;
+				gold_point[2] = 0;
+				gold_point[3] = 0;
+				gold_point[4] = 0.0096;
+				gold_point[5] = 0.027;
+				gold_point[6] = 0.082;
+				gold_point[7] = 0.25;
+				gold_point[8] = 0.75;
+				gold_point[9] = 0.08;
+				break;
+			default:
+				break;
+			}
+		}
+		arma::vec w_star(gold_point);
+
+		return w_star;
+	}
+
 	int CheckDominance(Individual* ind1, Individual* ind2, int obj_num)
 	{
 		int flag1 = 0, flag2 = 0;
@@ -517,6 +674,30 @@ namespace emoc {
         fitness = min;
         // ind->fitness_ = fitness;
         return fitness;
+	}
+
+	double CalInverseChebycheff(double *obj, double *weight_vector, int obj_num)
+	{
+		double fitness = 0, min = -1.0e+20;
+		for(int i = 0; i < obj_num; i++)
+		{
+			double diff = fabs(obj[i]);
+			if(weight_vector[i] < EMOC_EPS)
+			{
+				fitness = diff / 0.000001;
+			}
+			else
+			{
+				fitness = diff / weight_vector[i];
+			}
+
+			if(fitness > min)
+			{
+				min = fitness;
+			}
+			fitness = min;
+			return fitness;
+		}
 	}
 
 	double CalPBI(Individual* ind, double* weight_vector, double* ideal_point, int obj_num, double theta)

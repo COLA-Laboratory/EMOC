@@ -6,12 +6,15 @@
 #include "core/global.h"
 #include "core/individual.h"
 #include "core/emoc_utility_structures.h"
+#include "../../vendor/armadillo/armadillo"
 
 namespace emoc {
 
 	// set weight
 	double* SetWeight(const std::string& weightstring);
 	double* SetWeight(int obj_num_, std::string problem_name);
+	arma::vec SetGold(const std::string& gold_string);
+	arma::vec SetGold(int obj_num_, std::string problem_name);
 
 	// dominance related functions
 	int CheckDominance(Individual* ind1, Individual* ind2, int obj_num);
@@ -42,6 +45,7 @@ namespace emoc {
 	double CalInverseChebycheff(Individual *ind, double *weight_vector, double *ideal_point, int obj_num);
 	double CalInverseChebycheff(Individual *ind, double* weight_vector, int obj_num);
 	double CalInverseChebycheff(double *obj, double *weight_vector, double *ideal_point, int obj_num);
+	double CalInverseChebycheff(double *obj, double *weight_vector, int obj_num);
 	double CalPBI(Individual *ind, double *weight_vector, double *ideal_point, int obj_num, double theta = 0.0 );
 
 	// load function
