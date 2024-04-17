@@ -40,3 +40,4 @@
 #include "algorithm/nsga2_direct/nsga2_direct.h"
 #include "algorithm/r2_ibea_direct/r2_ibea_direct.h"
 #include "algorithm/nsga2_dts/nsga2_dts.h"
+#include "algorithm/nsga2_ar/nsga2_ar.h"
