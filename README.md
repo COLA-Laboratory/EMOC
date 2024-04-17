@@ -44,4 +44,7 @@ For more information about installation and usage, please refer to the [document
 - [Gnuplot](http://www.gnuplot.info/)
 - [CMake](https://cmake.org/)
 - [Font-Awesome](https://github.com/FortAwesome/Font-Awesome)
+- [glpk](https://www.gnu.org/software/glpk/)
+- [lpsolve](https://sourceforge.net/projects/lpsolve/)
+- [Armadillo](https://arma.sourceforge.net/)
 
