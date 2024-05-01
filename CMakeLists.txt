@@ -31,12 +31,7 @@ elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
         message(FATAL_ERROR "IOKIT LIBRARY NOT FOUND")
     endif()
     find_package(OpenGL REQUIRED)
-    find_library(LpSolve_LIBRARY lpsolve55)
-    message(STATUS "lpsolve PATH: ${LpSolve_LIBRARY}")
-    find_library(Armadillo_LIBRARY armadillo)
-    message(STATUS "armadillo PATH: ${Armadillo_LIBRARY}")
-    find_library(GLPK_LIBRARIES glpk)
-    message(STATUS "GLPK LIBRARY PATH: ${GLPK_LIBRARIES}")
+
 else()
     message(FATAL_ERROR "Compiler ${CMAKE_CXX_COMPILER_ID} Is Not Support  Now!")
 endif()	
@@ -100,9 +95,13 @@ set(INCLUDE_DIR
     ./vendor/imgui
     ./vendor/glfw/include
     ./vendor/IconsFontAwesome5
-    /opt/local/include              # the location include glpk headers, change to your absolute location
-    /opt/local/include/lpsolve/     # the location inclue lpsolve headers, change to your absolute location
+
 )
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
+set(INCLUDE_DIR ${INCLUDE_DIR}
+/opt/local/include                  # the location include your package headers
+)
+endif()
 
 set(LINK_DIR 
     ./build/vendor/glfw/src/Debug
@@ -140,13 +139,12 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 		add_custom_command(TARGET EMOC POST_BUILD COMMAND copy ..\\build\\Release\\EMOC.exe ..\\EMOC.exe)
 	endif()
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    target_link_libraries(EMOC PRIVATE glfw3 dl X11 GL pthread ${Python_LIBRARIES}) 
+    target_link_libraries(EMOC PRIVATE glfw3 dl X11 GL pthread lpsolve55 glpk armadillo ${Python_LIBRARIES}) 
 	if(NOT BUILD_PYTHON_DLL)
 		add_custom_command(TARGET EMOC POST_BUILD COMMAND mv ./EMOC ../EMOC)
 	endif()
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
-    # target_link_libraries(EMOC PRIVATE glfw3 ${OPENGL_LIBRARY} ${COCOA_LIBRARY}  ${IOKIT_LIBRARY}) 
-    target_link_libraries(EMOC PRIVATE glfw ${OPENGL_LIBRARY} ${COCOA_LIBRARY} ${IOKIT_LIBRARY} ${Python_LIBRARIES} ${GLPK_LIBRARIES} ${LpSolve_LIBRARY} ${Armadillo_LIBRARY}) 
+    target_link_libraries(EMOC PRIVATE glfw ${OPENGL_LIBRARY} ${COCOA_LIBRARY} ${IOKIT_LIBRARY} ${Python_LIBRARIES} glpk lpsolve55 armadillo) 
     if(NOT BUILD_PYTHON_DLL)
         # add_custom_command(TARGET EMOC POST_BUILD COMMAND mv ./EMOC ../EMOC)
     endif()
