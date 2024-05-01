@@ -3,7 +3,7 @@
 #include "algorithm/algorithm.h"
 #include "problem/problem.h"
 #include "metric/metric_head_collect.h"
-#include "../vendor/armadillo/armadillo"
+#include <armadillo>
 
 #include <vector>
 #include <stack>

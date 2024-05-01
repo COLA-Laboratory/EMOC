@@ -2,7 +2,7 @@
 #include "core/individual.h"
 #include "algorithm/algorithm.h"
 #include "problem/problem.h"
-#include "../vendor/armadillo/armadillo"
+#include <armadillo>
 
 using namespace arma;
 
