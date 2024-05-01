@@ -1,13 +1,12 @@
 // Algorithm: NSGA-II-AR
-// Paper: Interactive Evolutionary Multi-Objective Optimization via Learning-to-Rank
-// Link: https://www.dropbox.com/s/oljgs6l1vybajc4/main.pdf?dl=0
+// Paper: Jamieson, Kevin G., and Robert Nowak. "Active ranking using pairwise comparisons." Advances in neural information processing systems 24 (2011).
+// Link: https://proceedings.neurips.cc/paper/2011/file/6c14da109e294d1e8155be8aa4b1ce8e-Paper.pdf
 // Created by gylai on 23-1-10.
 // Contact: Lai Guiyu <guiyulai.chn@gmail.com>
 //
 
 #include "algorithm/nsga2_ar/nsga2_ar.h"
-// #include "lp_lib.h"
-#include <lp_lib.h>
+#include <lpsolve/lp_lib.h>
 #include <glpk.h>
 
 #include "core/individual.h"
@@ -55,17 +54,15 @@ namespace emoc {
         while (!IsTermination())
         {
             // begin each iteration
-            g_GlobalSettings->iteration_num_++;
             std::cout<<"<info> GEN "<<g_GlobalSettings->iteration_num_<<std::endl;
             // generate offspring population
             Crossover(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->offspring_population_.data());
             PolynomialMutation(g_GlobalSettings->offspring_population_.data(), 2 * (real_popnum_ / 2), g_GlobalSettings->dec_lower_bound_, g_GlobalSettings->dec_upper_bound_, mutation_para_);
-            // MutationPop(g_GlobalSettings->offspring_population_.data(), 2 * g_GlobalSettings->population_num_ / 2, g_GlobalSettings);
             EvaluatePop(g_GlobalSettings->offspring_population_.data(), 2 * g_GlobalSettings->population_num_ / 2);
-            MergePopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_, g_GlobalSettings->offspring_population_.data(),
-                            g_GlobalSettings->population_num_, g_GlobalSettings->mixed_population_.data());
+            MergePopulation(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->population_num_, g_GlobalSettings->offspring_population_.data(),g_GlobalSettings->population_num_, g_GlobalSettings->mixed_population_.data());
 
-            flag_EnvironmentalSelection = EnvironmentalSelection(g_GlobalSettings->parent_population_.data(), g_GlobalSettings->mixed_population_.data(),
+            flag_EnvironmentalSelection = EnvironmentalSelection(g_GlobalSettings->parent_population_.data(),               
+                                                                 g_GlobalSettings->mixed_population_.data(),
                                                                  (!is_w_approximate_convergenced_) && ((g_GlobalSettings->iteration_num_ % tau) == 0),
                                                                  (w_approximate_.n_rows != 0) && (g_GlobalSettings->iteration_num_ >= tau));
             if (!flag_EnvironmentalSelection)
@@ -74,13 +71,6 @@ namespace emoc {
                 return;
             }
 
-            // record the population every interval generations and the first and last genration
-            if (((g_GlobalSettings->output_interval_ != 0)&&
-                 (g_GlobalSettings->iteration_num_ % g_GlobalSettings->output_interval_ == 0))
-                || IsTermination())
-            {
-                TrackPopulation(g_GlobalSettings->iteration_num_);
-            }
         }
 
         std::cout<<"<info> Preference Guided Optimization finished, Congratulations!!! Used "<<num_ambiguous_query<<" pairwise comparisons in total."<<std::endl;
