@@ -5,7 +5,7 @@
 #include "core/individual.h"
 #include "algorithm/algorithm.h"
 #include "problem/problem.h"
-#include "core/global.h
+// #include "core/global.h
 #include <armadillo>
 
 using namespace arma;
