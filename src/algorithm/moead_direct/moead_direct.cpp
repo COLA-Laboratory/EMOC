@@ -676,8 +676,8 @@ namespace emoc{
                     PSubset(i,j) = 0.5;
                 else
                 {
-                    mat temp = PVals.submat(span(subset_solution_num * i, subset_solution_num * i + 9), 
-                    span(subset_solution_num * j, subset_solution_num * j + 9));
+                    mat temp = PVals.submat(span(subset_solution_num * i, subset_solution_num * (i + 1) - 1), 
+                    span(subset_solution_num * j, subset_solution_num * (j + 1) - 1));
                     PSubset(i,j) = mean(mean(temp));
                 }
             }
